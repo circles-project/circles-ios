@@ -98,7 +98,7 @@ where the service doesn't promote the worst kind of anti-social behaviors
 in order to sell ads?
 
 You can help us build that future.
-People who back the project on Kickstarter get big discounts on the new
-secure social platform that we will be launching later this year.
+People who back the project on Kickstarter get big discounts for membership
+on the new secure social platform that we will be launching later this year.
 
 [![Kickstarter banner](./assets/images/kickstarter-logo-green.png)](https://www.kickstarter.com/projects/cvwright/circles-a-secure-social-app-for-friends-and-family?ref=4k4rzq)
