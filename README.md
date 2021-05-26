@@ -19,10 +19,12 @@ and groups.
 Circles is [built on Matrix](https://matrix.org/). 
 It uses the same E2E security protocols, Olm and Megolm, that Matrix uses
 for its encrypted group chat.
+Circles does not attempt to "roll its own" encryption code.
+Instead, it uses the [Matrix iOS SDK](https://github.com/matrix-org/matrix-ios-sdk)
+for all security and encryption related functions.
 
 ## Runs on iPhone, iPad, and iPod Touch
 Circles for iOS should run on any device with iOS 14+.
-
 Building a version of Circles for Android devices is one of our top priorities
 for the future.
 
