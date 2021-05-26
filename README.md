@@ -102,6 +102,27 @@ to share with more than one of your groups or circles.
 If you upload the photo into a gallery first, you can then share it
 with a group or a circle with just a couple of taps on the screen.
 
+# Try It Out
+The Circles beta will be publicly available on Apple's [TestFlight](https://testflight.apple.com/)
+service in mid-June 2021.
+Until then, if you have a recent Mac with Xcode, you can build and run
+the app yourself.
+
+```console
+[user@host ~]$ git clone https://github.com/KombuchaPrivacy/circles-ios.git
+[user@host ~]$ cd circles-ios
+[user@host circles-ios]$ pod install
+[user@host circles-ios]$ open Circles.xcworkspace
+```
+
+**NOTE 2021/05/26**: Unless you have a signup token, you will not be able
+to create an account on the beta testing server at this time.
+However, if you have an existing account on another Matrix homeserver,
+you can use Circles with that account by making one small change to the
+code.
+In [KSStore.swift](./Circles/KSStore.swift), look at lines 61-65 to change
+the homeserver to the one that you want to use.
+
 # Support us on Kickstarter
 Do you want a better social network experience, where you are in control
 over who can see what you share, where the service doesn't spy on you, and
