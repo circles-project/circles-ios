@@ -73,6 +73,15 @@ has their own network of connections that's distinct from anyone else's.**
 
 ![Circles screenshots](./assets/images/circles-screenshots.jpeg)
 
+Maybe the best way to think about a circle is that it's like your own
+little private, secure version of Facebook in a microcosm.
+The only people in it are the people who you really care about, and
+they're only sharing things that you have some mutual interest in.
+Each circle functions like your own personal "wall" or "page" where
+you can share things.
+It also gives you your own private timeline of updates from your
+friends in that circle.
+
 ## Bonus Feature: Encrypted Photo Galleries
 
 Ok, this one isn't really necessary for a social app, but it was an
