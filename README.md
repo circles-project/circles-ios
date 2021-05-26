@@ -91,11 +91,6 @@ It also gives you your own private timeline of updates from your
 friends in that circle.
 
 ## Bonus Feature: Encrypted Photo Galleries
-
-Ok, this one isn't really necessary for a social app, but it was an
-easy thing to add, and I think it's really cool.
-Plus, I think it will be really useful.
-
 We also give you encrypted photo galleries.
 You can share a gallery with your friends and family, or you can just
 use it for yourself as an encrypted cloud backup of your photos.
