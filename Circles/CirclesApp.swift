@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct CirclesApp: App {
+    @StateObject private var store = KSStore()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(store: store)
+                .environmentObject(store)
         }
     }
 }
