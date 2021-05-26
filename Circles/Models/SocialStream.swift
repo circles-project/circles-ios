@@ -1,8 +1,8 @@
 //
 //  KSStream.swift
-//  Kombucha Social
+//  Circles for iOS
 //
-//  Created by Macro Ramius on 11/5/20.
+//  Created by Charles Wright on 11/5/20.
 //
 
 import Foundation

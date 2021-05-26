@@ -1,8 +1,8 @@
 //
 //  TimelineMessageComposer.swift
-//  Kombucha Social
+//  Circles for iOS
 //
-//  Created by Macro Ramius on 11/4/20.
+//  Created by Charles Wright on 11/4/20.
 //
 
 import SwiftUI

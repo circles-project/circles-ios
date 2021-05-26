@@ -1,8 +1,8 @@
 //
 //  InvitedRoom.swift
-//  Kombucha Social
+//  Circles for iOS
 //
-//  Created by Macro Ramius on 12/21/20.
+//  Created by Charles Wright on 12/21/20.
 //
 //  InvitedRoom is like MatrixRoom, but much more limited.
 //  It only supports the basic functionality needed to display an invitation.

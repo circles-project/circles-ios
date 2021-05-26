@@ -1,8 +1,8 @@
 //
 //  PeopleOverviewScreen.swift
-//  Kombucha Social
+//  Circles for iOS
 //
-//  Created by Macro Ramius on 12/1/20.
+//  Created by Charles Wright on 12/1/20.
 //
 
 import SwiftUI

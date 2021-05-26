@@ -1,8 +1,8 @@
 //
 //  LoginScreen.swift
-//  Kombucha Social
+//  Circles for iOS
 //
-//  Created by Macro Ramius on 10/30/20.
+//  Created by Charles Wright on 10/30/20.
 //
 
 import SwiftUI

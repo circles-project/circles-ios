@@ -1,8 +1,8 @@
 //
 //  Badge.swift
-//  Kombucha Social
+//  Circles for iOS
 //
-//  Created by Macro Ramius on 1/26/21.
+//  Created by Charles Wright on 1/26/21.
 //
 
 import SwiftUI

@@ -1,8 +1,8 @@
 //
 //  Constants.swift
-//  Kombucha Social
+//  Circles for iOS
 //
-//  Created by Macro Ramius on 12/14/20.
+//  Created by Charles Wright on 12/14/20.
 //
 
 // swiftlint:disable identifier_name

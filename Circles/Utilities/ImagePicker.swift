@@ -2,7 +2,7 @@
 //  ImagePicker.swift
 //  KomSocMk0
 //
-//  Created by Macro Ramius on 7/22/20.
+//  Created by Charles Wright on 7/22/20.
 //  Copyright © 2020 Charles Wright. All rights reserved.
 //
 

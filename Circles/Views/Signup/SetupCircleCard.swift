@@ -1,8 +1,8 @@
 //
 //  SetupCircleCard.swift
-//  Kombucha Social
+//  Circles for iOS
 //
-//  Created by Macro Ramius on 5/24/21.
+//  Created by Charles Wright on 5/24/21.
 //
 
 import SwiftUI

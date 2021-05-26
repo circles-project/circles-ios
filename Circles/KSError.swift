@@ -1,8 +1,8 @@
 //
 //  KSError.swift
-//  Kombucha Social
+//  Circles for iOS
 //
-//  Created by Macro Ramius on 12/15/20.
+//  Created by Charles Wright on 12/15/20.
 //
 
 import Foundation

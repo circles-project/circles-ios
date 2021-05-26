@@ -1,8 +1,8 @@
 //
 //  AcceptTermsScreen.swift
-//  Kombucha Social
+//  Circles for iOS
 //
-//  Created by Macro Ramius on 2/19/21.
+//  Created by Charles Wright on 2/19/21.
 //
 
 import SwiftUI
