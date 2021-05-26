@@ -66,7 +66,6 @@
 		409F4364265DE21A00690A61 /* MessageReportingSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4361265DE21A00690A61 /* MessageReportingSheet.swift */; };
 		409F436C265DE24000690A61 /* PersonsCircleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4367265DE23E00690A61 /* PersonsCircleRow.swift */; };
 		409F436D265DE24000690A61 /* PeopleOverviewScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4368265DE23F00690A61 /* PeopleOverviewScreen.swift */; };
-		409F436E265DE24000690A61 /* PersonsChannelCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4369265DE23F00690A61 /* PersonsChannelCard.swift */; };
 		409F436F265DE24000690A61 /* PersonDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F436A265DE24000690A61 /* PersonDetailView.swift */; };
 		409F4370265DE24000690A61 /* PersonHeaderRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F436B265DE24000690A61 /* PersonHeaderRow.swift */; };
 		409F4376265DE25000690A61 /* PhotoGalleryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4372265DE24F00690A61 /* PhotoGalleryCard.swift */; };
@@ -158,7 +157,6 @@
 		409F4361265DE21A00690A61 /* MessageReportingSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageReportingSheet.swift; sourceTree = "<group>"; };
 		409F4367265DE23E00690A61 /* PersonsCircleRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonsCircleRow.swift; sourceTree = "<group>"; };
 		409F4368265DE23F00690A61 /* PeopleOverviewScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeopleOverviewScreen.swift; sourceTree = "<group>"; };
-		409F4369265DE23F00690A61 /* PersonsChannelCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonsChannelCard.swift; sourceTree = "<group>"; };
 		409F436A265DE24000690A61 /* PersonDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonDetailView.swift; sourceTree = "<group>"; };
 		409F436B265DE24000690A61 /* PersonHeaderRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonHeaderRow.swift; sourceTree = "<group>"; };
 		409F4372265DE24F00690A61 /* PhotoGalleryCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoGalleryCard.swift; sourceTree = "<group>"; };
@@ -254,11 +252,11 @@
 		409F42E0265DDFE300690A61 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				409F42E2265DE00700690A61 /* Array+Sample.swift */,
 				409F4325265DE12600690A61 /* CloudImagePicker.swift */,
 				409F4318265DE0FF00690A61 /* EmbeddedImagePicker.swift */,
 				409F4313265DE0F300690A61 /* ImagePicker.swift */,
 				409F4314265DE0F400690A61 /* ImageSaver.swift */,
-				409F42E2265DE00700690A61 /* Array+Sample.swift */,
 				409F42E5265DE03B00690A61 /* Utils.swift */,
 				409F42E8265DE06C00690A61 /* WebView.swift */,
 			);
@@ -309,20 +307,20 @@
 		409F430D265DE0D500690A61 /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				409F43A1265DE3C800690A61 /* ProfileScreen.swift */,
 				409F4398265DE34700690A61 /* AccountScreen.swift */,
-				409F43B3265DE4C800690A61 /* ProfileView.swift */,
-				409F4395265DE2E900690A61 /* TermsScreen.swift */,
-				409F438F265DE2CE00690A61 /* SystemNoticesView.swift */,
-				409F437B265DE27F00690A61 /* RecentActivityView.swift */,
-				409F4348265DE18900690A61 /* InvitationAcceptSheet.swift */,
-				409F4349265DE18A00690A61 /* InvitationCard.swift */,
-				409F4347265DE18900690A61 /* InvitationsView.swift */,
 				409F431D265DE11000690A61 /* DeviceInfoView.swift */,
 				409F431C265DE10F00690A61 /* DeviceRemovalSheet.swift */,
 				409F431B265DE10F00690A61 /* DevicesScreen.swift */,
 				409F430E265DE0E600690A61 /* HomeScreen.swift */,
 				409F430F265DE0E700690A61 /* HomeTabMasterView.swift */,
+				409F4348265DE18900690A61 /* InvitationAcceptSheet.swift */,
+				409F4349265DE18A00690A61 /* InvitationCard.swift */,
+				409F4347265DE18900690A61 /* InvitationsView.swift */,
+				409F43A1265DE3C800690A61 /* ProfileScreen.swift */,
+				409F43B3265DE4C800690A61 /* ProfileView.swift */,
+				409F437B265DE27F00690A61 /* RecentActivityView.swift */,
+				409F438F265DE2CE00690A61 /* SystemNoticesView.swift */,
+				409F4395265DE2E900690A61 /* TermsScreen.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -377,8 +375,8 @@
 		409F4358265DE1DE00690A61 /* Signup */ = {
 			isa = PBXGroup;
 			children = (
-				409F4387265DE2B100690A61 /* SignUpScreen.swift */,
 				409F4381265DE29600690A61 /* SetupCircleCard.swift */,
+				409F4387265DE2B100690A61 /* SignUpScreen.swift */,
 			);
 			path = Signup;
 			sourceTree = "<group>";
@@ -386,14 +384,14 @@
 		409F435E265DE20B00690A61 /* Timeline */ = {
 			isa = PBXGroup;
 			children = (
-				409F439B265DE38200690A61 /* ProfileImageView.swift */,
-				409F4392265DE2DE00690A61 /* TimelineView.swift */,
-				409F438A265DE2C200690A61 /* StreamTimeline.swift */,
-				409F438B265DE2C200690A61 /* StreamTimelineScreen.swift */,
-				409F4384265DE2A400690A61 /* RoomMessageComposer.swift */,
 				409F4360265DE21A00690A61 /* MessageAuthorHeader.swift */,
 				409F435F265DE21900690A61 /* MessageCard.swift */,
 				409F4361265DE21A00690A61 /* MessageReportingSheet.swift */,
+				409F439B265DE38200690A61 /* ProfileImageView.swift */,
+				409F4384265DE2A400690A61 /* RoomMessageComposer.swift */,
+				409F438A265DE2C200690A61 /* StreamTimeline.swift */,
+				409F438B265DE2C200690A61 /* StreamTimelineScreen.swift */,
+				409F4392265DE2DE00690A61 /* TimelineView.swift */,
 			);
 			path = Timeline;
 			sourceTree = "<group>";
@@ -404,7 +402,6 @@
 				409F4368265DE23F00690A61 /* PeopleOverviewScreen.swift */,
 				409F436A265DE24000690A61 /* PersonDetailView.swift */,
 				409F436B265DE24000690A61 /* PersonHeaderRow.swift */,
-				409F4369265DE23F00690A61 /* PersonsChannelCard.swift */,
 				409F4367265DE23E00690A61 /* PersonsCircleRow.swift */,
 			);
 			path = People;
@@ -581,7 +578,6 @@
 				409F4309265DE0A200690A61 /* SocialGroup.swift in Sources */,
 				409F436D265DE24000690A61 /* PeopleOverviewScreen.swift in Sources */,
 				409F4301265DE0A200690A61 /* MatrixDevice.swift in Sources */,
-				409F436E265DE24000690A61 /* PersonsChannelCard.swift in Sources */,
 				409F434C265DE18A00690A61 /* InvitationCard.swift in Sources */,
 				409F4382265DE29600690A61 /* SetupCircleCard.swift in Sources */,
 				409F4390265DE2CE00690A61 /* SystemNoticesView.swift in Sources */,
