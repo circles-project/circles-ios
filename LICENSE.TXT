@@ -1,0 +1,13 @@
+Kombucha.social Circles for iOS (beta)
+Copyright 2020,2021 Kombucha Digital Privacy Systems LLC
+
+You may use, copy, modify, and redistribute this software as follows:
+
+1. Effective immediately: Under the terms of the GNU Affero General
+Public License, version 3, as published by the Free Software Foundation.
+
+2. Beginning July 4, 2026:
+  - EITHER under the terms of the GNU Affero General Public License,
+    version 3, as published by the Free Software Foundation
+  - OR under the terms of the Apache License, version 2.0, as published
+    by the Apache Software Foundation
