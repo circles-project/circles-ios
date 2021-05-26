@@ -12,16 +12,6 @@ protocol SocialGraph {
     
     var matrix: MatrixInterface { get }
 
-    /*
-    //func getGroups() -> [MatrixRoom]
-    var groups: [MatrixRoom] { get }
-    
-    //func createGroup(name: String, completion: @escaping (MXResponse<SocialGroup>) -> Void)
-    
-    func addGroup(room: MatrixRoom)
-    
-    func removeGroup(room: MatrixRoom)
-    */
     func getGroups() -> GroupsContainer
         
     func getCircles() -> [SocialCircle]
@@ -45,10 +35,6 @@ protocol SocialGraph {
     // Then we can have SocialPerson (or whatever) be a first-class object
     // where we track the info for that person
     func getUsersAndTheirRooms() -> [MatrixUser: Set<MatrixRoom>]
-    
-    func amINewHere(completion: @escaping (MXResponse<Bool>)->Void)
-    
-    func setupNewAccount(completion: @escaping (Bool) -> Void)
     
     //var photoGalleries: [MatrixRoom] { get }
     func getPhotoGalleries() -> PhotoGalleriesContainer

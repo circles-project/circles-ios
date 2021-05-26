@@ -49,24 +49,7 @@ class KSStore: ObservableObject {
     var loginMxRc: MXRestClient?
     var sessionMxRc: MXRestClient?
     var signupMxRc: MXRestClient?
-    // Update 10/26/2020 -- HOWEVER, we need to be careful how we do this.
-    // The MXSession comes from crappy old ObjC code.  For integration
-    // with SwiftUI, we need to speak Combine, which is Swift only.
-    // So we're going to need something of an adapter here.
-    // We need to use NotificationCenter (or whatever) to subscribe to
-    // updates from the MXSession's state.  Then we need to (re)publish
-    // them into Combine as an ObservableObject so that SwiftUI can know
-    // to update the Views when we have a change in the state.
-    // For example, in MXSession.h, the MXSession will send a
-    // kMXSessionStateDidChangeNotification when the session state changes.
-    // Then we need to publish an ObjectWillChange (or whatever it's called)
-    // so that SwiftUI can re-render the Views.
-    // Based on MXSession.m, it looks like the Session just posts its
-    // events to the default NotificationCenter.  So all we need to do
-    // is listen for them and provide the closure to handle them.
-    // Hmmm... This may be easier than I thought.  Apple provides a function
-    // that will give you a Combine Publisher for a given Notification name:
-    // https://developer.apple.com/documentation/foundation/notificationcenter
+
     
     var sessionStateSink: Cancellable? = nil
     var invitedRoomsSink: Cancellable? = nil
@@ -84,33 +67,8 @@ class KSStore: ObservableObject {
     //  * Has the user accepted terms of service?
     //  * Does the user need to re-set their password?
     //  * Is the user brand new, and needs help setting up their account?
-    
     var tosState: TermsOfServiceState = .checking
     var signupState: SignupState = .notStarted
-    
-    // Matrix credentials for accessing the server
-    // - We get these back from the /login API
-    //@AppStorage("user_id") var user_id: String = ""
-    //@AppStorage("access_token") var access_token: String = ""
-    // Device ID is a weird middle ground.  We initially get it
-    // from the /login API, but it should persist across logins,
-    // so we need to save it here.
-    //@AppStorage("device_id") var device_id: String = ""
-    // FIXME Ideally, the label for the device ID would be keyed on
-    // the username.  So, @alice could have one device_id, and @bob
-    // could have a different one, but they're really both this device.
-    // So maybe we can't use @AppStorage here?  These decorators are
-    // probably a compile-time thing...
-    // IDEA: Really we're talking about two different things here.
-    // 1. When the app closed but the user was still logged in, we
-    //    want to be able to immediately reconnect once we restart.
-    //    *That* is what this @AppStorage device_id is for.
-    // 2. When the user has logged out, and other users have had the
-    //    opportunity in the mean time, we want the user to come back
-    //    and get the same device ID again.  That is *not* what this
-    //    variable does.  For that, we need to write our own code to
-    //    dynamically fetch the old saved device_id out of the user
-    //    preferences storage.
     
     var internalState: KombuchaStoreState = .none
     
@@ -126,9 +84,7 @@ class KSStore: ObservableObject {
     @Published var newestRooms: [MatrixRoom] = []
     
     // Model data for the social network layer
-    //var channels: Set<MatrixRoom> = []
     var circles: Set<SocialCircle> = []
-    //var streams: [KSStream]
     var groups: GroupsContainer? = nil
     var galleries: PhotoGalleriesContainer? = nil
     var people: PeopleContainer? = nil
@@ -179,6 +135,24 @@ class KSStore: ObservableObject {
         }
         
 
+        // Update 10/26/2020 -- HOWEVER, we need to be careful how we do this.
+        // The MXSession comes from crappy old ObjC code.  For integration
+        // with SwiftUI, we need to speak Combine, which is Swift only.
+        // So we're going to need something of an adapter here.
+        // We need to use NotificationCenter (or whatever) to subscribe to
+        // updates from the MXSession's state.  Then we need to (re)publish
+        // them into Combine as an ObservableObject so that SwiftUI can know
+        // to update the Views when we have a change in the state.
+        // For example, in MXSession.h, the MXSession will send a
+        // kMXSessionStateDidChangeNotification when the session state changes.
+        // Then we need to publish an ObjectWillChange (or whatever it's called)
+        // so that SwiftUI can re-render the Views.
+        // Based on MXSession.m, it looks like the Session just posts its
+        // events to the default NotificationCenter.  So all we need to do
+        // is listen for them and provide the closure to handle them.
+        // Hmmm... This may be easier than I thought.  Apple provides a function
+        // that will give you a Combine Publisher for a given Notification name:
+        // https://developer.apple.com/documentation/foundation/notificationcenter
 
         // Subscribe to updates from the MXSession
         // NOTE: We can do this now, regardless of whether or not we have
@@ -225,17 +199,6 @@ class KSStore: ObservableObject {
                             self.handleNewRoom(roomId: roomId)
                             
                             print("NEWROOM\tChanged invited room is [\(roomId)], changed with event [\(String(describing: event.eventId))]")
-                            /*
-                            if event.eventType == .roomMember {
-                                if let membership = event.content["membership"] as? String {
-                                    print("Event membership is \(membership)")
-                                    if membership == "join" {
-                                        // Aha!  We just joined this room.
-                                        // Either that, or it's an old event...
-                                    }
-                                }
-                            }
-                            */
                         }
                     }
 
@@ -451,64 +414,16 @@ extension KSStore: SocialGraph {
         }
         return self.galleries!
     }
-   
-    /*
-    func createGroup(name: String, completion: @escaping (MXResponse<SocialGroup>) -> Void) {
-        self.createRoom(name: name, with: ROOM_TAG_GROUP) { response in
-            switch(response) {
-            case .failure(let err):
-                let msg = "Failed to create Room for new Group [\(name)]"
-                print(msg)
-                completion(.failure(KSError(message: msg)))
-            case .success(let mxroom):
-                let room = self.getRoom(roomId: mxroom.roomId)
-                room?.setRoomType(type: ROOM_TYPE_GROUP) { response2 in
-                    if response2.isSuccess {
-                        self.objectWillChange.send()
-                        let sgrp = SocialGroup(from: mxroom, on: self)
-                        completion(.success(sgrp))
-                    }
-                    else {
-                        // No reason to leave the room hanging around
-                        mxroom.leave(completion: {_ in })
 
-                        let msg = "Failed to tag new Room as a Group"
-                        completion(.failure(KSError(message: msg)))
-                    }
-                }
-            }
-        }
-    }
-    */
-    
-    func addGroup(room: MatrixRoom) {
-        //if !channels.contains(room) {
-            self.objectWillChange.send()
-          //  channels.insert(room)
-        room.addTag(tag: ROOM_TAG_GROUP) { _ in }
-        //}
-    }
-    
-    func removeGroup(room: MatrixRoom) {
-        //if channels.contains(room) {
-            self.objectWillChange.send()
-          //  channels.remove(room)
-        room.removeTag(tag: ROOM_TAG_GROUP) { _ in }
-        //}
-    }
-    
     func getCircles() -> [SocialCircle] {
-
         if let data = session.accountData.accountData(forEventType: EVENT_TYPE_CIRCLES) as? [String : String] {
 
             for (id, name) in data {
                 print("Got circle data with id = \(id) name = \(name)")
                 let circle = SocialCircle(circleId: id, name: name, graph: self)
-                //streams.append(stream)
                 circles.insert(circle)
             }
         }
-
         return circles.sorted(by: {$0.tag < $1.tag})
     }
     
@@ -527,7 +442,6 @@ extension KSStore: SocialGraph {
                            success: {
                             let msg = "Saved circles to Matrix"
                             print(msg)
-                            //self.getCircles() // FIXME Why is this here???
                             completion(.success(msg))
                            },
                            failure: { err in
@@ -677,117 +591,7 @@ extension KSStore: SocialGraph {
     func getAllFollowedRooms() -> [MatrixRoom] {
         self.getRooms(for: ROOM_TAG_FOLLOWING)
     }
-    
-    func amINewHere(completion: @escaping (MXResponse<Bool>)->Void)  {
-        guard let data = session.accountData.accountData(forEventType: EVENT_TYPE_CONFIGURED) as? [String:Bool] else {
-            completion(.failure(KSError(message: "Couldn't get account data")))
-            return
-        }
 
-        print("WELCOME Got account data")
-        if let result = data["account_is_new"] {
-            print("WELCOME Found result = \(result)")
-            completion(.success(result))
-        }
-        else {
-            completion(.failure(KSError(message: "Couldn't find an answer")))
-        }
-
-    }
-    
-    func iAmNoLongerNew(completion: @escaping (MXResponse<String>) -> Void) {
-        session.setAccountData(["account_is_new":false],
-                               forType: EVENT_TYPE_CONFIGURED,
-                               success: {
-                                print("WELCOME User is no longer marked as 'new'")
-                                completion(.success("Success!"))
-                               },
-                               failure: {err in
-                                let msg = "Failed to set account data \(String(describing: err))"
-                                print("WELCOME Failed to set user as non-new")
-                                print("WELCOME \(msg)")
-                                completion(.failure(KSError(message: msg)))
-                               }
-        )
-    }
-    
-    /*
-     User is new here, and needs all of their social data initialized for them.
-     */
-    func setupNewAccount(completion: @escaping (Bool) -> Void) {
-        // Super simple approach for concurrency here, following the naive
-        // first simplest approach in
-        // https://www.swiftbysundell.com/articles/task-based-concurrency-in-swift/
-        let group = DispatchGroup()
-        
-        // Make sure we're not duplicating something that's already been done
-        let circles = getCircles()
-        for circleName in ["Friends", "Family", "Community"] {
-            let existingCircles = circles.filter( {$0.name == circleName } )
-            // Create the circle if it doesn't already exist
-            if existingCircles.isEmpty {
-                group.enter()
-                let _ = createCircle(name: circleName, rooms: []) { response in
-                    switch(response) {
-                    case .failure(let err):
-                        let msg = "Failed to create circle for \(circleName): \(err)"
-                        print(msg)
-                        completion(false)
-                    case .success(let circle):
-                        print("Successfully created circle for \(circle.name)")
-                    }
-                    group.leave()
-                }
-            }
-        }
-        
-        // Mark the account as having been configured.
-        let data = ["account_is_new":false]
-        session
-            .setAccountData(
-                data,
-                forType: EVENT_TYPE_CONFIGURED,
-                success: {
-                    print("Marked account as set up")
-                    //self.getCircles() // FIXME Why is this here???
-                    // Tell the caller we were successful
-                    completion(true)
-                },
-                failure: { err in
-                    print("Error! Failed to mark account as set up: \(err)")
-                    // Tell the caller we failed
-                    completion(false)
-                }
-            )
-    }
-    
-    func resetAccountToNew(completion: @escaping (Bool) -> Void) {
-        // Nuke all of our previously existing circles
-        var circles = getCircles()
-        for circle in circles {
-            removeCircle(circle: circle)
-        }
-        saveCircles() { _ in }
-        
-        // Mark the account as having NOT been configured.
-        let data = ["account_is_new":true]
-        session
-            .setAccountData(
-                data,
-                forType: EVENT_TYPE_CONFIGURED,
-                success: {
-                    print("Marked account as set up")
-                    //self.getCircles() // FIXME Why is this here???
-                    // Tell the caller we were successful
-                    completion(true)
-                },
-                failure: { err in
-                    print("Error! Failed to mark account as set up: \(err)")
-                    // Tell the caller we failed
-                    completion(false)
-                }
-            )
-    }
     
     var matrix: MatrixInterface {
         return self as MatrixInterface

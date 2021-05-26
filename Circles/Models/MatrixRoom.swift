@@ -37,12 +37,6 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
         self.queue = DispatchQueue(label: self.id, qos: .background)
 
         self.initTimeline()
-
-        /*
-        self.updateOwners()
-        self.updateMembers()
-        self.loadMessages(max: 100)
-         */
         self.refresh()
     }
 
@@ -626,7 +620,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
     }
 
     func postImage(image: UIImage, completion: @escaping (MXResponse<String?>) -> Void) {
-        guard let data = image.jpegData(compressionQuality: 0.5) else {
+        guard let data = image.jpegData(compressionQuality: 0.90) else {
             let msg = "Failed to compress image"
             print(msg)
             completion(.failure(KSError(message: msg)))
