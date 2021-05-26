@@ -20,6 +20,12 @@ Circles is [built on Matrix](https://matrix.org/).
 It uses the same E2E security protocols, Olm and Megolm, that Matrix uses
 for its encrypted group chat.
 
+## Runs on iPhone, iPad, and iPod Touch
+Circles for iOS should run on any device with iOS 14+.
+
+Building a version of Circles for Android devices is one of our top priorities
+for the future.
+
 ## Circles and Groups
 In the Circles app, we support two different kinds of social structures:
 circles and groups.
@@ -100,7 +106,6 @@ If you upload the photo into a gallery first, you can then share it
 with a group or a circle with just a couple of taps on the screen.
 
 # Support us on Kickstarter
-
 Do you want a better social network experience, where you are in control
 over who can see what you share, where the service doesn't spy on you, and
 where the service doesn't promote the worst kind of anti-social behaviors
