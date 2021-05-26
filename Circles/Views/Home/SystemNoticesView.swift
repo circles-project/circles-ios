@@ -1,3 +1,4 @@
+//  Copyright 2020, 2021 Kombucha Digital Privacy Systems LLC
 //
 //  SystemNoticesView.swift
 //  Circles for iOS

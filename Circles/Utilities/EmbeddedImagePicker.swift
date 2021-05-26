@@ -1,3 +1,4 @@
+//  Copyright 2020, 2021 Kombucha Digital Privacy Systems LLC
 //
 //  EmbeddedImagePicker.swift
 //  Circles for iOS
@@ -29,7 +30,6 @@ struct EmbeddedImagePicker: UIViewControllerRepresentable {
     func makeUIViewController(context: UIViewControllerRepresentableContext<EmbeddedImagePicker>) -> UIImagePickerController {
 
         let imagePicker = UIImagePickerController()
-        //imagePicker.allowsEditing = false
         imagePicker.allowsEditing = allowEditing
         imagePicker.sourceType = sourceType
         

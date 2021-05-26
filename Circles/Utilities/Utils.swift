@@ -1,3 +1,4 @@
+//  Copyright 2020, 2021 Kombucha Digital Privacy Systems LLC
 //
 //  Utils.swift
 //  Circles for iOS
@@ -17,6 +18,7 @@ func downscale_image(from image: UIImage, to maxSize: CGSize) -> UIImage? {
     let MAX_WIDTH = maxSize.width
     print("DOWNSCALE\t h = \(height)\t w = \(width)")
     print("DOWNSCALE\t max h = \(MAX_HEIGHT)\t max w = \(MAX_WIDTH)")
+
     if height > MAX_HEIGHT || width > MAX_WIDTH {
         let aspectRatio = image.size.width / image.size.height
         print("DOWNSCALE\tAspect ratio = \(aspectRatio)")

@@ -1,3 +1,4 @@
+//  Copyright 2020, 2021 Kombucha Digital Privacy Systems LLC
 //
 //  ChannelView.swift
 //  Circles for iOS
@@ -41,18 +42,6 @@ struct GroupTimelineScreen: View {
     
     @State private var newTopic = ""
     @State private var showTopicPopover = false
- 
-    /*
-    var header: some View {
-        HStack {
-            if !self.showComposer {
-                Button(action: {self.showComposer = true}) {
-                    Label("Post a New Message", systemImage: "rectangle.badge.plus")
-                }
-            }
-        }
-    }
-    */
     
     var composer: some View {
         HStack {

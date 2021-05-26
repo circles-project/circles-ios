@@ -1,3 +1,4 @@
+//  Copyright 2020, 2021 Kombucha Digital Privacy Systems LLC
 //
 //  LoggedinScreen.swift
 //  Circles for iOS
@@ -9,8 +10,6 @@ import SwiftUI
 
 struct LoggedinScreen: View {
     @ObservedObject var store: KSStore
-    //@State private var selected = 0
-    //@State private var selection = 0
     
     enum Tab: String {
         case home
@@ -19,22 +18,9 @@ struct LoggedinScreen: View {
         case groups
         case photos
     }
-    //@State private var selection: Tab = .home
+
     @SceneStorage("tab") private var selection: Tab = .home
-    
-    /* // cvw: This doesn't seem to be working anyway
-    func onAppear() {
-        store.amINewHere() { response in
-            switch(response) {
-            case .success(let iAmNew):
-                self.showSetupSheet = iAmNew
-            case .failure(let err):
-                self.showSetupSheet = true
-                print("WELCOME Failed to get user's 'new' status..  Showing the welcome dialog just in case")
-            }
-        }
-    }
-    */
+
     
     var body: some View {
         TabView(selection: $selection) {

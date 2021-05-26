@@ -1,3 +1,4 @@
+//  Copyright 2020, 2021 Kombucha Digital Privacy Systems LLC
 //
 //  PersonsChannelCard.swift
 //  Circles for iOS
@@ -86,3 +87,4 @@ struct PersonsChannelCard_Previews: PreviewProvider {
     }
 }
 */
+

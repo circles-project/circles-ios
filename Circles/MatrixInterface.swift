@@ -1,5 +1,6 @@
+//  Copyright 2020, 2021 Kombucha Digital Privacy Systems LLC
 //
-//  MatrixAPI.swift
+//  MatrixInterface.swift
 //  Circles for iOS
 //
 //  Created by Charles Wright on 10/28/20.

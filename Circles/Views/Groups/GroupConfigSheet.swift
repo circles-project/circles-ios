@@ -1,5 +1,6 @@
+//  Copyright 2020, 2021 Kombucha Digital Privacy Systems LLC
 //
-//  ChannelConfigSheet.swift
+//  GroupConfigSheet.swift
 //  Circles for iOS
 //
 //  Created by Charles Wright on 11/18/20.
@@ -58,10 +59,6 @@ struct GroupConfigSheet: View {
             //Spacer()
             
             HStack {
-                /*
-                Text("Name:")
-                    .fontWeight(.bold)
-                */
                 TextField("Group name", text: $groupName)
                 
                 Button(action: {
@@ -74,10 +71,6 @@ struct GroupConfigSheet: View {
             }
             
             HStack {
-                /*
-                Text("Initial Status:")
-                    .fontWeight(.bold)
-                */
                 TextField("Status message", text: $groupTopic)
                 
                 Button(action: {
