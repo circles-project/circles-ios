@@ -1,23 +1,34 @@
-# Circles: E2E encrypted social networking, built on Matrix
+# Circles: E2E encrypted social networking
 
 Circles is a new kind of secure social sharing app.
 
 You can think of it like an encrypted messenger that looks and feels like a social network.
 Or you can think of Circles as a social network app where every post is encrypted from end to end.
+
 Which is it really?  It's both, at the same time.
 
+# Features
 
+## End-to-end (E2E) Encryption
+Every post in Circles is encrypted from your device all the way to your
+friends' devices.
+The only people who can see the messages and photos that you share are
+the people who you have specifically invited to join your social circles
+and groups.
 
-# Circles and Groups
+Circles is [built on Matrix](https://matrix.org/). 
+It uses the same E2E security protocols, Olm and Megolm, that Matrix uses
+for its encrypted group chat.
 
-![Circles and groups screenshots](./assets/images/circles-and-groups.jpeg)
-
+## Circles and Groups
 In the Circles app, we support two different kinds of social structures:
 circles and groups.
 
+![Circles and groups screenshots](./assets/images/circles-and-groups.jpeg)
+
 **Groups** are simpler, so let's talk about them first.
 
-## Private Groups
+### Private Groups
 
 A group in the Circles app works pretty much like a group anywhere else.
 It has a well-defined set of members, and everyone who's in the group is
@@ -35,10 +46,10 @@ For example:
 * Your kid's preschool classroom.
   (Well, the parents and teachers anyway.  Preschoolers definitely shouldn't be on social networks!)
 
-Any organized group of people with well-defined membership is probably a
-reasonable fit for a **group** in the app.
+**Any organized group of people with well-defined membership is probably a
+reasonable fit for a group in the app.**
 
-## Secure Social Circles
+### Secure Social Circles
 
 **Circles** are loose, flexible, and overlapping, just like real, organic,
 human social circles.
@@ -57,8 +68,8 @@ And, again, that's totally OK.
 That's how human relationships work.
 Circles are our way of helping the technology catch up to the social reality.
 
-A **circle** is a good fit for any type of relationship where every individual
-has their own network of connections that's different from anyone else's.
+**A circle is a good fit for any type of relationship where every individual
+has their own network of connections that's distinct from anyone else's.**
 
 ![Circles screenshots](./assets/images/circles-screenshots.jpeg)
 
@@ -68,11 +79,11 @@ Ok, this one isn't really necessary for a social app, but it was an
 easy thing to add, and I think it's really cool.
 Plus, I think it will be really useful.
 
-![Photo gallery screenshots](/assets/images/photogallery-screenshots.jpeg)
-
 We also give you encrypted photo galleries.
 You can share a gallery with your friends and family, or you can just
 use it for yourself as an encrypted cloud backup of your photos.
+
+![Photo gallery screenshots](/assets/images/photogallery-screenshots.jpeg)
 
 Galleries also give you an easier way to manage photos that you want
 to share with more than one of your groups or circles.
