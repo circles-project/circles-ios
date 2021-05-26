@@ -6,7 +6,7 @@ You can think of it like an encrypted messenger that looks and feels like a soci
 Or you can think of Circles as a social network app where every post is encrypted from end to end.
 Which is it really?  It's both, at the same time.
 
-![Kickstarter banner](./assets/images/kickstarter-logo-green.png)
+
 
 # Circles and Groups
 
@@ -78,3 +78,16 @@ Galleries also give you an easier way to manage photos that you want
 to share with more than one of your groups or circles.
 If you upload the photo into a gallery first, you can then share it
 with a group or a circle with just a couple of taps on the screen.
+
+# Support us on Kickstarter
+
+Do you want a better social network experience, where you are in control
+over who can see what you share, where the service doesn't spy on you, and
+where the service doesn't promote the worst kind of anti-social behaviors
+in order to sell ads?
+
+You can help us build that future.
+People who back the project on Kickstarter get big discounts on the new
+secure social platform that we will be launching later this year.
+
+[![Kickstarter banner](./assets/images/kickstarter-logo-green.png)](https://www.kickstarter.com/projects/cvwright/circles-a-secure-social-app-for-friends-and-family?ref=4k4rzq)
