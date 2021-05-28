@@ -70,10 +70,7 @@ class KSStore: ObservableObject {
     //  * Is the user brand new, and needs help setting up their account?
     var tosState: TermsOfServiceState = .checking
     var signupState: SignupState = .notStarted
-    
-    var internalState: KombuchaStoreState = .none
-    
-    
+
     // Model data for the Matrix layer
     var userId: String?
     var deviceId: String?
@@ -787,7 +784,20 @@ extension KSStore: MatrixInterface {
         }
     }
     
-    func logout() {
+    //func logout() {
+    func pause() {
+        // Wipe the access token so we're not still logged in
+        // if we close & reopen the app
+        if let uid = self.session.myUserId {
+            let defaults = UserDefaults.standard
+            defaults.set("", forKey: "access_token[\(uid)]")
+        }
+        self.objectWillChange.send()
+        self.session.pause()
+    }
+
+    func close() {
+
         // Don't really log out, or the server will delete our device_id
         // and then other clients won't be able to provide decryption keys
         // for this device.
@@ -806,13 +816,17 @@ extension KSStore: MatrixInterface {
         //       more motivation.  Sigh.  But this one is going to be
         //       the straw that breaks the camel's back.
         //self.session.logout() { response in
-        self.session.matrixRestClient.logout() { response in
+        //self.session.matrixRestClient.logout() { response in
+
+        self.session.close()
+        /*
             switch(response) {
             case .failure(let err):
                 print("Error: Logout failed", err)
             case .success:
+        */
                 // OK great, we're out.
-                self.objectWillChange.send()
+                //self.objectWillChange.send()
                 // Wipe the old (now invalid) access token.
                 if let uid = userId {
                     let defaults = UserDefaults.standard
@@ -836,10 +850,12 @@ extension KSStore: MatrixInterface {
                 self.signupMxRc = nil
                 self.sessionMxRc = nil
                 self.loginMxRc = nil
-
+        //self.session.close()
                 print("Logout was successful")
+        /*
             }
         }
+        */
     }
     
     func whoAmI() -> String {

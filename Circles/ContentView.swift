@@ -43,10 +43,30 @@ struct ContentView: View {
                 // FIXME Alternatively, if we have a (seemingly) valid access token, we could allow the user to browse the data that we already have locally, in some sort of "offline" mode
                 Text("Could not connect to homeserver")
 
+            case MXSessionStatePauseRequested:
+                VStack {
+                    ProgressView("Logging out...")
+                }
+            case MXSessionStatePaused:
+                VStack {
+                    Text("Logout successful")
+
+                    Button(action: {
+                        self.store.close()
+                    }) {
+                        Text("Return to login screen")
+                            .padding()
+                            .frame(width: 300.0, height: 40.0)
+                            .foregroundColor(.white)
+                            .background(Color.accentColor)
+                            .cornerRadius(10)
+                    }
+                }
+
             default:
                 VStack {
                     Text("Something went wrong")
-                    Button(action: {self.store.logout()}) {
+                    Button(action: {self.store.pause()}) {
                         Text("Logout and try again...")
                     }
                 }

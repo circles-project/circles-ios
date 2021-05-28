@@ -289,17 +289,17 @@
 		409F430C265DE0CE00690A61 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				409F43A4265DE41000690A61 /* Rooms */,
-				409F439E265DE3AD00690A61 /* LoggedinScreen.swift */,
-				409F437E265DE28600690A61 /* RandomizedCircles.swift */,
-				409F4366265DE22F00690A61 /* People */,
-				409F435E265DE20B00690A61 /* Timeline */,
-				409F4358265DE1DE00690A61 /* Signup */,
-				409F4357265DE1D800690A61 /* Login */,
-				409F432A265DE14700690A61 /* Photo Galleries */,
-				409F4329265DE14100690A61 /* Groups */,
 				409F4328265DE13B00690A61 /* Circles */,
+				409F4329265DE14100690A61 /* Groups */,
 				409F430D265DE0D500690A61 /* Home */,
+				409F439E265DE3AD00690A61 /* LoggedinScreen.swift */,
+				409F4357265DE1D800690A61 /* Login */,
+				409F4366265DE22F00690A61 /* People */,
+				409F432A265DE14700690A61 /* Photo Galleries */,
+				409F437E265DE28600690A61 /* RandomizedCircles.swift */,
+				409F43A4265DE41000690A61 /* Rooms */,
+				409F4358265DE1DE00690A61 /* Signup */,
+				409F435E265DE20B00690A61 /* Timeline */,
 			);
 			path = Views;
 			sourceTree = "<group>";

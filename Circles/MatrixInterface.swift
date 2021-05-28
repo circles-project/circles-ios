@@ -14,7 +14,9 @@ protocol MatrixInterface {
     
     func login(username: String, password: String)
     
-    func logout()
+    //func logout()
+    func pause()
+    func close()
     
     func finishSignupAndConnect()
         

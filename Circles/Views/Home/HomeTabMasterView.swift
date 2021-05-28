@@ -11,6 +11,8 @@ import SwiftUI
 struct HomeTabMasterView: View {
     var store: KSStore
     var user: MatrixUser
+    @Environment(\.presentationMode) var presentation
+
     @Binding var tab: LoggedinScreen.Tab
     
     @State var showConfirmLogout = false
@@ -47,7 +49,9 @@ struct HomeTabMasterView: View {
                     buttons: [
                         .cancel {self.showConfirmLogout = false},
                         .destructive(Text("Yes, log me out")) {
-                            self.store.logout()
+                            //self.store.logout()
+                            self.store.pause()
+                            self.presentation.wrappedValue.dismiss()
                         }
                     ]
                 )
