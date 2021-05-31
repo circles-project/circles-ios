@@ -13,6 +13,7 @@ import Combine
 import SwiftUI
 import UIKit
 import MatrixSDK
+import StoreKit
 
 enum TermsOfServiceState {
     case checking
@@ -57,12 +58,97 @@ class KSStore: ObservableObject {
     var accountDataSink: Cancellable? = nil
     var newRoomsSink: Cancellable? = nil
     var identityServerSink: Cancellable? = nil
-    
+
+    /*
     static private let release = "beta"
     static private let server = release == "beta" ? "beta" : "matrix"
     var homeserver: URL = URL(string: "https://\(server).kombucha.social")!
     private let homeserverDomainPart = "\(server).kombucha.social"
     var identityServer: URL = URL(string: "https://\(server).kombucha.social")!
+    */
+
+    private var server: String {
+
+        // FIXME This is just for testing
+        return "beta"
+
+        let countryCode = SKPaymentQueue.default().storefront?.countryCode ?? "USA"
+
+        switch countryCode {
+        case "USA":
+            return "us"
+
+        // EU Countries
+        case "AUT", // Austria
+             "BEL", // Belgium
+             "BGR", // Bulgaria
+             "HRV", // Croatia
+             "CYP", // Cyprus
+             "CZE", // Czech
+             "DNK", // Denmark
+             "EST", // Estonia
+             "FIN", // Finland
+             "FRA", // France
+             "DEU", // Germany
+             "GRC", // Greece
+             "HUN", // Hungary
+             "IRL", // Ireland
+             "ITA", // Italy
+             "LVA", // Latvia
+             "LTU", // Lithuania
+             "LUX", // Luxembourg
+             "MLT", // Malta
+             "NLD", // Netherlands
+             "POL", // Poland
+             "PRT", // Portugal
+             "ROU", // Romania
+             "SVK", // Slovakia
+             "ESP", // Spain
+             "SWE"  // Sweden
+            :
+            return "eu"
+
+        // EEA Countries
+        case "ISL", // Iceland
+             "LIE", // Liechtenstein
+             "NOR"  // Norway
+            :
+            return "eu"
+
+        // Other European countries
+        case "ALB", // Albania
+             "AND", // Andorra
+             "ARM", // Armenia
+             "BLR", // Belarus
+             "BIH", // Bosnia and Herzegovina
+             "GEO", // Georgia
+             "MDA", // Moldova
+             "MCO", // Monaco
+             "MNE", // Montenegro
+             "MKD", // North Macedonia
+             "SMR", // San Marino
+             "SRB", // Serbia
+             "SVN", // Slovenia
+             "CHE", // Switzerland
+             "TUR", // Turkey
+             "UKR", // Ukraine
+             "GBR", // UK
+             "VAT"  // Holy See
+            :
+            return "eu"
+
+        default:
+            return "matrix"
+        }
+    }
+
+    var homeserver: URL {
+        URL(string: "https://\(self.server).kombucha.social/")!
+    }
+
+    var identityServer: URL {
+        self.homeserver
+    }
     
     // Update Feb 2021 -- Need to track a few things that are outside the scope of the MXSessionState
     //  * Has the user accepted terms of service?
@@ -991,7 +1077,7 @@ extension KSStore: MatrixInterface {
             return room
         }
         
-        let systemNoticesUserId = "@notices:\(homeserverDomainPart)"
+        let systemNoticesUserId = "@notices:\(self.homeserver.host!)"
         print("NOTICES\tNotices userId = \(systemNoticesUserId)")
 
         
@@ -1476,7 +1562,7 @@ extension KSStore: MatrixInterface {
         //print("lowered \t= \(lowerCased)")
         let prefixed = lowerCased.starts(with: "@") ? lowerCased : "@" + lowerCased
         //print("prefixed \t= \(prefixed)")
-        let suffixed = prefixed.contains(":") ? prefixed : prefixed + ":" + self.homeserverDomainPart
+        let suffixed = prefixed.contains(":") ? prefixed : prefixed + ":" + self.homeserver.host!
         //print("suffixed \t= \(suffixed)")
         let candidate = suffixed
         
@@ -2146,7 +2232,7 @@ extension KSStore: MatrixInterface {
                     completion(.failure(err))
                     return
                 }
-                let mxCreds = MXCredentials(homeServer: self.homeserverDomainPart, userId: creds.userId, accessToken: creds.accessToken)
+                let mxCreds = MXCredentials(homeServer: self.homeserver.host!, userId: creds.userId, accessToken: creds.accessToken)
                 mxCreds.deviceId = creds.deviceId
                 mxCreds.homeServer = self.homeserver.absoluteString
                 
