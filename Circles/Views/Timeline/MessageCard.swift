@@ -123,11 +123,19 @@ struct MessageCard: View {
                     .frame(minHeight: 30, maxHeight:400)
                     .padding(.horizontal)
             )
-        case .image, .video:
+        case .image:
             return AnyView(
                 // FIXME Do some GeometryReader stuff here to scale the frame appropriately for the given screen size
                 MessageThumbnail(message: message)
                     .frame(minWidth: 200, maxWidth: 400, minHeight: 200, maxHeight: 500, alignment: .center)
+            )
+        case .video(let videoContent):
+            return AnyView(
+                ZStack(alignment: .center) {
+                    MessageThumbnail(message: message)
+                    Image(systemName: "play.circle")
+                }
+                .frame(minWidth: 200, maxWidth: 400, minHeight: 200, maxHeight: 500, alignment: .center)
             )
         default:
             return AnyView(
