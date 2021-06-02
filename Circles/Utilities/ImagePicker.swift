@@ -1,9 +1,8 @@
 //
 //  ImagePicker.swift
-//  KomSocMk0
+//  Circles for iOS
 //
 //  Created by Charles Wright on 7/22/20.
-//  Copyright © 2020 Charles Wright. All rights reserved.
 //
 
 import UIKit

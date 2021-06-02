@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct RoomMessageComposer: View {
     @ObservedObject var room: MatrixRoom
@@ -178,7 +179,14 @@ struct RoomMessageComposer: View {
             //Text("Photo Picker")
             switch self.imageSourceType {
             case .local(let localSourceType):
-                ImagePicker(selectedImage: self.$newImage, sourceType: localSourceType)
+                switch localSourceType {
+                case .photoLibrary, .savedPhotosAlbum:
+                    // Use the new privacy-friendly PHPicker instead
+                    //ImagePicker(selectedImage: self.$newImage, sourceType: localSourceType)
+                    PhotoPicker(isPresented: $showPicker, selectedImage: $newImage)
+                case .camera:
+                    ImagePicker(selectedImage: $newImage, sourceType: .camera)
+                }
             case .cloud:
                 CloudImagePicker(matrix: room.matrix, selectedImage: self.$newImage)
             }
