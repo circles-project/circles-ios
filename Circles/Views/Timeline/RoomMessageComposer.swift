@@ -40,9 +40,11 @@ struct RoomMessageComposer: View {
         HStack(spacing: 10.0) {
             Button(action: {
                 self.newMessageType = .text
+                self.newImage = nil
             }) {
                 Image(systemName: "doc.plaintext")
             }
+            .disabled(newMessageType == .text)
             /*
             Button(action: {
                 self.newMessageType = .image
@@ -85,6 +87,8 @@ struct RoomMessageComposer: View {
             label: {
                 Image(systemName: "photo.fill")
             }
+            .disabled(newMessageType == .image)
+
             Spacer()
             Button(action: {
                 self.isPresented = false

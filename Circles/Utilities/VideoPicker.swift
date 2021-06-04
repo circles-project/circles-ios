@@ -82,6 +82,10 @@ struct VideoPicker: UIViewControllerRepresentable {
             self.getVideo(from: result.itemProvider, typeIdentifier: typeIdentifier)
 
             // The rest of this craziness is just to get the damn *thumbnail*
+
+            // Apparently we could also try another approach without going through PHAsset and instead using the NSItemProvider like above
+            // https://developer.apple.com/documentation/foundation/nsitemprovider/1403925-loadpreviewimage
+
             guard let identifier = result.assetIdentifier
             else {
                 parent.isPresented = false

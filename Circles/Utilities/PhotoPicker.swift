@@ -18,6 +18,7 @@ struct PhotoPicker: UIViewControllerRepresentable {
     @Binding var selectedImage: UIImage?
 
     func makeUIViewController(context: Context) -> PHPickerViewController {
+        print("PICKER\tmakeUIViewController")
         // Hard-code the configuration.
         // We always just want one image
         // When we want something else, I guess we'll just make another class, like "VideoPicker" or something
@@ -43,6 +44,7 @@ struct PhotoPicker: UIViewControllerRepresentable {
         private let parent: PhotoPicker
 
         init(_ parent: PhotoPicker) {
+            print("PICKER\tCoordinator.init()")
             self.parent = parent
         }
 
@@ -51,16 +53,26 @@ struct PhotoPicker: UIViewControllerRepresentable {
                 itemProvider.loadObject(ofClass: UIImage.self) { object, error in
 
                     if let error = error {
-                        print(error.localizedDescription)
+                        print("PICKER\tError: \(error.localizedDescription)")
                     }
 
                     if let image = object as? UIImage {
-                        print("PhotoPicker got a photo")
+                        print("PICKER\tPhotoPicker got a photo")
                         DispatchQueue.main.async {
                             self.parent.selectedImage = image
                         }
                     }
                 }
+
+            } else {
+                print("PICKER\tCan't load object from provider \(itemProvider.description)")
+                print("PICKER\tDebug desc: \(itemProvider.debugDescription)")
+            }
+            
+            print("PICKER\tSuggested name: \(itemProvider.suggestedName ?? "(none)")")
+            print("PICKER\tRegistered type identifiers:")
+            for typeId in itemProvider.registeredTypeIdentifiers {
+                print("PICKER\t\t\(typeId)")
             }
         }
 
@@ -72,6 +84,8 @@ struct PhotoPicker: UIViewControllerRepresentable {
             // it should be in the first element of the array
             if let provider = results.first?.itemProvider {
                 self.getPhoto(from: provider)
+            } else {
+                print("PICKER\tFailed to get provider, got nothing")
             }
 
             parent.isPresented = false // Set isPresented to false because picking has finished.
