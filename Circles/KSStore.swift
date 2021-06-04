@@ -70,13 +70,13 @@ class KSStore: ObservableObject {
     private var server: String {
 
         // FIXME This is just for testing
-        return "beta"
+        return "matrix"
 
         let countryCode = SKPaymentQueue.default().storefront?.countryCode ?? "USA"
 
         switch countryCode {
         case "USA":
-            return "us"
+            return "matrix"
 
         // EU Countries
         case "AUT", // Austria
@@ -115,7 +115,7 @@ class KSStore: ObservableObject {
             :
             return "eu"
 
-        // Other European countries
+        // Other European-region countries
         case "ALB", // Albania
              "AND", // Andorra
              "ARM", // Armenia
@@ -220,7 +220,7 @@ class KSStore: ObservableObject {
         
 
         // Update 10/26/2020 -- HOWEVER, we need to be careful how we do this.
-        // The MXSession comes from crappy old ObjC code.  For integration
+        // The MXSession comes from crufty old ObjC code.  For integration
         // with SwiftUI, we need to speak Combine, which is Swift only.
         // So we're going to need something of an adapter here.
         // We need to use NotificationCenter (or whatever) to subscribe to
