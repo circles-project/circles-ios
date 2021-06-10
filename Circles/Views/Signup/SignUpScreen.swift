@@ -488,8 +488,16 @@ struct SignUpScreen: View {
     var circlesForm: some View {
         ScrollView {
             let currentStage: SignupStage = .setupCircles
-            VStack(alignment: .center) {
-                Text("Setup your circles")
+            VStack(alignment: .leading) {
+                VStack(alignment: .center) {
+                    Text("Setup your circles")
+
+                    HStack {
+                        Image(systemName: "exclamationmark.shield")
+                        Text("NOTE: Circle names and cover images are not encrypted.  This is necessary so that newly invited friends can see what they're being invited to join.")
+                    }
+                    .foregroundColor(.orange)
+                }
                 Divider()
                 
                 // FIXME lol what's a ForEach?
@@ -605,6 +613,8 @@ struct SignUpScreen: View {
                                     completion(.success(()))
                                 }
                             }
+                        } else {
+                            completion(.success(()))
                         }
                     }
                 }
