@@ -943,6 +943,17 @@ extension KSStore: MatrixInterface {
         }
         */
     }
+
+    func deleteMyAccount(password: String, completion: @escaping (MXResponse<Void>) -> Void) {
+        let params: [String:String] = [
+            "username": self.whoAmI(),
+            "password": password
+        ]
+
+        self.session.pause()
+
+        self.session.deactivateAccount(withAuthParameters: params, eraseAccount: true, completion: completion)
+    }
     
     func whoAmI() -> String {
         self.session.myUserId

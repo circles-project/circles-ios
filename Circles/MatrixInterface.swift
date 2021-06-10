@@ -17,6 +17,7 @@ protocol MatrixInterface {
     //func logout()
     func pause()
     func close()
+    func deleteMyAccount(password: String, completion: @escaping (MXResponse<Void>) -> Void)
     
     func finishSignupAndConnect()
         
