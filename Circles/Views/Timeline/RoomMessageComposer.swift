@@ -180,14 +180,16 @@ struct RoomMessageComposer: View {
         )
         //.border(Color.red, width: 1)
         .sheet(isPresented: $showPicker, content: {
-            //Text("Photo Picker")
             switch self.imageSourceType {
             case .local(let localSourceType):
                 switch localSourceType {
                 case .photoLibrary, .savedPhotosAlbum:
                     // Use the new privacy-friendly PHPicker instead
-                    //ImagePicker(selectedImage: self.$newImage, sourceType: localSourceType)
-                    PhotoPicker(isPresented: $showPicker, selectedImage: $newImage)
+                    //PhotoPicker(isPresented: $showPicker, selectedImage: $newImage)
+                    // Actually the new PHPicker sucks
+                    // * Can't load WebP
+                    // * Can't load the example images that have both heic and jpeg
+                    ImagePicker(selectedImage: self.$newImage, sourceType: localSourceType)
                 case .camera:
                     ImagePicker(selectedImage: $newImage, sourceType: .camera)
                 }
