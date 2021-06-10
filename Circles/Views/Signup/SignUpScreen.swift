@@ -22,6 +22,7 @@ struct SignUpScreen: View {
     @State var repeatPassword: String = ""
     @State var emailToken: String = ""
     @State var avatarImage: UIImage?
+    @State var userId: String?
 
     @State var friendsAvatar: UIImage?
     @State var familyAvatar: UIImage?
@@ -139,8 +140,12 @@ struct SignUpScreen: View {
     var tokenForm: some View {
         VStack {
             let currentStage: SignupStage = .validateToken
-            Text("Step 1: Validate your token")
-                .font(.headline)
+
+            Spacer()
+
+            Text("Validate your token")
+                .font(.title)
+                .fontWeight(.bold)
             
             HStack {
                 TextField("abcd-efgh-1234-5678", text: $signupToken)
@@ -177,10 +182,10 @@ struct SignUpScreen: View {
                     .cornerRadius(10)
             }
 
+            Spacer()
+
             
             if KOMBUCHA_DEBUG {
-                Spacer()
-                
                 Text(matrix.signupGetSessionId() ?? "Error: No signup session")
                     .font(.footnote)
             }
@@ -191,14 +196,17 @@ struct SignUpScreen: View {
         VStack {
             let currentStage: SignupStage = .acceptTermsOfService
 
-            Text("Step N. Review terms of service")
-                .font(.headline)
+            Text("Review terms of service")
+                .font(.title)
+                .fontWeight(.bold)
+
             WebView(webView: webViewStore.webView)
                 .onAppear {
                     let req = URLRequest(url: URL(string: "https://beta.kombucha.social/_matrix/consent")!)
                     self.webViewStore.webView.load(req)
                 }
                 .font(.body)
+            
             Button(action: {
                 matrix.signupDoTermsStage { response in
                     if response.isSuccess {
@@ -221,7 +229,9 @@ struct SignUpScreen: View {
         VStack {
             let currentStage: SignupStage = .validateEmail
 
-            Text("Step 3. Validate your email address")
+            Spacer()
+
+            Text("Validate your email address")
                 .font(.headline)
             
             HStack {
@@ -252,6 +262,8 @@ struct SignUpScreen: View {
                                     print("Creds: user id = \(creds.userId!)")
                                     print("Creds: device id = \(creds.deviceId!)")
                                     print("Creds: access token = \(creds.accessToken!)")
+
+                                    self.userId = creds.userId!
                                     
                                     if self.displayName.isEmpty {
                                         self.stage = next[currentStage]!
@@ -282,6 +294,8 @@ struct SignUpScreen: View {
             .foregroundColor(.white)
             .background(Color.accentColor)
             .cornerRadius(10)
+
+            Spacer()
             
             Button(action: {
                 self.stage = .getUsernameAndPassword
@@ -301,69 +315,80 @@ struct SignUpScreen: View {
         VStack {
             let currentStage: SignupStage = .getUsernameAndPassword
 
-            Text("Step N. Set up username and password")
-                .font(.headline)
-            
-            Text("Your name and email address")
-                .font(.headline)
-                .padding(.top)
-            
-            HStack {
-                TextField("Your Name", text: $displayName)
-                    .autocapitalization(.words)
-                    .disableAutocorrection(true)
-                Spacer()
-                Button(action: {
-                    self.showAlert = true
-                    self.alertTitle = "Name"
-                    self.alertMessage = "Your name as you would like it to appear to others"
-                }) {
-                    Image(systemName: "questionmark.circle")
-                }
-            }
-            .frame(width: 300.0, height: 40.0)
-            
-            HStack {
-                TextField("you@example.com", text: $emailAddress)
-                    .autocapitalization(.none)
-                    .disableAutocorrection(true)
-                Spacer()
-                Button(action: {
-                    self.showAlert = true
-                    self.alertTitle = "Email Address"
-                    self.alertMessage = "Must be a currently valid and active address.  Don't worry -- we will only use this address for security and other alerts about your account.  We don't send spam, and we don't sell your address."
-                }) {
-                    Image(systemName: "questionmark.circle")
-                }
-            }
-            .frame(width: 300.0, height: 40.0)
-            
-            Text("Your new acount")
-                .font(.headline)
-                .padding(.top)
-            
-            HStack {
-                TextField("New Username", text: $username)
-                    .autocapitalization(.none)
-                    .disableAutocorrection(true)
-                Spacer()
-                Button(action: {showHelpItem = .username}) {
-                    Image(systemName: "questionmark.circle")
-                }
-            }
-            .frame(width: 300.0, height: 40.0)
+            Text("Set up username and password")
+                .font(.title2)
+                .fontWeight(.bold)
 
-            HStack {
-                SecureField("New Passphrase", text: $password)
-                Spacer()
-                Button(action: {showHelpItem = .password}) {
-                    Image(systemName: "questionmark.circle")
+            Spacer()
+
+            VStack {
+                Text("Your name and email address")
+                    .font(.headline)
+                    .padding(.top)
+
+                HStack {
+                    TextField("Your Name", text: $displayName)
+                        .autocapitalization(.words)
+                        .disableAutocorrection(true)
+                    Spacer()
+                    Button(action: {
+                        self.showAlert = true
+                        self.alertTitle = "Name"
+                        self.alertMessage = "Your name as you would like it to appear to others"
+                    }) {
+                        Image(systemName: "questionmark.circle")
+                    }
                 }
-            }
-            .frame(width: 300.0, height: 40.0)
-                
-            SecureField("Repeat Passphrase", text: $repeatPassword)
                 .frame(width: 300.0, height: 40.0)
+
+                HStack {
+                    TextField("you@example.com", text: $emailAddress)
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
+                    Spacer()
+                    Button(action: {
+                        self.showAlert = true
+                        self.alertTitle = "Email Address"
+                        self.alertMessage = "Must be a currently valid and active address.  Don't worry -- we will only use this address for security and other alerts about your account.  We don't send spam, and we don't sell your address."
+                    }) {
+                        Image(systemName: "questionmark.circle")
+                    }
+                }
+                .frame(width: 300.0, height: 40.0)
+            }
+
+            Spacer()
+
+            VStack {
+                Text("Your new acount")
+                    .font(.headline)
+                    .padding(.top)
+
+                HStack {
+                    TextField("New Username", text: $username)
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
+                    Spacer()
+                    Button(action: {showHelpItem = .username}) {
+                        Image(systemName: "questionmark.circle")
+                    }
+                }
+                .frame(width: 300.0, height: 40.0)
+
+                HStack {
+                    SecureField("New Passphrase", text: $password)
+                    Spacer()
+                    Button(action: {showHelpItem = .password}) {
+                        Image(systemName: "questionmark.circle")
+                    }
+                }
+                .frame(width: 300.0, height: 40.0)
+
+                SecureField("Repeat Passphrase", text: $repeatPassword)
+                    .frame(width: 300.0, height: 40.0)
+            }
+
+            Spacer()
             
             Button(action: {
                 guard !password.isEmpty,
@@ -400,8 +425,18 @@ struct SignUpScreen: View {
         VStack {
             let currentStage: SignupStage = .validateToken
 
+            Spacer()
+
             Text("Registration is complete!")
-                .font(.headline)
+                .font(.title)
+                .fontWeight(.bold)
+
+            if let uid = self.userId {
+                Spacer()
+                Text("Your user ID is:")
+                Text(uid)
+                    .fontWeight(.bold)
+            }
             
             Spacer()
             
@@ -433,9 +468,11 @@ struct SignUpScreen: View {
     var avatarForm: some View {
         VStack {
             let currentStage: SignupStage = .getAvatarImage
+
+            Spacer()
             
             Text("Upload a profile photo")
-                .font(.headline)
+                .font(.title)
                 .fontWeight(.bold)
             
             avatar
@@ -486,32 +523,47 @@ struct SignUpScreen: View {
     }
     
     var circlesForm: some View {
-        ScrollView {
-            let currentStage: SignupStage = .setupCircles
-            VStack(alignment: .leading) {
-                VStack(alignment: .center) {
-                    Text("Setup your circles")
+        //ScrollView {
+            VStack(alignment: .center) {
+                let currentStage: SignupStage = .setupCircles
 
-                    HStack {
-                        Image(systemName: "exclamationmark.shield")
-                        Text("NOTE: Circle names and cover images are not encrypted.  This is necessary so that newly invited friends can see what they're being invited to join.")
+                Text("Setup your circles")
+                    .font(.title)
+                    .fontWeight(.bold)
+
+                /*
+                HStack {
+                    Image(systemName: "exclamationmark.shield")
+                    VStack(alignment: .leading) {
+                        Text("NOTE: Circle names and cover images are not encrypted.")
+                            .font(.headline)
+                        // ARGH SwiftUI why do you ignore this lineLimit ???
+                        //Text("This is necessary so that newly invited friends can see what they're being invited to join.")
+                        //    .lineLimit(4)
                     }
-                    .foregroundColor(.orange)
                 }
+                .foregroundColor(.orange)
+                */
+                Label("NOTE: Circle names and cover images are not encrypted", systemImage: "exclamationmark.shield")
+                    .font(.headline)
+                    .foregroundColor(.orange)
+
                 Divider()
-                
-                // FIXME lol what's a ForEach?
-                // But seriously it's unreasonably difficult to
-                // iterate over a Dictionary containing bindings.
-                // So, sigh, f*** it.  We can do it the YAGNI way.
-                SetupCircleCard(matrix: matrix, circleName: "Friends", userDisplayName: self.displayName, avatar: self.$friendsAvatar)
-                Divider()
-                
-                SetupCircleCard(matrix: matrix, circleName: "Family", userDisplayName: self.displayName, avatar: self.$familyAvatar)
-                Divider()
-                
-                SetupCircleCard(matrix: matrix, circleName: "Community", userDisplayName: self.displayName, avatar: self.$communityAvatar)
-                Divider()
+
+                VStack(alignment: .leading) {
+                    // FIXME lol what's a ForEach?
+                    // But seriously it's unreasonably difficult to
+                    // iterate over a Dictionary containing bindings.
+                    // So, sigh, f*** it.  We can do it the YAGNI way.
+                    SetupCircleCard(matrix: matrix, circleName: "Friends", userDisplayName: self.displayName, avatar: self.$friendsAvatar)
+                    Divider()
+
+                    SetupCircleCard(matrix: matrix, circleName: "Family", userDisplayName: self.displayName, avatar: self.$familyAvatar)
+                    Divider()
+
+                    SetupCircleCard(matrix: matrix, circleName: "Community", userDisplayName: self.displayName, avatar: self.$communityAvatar)
+                    Divider()
+                }
                                 
                 Spacer()
                 
@@ -580,7 +632,7 @@ struct SignUpScreen: View {
                 
             }
             .padding()
-        }
+        //}
     }
     
     private func createCircleRoom(name: String, tag: String, avatar: UIImage?, completion: @escaping (MXResponse<Void>)->Void) {
@@ -625,11 +677,13 @@ struct SignUpScreen: View {
     
     var body: some View {
         VStack {
-            logo
-        
+            //logo
+
+            /*
             Text("Sign Up")
                 .font(.title)
                 .fontWeight(.bold)
+            */
             
             switch stage {
             case .validateToken:
@@ -656,42 +710,6 @@ struct SignUpScreen: View {
                   dismissButton: .default(Text("OK"))
             )
         }
-        /*
-        .alert(item: $showHelpItem) { item in
-            switch item {
-            case .signupToken:
-                return Alert(title: Text("Signup Token"),
-                      message: Text(helpTextForToken),
-                      dismissButton: .default(Text("OK"))
-                )
-            case .tokenFailed:
-                return Alert(title: Text("Token Failure"),
-                      message: Text(helpTextForTokenFailed),
-                      dismissButton: .default(Text("OK"))
-                )
-            case .emailCode:
-                return Alert(title: Text("Email Code"),
-                             message: Text(helpTextForEmailCode),
-                             dismissButton: .default(Text("OK"))
-                )
-            case .emailFailed:
-                return Alert(title: Text("Email Validation Failed"),
-                      message: Text(helpTextForEmailFailed),
-                      dismissButton: .default(Text("OK"))
-                )
-            case .username:
-                return Alert(title: Text("Username"),
-                      message: Text(helpTextForUsername),
-                      dismissButton: .default(Text("OK"))
-                )
-            case .password:
-                return Alert(title: Text("Passphrase"),
-                      message: Text(helpTextForPassword),
-                      dismissButton: .default(Text("OK"))
-                )
-            }
-        }
-        */
     }
 }
 
