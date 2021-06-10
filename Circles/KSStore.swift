@@ -69,9 +69,6 @@ class KSStore: ObservableObject {
 
     private var server: String {
 
-        // FIXME This is just for testing
-        return "matrix"
-
         let countryCode = SKPaymentQueue.default().storefront?.countryCode ?? "USA"
 
         switch countryCode {
@@ -106,14 +103,14 @@ class KSStore: ObservableObject {
              "ESP", // Spain
              "SWE"  // Sweden
             :
-            return "eu"
+            return "matrix.eu"
 
         // EEA Countries
         case "ISL", // Iceland
              "LIE", // Liechtenstein
              "NOR"  // Norway
             :
-            return "eu"
+            return "matrix.eu"
 
         // Other European-region countries
         case "ALB", // Albania
@@ -135,7 +132,7 @@ class KSStore: ObservableObject {
              "GBR", // UK
              "VAT"  // Holy See
             :
-            return "eu"
+            return "matrix.eu"
 
         default:
             return "matrix"
