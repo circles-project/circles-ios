@@ -644,29 +644,39 @@ struct SignUpScreen: View {
             case .success(let roomId):
                 print("SETUP\tCreated room \(roomId) for circle \(name)")
 
-                matrix.addTag(ROOM_TAG_OUTBOUND, toRoom: roomId) { response2 in
+                matrix.setRoomType(roomId: roomId, roomType: ROOM_TYPE_CIRCLE) { response2 in
+
                     if response2.isFailure {
-                        let msg = "Failed to add outbound tag for circle \(name)"
-                        print("SETUP\t\(msg)")
+                        let msg = "Failed to set room type for circle \(name)"
                         let err = KSError(message: msg)
                         completion(.failure(err))
-                    } else {
-                        print("SETUP\tAdded outbound tag for circle \(name)")
-                        
-                        if let image = avatar {
-                            matrix.setRoomAvatar(roomId: roomId, image: image) { response3 in
-                                if response3.isFailure {
-                                    let msg = "Failed to set avatar for circle \(name)"
-                                    print("SETUP\t\(msg)")
-                                    let err = KSError(message: msg)
-                                    completion(.failure(err))
+                    }
+                    else {
+                        matrix.addTag(ROOM_TAG_OUTBOUND, toRoom: roomId) { response3 in
+                            if response3.isFailure {
+                                let msg = "Failed to add outbound tag for circle \(name)"
+                                print("SETUP\t\(msg)")
+                                let err = KSError(message: msg)
+                                completion(.failure(err))
+                            } else {
+                                print("SETUP\tAdded outbound tag for circle \(name)")
+
+                                if let image = avatar {
+                                    matrix.setRoomAvatar(roomId: roomId, image: image) { response4 in
+                                        if response4.isFailure {
+                                            let msg = "Failed to set avatar for circle \(name)"
+                                            print("SETUP\t\(msg)")
+                                            let err = KSError(message: msg)
+                                            completion(.failure(err))
+                                        } else {
+                                            print("SETUP\tSet avatar for circle \(name)")
+                                            completion(.success(()))
+                                        }
+                                    }
                                 } else {
-                                    print("SETUP\tSet avatar for circle \(name)")
                                     completion(.success(()))
                                 }
                             }
-                        } else {
-                            completion(.success(()))
                         }
                     }
                 }
