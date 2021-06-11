@@ -147,7 +147,12 @@ struct RoomMemberRow: View {
                     Image(systemName: "speaker.slash")
                 }
                 */
-                Button(action: {}) {
+                Button(action: {
+                    let today = Date()
+                    let formatter = DateFormatter()
+                    formatter.dateStyle = .short
+                    room.kick(userId: user.id, reason: "Kicked by \(room.matrix.whoAmI()) on \(formatter.string(from: today))")
+                }) {
                     Text("Remove this user")
                     Image(systemName: "person.fill.xmark")
                 }
@@ -300,6 +305,21 @@ struct RoomMembersSheet: View {
         VStack {
             
             buttonBar
+
+            /*
+            Button(action: {
+                self.room.getRoomType() { response in
+                    switch response {
+                    case .failure:
+                        print("ROOMTYPE\tFailed to get room type for room [\(room.displayName ?? room.id)]")
+                    case .success(let roomType):
+                        print("ROOMTYPE\tRoom [\(room.displayName ?? room.id)] has type [\(roomType)]")
+                    }
+                }
+            }) {
+                Text("Run Tests")
+            }
+            */
             
             Text(title ?? "Followers for \(room.displayName ?? room.id)")
                 .font(.headline)
