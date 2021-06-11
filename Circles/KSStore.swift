@@ -1566,11 +1566,14 @@ extension KSStore: MatrixInterface {
     
     
     func canonicalizeUserId(userId: String) -> String? {
+
+        let domain = self.homeserver.host!.starts(with: "matrix.") ? String(self.homeserver.host!.dropFirst(7)) : self.homeserver.host!
+
         let lowerCased = userId.lowercased()
         //print("lowered \t= \(lowerCased)")
         let prefixed = lowerCased.starts(with: "@") ? lowerCased : "@" + lowerCased
         //print("prefixed \t= \(prefixed)")
-        let suffixed = prefixed.contains(":") ? prefixed : prefixed + ":" + self.homeserver.host!
+        let suffixed = prefixed.contains(":") ? prefixed : prefixed + ":" + domain
         //print("suffixed \t= \(suffixed)")
         let candidate = suffixed
         
