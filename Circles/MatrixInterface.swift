@@ -111,6 +111,8 @@ protocol MatrixInterface {
     func signupValidateEmailAddress(sid: String, token: String, completion: @escaping (MXResponse<String>) -> Void)
     
     func signupDoEmailStage(username: String, password: String, sid: String, completion: @escaping (MXResponse<MXCredentials?>)->Void)
-    
+
+    func setRoomType(roomId: String, roomType: String, completion: @escaping (MXResponse<String>) -> Void)
+
     func setAccountData(_ data: [String:String], for: String, completion: @escaping (MXResponse<Void>) -> Void)
 }

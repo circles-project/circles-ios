@@ -848,6 +848,18 @@ extension KSStore: MatrixInterface {
                                 }
                                 
                                 self.checkTermsOfService()
+
+                                // cvw: Freaking kludge to fix my freaking bug where Circle rooms weren't getting a room type
+                                for room in self.getRooms(for: ROOM_TAG_OUTBOUND) {
+                                    room.getRoomType() { response in
+                                        if response.isFailure {
+                                            // Single shot fire-and-forget attempt at adding the missing room type
+                                            // If it doesn't work, then what recourse do we have???
+                                            room.setRoomType(type: ROOM_TYPE_CIRCLE, completion: { _ in })
+                                        }
+
+                                    }
+                                }
                             }
                         }
                     }
@@ -1116,7 +1128,7 @@ extension KSStore: MatrixInterface {
         params["visibility"] = "private"
         params["name"] = name
         params["preset"] = "private_chat"
-        
+
         // TODO Fill in the starting power levels, etc
         // The convention could be something like this:
         //   100 = Owner
@@ -2280,6 +2292,23 @@ extension KSStore: MatrixInterface {
         self.state = .settingUp
     }
     */
+
+    func setRoomType(roomId: String, roomType: String, completion: @escaping (MXResponse<String>) -> Void) {
+        let mxrc = self.signupMxRc ?? self.session.matrixRestClient
+
+        if let restClient = mxrc {
+            restClient
+                .sendStateEvent(toRoom: roomId,
+                                eventType: .custom(EVENT_TYPE_ROOMTYPE),
+                                content: ["type": roomType],
+                                stateKey: "",
+                                completion: completion)
+        } else {
+            let msg = "No Matrix rest client"
+            let err = KSError(message: msg)
+            completion(.failure(err))
+        }
+    }
     
     func setAccountData(_ data: [String : String], for dataType: String, completion: @escaping (MXResponse<Void>) -> Void) {
         
