@@ -857,7 +857,20 @@ extension KSStore: MatrixInterface {
                                             // If it doesn't work, then what recourse do we have???
                                             room.setRoomType(type: ROOM_TYPE_CIRCLE, completion: { _ in })
                                         }
-
+                                    }
+                                    // Freaking kludge upon kludge
+                                    // For some reason our Circles are not getting encryption enabled
+                                    // even though the completion handler comes back with .success
+                                    // So we'll try it again...
+                                    if !room.isEncrypted {
+                                        room.enableEncryption() { response2 in
+                                            switch response2 {
+                                            case .failure:
+                                                print("CRYPTO\tFailed to enable crypto on unencrypted room [\(room.displayName ?? room.id)]")
+                                            case .success:
+                                                print("CRYPTO\tEnabled crypto on previously unencrypted room [\(room.displayName ?? room.id)]")
+                                            }
+                                        }
                                     }
                                 }
                             }

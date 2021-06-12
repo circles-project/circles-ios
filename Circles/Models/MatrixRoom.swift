@@ -210,6 +210,12 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
         }
     }
 
+    func enableEncryption(completion: @escaping (MXResponse<Void>)->Void) {
+        self.mxroom
+            .enableEncryption(withAlgorithm: "m.megolm.v1.aes-sha2",
+                              completion: completion)
+    }
+
     var membership: MXMembership {
         return mxroom.summary.membership
     }
@@ -559,8 +565,8 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
                 completion(.failure(KSError(message: msg)))
             case .success:
                 print("Successfully kicked user \(userId)")
-                self.updateMembers()
                 self.objectWillChange.send()
+                self.updateMembers()
                 completion(.success(userId))
             }
         }
