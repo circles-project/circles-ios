@@ -1175,6 +1175,10 @@ extension KSStore: MatrixInterface {
                                 completion(.success(roomId))
                             }
                         }
+                    } else {
+                        let msg = "Failed to encrypt room [\(name)]"
+                        print(msg)
+                        completion(.failure(KSError(message: msg)))
                     }
                 }
                 else {
