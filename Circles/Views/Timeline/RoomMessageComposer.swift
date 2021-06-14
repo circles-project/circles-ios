@@ -21,6 +21,7 @@ struct RoomMessageComposer: View {
     @State private var newImage: UIImage?
     @State private var showPicker = false
     //@State private var imageSourceType: UIImagePickerController.SourceType = .photoLibrary
+    @State private var inProgress = false
 
     enum ImageSourceType {
         case cloud
@@ -105,6 +106,7 @@ struct RoomMessageComposer: View {
             Button(action: {
                 switch(self.newMessageType) {
                 case .text:
+                    self.inProgress = true
                     self.room.postText(text: self.newMessageText) { response in
                         switch(response) {
                         case .failure(let error):
@@ -117,12 +119,14 @@ struct RoomMessageComposer: View {
                             }
                             self.isPresented = false
                         }
+                        self.inProgress = false
                     }
                 case .image:
                     guard let img = self.newImage else {
                         print("COMPOSER Trying to post an image without actually selecting an image")
                         return
                     }
+                    self.inProgress = true
                     room.postImage(image: img) { response in
                         switch(response) {
                         case .failure(let err):
@@ -131,6 +135,7 @@ struct RoomMessageComposer: View {
                             print("COMPOSER Successfully posted image.  Got response [\(maybeMsg ?? "(No message)")].")
                             self.isPresented = false
                         }
+                        self.inProgress = false
                     }
                 default:
                     print("COMPOSER Doing nothing for now...")
@@ -139,6 +144,7 @@ struct RoomMessageComposer: View {
                 Image(systemName: "square.and.arrow.up")
                 Text("Send")
             }
+            .disabled(inProgress)
             .padding(.vertical, 2)
             .padding(.horizontal, 5)
             .background(RoundedRectangle(cornerRadius: 4).stroke(Color.blue, lineWidth: 1))
@@ -150,23 +156,36 @@ struct RoomMessageComposer: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             MessageAuthorHeader(user: room.matrix.me())
-            
-            switch(newMessageType) {
-            case .text:
-                TextEditor(text: $newMessageText)
-                    .frame(height: 90)
-                    .foregroundColor(.gray)
-                    .multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
-                    .lineLimit(10)
-            case .image:
-                Image(uiImage: self.newImage ?? UIImage())
-                    //.frame(height: 150)
-                    //.scaledToFit()
-                    .resizable()
-                    .scaledToFit()
-                    .clipShape(RoundedRectangle(cornerRadius: 6))
-            default:
-                Image(uiImage: self.newImage ?? UIImage())
+
+            ZStack {
+                switch(newMessageType) {
+                case .text:
+                    TextEditor(text: $newMessageText)
+                        .frame(height: 90)
+                        .foregroundColor(.gray)
+                        .multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
+                        .lineLimit(10)
+                case .image:
+                    Image(uiImage: self.newImage ?? UIImage())
+                        //.frame(height: 150)
+                        //.scaledToFit()
+                        .resizable()
+                        .scaledToFit()
+                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                default:
+                    Image(uiImage: self.newImage ?? UIImage())
+                }
+
+                if inProgress {
+                    Color.gray
+                        .opacity(0.70)
+
+                    ProgressView()
+                        .progressViewStyle(
+                            CircularProgressViewStyle(tint: .white)
+                        )
+                        .scaleEffect(2.5, anchor: .center)
+                }
             }
 
             buttonBar
