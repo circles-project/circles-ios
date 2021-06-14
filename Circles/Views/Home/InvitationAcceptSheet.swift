@@ -14,9 +14,12 @@ struct InvitationAcceptSheet: View {
     @ObservedObject var room: MatrixRoom
     @Environment(\.presentationMode) var presentation
     @State var circles: Set<SocialCircle> = []
+    @State var inviteBack = false
     
     var body: some View {
         VStack {
+            let inviterId = room.whoInvitedMe()!
+            let inviter = store.getUser(userId: inviterId)!
             
             Text("You are now following:")
                 .font(.title)
@@ -40,8 +43,7 @@ struct InvitationAcceptSheet: View {
                         .padding(5)
                 }
                 VStack {
-                    let inviterId = room.whoInvitedMe()!
-                    let inviter = store.getUser(userId: inviterId)!
+
                     //MessageAuthorHeader(user: inviter)
                     Text("\(inviter.displayName ?? inviter.id):")
                         .font(.title2)
@@ -61,7 +63,9 @@ struct InvitationAcceptSheet: View {
             Text("You can also connect this Circle to see updates in one of your Circles.")
                 //.padding(.horizontal)
             CirclePicker(store: store, selected: $circles)
-        
+            Toggle("Also invite \(inviter.displayName ?? inviter.id) to follow me here", isOn: $inviteBack)
+                .toggleStyle(SwitchToggleStyle(tint: .accentColor))
+
             Spacer()
             
             
@@ -81,6 +85,18 @@ struct InvitationAcceptSheet: View {
                             errors = errors ?? KSError(message: msg)
                         case .success:
                             print("Successfully tagged room \(room.displayName ?? room.id) for Circle \(circle.name)")
+                        }
+                        dgroup.leave()
+                    }
+
+                    print("Inviting user \(inviter.id) to follow us on \(circle.name)")
+                    dgroup.enter()
+                    circle.outbound?.invite(userId: inviter.id) { response in
+                        switch response {
+                        case .failure:
+                            print("Failed to invite \(inviter.id) to \(circle.name)")
+                        case .success:
+                            print("Invited \(inviter.id) to follow \(circle.name)")
                         }
                         dgroup.leave()
                     }
