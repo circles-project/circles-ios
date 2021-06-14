@@ -93,16 +93,19 @@ class SocialStream: ObservableObject, Identifiable {
         return room.canPaginate()
     }
     
-    func paginate(count: UInt = 25) {
+    func paginate(count: UInt = 25, completion: @escaping (MXResponse<Void>)->Void) {
         guard let room = self.lastFirstRoom else {
-            print("KSDEBUG Can't paginate -- No last first room")
+            let msg = "KSDEBUG Can't paginate -- No last first room"
+            let err = KSError(message: msg)
+            print(msg)
+            completion(.failure(err))
             return
         }
         
         self.objectWillChange.send()
         
         print("KSDEBUG Paginating room \(room.displayName ?? room.id)")
-        room.paginate(count: count)
+        room.paginate(count: count, completion: completion)
     }
     
     /* // Switching this to an explicit getter function so

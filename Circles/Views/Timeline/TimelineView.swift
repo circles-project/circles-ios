@@ -12,7 +12,8 @@ struct TimelineView: View {
     @ObservedObject var room: MatrixRoom
     var displayStyle: MessageDisplayStyle = .timeline
     @State var debug = false
-    
+    @State var loading = false
+
     /*
     init(room: MatrixRoom, displayStyle: MessageDisplayStyle = .timeline) {
         self.room = room
@@ -26,12 +27,20 @@ struct TimelineView: View {
            
             HStack(alignment: .bottom) {
                 Spacer()
-                Button(action: {
-                    room.paginate()
-                }) {
-                    Text("Load More")
-                }
-                .disabled(!room.canPaginate())
+                if loading {
+                    ProgressView("Loading...")
+                        .progressViewStyle(LinearProgressViewStyle())
+                } else {
+                    Button(action: {
+                        self.loading = true
+                        room.paginate() { response in
+                            self.loading = false
+                        }
+                    }) {
+                        Text("Load More")
+                    }
+                    .disabled(!room.canPaginate())
+                    }
                 Spacer()
             }
             
@@ -57,7 +66,10 @@ struct TimelineView: View {
     }
     
     var body: some View {
-        let messages = room.getMessages()
+        // Get all the top-level messages (ie not the replies etc)
+        let messages = room.getMessages().filter { (message) in
+            message.relatesToId == nil
+        }
 
         ScrollView {
             LazyVStack(alignment: .center) {

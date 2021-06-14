@@ -107,7 +107,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
         self.updateOwners()
         self.updateMembers()
         // self.loadMessages(max: 25)
-        self.paginate()
+        self.paginate() { _ in }
     }
 
     // FIXME Make this one settable as well as gettable
@@ -477,14 +477,20 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
     }
 
     // Request more messages from the server (and/or the MXStore)
-    func paginate(count: UInt = 25) {
+    func paginate(count: UInt = 25, completion: @escaping (MXResponse<Void>)->Void) {
         guard let timeline = self.backwardTimeline else {
-            print("Error: No timeline for room [\(self.displayName ?? self.id)]")
+            let msg = "Error: No timeline for room [\(self.displayName ?? self.id)]"
+            let err = KSError(message: msg)
+            print(msg)
+            completion(.failure(err))
             return
         }
 
         if !timeline.canPaginate(.backwards) {
-            print("Error: Can't paginate our timeline for room [\(self.displayName ?? self.id)]")
+            let msg = "Error: Can't paginate our timeline for room [\(self.displayName ?? self.id)]"
+            let err = KSError(message: msg)
+            print(msg)
+            completion(.failure(err))
             return
         }
         
@@ -496,6 +502,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
             case .success:
                 self.objectWillChange.send()
             }
+            completion(response)
         }
     }
 
@@ -828,6 +835,13 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
 
     var inboundOlmSessions: [MXOlmInboundGroupSession] {
         matrix.getInboundGroupSessions()
+            .filter { groupSession in
+                groupSession.roomId == self.id
+            }
+    }
+
+    var outboundOlmSessions: [MXOlmOutboundGroupSession] {
+        matrix.getOutboundGroupSessions()
             .filter { groupSession in
                 groupSession.roomId == self.id
             }

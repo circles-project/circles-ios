@@ -12,6 +12,7 @@ struct StreamTimeline: View {
     @ObservedObject var stream: SocialStream
     private var formatter: DateFormatter
     @State private var showDebug = false
+    @State private var loading = false
     
     init(stream: SocialStream) {
         self.stream = stream
@@ -71,12 +72,20 @@ struct StreamTimeline: View {
             
                 HStack(alignment: .bottom) {
                     Spacer()
-                    Button(action: {
-                        stream.paginate()
-                    }) {
-                        Text("Load More")
+                    if loading {
+                        ProgressView("Loading...")
+                            .progressViewStyle(LinearProgressViewStyle())
+                    } else {
+                        Button(action: {
+                            self.loading = true
+                            stream.paginate() { response in
+                                self.loading = false
+                            }
+                        }) {
+                            Text("Load More")
+                        }
+                        .disabled(!stream.canPaginate)
                     }
-                    .disabled(!stream.canPaginate)
                     Spacer()
                 }
             }
