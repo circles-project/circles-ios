@@ -10,36 +10,62 @@ import SwiftUI
 
 struct DevicesScreen: View {
     @ObservedObject var user: MatrixUser
+
+    var currentDeviceView: some View {
+        VStack(alignment: .leading, spacing: 15) {
+            let myDevice = user.matrix.getCurrentDevice()
+            if let dev = myDevice {
+                    let myDeviceModel = UIDevice.current.model
+                    let iconName = myDeviceModel.components(separatedBy: .whitespaces).first?.lowercased() ?? "desktopcomputer"
+                    Label("This \(myDeviceModel)", systemImage: iconName)
+                        .font(.headline)
+
+                    DeviceInfoView(device: dev)
+                        .padding(.leading)
+                    Divider()
+            }
+        }
+    }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 15) {
-            let unverifiedDevices = user.devices.filter { !$0.isVerified }
-            if !unverifiedDevices.isEmpty {
-                Label("Unverified Devices", systemImage: "display.trianglebadge.exclamationmark")
-                    .font(.headline)
-                ForEach(unverifiedDevices) { device in
-                //ForEach(user.devices) { device in
-                    DeviceInfoView(device: device)
-                    //Text(device.displayName ?? "(unnamed device)")
-                }
-                .padding(.leading)
-                Divider()
-            }
+        ScrollView {
+            VStack(alignment: .leading, spacing: 15) {
+                currentDeviceView
 
-            let verifiedDevices = user.devices.filter { $0.isVerified }
-            if !verifiedDevices.isEmpty {
-                Label("My Verified Devices", systemImage: "desktopcomputer")
-                    .font(.headline)
-                ForEach(verifiedDevices) { device in
-                    DeviceInfoView(device: device)
+                let myDevice = user.matrix.getCurrentDevice()
+
+                let unverifiedDevices = user.devices.filter { !$0.isVerified }
+                if !unverifiedDevices.isEmpty {
+                    Label("Other Unverified Devices", systemImage: "display.trianglebadge.exclamationmark")
+                        .font(.headline)
+                    ForEach(unverifiedDevices) { device in
+                    //ForEach(user.devices) { device in
+                        if myDevice == nil || device != myDevice {
+                            DeviceInfoView(device: device)
+                        }
+                        //Text(device.displayName ?? "(unnamed device)")
+                    }
+                    .padding(.leading)
+                    Divider()
                 }
-                .padding(.leading)
+
+                let verifiedDevices = user.devices.filter { $0.isVerified }
+                if !verifiedDevices.isEmpty {
+                    Label("Other Verified Devices", systemImage: "desktopcomputer")
+                        .font(.headline)
+                    ForEach(verifiedDevices) { device in
+                        if myDevice == nil || device != myDevice {
+                            DeviceInfoView(device: device)
+                        }
+                    }
+                    .padding(.leading)
+                }
+
+                Spacer()
             }
-            
-            Spacer()
+            .navigationBarTitle(Text("My Devices"))
+            .padding()
         }
-        .navigationBarTitle(Text("My Devices"))
-        .padding()
     }
 }
 
