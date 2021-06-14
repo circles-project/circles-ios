@@ -31,6 +31,52 @@ struct RoomSecurityInfoSheet: View {
             }
         }
     }
+
+    var olmStuff: some View {
+        VStack(alignment: .leading) {
+            Text("Olm Stuff")
+                .font(.title2)
+                .fontWeight(.bold)
+            VStack(alignment: .leading, spacing: 10) {
+                Text("Algorithm: \(room.cryptoAlgorithm)")
+
+                Text("Inbound Sessions:")
+                    .fontWeight(.bold)
+                ForEach(room.inboundOlmSessions) { inbound in
+                    HStack(alignment: .top) {
+                        Image(systemName: "key.fill")
+                        //Image(systemName: "key")
+                        //    .rotationEffect(Angle(degrees: 180.0))
+                        VStack(alignment: .leading) {
+                            Text("ID: \(inbound.id)")
+                                .lineLimit(1)
+                            Text("Sender: \(inbound.senderKey)")
+                                .lineLimit(1)
+                        }
+                    }
+                }
+
+                Text("Outbound Sessions:")
+                    .fontWeight(.bold)
+                ForEach(room.outboundOlmSessions, id: \.sessionId) { session in
+                    HStack(alignment: .top) {
+                        Image(systemName: "key.fill")
+                        Image(systemName: "key")
+                            .rotationEffect(Angle(degrees: 180.0))
+                        VStack(alignment: .leading) {
+                            Text("ID: \(session.sessionId)")
+                                .lineLimit(1)
+                            Text("Key: \(session.sessionKey)")
+                                .lineLimit(1)
+                        }
+                    }
+                }
+            }
+            .padding(.leading)
+        }
+    }
+
+    
     
     var body: some View {
         VStack {
@@ -70,34 +116,11 @@ struct RoomSecurityInfoSheet: View {
                     //}
                 }
                 
-                /*
+
                 Spacer()
                 
-                VStack(alignment: .leading) {
-                    Text("MXCrypto Stuff")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                    VStack(alignment: .leading) {
-                        Text("Algorithm: \(room.cryptoAlgorithm)")
-                        
-                        Text("Inbound Sessions:")
-                        ForEach(room.inboundOlmSessions) { inbound in
-                            HStack(alignment: .top) {
-                                Image(systemName: "key.fill")
-                                Image(systemName: "key")
-                                    .rotationEffect(Angle(degrees: 180.0))
-                                VStack(alignment: .leading) {
-                                    Text("ID: \(inbound.id)")
-                                        .lineLimit(1)
-                                    Text("Sender: \(inbound.senderKey)")
-                                        .lineLimit(1)
-                                }
-                            }
-                        }
-                    }
-                    .padding(.leading)
-                }
-                */
+
+                olmStuff
 
             }
             

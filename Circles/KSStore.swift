@@ -13,6 +13,7 @@ import Combine
 import SwiftUI
 import UIKit
 import MatrixSDK
+import OLMKit
 import StoreKit
 
 enum TermsOfServiceState {
@@ -825,7 +826,7 @@ extension KSStore: MatrixInterface {
                         // FIXME While we're debugging, don't worry about device verification
                         crypto.warnOnUnknowDevices = false
                         // Trying to fix UISI errors by resetting the cached list of keys
-                        //crypto.resetDeviceKeys()
+                        crypto.resetDeviceKeys()
                         
                         // Start listening for updates from the Matrix backend
                         self.session.start() { start_response in
@@ -1799,7 +1800,31 @@ extension KSStore: MatrixInterface {
         guard let crypto = self.session.crypto else {
             return []
         }
-        return crypto.store.inboundGroupSessions()
+        guard let sessions = crypto.store.inboundGroupSessions() else {
+            return []
+        }
+
+        for session in sessions {
+            print("CRYPTO\tFound session \(session.id)")
+            print("CRYPTO\tFor roomId = \(session.roomId ?? "unknown")")
+            if let room = self.getRoom(roomId: session.roomId),
+               let name = room.displayName {
+                print("CRYPTO\tRoom is \(name)")
+            }
+            print("CRYPTO\tOther keys claimed:")
+            for (k,v) in session.keysClaimed {
+                print("CRYPTO\t \(k) --> \(v)")
+            }
+            print("CRYPTO\t---")
+        }
+        return sessions
+    }
+
+    func getOutboundGroupSessions() -> [MXOlmOutboundGroupSession] {
+        guard let crypto = self.session.crypto else {
+            return []
+        }
+        return crypto.store.outboundGroupSessions()
     }
     
     func startNewSignupSession(completion: @escaping (MXResponse<UiaaSessionState>) -> Void) {

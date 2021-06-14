@@ -166,6 +166,15 @@ struct DeviceInfoView: View {
                         }
                         Text("Local Verification")
                     }
+                    VStack(alignment: .leading) {
+                        Text("MXOlm Sessions")
+                            .fontWeight(.bold)
+                        let sessions = device.matrix.getOlmSessions(deviceKey: device.key)
+                        ForEach(sessions, id: \.self) { session in
+                            let olmSession = session.session
+                            Text("Session: \(olmSession.sessionIdentifier())")
+                        }
+                    }
                 }
                 .padding(.leading)
             }

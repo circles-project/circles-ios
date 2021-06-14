@@ -97,6 +97,8 @@ protocol MatrixInterface {
     func getOlmSessions(deviceKey: String) -> [MXOlmSession]
     
     func getInboundGroupSessions() -> [MXOlmInboundGroupSession]
+
+    func getOutboundGroupSessions() -> [MXOlmOutboundGroupSession]
     
     func startNewSignupSession(completion: @escaping (MXResponse<UiaaSessionState>) -> Void)
     
