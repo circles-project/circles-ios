@@ -1053,6 +1053,11 @@ extension KSStore: MatrixInterface {
             MatrixDevice(from: deviceInfo, on: self)
         }
     }
+
+    func getCurrentDevice() -> MatrixDevice? {
+        let allMyDevices = self.getDevices(userId: self.whoAmI())
+        return allMyDevices.first(where: {$0.id == self.session.myDeviceId})
+    }
     
     func getRoom(roomId: String) -> MatrixRoom? {
         if let room = self.rooms[roomId] {

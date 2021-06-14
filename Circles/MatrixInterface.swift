@@ -34,6 +34,8 @@ protocol MatrixInterface {
     func unIgnoreUser(userId: String, completion: @escaping (MXResponse<Void>) -> Void)
 
     func getDevices(userId: String) -> [MatrixDevice]
+
+    func getCurrentDevice() -> MatrixDevice?
     
     func getRoom(roomId: String) -> MatrixRoom?
     
