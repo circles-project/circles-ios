@@ -41,8 +41,9 @@ struct ContentView: View {
             case MXSessionStateHomeserverNotReachable:
                 // FIXME This should be some sort of pop-up that then sends you back to the login screen
                 // FIXME Alternatively, if we have a (seemingly) valid access token, we could allow the user to browse the data that we already have locally, in some sort of "offline" mode
-                Text("Could not connect to server \(store.homeserver.host ?? "(none)")")
-
+                VStack {
+                    ProgressView("Reconnecting to server \(store.homeserver.host ?? "(none)")")
+                }
             case MXSessionStatePauseRequested:
                 VStack {
                     ProgressView("Logging out...")
