@@ -633,6 +633,29 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
         }
     }
 
+    func postReply(to event: MXEvent, text: String, completion: @escaping (MXResponse<String?>) -> Void) {
+        // FIXME This shit does some of the most awful butchering I've ever seen
+        //       It copies the parent message right into the content!
+        //       NOT what we want here, when we have a "real"er threaded(-ish) UI
+        /*
+        self.mxroom.sendReply(to: event,
+                              textMessage: text,
+                              formattedTextMessage: nil,
+                              stringLocalizations: nil,
+                              localEcho: &self.localEchoEvent,
+                              completion: completion)
+        */
+
+        // Better version.  Hack it together ourselves with the lower-level function
+        let inReplyTo: [String: String] = ["event_id": event.eventId]
+        let relatesTo: [String: [String:String]] = ["m.in_reply_to": inReplyTo]
+        var content: [String: Any] = [:]
+        content["msgtype"] = kMXMessageTypeText
+        content["body"] = text
+        content["m.relates_to"] = relatesTo
+        self.mxroom.sendMessage(withContent: content, localEcho: &self.localEchoEvent, completion: completion)
+    }
+
     func postImage(image: UIImage, completion: @escaping (MXResponse<String?>) -> Void) {
         guard let data = image.jpegData(compressionQuality: 0.90) else {
             let msg = "Failed to compress image"

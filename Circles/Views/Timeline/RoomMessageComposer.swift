@@ -13,6 +13,7 @@ struct RoomMessageComposer: View {
     @ObservedObject var room: MatrixRoom
     @Binding var isPresented: Bool
     @Environment(\.colorScheme) var colorScheme
+    var inReplyTo: MatrixMessage?
 
     
     //var onCancel: () -> Void
@@ -107,19 +108,29 @@ struct RoomMessageComposer: View {
                 switch(self.newMessageType) {
                 case .text:
                     self.inProgress = true
-                    self.room.postText(text: self.newMessageText) { response in
-                        switch(response) {
-                        case .failure(let error):
-                            print("COMPOSER Failed to post text message: \(error)")
-                            // FIXME Set a Bool to show an Alert
-                        case .success(let str):
-                            print("COMPOSER Successfully posted text message")
-                            if let eventId = str {
-                                  print("COMPOSER Got event id \(eventId)")
+                    if let parentMessage = self.inReplyTo {
+                        print("REPLY\tSending reply")
+                        parentMessage.postReply(text: self.newMessageText) { response in
+                            if response.isSuccess {
+                                self.isPresented = false
                             }
-                            self.isPresented = false
+                            self.inProgress = false
                         }
-                        self.inProgress = false
+                    } else {
+                        self.room.postText(text: self.newMessageText) { response in
+                            switch(response) {
+                            case .failure(let error):
+                                print("COMPOSER Failed to post text message: \(error)")
+                                // FIXME Set a Bool to show an Alert
+                            case .success(let str):
+                                print("COMPOSER Successfully posted text message")
+                                if let eventId = str {
+                                      print("COMPOSER Got event id \(eventId)")
+                                }
+                                self.isPresented = false
+                            }
+                            self.inProgress = false
+                        }
                     }
                 case .image:
                     guard let img = self.newImage else {
@@ -166,12 +177,19 @@ struct RoomMessageComposer: View {
                         .multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
                         .lineLimit(10)
                 case .image:
-                    Image(uiImage: self.newImage ?? UIImage())
-                        //.frame(height: 150)
-                        //.scaledToFit()
-                        .resizable()
-                        .scaledToFit()
-                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                    VStack {
+                        Image(uiImage: self.newImage ?? UIImage())
+                            //.frame(height: 150)
+                            //.scaledToFit()
+                            .resizable()
+                            .scaledToFit()
+                            .clipShape(RoundedRectangle(cornerRadius: 6))
+                        TextEditor(text: $newMessageText)
+                            .frame(height: 90)
+                            .foregroundColor(.gray)
+                            .multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
+                            .lineLimit(3)
+                    }
                 default:
                     Image(uiImage: self.newImage ?? UIImage())
                 }

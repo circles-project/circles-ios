@@ -34,6 +34,17 @@ enum MatrixMsgType: String, Codable {
     case unknown = "unknown"
 }
 
+struct mInReplyTo: Codable {
+    var event_id: String
+}
+struct mRelatesTo: Codable {
+    var in_reply_to: mInReplyTo
+
+    enum CodingKeys: String, CodingKey {
+        case in_reply_to = "m.in_reply_to"
+    }
+}
+
 // https://matrix.org/docs/spec/client_server/r0.6.0#m-text
 struct mTextContent: Codable {
     let msgtype: MatrixMsgType = .text
@@ -43,7 +54,7 @@ struct mTextContent: Codable {
 
     // https://matrix.org/docs/spec/client_server/r0.6.0#rich-replies
     // Maybe should have made the "Rich replies" functionality a protocol...
-    var relates_to: [String: String]?
+    var relates_to: mRelatesTo?
 
     enum CodingKeys : String, CodingKey {
         // case msgtype

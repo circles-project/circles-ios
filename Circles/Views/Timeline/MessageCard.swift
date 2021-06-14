@@ -96,6 +96,7 @@ struct MessageCard: View {
     @State var showReplyComposer = false
     @State var reporting = false
     private let debug = false
+    @State var showDetailView = false
     
     var timestamp: some View {
         let formatter = DateFormatter()
@@ -115,32 +116,30 @@ struct MessageCard: View {
     }
     
     var content: some View {
-        switch(message.content) {
-        case .text(let textContent):
-            return AnyView(
+        VStack {
+            switch(message.content) {
+            case .text(let textContent):
                 // FIXME Do some GeometryReader stuff here to scale the frame appropriately for the given screen size
                 MessageText(textContent.body)
                     .frame(minHeight: 30, maxHeight:400)
                     .padding(.horizontal)
-            )
-        case .image:
-            return AnyView(
-                // FIXME Do some GeometryReader stuff here to scale the frame appropriately for the given screen size
-                MessageThumbnail(message: message)
-                    .frame(minWidth: 200, maxWidth: 400, minHeight: 200, maxHeight: 500, alignment: .center)
-            )
-        case .video(let videoContent):
-            return AnyView(
+            case .image(let imageContent):
+                VStack(alignment: .leading) {
+                    // FIXME Do some GeometryReader stuff here to scale the frame appropriately for the given screen size
+                    MessageThumbnail(message: message)
+                        .frame(minWidth: 200, maxWidth: 400, minHeight: 200, maxHeight: 500, alignment: .center)
+                    Text(imageContent.body)
+                        .padding([.horizontal, .bottom], 5)
+                }
+            case .video(let videoContent):
                 ZStack(alignment: .center) {
                     MessageThumbnail(message: message)
                     Image(systemName: "play.circle")
                 }
                 .frame(minWidth: 200, maxWidth: 400, minHeight: 200, maxHeight: 500, alignment: .center)
-            )
-        default:
-            return AnyView(
+            default:
                 Text("Can't display this message yet")
-            )
+            }
         }
     }
     
@@ -181,6 +180,13 @@ struct MessageCard: View {
         }
         //.padding(.horizontal)
     }
+
+    var details: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Type: \(message.type)")
+            Text("Related: \(message.relatesToId ?? "none")")
+        }
+    }
     
     var mainCard: some View {
         
@@ -196,6 +202,11 @@ struct MessageCard: View {
             }
             
             content
+
+            if KOMBUCHA_DEBUG {
+                details
+                    .font(.caption)
+            }
 
             footer
         }
@@ -226,6 +237,12 @@ struct MessageCard: View {
                 message.objectWillChange.send()
             }) {
                 Label("Refresh", systemImage: "arrow.clockwise")
+            }
+
+            Button(action: {
+                self.showDetailView = true
+            }) {
+                Text("Show detailed view")
             }
             
             Menu {
@@ -297,7 +314,9 @@ struct MessageCard: View {
                 mainCard
                 
                 if showReplyComposer {
-                    RoomMessageComposer(room: message.room, isPresented: $showReplyComposer)
+                    RoomMessageComposer(room: message.room,
+                                        isPresented: $showReplyComposer,
+                                        inReplyTo: message)
                         .padding(.leading, 20)
                 }
             }
@@ -306,6 +325,7 @@ struct MessageCard: View {
                 reportingDialog
             }
         }
+
     }
     
     func saveEncryptedImage(content: mImageContent) {

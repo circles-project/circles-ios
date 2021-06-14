@@ -41,6 +41,15 @@ class MatrixMessage: ObservableObject, Identifiable {
     var isEncrypted: Bool {
         self.mxevent.isEncrypted
     }
+
+    var relatesToId: String? {
+        switch content {
+        case .text(let textContent):
+            return textContent.relates_to?.in_reply_to.event_id
+        default:
+            return nil
+        }
+    }
     
     var sender: String {
         self.mxevent.sender
@@ -237,6 +246,12 @@ class MatrixMessage: ObservableObject, Identifiable {
         let seconds = self.mxevent.originServerTs/1000
         return Date(timeIntervalSince1970: TimeInterval(seconds))
     }()
+
+    func postReply(text: String, completion: @escaping (MXResponse<String?>) -> Void) {
+        self.room.postReply(to: self.mxevent,
+                            text: text,
+                            completion: completion)
+    }
     
 }
 
