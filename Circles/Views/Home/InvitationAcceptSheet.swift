@@ -89,16 +89,18 @@ struct InvitationAcceptSheet: View {
                         dgroup.leave()
                     }
 
-                    print("Inviting user \(inviter.id) to follow us on \(circle.name)")
-                    dgroup.enter()
-                    circle.outbound?.invite(userId: inviter.id) { response in
-                        switch response {
-                        case .failure:
-                            print("Failed to invite \(inviter.id) to \(circle.name)")
-                        case .success:
-                            print("Invited \(inviter.id) to follow \(circle.name)")
+                    if self.inviteBack {
+                        print("Inviting user \(inviter.id) to follow us on \(circle.name)")
+                        dgroup.enter()
+                        circle.outbound?.invite(userId: inviter.id) { response in
+                            switch response {
+                            case .failure:
+                                print("Failed to invite \(inviter.id) to \(circle.name)")
+                            case .success:
+                                print("Invited \(inviter.id) to follow \(circle.name)")
+                            }
+                            dgroup.leave()
                         }
-                        dgroup.leave()
                     }
                 }
                 
