@@ -88,15 +88,20 @@ struct DeviceInfoView: View {
         HStack(alignment: .center, spacing: 20){
             
             if !device.isVerified {
-                Button(action: { self.showRemoveDialog = true }) {
-                    Label("Remove ", systemImage: "xmark.shield")
-                }
-                .padding(3)
-                .foregroundColor(Color.red)
-                .overlay(RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.red))
-                .sheet(isPresented: $showRemoveDialog) {
-                    DeviceRemovalSheet(device: device)
+                // Only offer to remove the device if it's really ours
+                if device.userId == device.matrix.whoAmI() {
+                    Button(action: { self.showRemoveDialog = true }) {
+                        Label("Remove ", systemImage: "xmark.shield")
+                    }
+                    .padding(3)
+                    .foregroundColor(Color.red)
+                    .overlay(RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color.red))
+                    .sheet(isPresented: $showRemoveDialog) {
+                        DeviceRemovalSheet(device: device)
+                    }
+                } else {
+                    Spacer()
                 }
                 
                 Button(action: { device.verify() }) {
