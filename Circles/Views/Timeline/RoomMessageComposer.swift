@@ -234,6 +234,11 @@ struct RoomMessageComposer: View {
                 CloudImagePicker(matrix: room.matrix, selectedImage: self.$newImage)
             }
         })
+        .onAppear() {
+            room.matrix.ensureEncryption(roomId: room.id) { _ in
+                // Nothing we can really do here anyway
+            }
+        }
 
     }
     
