@@ -59,12 +59,15 @@ struct StreamTimeline: View {
             ScrollView {
                 LazyVStack(alignment: .leading) {
                     ForEach(messages) { msg in
-                        let index: Int = messages.firstIndex(of: msg)!
-                        HStack {
-                            if KOMBUCHA_DEBUG && showDebug {
-                                Text("\(index)")
+                        VStack(alignment: .leading) {
+                            HStack {
+                                let index: Int = messages.firstIndex(of: msg)!
+                                if KOMBUCHA_DEBUG && showDebug {
+                                    Text("\(index)")
+                                }
+                                MessageCard(message: msg, displayStyle: .timeline)
                             }
-                            MessageCard(message: msg, displayStyle: .timeline)
+                            RepliesView(room: msg.room, parent: msg)
                         }
                     }
                     .padding([.top, .leading, .trailing], 5)

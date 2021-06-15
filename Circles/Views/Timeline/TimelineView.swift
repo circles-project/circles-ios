@@ -97,10 +97,12 @@ struct TimelineView: View {
                                 Text("\(messages.firstIndex(of: msg) ?? -1)")
                             }
                             MessageCard(message: msg, displayStyle: displayStyle)
-                                .padding([.top, .leading, .trailing])
+                                .padding(.top)
                         }
+                        RepliesView(room: room, parent: msg)
                     }
-                    //.padding(.top)
+                    .padding([.leading, .trailing])
+
 
                     Spacer()
                     

@@ -521,6 +521,19 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
                 .sorted(by: {$0.timestamp > $1.timestamp})
         }
     }
+
+    func getReplies(to eventId: String) -> [MatrixMessage] {
+        return self.getMessages().filter { (msg) in
+            switch msg.content {
+            case .text(let content):
+                return content.relates_to?.in_reply_to.event_id == eventId
+            case .notice(let content):
+                return content.relates_to?.in_reply_to.event_id == eventId
+            default:
+                return false
+            }
+        }
+    }
     
     var localEchoMessage: MatrixMessage? {
         guard let mxevent = self.localEchoEvent else {
