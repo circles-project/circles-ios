@@ -36,3 +36,8 @@ let KOMBUCHA_DEBUG = false
 
 let PLAINTEXT_CACHE_FOLDER: String? = nil
 let DECRYPTED_CACHE_FOLDER: String = "decrypted"
+
+// For some reason the BlurHash code needs to be told
+// the dimensions of the BH images.  I thought they
+// somehow encoded this info into the hash, but oh well...
+let BLURHASH_WIDTH: Int = 6
