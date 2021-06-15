@@ -223,10 +223,14 @@ struct MessageCard: View {
                 .shadow(color: .gray, radius: 2, x: 0, y: 1)
         )
         .contextMenu /*@START_MENU_TOKEN@*/{
-            Button(action: {self.showReplyComposer = true}) {
-                HStack {
-                    Text("Reply")
-                    Image(systemName: "bubble.right")
+            // Only allow replies for top-level posts
+            // Otherwise it gets too crazy trying to display a threaded view on mobile
+            if message.relatesToId == nil {
+                Button(action: {self.showReplyComposer = true}) {
+                    HStack {
+                        Text("Reply")
+                        Image(systemName: "bubble.right")
+                    }
                 }
             }
             if message.type == MatrixMsgType.image.rawValue {
