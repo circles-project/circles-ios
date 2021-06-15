@@ -806,16 +806,9 @@ extension KSStore: MatrixInterface {
                     .privateKey(
                         fromPassphrase: password,
                         success: { privateKey in
-                            recovery
-                                .recoverSecrets(
-                                    nil,
-                                    withPrivateKey: privateKey,
-                                    recoverServices: true,
-                                    success: { result in
-                                        print("RECOVERY\tSuccess connecting to existing recovery")
-                                    }, failure: { error in
-                                        print("RECOVERY\tFailed to connect to recovery")
-                                    })
+                            UserDefaults.standard.set(privateKey, forKey: "privateKey[\(userId)]")
+
+                            self.connectRecovery(privateKey: privateKey)
                         },
                         failure: { error in
                             print("RECOVERY\tFailed to create private key from password")
@@ -833,7 +826,16 @@ extension KSStore: MatrixInterface {
 
         func handleSuccess(result: MXSecretRecoveryResult) {
             print("RECOVERY\tSuccess connecting to recovery")
-            // Now WTF do I do???
+            // Now we should probably update the recovery with any local secrets
+            recovery.updateRecovery(
+                forSecrets: nil,
+                withPrivateKey: privateKey,
+                success: {
+                    print("RECOVERY\tSuccess updating recovery")
+                },
+                failure: {_ in
+                    print("RECOVERY\tFailed to update recovery")
+                })
         }
 
         func handleError(error: Error) {
