@@ -75,25 +75,8 @@ struct mEmoteContent: Codable {
 }
 
 // https://matrix.org/docs/spec/client_server/r0.6.0#m-notice
-// cvw: Same as text.  This is stupid.  Keeping this type around anyway in case there are change in the future.
-struct mNoticeContent: Codable {
-    let msgtype: MatrixMsgType = .notice
-    var body: String
-    var format: String?
-    var formatted_body: String?
-
-    // https://matrix.org/docs/spec/client_server/r0.6.0#rich-replies
-    // Maybe should have made the "Rich replies" functionality a protocol...
-    var relates_to: [String:String]?
-    
-    enum CodingKeys : String, CodingKey {
-        // case msgtype
-        case body
-        case format
-        case formatted_body
-        case relates_to = "m.relates_to"
-    }
-}
+// cvw: Same as text.
+typealias mNoticeContent = mTextContent
 
 // https://matrix.org/docs/spec/client_server/r0.6.0#m-image
 struct mImageContent: Codable {
@@ -113,6 +96,7 @@ struct mImageInfo: Codable {
     var thumbnail_url: URL? // Skipping this.  E2EE or bust.
     var thumbnail_file: mEncryptedFile?
     var thumbnail_info: mThumbnailInfo?
+    var blurhash: String?
 }
 
 struct mThumbnailInfo: Codable {
