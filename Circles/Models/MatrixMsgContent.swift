@@ -88,10 +88,10 @@ struct mImageContent: Codable {
 }
 
 struct mImageInfo: Codable {
-    var h: UInt
-    var w: UInt
+    var h: Int
+    var w: Int
     var mimetype: String
-    var size: UInt
+    var size: Int
     var file: mEncryptedFile?
     var thumbnail_url: URL? // Skipping this.  E2EE or bust.
     var thumbnail_file: mEncryptedFile?
@@ -100,10 +100,10 @@ struct mImageInfo: Codable {
 }
 
 struct mThumbnailInfo: Codable {
-    var h: UInt
-    var w: UInt
+    var h: Int
+    var w: Int
     var mimetype: String
-    var size: UInt
+    var size: Int
 }
 
 // https://matrix.org/docs/spec/client_server/r0.6.0#m-file

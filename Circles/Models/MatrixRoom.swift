@@ -699,12 +699,27 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
             uploadData = newData
         }
 
+        var blurhash: String?
+        let tinyWidth: Int = BLURHASH_WIDTH * 16
+        let tinyHeight: Int = Int(CGFloat(tinyWidth) * thumb.size.height / thumb.size.width)
+        let tinySize = CGSize(width: tinyWidth, height: tinyHeight)
+        print("SENDIMAGE\tTiny image is \(tinyWidth)x\(tinyHeight)")
+        // BlurHash'ing the thumbnail was sloooooooow
+        // Let's see what happens with a 4x smaller version
+        if let tiny = downscale_image(from: thumb, to: tinySize) {
+            let blurWidth: Int = BLURHASH_WIDTH
+            let blurHeight: Int = Int( CGFloat(blurWidth) * CGFloat(tinyHeight) / CGFloat(tinyWidth))
+            print("SENDIMAGE\tBlurHash will be \(blurWidth)x\(blurHeight)")
+            blurhash = tiny.blurHash(numberOfComponents: (blurWidth,blurHeight))
+        }
+
         print("SENDIMAGE\tAttempting to upload \(uploadData.count) data")
         self.mxroom.sendImage(
             data: uploadData,
             size: uploadImage.size,
             mimeType: "image/jpeg",
             thumbnail: thumb,
+            blurhash: blurhash,
             localEcho: &self.localEchoEvent
         ) { response in
             switch response {

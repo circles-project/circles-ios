@@ -51,7 +51,8 @@ struct MessageThumbnail: View {
     @ObservedObject var message: MatrixMessage
     
     var thumbnail: Image {
-        guard let img = message.thumbnailImage else {
+        //guard let img = message.thumbnailImage ?? message.blurhashImage else {
+        guard let img = message.blurhashImage else {
             return Image(systemName: "photo")
         }
         return Image(uiImage: img)
@@ -185,6 +186,12 @@ struct MessageCard: View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Type: \(message.type)")
             Text("Related: \(message.relatesToId ?? "none")")
+            Text("BlurHash: \(message.blurhash ?? "none")")
+            if let hash = message.blurhash {
+                if let img = message.blurhashImage {
+                    Text("BlurHash is \(Int(img.size.width))x\(Int(img.size.height))")
+                }
+            }
         }
     }
     

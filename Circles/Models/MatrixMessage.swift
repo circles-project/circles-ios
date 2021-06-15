@@ -172,7 +172,40 @@ class MatrixMessage: ObservableObject, Identifiable {
             return nil
         }
     }
-    
+
+    var blurhash: String? {
+        switch self.content {
+        case .image(let content):
+            return content.info.blurhash
+        case .video(let content):
+            // TODO Add BlurHash support for m.video
+            return nil
+        default:
+            return nil
+        }
+    }
+
+    var blurhashImage: UIImage? {
+        switch self.content {
+        case .image(let content):
+            let info = content.info
+            guard let hash = info.blurhash else {
+                return nil
+            }
+            //let width: Int = info.thumbnail_info?.w ?? info.w
+            //let height: Int = info.thumbnail_info?.h ?? info.h
+            let width = BLURHASH_WIDTH
+            let height: Int = info.h * BLURHASH_WIDTH / info.w
+            let size = CGSize(width: width, height: height)
+            return UIImage(blurHash: hash, size: size)
+
+        case .video(let content):
+            // TODO Add support for BlurHash in m.video
+            return nil
+        default:
+            return nil
+        }
+    }
         
     var thumbnailImage: UIImage? {
         // Do we have the image already in our little one-off cache?
