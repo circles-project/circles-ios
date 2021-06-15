@@ -747,7 +747,12 @@ extension KSStore: MatrixInterface {
                     // Connect to the Matrix backend and go live
                     self.sessionMxRc = MXRestClient(credentials: newCreds, unrecognizedCertificateHandler: nil)
                     self.connect(restclient: self.sessionMxRc!) {
+                        // Now we can run anything that needs the running session and/or the crypto interface AND the password
+
                         self.setupCrossSigning(password: password)
+
+                        self.setupRecovery(password: password)
+
                     }
                 }
             }
@@ -758,6 +763,88 @@ extension KSStore: MatrixInterface {
             break
         }
         print("Leaving login()")
+    }
+
+    func setupRecovery(password: String) {
+        guard let crypto = self.session.crypto,
+              let recovery = crypto.recoveryService else {
+            print("RECOVERY\tCouldn't get recoveryService")
+            return
+        }
+        let defaults = UserDefaults.standard
+        let userId = self.whoAmI()
+
+        func handleCreateSuccess(info: MXSecretStorageKeyCreationInfo) {
+            let recoveryKey = info.recoveryKey
+            let privateKey = info.privateKey
+            defaults.set(recoveryKey, forKey: "recoveryKey[\(userId)]")
+            defaults.set(privateKey, forKey: "privateKey[\(userId)]")
+            print("RECOVERY\tSetup success")
+        }
+
+        func handleCreateFailure(error: Error) {
+            print("RECOVERY\tSetup failed")
+        }
+
+        if !recovery.hasRecovery() {
+            recovery
+                .createRecovery(
+                    forSecrets: nil,
+                    withPassphrase: password,
+                    createServicesBackups: true,
+                    success: handleCreateSuccess,
+                    failure: handleCreateFailure
+                )
+        } else {
+            // We have a recovery already existing
+            // Do we have the key already saved on this device?
+            if let _ = UserDefaults.standard.data(forKey: "privateKey[\(self.whoAmI())]") {
+                // Ok, we had already saved this key
+                // No worries - connect() will load the recovery on its own
+            } else {
+                recovery
+                    .privateKey(
+                        fromPassphrase: password,
+                        success: { privateKey in
+                            recovery
+                                .recoverSecrets(
+                                    nil,
+                                    withPrivateKey: privateKey,
+                                    recoverServices: true,
+                                    success: { result in
+                                        print("RECOVERY\tSuccess connecting to existing recovery")
+                                    }, failure: { error in
+                                        print("RECOVERY\tFailed to connect to recovery")
+                                    })
+                        },
+                        failure: { error in
+                            print("RECOVERY\tFailed to create private key from password")
+                        })
+            }
+        }
+    }
+
+    func connectRecovery(privateKey: Data) {
+        guard let crypto = self.session.crypto,
+              let recovery = crypto.recoveryService else {
+            print("RECOVERY\tCouldn't get recoveryService")
+            return
+        }
+
+        func handleSuccess(result: MXSecretRecoveryResult) {
+            print("RECOVERY\tSuccess connecting to recovery")
+            // Now WTF do I do???
+        }
+
+        func handleError(error: Error) {
+            print("RECOVERY\tFailed to connect to existing recovery")
+        }
+
+        recovery.recoverSecrets(nil,
+                                withPrivateKey: privateKey,
+                                recoverServices: true,
+                                success: handleSuccess,
+                                failure: handleError)
     }
        
     func setupCrossSigning(password: String) {
@@ -840,13 +927,20 @@ extension KSStore: MatrixInterface {
                                 print("Successfully started MXSession")
                                 self.invitedRooms = self.getInvitedRooms()
                                 completion()
-                                
+
+                                let defaults = UserDefaults.standard
+                                if let privateKey = defaults.data(forKey: "privateKey[\(self.whoAmI())]") {
+                                    self.connectRecovery(privateKey: privateKey)
+                                }
+
+                                /*
                                 for room in self.getAllRooms() {
                                     print("ROOM\t[\(room.id)] \"\(room.displayName ?? "???")\"")
                                     for tag in room.tags {
                                         print("ROOM\t\t\(tag)")
                                     }
                                 }
+                                */
                                 
                                 self.checkTermsOfService()
 
@@ -1826,6 +1920,22 @@ extension KSStore: MatrixInterface {
         }
         return crypto.store.outboundGroupSessions()
     }
+
+    func ensureEncryption(roomId: String, completion: @escaping (MXResponse<Void>) -> Void) {
+        guard let crypto = self.session.crypto else {
+            return
+        }
+        crypto.ensureEncryption(inRoom: roomId,
+                                success: {
+                                    completion(.success(()))
+                                },
+                                failure: { _ in
+                                    let err = KSError(message: "Failed to ensure encryption")
+                                    completion(.failure(err))
+                                }
+        )
+    }
+
     
     func startNewSignupSession(completion: @escaping (MXResponse<UiaaSessionState>) -> Void) {
         self.signupState = .starting
