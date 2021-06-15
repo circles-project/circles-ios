@@ -129,67 +129,16 @@ struct GroupTimelineScreen: View {
                     case .security:
                         RoomSecurityInfoSheet(room: room)
 
-                        /*
-                    case .pickHeaderImage:
-                        ImagePicker(selectedImage: $newImageForHeader, sourceType: .photoLibrary) { image in
-                            print("Picked new header image!")
-                            self.newImageForHeader = image
-                            self.sheetType = .confirmHeaderImage
-                        }
-                        
-                    case .confirmHeaderImage:
-                        ConfirmImageSheet(
-                            title: "Confirm New Header Image",
-                            image: $newImageForHeader,
-                            onAccept: {
-                                // Send the new image to Matrix
-                                room.setAvatarImage(image: self.newImageForHeader)
-                            },
-                            onGoBack: {
-                                self.sheetType = .pickProfileImage
-                            }
-                        )
-
-                    case .pickProfileImage:
-                        ImagePicker(selectedImage: $newImageForProfile, sourceType: .photoLibrary)
-                        { image in
-                            print("Picked new profile image!")
-                            self.newImageForProfile = image // Kind of defeats the point of the binding, eh?  But if it makes the profile image show up in the confirm sheet, ...
-                            self.sheetType = .confirmProfileImage
-                        }
-
-                    case .confirmProfileImage:
-                        ConfirmImageSheet(
-                            title: "Confirm New Profile Picture",
-                            image: $newImageForProfile,
-                            onAccept: {
-                                // Send the image to Matrix as our new profile
-                            },
-                            onGoBack: {
-                                self.sheetType = .pickProfileImage
-                            }
-                        )
-                    */
-                      
-                    /*
-                    case .pickMessageImage:
-                        ImagePicker(selectedImage: $newImageForMessage, sourceType: .photoLibrary) { image in
-                            print("Picked image for a message!")
-                        }
-                    */
                     default:
                         Text("Something went wrong")
                     }
                 }
         }
-        //.padding()
-            //.navigationBarTitle(room.displayName ?? room.id, displayMode: .inline)
-
-            .toolbar {
-                ToolbarItemGroup(placement: .automatic) {
-                    toolbarMenu
-                }
+        .toolbar {
+            ToolbarItemGroup(placement: .automatic) {
+                toolbarMenu
             }
+        }
         .navigationBarTitle(title, displayMode: .inline)
 
     }
