@@ -45,7 +45,7 @@ class MatrixMessage: ObservableObject, Identifiable {
     var relatesToId: String? {
         switch content {
         case .text(let textContent):
-            return textContent.relates_to?.in_reply_to.event_id
+            return textContent.relates_to?.in_reply_to?.event_id
         default:
             return nil
         }

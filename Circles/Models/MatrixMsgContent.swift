@@ -38,7 +38,7 @@ struct mInReplyTo: Codable {
     var event_id: String
 }
 struct mRelatesTo: Codable {
-    var in_reply_to: mInReplyTo
+    var in_reply_to: mInReplyTo?
 
     enum CodingKeys: String, CodingKey {
         case in_reply_to = "m.in_reply_to"

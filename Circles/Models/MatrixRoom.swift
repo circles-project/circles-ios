@@ -526,9 +526,9 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
         return self.getMessages().filter { (msg) in
             switch msg.content {
             case .text(let content):
-                return content.relates_to?.in_reply_to.event_id == eventId
+                return content.relates_to?.in_reply_to?.event_id == eventId
             case .notice(let content):
-                return content.relates_to?.in_reply_to.event_id == eventId
+                return content.relates_to?.in_reply_to?.event_id == eventId
             default:
                 return false
             }
