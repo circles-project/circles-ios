@@ -14,6 +14,8 @@ struct LoginScreen: View {
 
     @State var username: String = ""
     @State var password: String = ""
+
+    @State var pending = false
     
     var logo: some View {
         RandomizedCircles()
@@ -48,7 +50,10 @@ struct LoginScreen: View {
                 .frame(width: 300.0, height: 40.0)
 
             Button(action: {
-                self.matrix.login(username: self.username, password: self.password)
+                self.pending = true
+                self.matrix.login(username: self.username, password: self.password) { response in
+                    self.pending = false
+                }
             }) {
                 Text("Log In")
                     .padding()
@@ -57,6 +62,7 @@ struct LoginScreen: View {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
+            .disabled(pending)
 
             
             Spacer()
