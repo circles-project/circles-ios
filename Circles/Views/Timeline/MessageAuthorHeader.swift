@@ -38,8 +38,7 @@ struct MessageAuthorHeader: View {
                         .fontWeight(.semibold)
                         .lineLimit(1)
                     HStack(alignment: .center, spacing: 0) {
-                        shield
-                            //.padding(.trailing, -5)
+                        //shield
                         Text(user.id)
                             .font(.subheadline)
                             .foregroundColor(Color.gray)
@@ -49,6 +48,7 @@ struct MessageAuthorHeader: View {
             }
             
         }
+        /*
         .contextMenu {
             Button(action: {
                 user.verify()
@@ -56,6 +56,7 @@ struct MessageAuthorHeader: View {
                 Label("Verify User", systemImage: "checkmark.shield")
             }
         }
+        */
         .padding(.leading, 2)
     }
 }
