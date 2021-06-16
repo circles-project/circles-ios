@@ -684,7 +684,7 @@ extension KSStore: SocialGraph {
 extension KSStore: MatrixInterface {
     
     
-    func login(username: String, password: String) {
+    func login(username: String, password: String, completion: @escaping (MXResponse<Void>) -> Void) {
         print("in login()")
         // First, check: Are we already logged in?
         switch(self.session.state) {
@@ -702,11 +702,13 @@ extension KSStore: MatrixInterface {
                 params["device_id"] = saved_device_id
             }
             params["initial_device_display_name"] = UIDevice.current.model
+
             self.loginMxRc!.login(parameters: params) { response in
                 print("LOGIN\tGot login response")
                 switch(response) {
                 case .failure(let err):
                     print("LOGIN\tFailed: \(err)")
+                    completion(.failure(err))
                 case .success(let creds):
                     print("LOGIN\tLogged in")
                     // Validate the credentials that we received
@@ -714,7 +716,10 @@ extension KSStore: MatrixInterface {
                           let access_token = creds["access_token"] as? String,
                           let device_id = creds["device_id"] as? String
                     else {
-                        print("LOGIN\tWTF: Logged in but some creds are bogus")
+                        let msg = "LOGIN\tLogged in but some creds are bogus"
+                        print(msg)
+                        let error = KSError(message: msg)
+                        completion(.failure(error))
                         return
                     }
                     
@@ -753,11 +758,16 @@ extension KSStore: MatrixInterface {
 
                         self.setupRecovery(password: password)
 
+                        completion(.success(()))
+
                     }
                 }
             }
         default:
-            print("In the wrong state... Not actually loggin in...")
+            let msg = "In the wrong state... Not actually loggin in..."
+            print(msg)
+            let error = KSError(message: msg)
+            completion(.failure(error))
             // Do nothing, we're already logged in
             // FIXME What if we're logged in **as somebody else**?
             break

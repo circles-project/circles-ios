@@ -12,7 +12,7 @@ import MatrixSDK
 
 protocol MatrixInterface {
     
-    func login(username: String, password: String)
+    func login(username: String, password: String,  completion: @escaping (MXResponse<Void>) -> Void)
     
     //func logout()
     func pause()
