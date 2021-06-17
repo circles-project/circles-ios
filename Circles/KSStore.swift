@@ -67,6 +67,9 @@ class KSStore: ObservableObject {
     var newRoomsSink: Cancellable? = nil
     var identityServerSink: Cancellable? = nil
 
+    // For deriving a new login password and SSSS key from a regular password
+    var rootSecret: String?
+
     /*
     static private let release = "beta"
     static private let server = release == "beta" ? "beta" : "matrix"
@@ -690,17 +693,25 @@ extension KSStore: SocialGraph {
 
 extension KSStore: MatrixInterface {
 
-    func generateSecrets(username: String, password: String) -> MatrixSecrets? {
+    func generateSecrets(userId: String, password: String) -> MatrixSecrets? {
         // Update 2021-06-16 - Adding my crazy scheme for doing
         //                     SSSS using only a single password
         //
         // First we bcrypt the password to get a secret that is
         // resistant to brute force and dictionary attack.
-        // Then we use HKDF to stretch the 24 bytes from bcrypt
-        //   * 16 bytes for the password
-        //   * 32 bytes for the SSSS private key
-        // FIXME Why not just use the symmetric ratchet instead of HKDF?
-        //   * We want independence of the two keys, right?
+        // Then we use the symmetric ratchet to generate two keys
+        // * One for the login password
+        // * One for the secret "private key" for the recovery service
+
+        guard let userPart = userId.split(separator: ":").first else {
+            return nil
+        }
+        var username = userPart
+        if username.starts(with: "@") {
+            username = username.dropFirst()
+        }
+        print("SECRETS\tExtracted username [\(username)] from given userId [\(userId)]")
+
         guard let data = username.data(using: .utf8) else {
             let msg = "Failed to convert username to data"
             print("SECRETS\t\(msg)")
@@ -720,34 +731,27 @@ extension KSStore: MatrixInterface {
             return nil
         }
         print("SECRETS\tGot bcrypt hash = [\(bcrypt)]")
+        print("       \t                   12345678901234567890123456789012345678901234567890")
 
-        /*
-        let keyMaterial = HKDF<SHA256>.deriveKey(
-            inputKeyMaterial: .init(data: bcrypt.suffix(32).data(using: .utf8)!),
-            salt: saltString.data(using: .utf8)!,
-            outputByteCount: 56
-        )
-        print("LOGIN\tGot key material")
-        let rawKeyMaterial = keyMaterial.withUnsafeBytes {
-            Data(Array($0))
-        }
-        let newLoginPassword: String = rawKeyMaterial.prefix(24).base64EncodedString()
-        let newPrivateKey: Data = rawKeyMaterial.suffix(32)
-        print("LOGIN\tGot new password = [\(newLoginPassword)]")
-        */
-        let newLoginPassword = SHA256.hash(data: "LoginPassword|\(bcrypt)".data(using: .utf8)!)
+        let root = String(bcrypt.suffix(from: bcrypt.lastIndex(of: "$")!).dropFirst(1))
+        self.rootSecret = root
+        print("SECRETS\tRoot secret = [\(root)]  (\(root.count) chars)")
+
+        let newLoginPassword = SHA256.hash(data: "LoginPassword|\(root)".data(using: .utf8)!)
             .prefix(16)
             .map { String(format: "%02hhx", $0) }
             .joined()
-        print("SECRETS\tGot new password = [\(newLoginPassword)]")
+        print("SECRETS\tGot new login password = [\(newLoginPassword)]")
 
-        let newPrivateKey = SHA256.hash(data: "PrivateKey|\(bcrypt)".data(using: .utf8)!)
+        let newPrivateKey = SHA256.hash(data: "PrivateKey|\(root)".data(using: .utf8)!)
             .withUnsafeBytes {
                 Data(Array($0))
             }
         print("SECRETS\tGot new private key = [\(newPrivateKey)]")
 
-        return MatrixSecrets(loginPassword: newLoginPassword, secretKey: newPrivateKey)
+        return MatrixSecrets(loginPassword: newLoginPassword,
+                             secretKey: newPrivateKey
+        )
     }
     
     func login(username: String, password: String, completion: @escaping (MXResponse<Void>) -> Void) {
@@ -759,21 +763,25 @@ extension KSStore: MatrixInterface {
              MXSessionStateSoftLogout:
             self.loginMxRc = MXRestClient(homeServer: self.homeserver, unrecognizedCertificateHandler: nil)
 
-            guard let newSecrets = generateSecrets(username: username, password: password)
+            guard let secrets = generateSecrets(userId: username, password: password)
             else {
                 let msg = "Failed to generate secrets from username and password"
                 print(msg)
                 completion(.failure(KSError(message: msg)))
                 return
             }
+            // FIXME Save the private key
 
             var params: [String:Any] = [:]
             params["type"] = "m.login.password"
             params["identifier"] = ["type" : "m.id.user"]
             params["user"] = username
-            params["password"] = password
+            params["password"] = secrets.loginPassword
             if let saved_device_id = UserDefaults.standard.string(forKey: "device_id[\(username)]") {
                 params["device_id"] = saved_device_id
+                print("LOGIN\tUsing existing deviceId [\(saved_device_id)]")
+            } else {
+                print("LOGIN\tNo saved deviceId")
             }
             params["initial_device_display_name"] = UIDevice.current.model
 
@@ -828,9 +836,9 @@ extension KSStore: MatrixInterface {
                     self.connect(restclient: self.sessionMxRc!) {
                         // Now we can run anything that needs the running session and/or the crypto interface AND the password
 
-                        self.setupCrossSigning(password: password)
+                        self.setupCrossSigning(password: secrets.loginPassword)
 
-                        self.setupRecovery(password: password)
+                        self.setupRecovery(password: password, secrets: secrets)
 
                         completion(.success(()))
 
@@ -849,7 +857,7 @@ extension KSStore: MatrixInterface {
         print("Leaving login()")
     }
 
-    func setupRecovery(password: String) {
+    func setupRecovery(password: String, secrets: MatrixSecrets) {
         guard let crypto = self.session.crypto,
               let recovery = crypto.recoveryService else {
             print("RECOVERY\tCouldn't get recoveryService")
@@ -874,7 +882,7 @@ extension KSStore: MatrixInterface {
             recovery
                 .createRecovery(
                     forSecrets: nil,
-                    withPassphrase: password,
+                    withPrivateKey: secrets.secretKey,
                     createServicesBackups: true,
                     success: handleCreateSuccess,
                     failure: handleCreateFailure
@@ -886,6 +894,7 @@ extension KSStore: MatrixInterface {
                 // Ok, we had already saved this key
                 // No worries - connect() will load the recovery on its own
             } else {
+                /*
                 recovery
                     .privateKey(
                         fromPassphrase: password,
@@ -897,6 +906,8 @@ extension KSStore: MatrixInterface {
                         failure: { error in
                             print("RECOVERY\tFailed to create private key from password")
                         })
+                */
+                self.connectRecovery(privateKey: secrets.secretKey)
             }
         }
     }
@@ -1040,9 +1051,10 @@ extension KSStore: MatrixInterface {
                                         }
                                     }
                                     // Freaking kludge upon kludge
-                                    // For some reason our Circles are not getting encryption enabled
+                                    // For some reason our Circles are not getting encryption enabled at creation time
                                     // even though the completion handler comes back with .success
                                     // So we'll try it again...
+                                    // Using the MXRoom method seems to work.
                                     if !room.isEncrypted {
                                         room.enableEncryption() { response2 in
                                             switch response2 {
@@ -1148,9 +1160,17 @@ extension KSStore: MatrixInterface {
     }
 
     func deleteMyAccount(password: String, completion: @escaping (MXResponse<Void>) -> Void) {
+
+        guard let secrets = self.generateSecrets(userId: self.whoAmI(), password: password) else {
+            let msg = "Failed to generate secrets from username/password"
+            print(msg)
+            completion(.failure(KSError(message: msg)))
+            return
+        }
+
         let params: [String:String] = [
             "username": self.whoAmI(),
-            "password": password
+            "password": secrets.loginPassword
         ]
 
         self.session.pause()
@@ -1890,6 +1910,13 @@ extension KSStore: MatrixInterface {
             completion(.failure(KSError(message: "No Matrix rest client")))
             return
         }
+
+        guard let secrets = self.generateSecrets(userId: self.whoAmI(), password: password) else {
+            let msg = "DELETE\tFailed to generate secrets from username/password"
+            print(msg)
+            completion(.failure(KSError(message: msg)))
+            return
+        }
         
         mxrc.getSession(toDeleteDevice: deviceId) { response1 in
             switch response1 {
@@ -1904,12 +1931,11 @@ extension KSStore: MatrixInterface {
                     "type" : "m.id.user",
                     "user" : self.whoAmI()
                 ]
-                params["password"] = password
+                params["password"] = secrets.loginPassword
                 params["session"] = mxAuthSession.session
 
                 print("DELETE\tSo far so good...")
-                
-                
+
                 mxrc.deleteDevice(deviceId, authParameters: params) { response2 in
                     switch response2 {
                     case .failure(let err):
@@ -2417,6 +2443,15 @@ extension KSStore: MatrixInterface {
         let clientSecret = authSession.session
         
         print("Attempting email UIAA stage with sid=\(sid) and client_secret=\(clientSecret)")
+
+
+        guard let secrets = self.generateSecrets(userId: username, password: password) else {
+            let msg = "Failed to generate secrets from username and password"
+            print("SIGNUP(email2)\t\(msg)")
+            completion(.failure(KSError(message: msg)))
+            return
+        }
+
         
         let version = "r0"
         let url = URL(string: "/_matrix/client/\(version)/register", relativeTo: self.homeserver)!
@@ -2435,7 +2470,7 @@ extension KSStore: MatrixInterface {
                 "session": "\(authSession.session)"
             },
             "username": "\(username)",
-            "password": "\(password)",
+            "password": "\(secrets.loginPassword)",
             "initial_device_display_name": "\(UIDevice.current.model)"
         }
         """
@@ -2515,7 +2550,11 @@ extension KSStore: MatrixInterface {
                 defaults.set(creds.userId, forKey: "user_id")
                 defaults.set(creds.deviceId, forKey: "device_id[\(creds.userId)]")
                 defaults.set(creds.accessToken, forKey: "access_token[\(creds.userId)]")
-                
+                // We also need to save the device_id for the plain username,
+                // because when the user next logs in, they probably won't type out
+                // the whole @user:domain.tld mess
+                defaults.set(creds.deviceId, forKey: "device_id[\(username)]")
+
                 completion(.success(mxCreds))
                 return
             } else {
