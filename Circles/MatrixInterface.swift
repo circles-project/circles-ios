@@ -11,7 +11,9 @@ import UIKit
 import MatrixSDK
 
 protocol MatrixInterface {
-    
+
+    func generateSecrets(username: String, password: String) -> MatrixSecrets? 
+
     func login(username: String, password: String,  completion: @escaping (MXResponse<Void>) -> Void)
     
     //func logout()

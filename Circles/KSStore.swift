@@ -47,6 +47,11 @@ enum SignupState {
     case finished(MXCredentials)
 }
 
+struct MatrixSecrets {
+    var loginPassword: String
+    var secretKey: Data
+}
+
 class KSStore: ObservableObject {
     // New approach (Oct 2020) -- Let the MXSession hold the one
     // authoritative copy of all of its state.  Why duplicate extra work?
@@ -684,7 +689,66 @@ extension KSStore: SocialGraph {
 
 
 extension KSStore: MatrixInterface {
-    
+
+    func generateSecrets(username: String, password: String) -> MatrixSecrets? {
+        // Update 2021-06-16 - Adding my crazy scheme for doing
+        //                     SSSS using only a single password
+        //
+        // First we bcrypt the password to get a secret that is
+        // resistant to brute force and dictionary attack.
+        // Then we use HKDF to stretch the 24 bytes from bcrypt
+        //   * 16 bytes for the password
+        //   * 32 bytes for the SSSS private key
+        // FIXME Why not just use the symmetric ratchet instead of HKDF?
+        //   * We want independence of the two keys, right?
+        guard let data = username.data(using: .utf8) else {
+            let msg = "Failed to convert username to data"
+            print("SECRETS\t\(msg)")
+            return nil
+        }
+        let saltDigest = SHA256.hash(data: data)
+        let saltString = saltDigest
+            .map { String(format: "%02hhx", $0) }
+            .prefix(16)
+            .joined()
+        print("SECRETS\tComputed salt string = [\(saltString)]")
+        let numRounds = 14
+
+        guard let bcrypt = try? BCrypt.Hash(password, salt: "$2a$\(numRounds)$\(saltString)") else {
+            let msg = "BCrypt KDF failed"
+            print("SECRETS\t\(msg)")
+            return nil
+        }
+        print("SECRETS\tGot bcrypt hash = [\(bcrypt)]")
+
+        /*
+        let keyMaterial = HKDF<SHA256>.deriveKey(
+            inputKeyMaterial: .init(data: bcrypt.suffix(32).data(using: .utf8)!),
+            salt: saltString.data(using: .utf8)!,
+            outputByteCount: 56
+        )
+        print("LOGIN\tGot key material")
+        let rawKeyMaterial = keyMaterial.withUnsafeBytes {
+            Data(Array($0))
+        }
+        let newLoginPassword: String = rawKeyMaterial.prefix(24).base64EncodedString()
+        let newPrivateKey: Data = rawKeyMaterial.suffix(32)
+        print("LOGIN\tGot new password = [\(newLoginPassword)]")
+        */
+        let newLoginPassword = SHA256.hash(data: "LoginPassword|\(bcrypt)".data(using: .utf8)!)
+            .prefix(16)
+            .map { String(format: "%02hhx", $0) }
+            .joined()
+        print("SECRETS\tGot new password = [\(newLoginPassword)]")
+
+        let newPrivateKey = SHA256.hash(data: "PrivateKey|\(bcrypt)".data(using: .utf8)!)
+            .withUnsafeBytes {
+                Data(Array($0))
+            }
+        print("SECRETS\tGot new private key = [\(newPrivateKey)]")
+
+        return MatrixSecrets(loginPassword: newLoginPassword, secretKey: newPrivateKey)
+    }
     
     func login(username: String, password: String, completion: @escaping (MXResponse<Void>) -> Void) {
         print("in login()")
@@ -695,66 +759,13 @@ extension KSStore: MatrixInterface {
              MXSessionStateSoftLogout:
             self.loginMxRc = MXRestClient(homeServer: self.homeserver, unrecognizedCertificateHandler: nil)
 
-            // Update 2021-06-16 - Adding my crazy scheme for doing
-            //                     SSSS using only a single password
-            //
-            // First we bcrypt the password to get a secret that is
-            // resistant to brute force and dictionary attack.
-            // Then we use HKDF to stretch the 24 bytes from bcrypt
-            //   * 16 bytes for the password
-            //   * 32 bytes for the SSSS private key
-            // FIXME Why not just use the symmetric ratchet instead of HKDF?
-            //   * We want independence of the two keys, right?
-            guard let data = username.data(using: .utf8) else {
-                let msg = "Failed to convert username to data"
-                print("LOGIN\t\(msg)")
+            guard let newSecrets = generateSecrets(username: username, password: password)
+            else {
+                let msg = "Failed to generate secrets from username and password"
+                print(msg)
                 completion(.failure(KSError(message: msg)))
                 return
             }
-            let saltDigest = SHA256.hash(data: data)
-            let saltString = saltDigest
-                .map { String(format: "%02hhx", $0) }
-                .prefix(16)
-                .joined()
-            print("LOGIN\tComputed salt string = [\(saltString)]")
-            let numRounds = 14
-
-            guard let bcrypt = try? BCrypt.Hash(password, salt: "$2a$\(numRounds)$\(saltString)") else {
-                let msg = "BCrypt KDF failed"
-                print("LOGIN\t\(msg)")
-                completion(.failure(KSError(message: msg)))
-                return
-            }
-            print("LOGIN\tGot bcrypt hash = [\(bcrypt)]")
-
-            /*
-            let keyMaterial = HKDF<SHA256>.deriveKey(
-                inputKeyMaterial: .init(data: bcrypt.suffix(32).data(using: .utf8)!),
-                salt: saltString.data(using: .utf8)!,
-                outputByteCount: 56
-            )
-            print("LOGIN\tGot key material")
-            let rawKeyMaterial = keyMaterial.withUnsafeBytes {
-                Data(Array($0))
-            }
-            let newLoginPassword: String = rawKeyMaterial.prefix(24).base64EncodedString()
-            let newPrivateKey: Data = rawKeyMaterial.suffix(32)
-            print("LOGIN\tGot new password = [\(newLoginPassword)]")
-            */
-            let newLoginPassword = SHA256.hash(data: "LoginPassword|\(bcrypt)".data(using: .utf8)!)
-                .prefix(16)
-                .map { String(format: "%02hhx", $0) }
-                .joined()
-            print("LOGIN\tGot new password = [\(newLoginPassword)]")
-
-            let newPrivateKey = SHA256.hash(data: "PrivateKey|\(bcrypt)".data(using: .utf8)!)
-                .withUnsafeBytes {
-                    Data(Array($0))
-                }
-            print("LOGIN\tGot new private key = [\(newPrivateKey)]")
-            completion(.success(()))
-            return // FIXME Just for debugging...
-
 
             var params: [String:Any] = [:]
             params["type"] = "m.login.password"
