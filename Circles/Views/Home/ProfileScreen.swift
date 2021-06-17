@@ -115,6 +115,7 @@ struct ProfileScreen: View {
                             // Letting onEditingChanged do all the work..
                         }
                         .multilineTextAlignment(.trailing)
+                        .disableAutocorrection(true)
                     }
                 
                     HStack {
