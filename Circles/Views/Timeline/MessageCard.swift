@@ -97,6 +97,18 @@ struct MessageCard: View {
     @State var reporting = false
     private let debug = false
     @State var showDetailView = false
+
+    func getCaption(body: String) -> String? {
+        // By default, Matrix sets the text body to be the filename
+        // But we want to use it for an image caption
+        // So we want to ignore the obvious filenames, and let through anything that was actually written by a human
+        // This is the cheap, quick, and dirty version.
+        // Whoever heard of a regex anyway???
+        if body.starts(with: "ima_") && body.hasSuffix(".jpeg") && body.split(separator: " ").count == 1 {
+            return nil
+        }
+        return body
+    }
     
     var timestamp: some View {
         let formatter = DateFormatter()
@@ -128,8 +140,10 @@ struct MessageCard: View {
                     // FIXME Do some GeometryReader stuff here to scale the frame appropriately for the given screen size
                     MessageThumbnail(message: message)
                         .frame(minWidth: 200, maxWidth: 400, minHeight: 200, maxHeight: 500, alignment: .center)
-                    Text(imageContent.body)
-                        .padding([.horizontal, .bottom], 5)
+                    if let caption = getCaption(body: imageContent.body) {
+                        Text(caption)
+                            .padding([.horizontal, .bottom], 5)
+                    }
                 }
             case .video(let videoContent):
                 ZStack(alignment: .center) {
