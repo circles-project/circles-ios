@@ -16,6 +16,7 @@ struct LoginScreen: View {
     @State var password: String = ""
 
     @State var pending = false
+    @State var showAlert = false
     
     var logo: some View {
         RandomizedCircles()
@@ -53,6 +54,10 @@ struct LoginScreen: View {
                 self.pending = true
                 self.matrix.login(username: self.username, password: self.password) { response in
                     self.pending = false
+                    if response.isFailure {
+                        self.showAlert = true
+                        self.password = ""
+                    }
                 }
             }) {
                 Text("Log In")
@@ -63,7 +68,12 @@ struct LoginScreen: View {
                     .cornerRadius(10)
             }
             .disabled(pending)
-
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("Login failed"),
+                      message: Text("Bad username or password?"),
+                      dismissButton: .cancel(Text("OK"))
+                )
+            }
             
             Spacer()
             
