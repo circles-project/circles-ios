@@ -733,7 +733,10 @@ extension KSStore: MatrixInterface {
         print("SECRETS\tGot bcrypt hash = [\(bcrypt)]")
         print("       \t                   12345678901234567890123456789012345678901234567890")
 
-        let root = String(bcrypt.suffix(from: bcrypt.lastIndex(of: "$")!).dropFirst(1))
+        // Grabbing everything after the $ gives us the salt as well as the hash
+        //let root = String(bcrypt.suffix(from: bcrypt.lastIndex(of: "$")!).dropFirst(1))
+        // Grabbing only the last 31 chars gives us just the hash
+        let root = String(bcrypt.suffix(31))
         self.rootSecret = root
         print("SECRETS\tRoot secret = [\(root)]  (\(root.count) chars)")
 
@@ -743,7 +746,7 @@ extension KSStore: MatrixInterface {
             .joined()
         print("SECRETS\tGot new login password = [\(newLoginPassword)]")
 
-        let newPrivateKey = SHA256.hash(data: "PrivateKey|\(root)".data(using: .utf8)!)
+        let newPrivateKey = SHA256.hash(data: "S4Key|\(root)".data(using: .utf8)!)
             .withUnsafeBytes {
                 Data(Array($0))
             }
