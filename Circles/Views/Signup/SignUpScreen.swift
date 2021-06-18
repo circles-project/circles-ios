@@ -524,10 +524,12 @@ struct SignUpScreen: View {
             Button(action: {
                 // Upload the image and set it as our avatar
                 if let img = self.avatarImage {
+                    self.pending = true
                     self.matrix.setAvatarImage(image: img) { response in
                         if response.isSuccess {
                             self.stage = next[currentStage]!
                         }
+                        self.pending = false
                     }
                 }
             }) {
@@ -538,6 +540,7 @@ struct SignUpScreen: View {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
+            .disabled(pending)
 
         }
         .sheet(isPresented: $showPicker) {
