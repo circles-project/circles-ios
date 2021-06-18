@@ -41,7 +41,9 @@ struct SignUpScreen: View {
     @State var showAlert = false
     @State var alertTitle = ""
     @State var alertMessage = ""
-    
+
+    @State var pending = false
+    @State var showTokenError = false
     
     let helpTextForToken = """
     In order to sign up for the service, every new user must present a valid registration token.
@@ -164,6 +166,7 @@ struct SignUpScreen: View {
                 }
                 // Call out to the server to validate our token
                 // If successful, set stage = .getEmail
+                self.pending = true
                 matrix.signupDoTokenStage(token: signupToken) { response in
                     switch response {
                     case .failure(let err):
@@ -172,6 +175,7 @@ struct SignUpScreen: View {
                     case .success:
                         self.stage = next[currentStage]!
                     }
+                    self.pending = false
                 }
             }) {
                 Text("Validate Token")
@@ -180,6 +184,13 @@ struct SignUpScreen: View {
                     .foregroundColor(.white)
                     .background(Color.accentColor)
                     .cornerRadius(10)
+            }
+            .disabled(pending)
+            .alert(isPresented: $showTokenError) {
+                Alert(title: Text("Token validation failed"),
+                      message: Text(helpTextForTokenFailed),
+                      dismissButton: .cancel(Text("OK"))
+                )
             }
 
             Spacer()
@@ -208,10 +219,12 @@ struct SignUpScreen: View {
                 .font(.body)
             
             Button(action: {
+                self.pending = true
                 matrix.signupDoTermsStage { response in
                     if response.isSuccess {
                         self.stage = next[currentStage]!
                     }
+                    self.pending = false
                 }
             }) {
                 Text("Got it")
@@ -221,6 +234,7 @@ struct SignUpScreen: View {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
+            .disabled(pending)
 
         }
     }
@@ -250,6 +264,7 @@ struct SignUpScreen: View {
                 guard !emailToken.isEmpty else {
                     return
                 }
+                self.pending = true
                 // Call out to the server to validate our email address
                 matrix.signupValidateEmailAddress(sid: self.emailSid, token: self.emailToken) { response1 in
                     if response1.isSuccess {
@@ -266,29 +281,34 @@ struct SignUpScreen: View {
                                     self.userId = creds.userId!
                                     
                                     if self.displayName.isEmpty {
+                                        self.pending = false
                                         self.stage = next[currentStage]!
                                     } else {
                                         matrix.setDisplayName(name: self.displayName) { response in
                                             if response.isSuccess {
                                                 self.stage = next[currentStage]!
                                             }
+                                            self.pending = false
                                         }
                                     }
                                 } else {
+                                    self.pending = false
                                     print("Email UIAA stage succeeded, but registration is not yet complete")
                                 }
                             case .failure(let err):
+                                self.pending = false
                                 print("Email UIAA stage failed")
                             }
-
                         }
                     } else {
+                        self.pending = false
                         print("Email code validation failed")
                     }
                 }
             }) {
                 Text("Verify Code from Email")
             }
+            .disabled(pending)
             .padding()
             .frame(width: 300.0, height: 40.0)
             .foregroundColor(.white)
@@ -397,6 +417,7 @@ struct SignUpScreen: View {
                     return
                 }
                 // Call out to the server to send the verification mail
+                self.pending = true
                 matrix.signupRequestEmailToken(email: emailAddress) { response in
                     if case let .success(sid) = response {
                         self.emailSid = sid
@@ -406,6 +427,7 @@ struct SignUpScreen: View {
                         // :( Couldn't validate email
                         print(":( Couldn't send validation email")
                     }
+                    self.pending = false
                 }
             }) {
                 Text("Submit")
@@ -415,7 +437,7 @@ struct SignUpScreen: View {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
-            .disabled(password.isEmpty || password != repeatPassword)
+            .disabled(password.isEmpty || password != repeatPassword || pending)
 
             
         }
@@ -442,6 +464,7 @@ struct SignUpScreen: View {
             
             Button(action: {
                 //self.selectedScreen = .login
+                self.pending = true
                 matrix.finishSignupAndConnect()
             }) {
                 Text("Next: Log in")
@@ -451,6 +474,7 @@ struct SignUpScreen: View {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
+            .disabled(pending)
 
             
             Spacer()
