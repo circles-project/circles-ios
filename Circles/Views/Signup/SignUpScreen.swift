@@ -594,7 +594,9 @@ struct SignUpScreen: View {
                 Button(action: {                    
                     // Create all the Rooms for the Circles
                     // After we create each one, set its avatar
-                    
+
+                    self.pending = true
+
                     var dgroup = DispatchGroup()
                     var error: Error?
                     
@@ -631,6 +633,7 @@ struct SignUpScreen: View {
                     dgroup.notify(queue: .main) {
                         guard error == nil else {
                             print("SETUP\tNotify: There were problems; Not saving circles")
+                            self.pending = false
                             return
                         }
                         
@@ -642,6 +645,7 @@ struct SignUpScreen: View {
                                 print("SETUP\tSaved circles data")
                                 self.stage = next[currentStage]!
                             }
+                            self.pending = false
                         }
                     }
                     
@@ -653,6 +657,7 @@ struct SignUpScreen: View {
                         .background(Color.accentColor)
                         .cornerRadius(10)
                 }
+                .disabled(pending)
                 
             }
             .padding()
