@@ -10,7 +10,6 @@ import SwiftUI
 
 enum CirclesOverviewSheetType: String {
     case create
-    case edit
 }
 extension CirclesOverviewSheetType: Identifiable {
     var id: String { rawValue }
@@ -26,9 +25,6 @@ struct CirclesOverviewScreen: View {
         Menu {
             Button(action: {self.sheetType = .create}) {
                 Label("New Circle", systemImage: "plus")
-            }
-            Button(action: {self.sheetType = .edit}) {
-                Label("Edit Circles", systemImage: "pencil")
             }
         }
         label: {
@@ -57,8 +53,6 @@ struct CirclesOverviewScreen: View {
                 switch(st) {
                 case .create:
                     CircleCreationSheet(store: store)
-                case .edit:
-                    Text("Edit your circles")
                 }
             }
             .toolbar {
