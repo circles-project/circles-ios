@@ -14,20 +14,22 @@ struct RoomInviteSheet: View {
     @Environment(\.presentationMode) var presentation
     @State var newUserIds: [String] = []
     @State var newestUserId: String = ""
-    
-    var body: some View {
+    @State var pending = false
+
+    var inputForm: some View {
         VStack(alignment: .center) {
             Text(title ?? "Invite New Followers to \(room.displayName ?? room.id)")
                 .font(.headline)
                 .fontWeight(.bold)
-            
+
             Spacer()
-            
+
+
             HStack {
                 TextField("User ID", text: $newestUserId)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
-                
+
                 Button(action: {
                     if let canonicalUserId = room.matrix.canonicalizeUserId(userId: newestUserId) {
                         self.newUserIds.append(canonicalUserId)
@@ -37,8 +39,9 @@ struct RoomInviteSheet: View {
                     Text("Add")
                 }
             }
+            .disabled(pending)
             .padding()
-            
+
             VStack(alignment: .leading) {
                 Text("Users to Invite:")
                 VStack(alignment: .leading) {
@@ -65,16 +68,16 @@ struct RoomInviteSheet: View {
                     //}
                 }
                 .padding(.leading)
-                
+
 
             }
-            
-            Spacer()
-            
+
             Button(action: {
                 let dgroup = DispatchGroup()
                 var errors: KSError? = nil
-                
+
+                self.pending = true
+
                 for userId in newUserIds {
                     dgroup.enter()
                     room.invite(userId: userId) { response in
@@ -90,18 +93,28 @@ struct RoomInviteSheet: View {
                         dgroup.leave()
                     }
                 }
-                
+
                 dgroup.notify(queue: .main) {
-                    if errors == nil {
+                    self.pending = false
+                    guard let err = errors else {
                         self.presentation.wrappedValue.dismiss()
+                        return
                     }
+
+                    print("Invite(s) failed: \(err)")
+
                 }
             }) {
                 Label("Send Invitation(s)", systemImage: "envelope")
             }
+            .disabled(pending)
             .padding()
-            
+
+            Spacer()
+
+
             Button(action: {
+                self.pending = false
                 self.presentation.wrappedValue.dismiss()
             }) {
                 Text("Cancel")
@@ -109,7 +122,26 @@ struct RoomInviteSheet: View {
             //.padding()
         }
         .padding()
+
+
     }
+
+    var body: some View {
+        ZStack {
+            inputForm
+
+            if pending {
+                Color.gray
+                    .opacity(0.60)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                ProgressView().progressViewStyle(
+                    CircularProgressViewStyle(tint: .white)
+                )
+                .scaleEffect(2.5, anchor: .center)
+            }
+        }
+    }
+
 }
 
 /*
