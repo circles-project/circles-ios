@@ -558,10 +558,6 @@ struct SignUpScreen: View {
                     .font(.title)
                     .fontWeight(.bold)
 
-                Label("NOTE: Circle names and cover images are not encrypted", systemImage: "exclamationmark.shield")
-                    .font(.headline)
-                    .foregroundColor(.orange)
-
                 Divider()
 
                 VStack(alignment: .leading) {
@@ -578,7 +574,11 @@ struct SignUpScreen: View {
                     SetupCircleCard(matrix: matrix, circleName: "Community", userDisplayName: self.displayName, avatar: self.$communityAvatar)
                     Divider()
                 }
-                                
+
+                Label("NOTE: Circle names and cover images are not encrypted", systemImage: "exclamationmark.shield")
+                    .font(.headline)
+                    .foregroundColor(.orange)
+                
                 Spacer()
                 
                 Button(action: {                    
