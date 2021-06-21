@@ -120,17 +120,6 @@ to create an account on the beta testing server at this time.
 However, if you have an existing account on another Matrix homeserver,
 you can use Circles with that account by making one small change to the
 code.
-In [KSStore.swift](./Circles/KSStore.swift), look at lines 61-65 to change
+In [KSStore.swift](./Circles/KSStore.swift), look at lines 153-155 to change
 the homeserver to the one that you want to use.
 
-# Support us on Kickstarter
-Do you want a better social network experience, where you are in control
-over who can see what you share, where the service doesn't spy on you, and
-where the service doesn't promote the worst kind of anti-social behaviors
-in order to sell ads?
-
-You can help us build that future.
-People who back the project on Kickstarter get big discounts for membership
-on the new secure social platform that we will be launching later this year.
-
-[![Kickstarter banner](./assets/images/kickstarter-logo-green.png)](https://www.kickstarter.com/projects/cvwright/circles-a-secure-social-app-for-friends-and-family?ref=4k4rzq)
