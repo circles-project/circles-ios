@@ -558,19 +558,6 @@ struct SignUpScreen: View {
                     .font(.title)
                     .fontWeight(.bold)
 
-                /*
-                HStack {
-                    Image(systemName: "exclamationmark.shield")
-                    VStack(alignment: .leading) {
-                        Text("NOTE: Circle names and cover images are not encrypted.")
-                            .font(.headline)
-                        // ARGH SwiftUI why do you ignore this lineLimit ???
-                        //Text("This is necessary so that newly invited friends can see what they're being invited to join.")
-                        //    .lineLimit(4)
-                    }
-                }
-                .foregroundColor(.orange)
-                */
                 Label("NOTE: Circle names and cover images are not encrypted", systemImage: "exclamationmark.shield")
                     .font(.headline)
                     .foregroundColor(.orange)
