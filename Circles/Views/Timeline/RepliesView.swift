@@ -23,7 +23,7 @@ struct RepliesView: View {
                         room.objectWillChange.send()
                     }) {
                         Text("Show \(messages.count) replies")
-
+                            .font(.footnote)
                     }
                 }
             }
@@ -38,6 +38,7 @@ struct RepliesView: View {
                         room.objectWillChange.send()
                     }) {
                         Text("Hide replies")
+                            .font(.footnote)
                     }
                 }
             }

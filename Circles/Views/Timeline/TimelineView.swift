@@ -88,7 +88,7 @@ struct TimelineView: View {
                     if let msg = room.localEchoMessage {
                         MessageCard(message: msg, displayStyle: displayStyle)
                             .border(Color.red)
-                            .padding([.top, .leading, .trailing])
+                            .padding([.top, .leading, .trailing], 3)
                     }
                     
                     ForEach(messages) { msg in
@@ -97,11 +97,11 @@ struct TimelineView: View {
                                 Text("\(messages.firstIndex(of: msg) ?? -1)")
                             }
                             MessageCard(message: msg, displayStyle: displayStyle)
-                                .padding(.top)
+                                .padding(.top, 5)
                         }
                         RepliesView(room: room, parent: msg)
                     }
-                    .padding([.leading, .trailing])
+                    .padding([.leading, .trailing], 3)
 
 
                     Spacer()
