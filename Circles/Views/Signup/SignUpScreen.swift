@@ -14,9 +14,9 @@ struct SignUpScreen: View {
     var matrix: MatrixInterface
     @Binding var selectedScreen: LoggedOutScreen.Screen
     
-    @SceneStorage("signupToken") var signupToken: String = ""
+    @State var signupToken: String = ""
     @State var displayName: String = ""
-    @SceneStorage("signupEmail") var emailAddress: String = ""
+    @State var emailAddress: String = ""
     @State var username: String = ""
     @State var password: String = ""
     @State var repeatPassword: String = ""
@@ -578,7 +578,7 @@ struct SignUpScreen: View {
                 Label("NOTE: Circle names and cover images are not encrypted", systemImage: "exclamationmark.shield")
                     .font(.headline)
                     .foregroundColor(.orange)
-                
+
                 Spacer()
                 
                 Button(action: {                    
