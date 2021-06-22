@@ -380,7 +380,7 @@ struct SignUpScreen: View {
             Spacer()
 
             VStack {
-                Text("Your new acount")
+                Text("Your new account")
                     .font(.headline)
                     .padding(.top)
 
