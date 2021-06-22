@@ -511,6 +511,7 @@ struct SignUpScreen: View {
             }) {
                 Label("Choose a photo from my device's library", systemImage: "photo.fill")
             }
+            .padding()
 
             Button(action: {
                 self.showPicker = true
@@ -518,6 +519,7 @@ struct SignUpScreen: View {
             }) {
                 Label("Take a new photo", systemImage: "camera")
             }
+            .padding()
             
             Spacer()
             
