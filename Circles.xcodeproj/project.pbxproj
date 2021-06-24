@@ -109,6 +109,7 @@
 		404C72D4265DDF35000473DF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		404C72D7265DDF35000473DF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		404C72D9265DDF35000473DF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		405BF7862683C5FA006E8756 /* CirclesSubscriptions.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = CirclesSubscriptions.storekit; sourceTree = "<group>"; };
 		4069F79726729DD200FB6090 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		4073E7C3267915AF001A80CF /* RepliesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepliesView.swift; sourceTree = "<group>"; };
 		409F42E2265DE00700690A61 /* Array+Sample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Sample.swift"; sourceTree = "<group>"; };
@@ -223,6 +224,7 @@
 		404C72C4265DDF35000473DF = {
 			isa = PBXGroup;
 			children = (
+				405BF7862683C5FA006E8756 /* CirclesSubscriptions.storekit */,
 				404C72CF265DDF35000473DF /* Circles */,
 				404C72CE265DDF35000473DF /* Products */,
 				8F950EBDD063263CCF586FCD /* Pods */,
@@ -777,7 +779,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Circles/Preview Content\"";
 				DEVELOPMENT_TEAM = Y5CK8529S5;
 				ENABLE_PREVIEWS = YES;
@@ -787,7 +789,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.15;
+				MARKETING_VERSION = 0.16;
 				PRODUCT_BUNDLE_IDENTIFIER = social.kombucha.circles;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -802,7 +804,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Circles/Preview Content\"";
 				DEVELOPMENT_TEAM = Y5CK8529S5;
 				ENABLE_PREVIEWS = YES;
@@ -812,7 +814,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.15;
+				MARKETING_VERSION = 0.16;
 				PRODUCT_BUNDLE_IDENTIFIER = social.kombucha.circles;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
