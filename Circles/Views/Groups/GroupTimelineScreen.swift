@@ -54,13 +54,15 @@ struct GroupTimelineScreen: View {
                     Label("Post a New Message", systemImage: "rectangle.badge.plus")
                 }
                 //.padding([.top, .leading, .trailing])
-                .padding()
+                //.padding()
+                /*
                 .background(RoundedRectangle(cornerRadius: 10)
                                 .stroke(lineWidth: 2)
                                 .foregroundColor(.accentColor))
+                */
             }
         }
-        .padding(.top)
+        .padding(.top, 5)
     }
     
     var timeline: some View {
