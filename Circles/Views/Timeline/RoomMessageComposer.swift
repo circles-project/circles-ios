@@ -138,7 +138,7 @@ struct RoomMessageComposer: View {
                         return
                     }
                     self.inProgress = true
-                    room.postImage(image: img) { response in
+                    room.postImage(image: img, caption: newMessageText) { response in
                         switch(response) {
                         case .failure(let err):
                             print("COMPOSER Failed to post image: \(err)")

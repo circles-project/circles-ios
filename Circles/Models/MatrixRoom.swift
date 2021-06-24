@@ -669,7 +669,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
         self.mxroom.sendMessage(withContent: content, localEcho: &self.localEchoEvent, completion: completion)
     }
 
-    func postImage(image: UIImage, completion: @escaping (MXResponse<String?>) -> Void) {
+    func postImage(image: UIImage, caption: String? = nil, completion: @escaping (MXResponse<String?>) -> Void) {
         guard let data = image.jpegData(compressionQuality: 0.90) else {
             let msg = "Failed to compress image"
             print(msg)
@@ -733,6 +733,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
             mimeType: "image/jpeg",
             thumbnail: thumb,
             blurhash: blurhash,
+            caption: caption,
             localEcho: &self.localEchoEvent
         ) { response in
             switch response {
