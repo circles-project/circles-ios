@@ -1,0 +1,45 @@
+{
+  "products" : [
+
+  ],
+  "settings" : {
+
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "9168B5F2",
+      "localizations" : [
+
+      ],
+      "name" : "Online Accounts",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "14.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6815828B",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "",
+              "displayName" : "",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "social.kombucha.circles.membership.standard_3_month\n",
+          "recurringSubscriptionPeriod" : "P3M",
+          "referenceName" : "Standard 3 Month",
+          "subscriptionGroupID" : "9168B5F2",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 1,
+    "minor" : 0
+  }
+}
