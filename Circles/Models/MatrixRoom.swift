@@ -522,6 +522,11 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
         }
     }
 
+    func getTopLevelMessages(since date: Date? = nil) -> [MatrixMessage] {
+        self.getMessages(since: date)
+            .filter( {$0.relatesToId == nil} )
+    }
+
     func getReplies(to eventId: String) -> [MatrixMessage] {
         return self.getMessages().filter { (msg) in
             switch msg.content {

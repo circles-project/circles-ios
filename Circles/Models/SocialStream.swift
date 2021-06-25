@@ -141,6 +141,11 @@ class SocialStream: ObservableObject, Identifiable {
         
         return messages.sorted(by: {$0.timestamp > $1.timestamp})
     }
+
+    func getTopLevelMessages(since date: Date? = nil) -> [MatrixMessage] {
+        self.getMessages(since: date)
+            .filter( {$0.relatesToId == nil} )
+    }
     
     var rooms: [MatrixRoom] {
         matrix.getRooms(for: self.tag).compactMap { room in

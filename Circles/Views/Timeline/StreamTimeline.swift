@@ -54,7 +54,7 @@ struct StreamTimeline: View {
     }
     
     var body: some View {
-        let messages = stream.getMessages()
+        let messages = stream.getTopLevelMessages()
         VStack(alignment: .leading) {
             ScrollView {
                 LazyVStack(alignment: .leading) {
