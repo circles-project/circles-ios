@@ -132,6 +132,7 @@ struct CircleTimelineScreen: View {
     var body: some View {
         VStack {
             composer
+                .layoutPriority(1)
             
             StreamTimeline(stream: circle.stream)
                 .navigationBarTitle(circle.name)
