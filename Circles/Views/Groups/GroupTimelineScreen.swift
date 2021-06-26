@@ -47,7 +47,7 @@ struct GroupTimelineScreen: View {
         HStack {
             if showComposer {
                 RoomMessageComposer(room: group.room, isPresented: self.$showComposer)
-                    .padding([.top, .leading, .trailing])
+                    .padding([.top, .leading, .trailing], 3)
             }
             else {
                 Button(action: {self.showComposer = true}) {
@@ -115,6 +115,7 @@ struct GroupTimelineScreen: View {
         VStack(alignment: .center) {
 
             composer
+                .layoutPriority(1)
 
             timeline
                 .sheet(item: $sheetType) { st in

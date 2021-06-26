@@ -165,6 +165,7 @@ struct RoomMessageComposer: View {
     }
     
     var body: some View {
+        GeometryReader { proxy in
         VStack(alignment: .leading, spacing: 2) {
             MessageAuthorHeader(user: room.matrix.me())
 
@@ -172,24 +173,27 @@ struct RoomMessageComposer: View {
                 switch(newMessageType) {
                 case .text:
                     TextEditor(text: $newMessageText)
-                        .frame(height: 90)
+                        //.frame(height: 90)
                         .foregroundColor(.gray)
                         .multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
                         .lineLimit(10)
                 case .image:
-                    VStack {
-                        Image(uiImage: self.newImage ?? UIImage())
-                            //.frame(height: 150)
-                            //.scaledToFit()
-                            .resizable()
-                            .scaledToFit()
-                            .clipShape(RoundedRectangle(cornerRadius: 6))
-                        TextEditor(text: $newMessageText)
-                            .frame(height: 90)
-                            .foregroundColor(.gray)
-                            .multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
-                            .lineLimit(3)
-                    }
+                        VStack(alignment: .center, spacing: 2) {
+                            Image(uiImage: self.newImage ?? UIImage())
+                                //.scaledToFit()
+                                .resizable()
+                                .scaledToFill()
+                                //.frame(height: imageHeight)
+                                .clipShape(RoundedRectangle(cornerRadius: 6))
+                                .layoutPriority(-1)
+                            //TextField("Enter your optional caption here", text: $newMessageText)
+                            TextEditor(text: $newMessageText)
+                                .lineLimit(2)
+                                //.frame(height: textHeight)
+                                .foregroundColor(.gray)
+                                .multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
+                                .padding(5)
+                        }
                 default:
                     Image(uiImage: self.newImage ?? UIImage())
                 }
@@ -207,6 +211,10 @@ struct RoomMessageComposer: View {
             }
 
             buttonBar
+        }
+        .onAppear {
+            print("GeometryReader says w = \(proxy.size.width) x h = \(proxy.size.height)")
+        }
         }
         .padding(.all, 3.0)
         //.padding([.top, .leading, .trailing], 5)
