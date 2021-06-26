@@ -134,17 +134,19 @@ struct MessageCard: View {
                 // FIXME Do some GeometryReader stuff here to scale the frame appropriately for the given screen size
                 MessageText(textContent.body)
                     //.frame(minHeight: 30, maxHeight:400)
-                    .padding(3)
+                    .padding(.horizontal, 3)
+                    .padding(.vertical, 5)
             case .image(let imageContent):
                 VStack(alignment: .leading) {
                     // FIXME Do some GeometryReader stuff here to scale the frame appropriately for the given screen size
                     MessageThumbnail(message: message)
                         //.frame(minWidth: 200, maxWidth: 400, minHeight: 200, maxHeight: 500, alignment: .center)
-                        .padding([.horizontal], 3)
+                        .padding(3)
 
                     if let caption = getCaption(body: imageContent.body) {
                         Text(caption)
-                            .padding([.horizontal, .bottom], 3)
+                            .padding(.horizontal, 3)
+                            .padding(.bottom, 5)
                     }
                 }
             case .video(let videoContent):
