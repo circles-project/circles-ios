@@ -78,7 +78,7 @@
 		409F437F265DE28600690A61 /* RandomizedCircles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F437E265DE28600690A61 /* RandomizedCircles.swift */; };
 		409F4382265DE29600690A61 /* SetupCircleCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4381265DE29600690A61 /* SetupCircleCard.swift */; };
 		409F4385265DE2A400690A61 /* RoomMessageComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4384265DE2A400690A61 /* RoomMessageComposer.swift */; };
-		409F4388265DE2B100690A61 /* SignUpScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4387265DE2B100690A61 /* SignUpScreen.swift */; };
+		409F4388265DE2B100690A61 /* TokenSignUpScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4387265DE2B100690A61 /* TokenSignUpScreen.swift */; };
 		409F438C265DE2C200690A61 /* StreamTimeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F438A265DE2C200690A61 /* StreamTimeline.swift */; };
 		409F438D265DE2C200690A61 /* StreamTimelineScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F438B265DE2C200690A61 /* StreamTimelineScreen.swift */; };
 		409F4390265DE2CE00690A61 /* SystemNoticesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F438F265DE2CE00690A61 /* SystemNoticesView.swift */; };
@@ -177,7 +177,7 @@
 		409F437E265DE28600690A61 /* RandomizedCircles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RandomizedCircles.swift; sourceTree = "<group>"; };
 		409F4381265DE29600690A61 /* SetupCircleCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetupCircleCard.swift; sourceTree = "<group>"; };
 		409F4384265DE2A400690A61 /* RoomMessageComposer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomMessageComposer.swift; sourceTree = "<group>"; };
-		409F4387265DE2B100690A61 /* SignUpScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpScreen.swift; sourceTree = "<group>"; };
+		409F4387265DE2B100690A61 /* TokenSignUpScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenSignUpScreen.swift; sourceTree = "<group>"; };
 		409F438A265DE2C200690A61 /* StreamTimeline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamTimeline.swift; sourceTree = "<group>"; };
 		409F438B265DE2C200690A61 /* StreamTimelineScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamTimelineScreen.swift; sourceTree = "<group>"; };
 		409F438F265DE2CE00690A61 /* SystemNoticesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemNoticesView.swift; sourceTree = "<group>"; };
@@ -398,7 +398,7 @@
 			isa = PBXGroup;
 			children = (
 				409F4381265DE29600690A61 /* SetupCircleCard.swift */,
-				409F4387265DE2B100690A61 /* SignUpScreen.swift */,
+				409F4387265DE2B100690A61 /* TokenSignUpScreen.swift */,
 			);
 			path = Signup;
 			sourceTree = "<group>";
@@ -569,7 +569,7 @@
 				409F4379265DE25000690A61 /* PhotoGalleryCreationSheet.swift in Sources */,
 				409F42FE265DE0A200690A61 /* MatrixMessage.swift in Sources */,
 				404C72D3265DDF35000473DF /* ContentView.swift in Sources */,
-				409F4388265DE2B100690A61 /* SignUpScreen.swift in Sources */,
+				409F4388265DE2B100690A61 /* TokenSignUpScreen.swift in Sources */,
 				409F4326265DE12600690A61 /* CloudImagePicker.swift in Sources */,
 				409F4333265DE15F00690A61 /* CircleAvatar.swift in Sources */,
 				409F438D265DE2C200690A61 /* StreamTimelineScreen.swift in Sources */,

@@ -26,7 +26,7 @@ struct LoggedOutScreen: View {
         case .login:
             LoginScreen(matrix: store, selectedScreen: $screen)
         case .signup:
-            SignUpScreen(matrix: store, selectedScreen: $screen)
+            TokenSignUpScreen(matrix: store, selectedScreen: $screen)
         }
     }
 }
