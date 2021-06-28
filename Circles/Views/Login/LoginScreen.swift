@@ -93,6 +93,7 @@ struct LoginScreen: View {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
+            .padding(.bottom)
 
 
         }
