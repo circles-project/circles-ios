@@ -182,10 +182,10 @@ struct RoomMessageComposer: View {
                             Image(uiImage: self.newImage ?? UIImage())
                                 //.scaledToFit()
                                 .resizable()
-                                .scaledToFill()
+                                .scaledToFit()
                                 //.frame(height: imageHeight)
                                 .clipShape(RoundedRectangle(cornerRadius: 6))
-                                .layoutPriority(-1)
+                                //.layoutPriority(-1)
                             //TextField("Enter your optional caption here", text: $newMessageText)
                             TextEditor(text: $newMessageText)
                                 .lineLimit(2)
@@ -193,6 +193,7 @@ struct RoomMessageComposer: View {
                                 .foregroundColor(.gray)
                                 .multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
                                 .padding(5)
+                                //.layoutPriority(1)
                         }
                 default:
                     Image(uiImage: self.newImage ?? UIImage())

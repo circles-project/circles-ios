@@ -135,7 +135,7 @@ struct CircleTimelineScreen: View {
                 .layoutPriority(1)
             
             StreamTimeline(stream: circle.stream)
-                .navigationBarTitle(circle.name)
+                .navigationBarTitle(circle.name, displayMode: .inline)
                 .toolbar {
                     ToolbarItemGroup(placement: .automatic) {
                         toolbarMenu
