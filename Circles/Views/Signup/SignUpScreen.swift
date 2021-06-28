@@ -363,6 +363,7 @@ struct SignUpScreen: View {
 
                 HStack {
                     TextField("you@example.com", text: $emailAddress)
+                        .keyboardType(.emailAddress)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
                     Spacer()
