@@ -13,7 +13,9 @@ struct LoggedOutScreen: View {
     
     enum Screen: String {
         case login
-        case signup
+        case signupMain
+        case tokenSignup
+        case appstoreSignup
         // FIXME Replace .signup with these once we're in the App Store
         //case subscribe
         //case register
@@ -25,8 +27,12 @@ struct LoggedOutScreen: View {
         switch screen {
         case .login:
             LoginScreen(matrix: store, selectedScreen: $screen)
-        case .signup:
+        case .signupMain:
+            SignupScreen(matrix: store, selectedScreen: $screen)
+        case .tokenSignup:
             TokenSignUpScreen(matrix: store, selectedScreen: $screen)
+        case .appstoreSignup:
+            AppStoreSignUpScreen(matrix: store, selectedScreen: $screen)
         }
     }
 }

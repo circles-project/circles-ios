@@ -82,7 +82,7 @@ struct LoginScreen: View {
             Button(action: {
                 self.matrix.startNewSignupSession { response in
                     if response.isSuccess {
-                        self.selectedScreen = .signup
+                        self.selectedScreen = .signupMain
                     }
                 }
             }) {
