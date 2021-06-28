@@ -97,13 +97,15 @@ struct RoomMessageComposer: View {
                 self.newMessageText = ""
                 self.newImage = UIImage()
             }) {
-                Image(systemName: "xmark")
-                Text("Cancel")
+                //Image(systemName: "xmark")
+                //Text("Cancel")
+                Label("Cancel", systemImage: "xmark")
+                    .foregroundColor(.red)
+                    .padding(.vertical, 2)
+                    .padding(.horizontal, 5)
+                    //.background(RoundedRectangle(cornerRadius: 4).stroke(Color.red, lineWidth: 1))
             }
-            .foregroundColor(.red)
-            .padding(.vertical, 2)
-            .padding(.horizontal, 5)
-            .background(RoundedRectangle(cornerRadius: 4).stroke(Color.red, lineWidth: 1))
+
             Button(action: {
                 switch(self.newMessageType) {
                 case .text:
@@ -152,13 +154,15 @@ struct RoomMessageComposer: View {
                     print("COMPOSER Doing nothing for now...")
                 }
             }) {
-                Image(systemName: "square.and.arrow.up")
-                Text("Send")
+                //Image(systemName: "paperplane.fill")
+                //Text("Send")
+                Label("Send", systemImage: "paperplane.fill")
+                    .disabled(inProgress)
+                    .padding(.vertical, 2)
+                    .padding(.horizontal, 5)
+                    //.background(RoundedRectangle(cornerRadius: 4).stroke(Color.blue, lineWidth: 1))
             }
-            .disabled(inProgress)
-            .padding(.vertical, 2)
-            .padding(.horizontal, 5)
-            .background(RoundedRectangle(cornerRadius: 4).stroke(Color.blue, lineWidth: 1))
+
         }
         //.padding([.leading, .trailing])
         .padding(.leading)
@@ -174,7 +178,7 @@ struct RoomMessageComposer: View {
                 case .text:
                     TextEditor(text: $newMessageText)
                         //.frame(height: 90)
-                        .foregroundColor(.gray)
+                        //.foregroundColor(.gray)
                         .multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
                         .lineLimit(10)
                 case .image:
@@ -190,7 +194,7 @@ struct RoomMessageComposer: View {
                             TextEditor(text: $newMessageText)
                                 .lineLimit(2)
                                 //.frame(height: textHeight)
-                                .foregroundColor(.gray)
+                                //.foregroundColor(.gray)
                                 .multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
                                 .padding(5)
                                 //.layoutPriority(1)
