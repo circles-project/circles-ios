@@ -158,7 +158,7 @@ struct MessageCard: View {
                 }
                 .frame(minWidth: 200, maxWidth: 400, minHeight: 200, maxHeight: 500, alignment: .center)
             default:
-                Text("Can't display this message yet")
+                Text("This version of Circles can't display this message yet")
             }
         }
     }
