@@ -1,4 +1,4 @@
-//  Copyright 2020, 2021 Kombucha Digital Privacy Systems LLC
+//  Copyright 2021 Kombucha Digital Privacy Systems LLC
 //
 //  SignUpScreen.swift
 //  Circles for iOS

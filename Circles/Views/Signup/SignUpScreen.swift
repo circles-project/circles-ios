@@ -1,4 +1,4 @@
-//  Copyright 2020, 2021 Kombucha Digital Privacy Systems LLC
+//  Copyright 2021 Kombucha Digital Privacy Systems LLC
 //
 //  SignupScreen.swift
 //  Circles
@@ -12,8 +12,24 @@ struct SignupScreen: View {
     var matrix: MatrixInterface
     @Binding var selectedScreen: LoggedOutScreen.Screen
 
+    var cancel: some View {
+        HStack {
+            Button(action: {
+                self.selectedScreen = .login
+            }) {
+                Text("Cancel")
+                    .font(.footnote)
+                    .padding(.top, 5)
+                    .padding(.leading, 10)
+            }
+            Spacer()
+        }
+    }
+
     var body: some View {
         VStack {
+            cancel
+
             Text("Sign up for Circles")
                 .font(.title)
                 .fontWeight(.bold)

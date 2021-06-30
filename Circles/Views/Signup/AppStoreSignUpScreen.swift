@@ -1,4 +1,4 @@
-//  Copyright 2020, 2021 Kombucha Digital Privacy Systems LLC
+//  Copyright 2021 Kombucha Digital Privacy Systems LLC
 //
 //  AppStoreSignUpScreen.swift
 //  Circles
@@ -12,7 +12,7 @@ struct SubscriptionCard: View {
     let plan: String
     @Binding var selectedPlan: String
 
-    let colors = ["Basic": Color.pink, "Standard": Color.green, "Premium": Color.purple]
+    static let colors = ["Basic": Color.pink, "Standard": Color.green, "Premium": Color.purple]
 
     var background: some View {
         if plan == selectedPlan {
@@ -25,7 +25,7 @@ struct SubscriptionCard: View {
     }
 
     var backgroundColor: Color {
-        colors[plan] ?? Color.accentColor
+        SubscriptionCard.colors[plan] ?? Color.accentColor
     }
 
     var textColor: Color {
@@ -70,31 +70,12 @@ struct SubscriptionCard: View {
     }
 }
 
-struct AppStoreSignUpScreen: View {
-    var matrix: MatrixInterface
-    @Binding var selectedScreen: LoggedOutScreen.Screen
+struct SubscriptionLevelForm: View {
+    @Binding var selectedPlan: String
     let plans = ["Basic", "Standard", "Premium"]
-    @State var selectedPlan: String = "Standard"
-
-    var cancel: some View {
-        HStack {
-            Button(action: {
-                self.selectedScreen = .signupMain
-            }) {
-                Text("Cancel")
-                    .font(.footnote)
-                    .padding(.top, 5)
-                    .padding(.leading, 10)
-            }
-            Spacer()
-        }
-
-    }
 
     var body: some View {
         VStack {
-            cancel
-
             Text("Choose a subscription")
                 .font(.title)
                 .fontWeight(.bold)
@@ -110,6 +91,77 @@ struct AppStoreSignUpScreen: View {
 
             Button(action: {}) {
                 Text("Sign Up for \(selectedPlan)")
+                    .padding()
+                    .frame(width: 300.0, height: 40.0)
+                    .foregroundColor(.white)
+                    //.background(Color.accentColor)
+                    //.background(LinearGradient(gradient: Gradient(colors: [Color.blue, SubscriptionCard.colors[selectedPlan] ?? Color.accentColor]), startPoint: .leading, endPoint: .trailing))
+                    .background(SubscriptionCard.colors[selectedPlan] ?? Color.accentColor)
+                    .cornerRadius(10)
+            }
+            .padding()
+        }
+    }
+}
+
+struct AppStoreSignUpScreen: View {
+    var matrix: MatrixInterface
+    @Binding var selectedScreen: LoggedOutScreen.Screen
+    @State var selectedPlan: String = "Standard"
+    @State var selectedTerm: Int = 3
+    let terms = [3, 6, 12]
+
+    var cancel: some View {
+        HStack {
+            Button(action: {
+                self.selectedScreen = .signupMain
+            }) {
+                Text("Cancel")
+                    .font(.footnote)
+                    .padding(.top, 5)
+                    .padding(.leading, 10)
+            }
+            Spacer()
+        }
+    }
+
+    var body: some View {
+        VStack {
+            cancel
+
+            Text("Choose subscription term")
+                .font(.title)
+                .fontWeight(.bold)
+                .padding()
+
+            ForEach(terms, id: \.self) { term in
+                Button(action: {
+                    self.selectedTerm = term
+                }) {
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text("\(term) months for $X.YY")
+                                .font(.title3)
+                                .fontWeight(.bold)
+                            Text("Save $X.YZ")
+                                .padding(.leading)
+                        }
+                        .padding(.leading)
+                        Spacer()
+                    }
+                    .frame(width: 300, height: 100)
+                    .background(RoundedRectangle(cornerRadius: 10).stroke(Color.accentColor, lineWidth: 2))
+                }
+                .buttonStyle(PlainButtonStyle())
+                .padding()
+            }
+
+            Spacer()
+
+            Text("Subscriptions will automatically renew until canceled")
+                .font(.footnote)
+            Button(action: {}) {
+                Text("Purchase")
                     .padding()
                     .frame(width: 300.0, height: 40.0)
                     .foregroundColor(.white)
