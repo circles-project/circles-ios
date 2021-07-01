@@ -1,6 +1,35 @@
 {
   "products" : [
-
+    {
+      "displayPrice" : "2.99",
+      "familyShareable" : false,
+      "internalID" : "111DE1B5",
+      "localizations" : [
+        {
+          "description" : "Our first test item",
+          "displayName" : "Test Non-con A",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.temporary.id.nonconsumable.a",
+      "referenceName" : "Test Non-Consumable A",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "0.99",
+      "familyShareable" : false,
+      "internalID" : "71D5506C",
+      "localizations" : [
+        {
+          "description" : "Our second testing item, also for purchase",
+          "displayName" : "Test Non-com B",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.temporary.id.nonconsumable.b",
+      "referenceName" : "Test Non-Consumable B",
+      "type" : "NonConsumable"
+    }
   ],
   "settings" : {
 

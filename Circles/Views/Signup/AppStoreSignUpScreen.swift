@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import StoreKit
 
 struct SubscriptionCard: View {
     let plan: String
@@ -104,12 +105,36 @@ struct SubscriptionLevelForm: View {
     }
 }
 
+extension SKProduct {
+    /// - returns: The cost of the product formatted in the local currency.
+    var regularPrice: String? {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = self.priceLocale
+        return formatter.string(from: self.price)
+    }
+}
+
 struct AppStoreSignUpScreen: View {
     var matrix: MatrixInterface
+    @EnvironmentObject var appStore: AppStoreInterface
+
     @Binding var selectedScreen: LoggedOutScreen.Screen
     @State var selectedPlan: String = "Standard"
     @State var selectedTerm: Int = 3
     let terms = [3, 6, 12]
+
+    @State var selectedProduct: SKProduct?
+
+    func getProducts() {
+        var identifiers = Set<String>()
+        guard let storefront = SKPaymentQueue.default().storefront else {
+            print("STOREKIT\tError: Couldn't get storefront")
+            return
+        }
+        //for (identifier, _) in
+    }
+
 
     var cancel: some View {
         HStack {
@@ -134,6 +159,7 @@ struct AppStoreSignUpScreen: View {
                 .fontWeight(.bold)
                 .padding()
 
+            /*
             ForEach(terms, id: \.self) { term in
                 Button(action: {
                     self.selectedTerm = term
@@ -155,19 +181,61 @@ struct AppStoreSignUpScreen: View {
                 .buttonStyle(PlainButtonStyle())
                 .padding()
             }
+            */
+            ForEach(appStore.products, id: \.self) { product in
+                let alreadyPurchased = UserDefaults.standard.bool(forKey: product.productIdentifier)
+                Button(action: {
+                    self.selectedProduct = product
+                }) {
+                    VStack(alignment: .leading) {
+                        let bigFont = Font.title2
+                        HStack {
+                            Text(product.localizedTitle)
+                                .font(bigFont)
+                                .fontWeight(.bold)
+                            Spacer()
+                            if alreadyPurchased {
+                                Text ("Purchased")
+                                    .font(bigFont)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.green)
+                            } else {
+                                Text("\(product.regularPrice!)")
+                                    .font(bigFont)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.blue)
+                            }
+                        }
+
+                        Text(product.localizedDescription)
+                            .font(.subheadline)
+                    }
+                    .padding(5)
+                    .frame(width: 300, height: 100)
+                    .background(RoundedRectangle(cornerRadius: 10).stroke(Color.accentColor, lineWidth: 2))
+                    .padding()
+                }
+                .buttonStyle(PlainButtonStyle())
+                .disabled(alreadyPurchased)
+            }
 
             Spacer()
 
             Text("Subscriptions will automatically renew until canceled")
                 .font(.footnote)
-            Button(action: {}) {
-                Text("Purchase")
+            Button(action: {
+                if let product = selectedProduct {
+                    appStore.purchaseProduct(product: product)
+                }
+            }) {
+                Text("Purchase \(selectedProduct?.localizedTitle ?? "")")
                     .padding()
                     .frame(width: 300.0, height: 40.0)
                     .foregroundColor(.white)
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
+            .disabled(selectedProduct == nil)
             .padding()
         }
     }

@@ -13,6 +13,7 @@
 		404C72D8265DDF35000473DF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 404C72D7265DDF35000473DF /* Preview Assets.xcassets */; };
 		4069F79826729DD200FB6090 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4069F79726729DD200FB6090 /* StoreKit.framework */; };
 		4073E7C4267915AF001A80CF /* RepliesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4073E7C3267915AF001A80CF /* RepliesView.swift */; };
+		40878FBC268E4D9000A66EF0 /* AppStoreInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40878FBB268E4D9000A66EF0 /* AppStoreInterface.swift */; };
 		409F42E3265DE00700690A61 /* Array+Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F42E2265DE00700690A61 /* Array+Sample.swift */; };
 		409F42E6265DE03B00690A61 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F42E5265DE03B00690A61 /* Utils.swift */; };
 		409F42E9265DE06C00690A61 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F42E8265DE06C00690A61 /* WebView.swift */; };
@@ -114,6 +115,7 @@
 		405BF7862683C5FA006E8756 /* CirclesSubscriptions.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = CirclesSubscriptions.storekit; sourceTree = "<group>"; };
 		4069F79726729DD200FB6090 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		4073E7C3267915AF001A80CF /* RepliesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepliesView.swift; sourceTree = "<group>"; };
+		40878FBB268E4D9000A66EF0 /* AppStoreInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreInterface.swift; sourceTree = "<group>"; };
 		409F42E2265DE00700690A61 /* Array+Sample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Sample.swift"; sourceTree = "<group>"; };
 		409F42E5265DE03B00690A61 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		409F42E8265DE06C00690A61 /* WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
@@ -274,6 +276,7 @@
 		409F42E0265DDFE300690A61 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				40878FBB268E4D9000A66EF0 /* AppStoreInterface.swift */,
 				409F42E2265DE00700690A61 /* Array+Sample.swift */,
 				40AEA6722678E24100C9CBD1 /* BlurHashDecode.swift */,
 				40AEA6732678E24200C9CBD1 /* BlurHashEncode.swift */,
@@ -610,6 +613,7 @@
 				409F436D265DE24000690A61 /* PeopleOverviewScreen.swift in Sources */,
 				409F4301265DE0A200690A61 /* MatrixDevice.swift in Sources */,
 				409F434C265DE18A00690A61 /* InvitationCard.swift in Sources */,
+				40878FBC268E4D9000A66EF0 /* AppStoreInterface.swift in Sources */,
 				409F4382265DE29600690A61 /* SetupCircleCard.swift in Sources */,
 				409F4390265DE2CE00690A61 /* SystemNoticesView.swift in Sources */,
 				409F438C265DE2C200690A61 /* StreamTimeline.swift in Sources */,

@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import StoreKit
 
 struct SignupScreen: View {
     var matrix: MatrixInterface
@@ -62,6 +63,7 @@ struct SignupScreen: View {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
+            .disabled( !SKPaymentQueue.canMakePayments() )
 
             Spacer()
         }
