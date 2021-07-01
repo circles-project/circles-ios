@@ -136,7 +136,7 @@ struct AppStoreSignUpScreen: View {
     }
 
 
-    var cancel: some View {
+    var buttonBar: some View {
         HStack {
             Button(action: {
                 self.selectedScreen = .signupMain
@@ -147,12 +147,20 @@ struct AppStoreSignUpScreen: View {
                     .padding(.leading, 10)
             }
             Spacer()
+            Button(action: {
+                appStore.restoreProducts()
+            }) {
+                Text("Restore purchases")
+                    .font(.footnote)
+                    .padding(.top, 5)
+                    .padding(.trailing, 10)
+            }
         }
     }
 
     var body: some View {
         VStack {
-            cancel
+            buttonBar
 
             Text("Choose subscription term")
                 .font(.title)
@@ -183,7 +191,7 @@ struct AppStoreSignUpScreen: View {
             }
             */
             ForEach(appStore.products, id: \.self) { product in
-                let alreadyPurchased = UserDefaults.standard.bool(forKey: product.productIdentifier)
+                let alreadyPurchased = UserDefaults.standard.bool(forKey: product.productIdentifier) || appStore.purchased.contains(product.productIdentifier)
                 Button(action: {
                     self.selectedProduct = product
                 }) {

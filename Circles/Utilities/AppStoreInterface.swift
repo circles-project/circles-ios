@@ -14,6 +14,7 @@ import StoreKit
 class AppStoreInterface: NSObject, SKPaymentTransactionObserver, ObservableObject {
 
     @Published var products = [SKProduct]()
+    @Published var purchased = [String]()
 
     //Initialize the store observer.
     override init() {
@@ -34,6 +35,7 @@ class AppStoreInterface: NSObject, SKPaymentTransactionObserver, ObservableObjec
                 print("APPSTORE\tPurchase was successful")
                 // Remember that we purchased this
                 UserDefaults.standard.set(true, forKey: transaction.payment.productIdentifier)
+                self.purchased.append(transaction.payment.productIdentifier)
                 // Finish the successful transaction.
                 SKPaymentQueue.default().finishTransaction(transaction)
             // The transaction failed.
@@ -44,6 +46,9 @@ class AppStoreInterface: NSObject, SKPaymentTransactionObserver, ObservableObjec
             // There're restored products.
             case .restored:
                 print("APPSTORE\tTransaction is a restore")
+                // Remember that we purchased this
+                UserDefaults.standard.set(true, forKey: transaction.payment.productIdentifier)
+                self.purchased.append(transaction.payment.productIdentifier)
                 SKPaymentQueue.default().finishTransaction(transaction)
 
             @unknown default: fatalError("APPSTORE\tUnknown fatal error")
@@ -73,6 +78,11 @@ class AppStoreInterface: NSObject, SKPaymentTransactionObserver, ObservableObjec
         } else {
             print("APPSTORE\tError: User can't make payment.")
         }
+    }
+
+    func restoreProducts() {
+        print("APPSTORE\tRestoring purchased products")
+        SKPaymentQueue.default().restoreCompletedTransactions()
     }
 
 }
