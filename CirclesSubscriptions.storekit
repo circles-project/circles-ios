@@ -53,14 +53,80 @@
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "",
-              "displayName" : "",
+              "description" : "1 GB secure storage, 3 month subscription",
+              "displayName" : "3 Months",
               "locale" : "en_US"
             }
           ],
-          "productID" : "social.kombucha.circles.membership.standard_3_month\n",
+          "productID" : "social.kombucha.circles.standard03month",
           "recurringSubscriptionPeriod" : "P3M",
           "referenceName" : "Standard 3 Month",
+          "subscriptionGroupID" : "9168B5F2",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "24.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "E36E940D",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "1 GB storage, 6 month subscription",
+              "displayName" : "6 Months",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "social.kombucha.circles.standard06month",
+          "recurringSubscriptionPeriod" : "P6M",
+          "referenceName" : "Standard 6 Month",
+          "subscriptionGroupID" : "9168B5F2",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "9.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "EC5F0430",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "1 GB secure storage, 2 month subscription",
+              "displayName" : "2 months",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "social.kombucha.circles.standard02month",
+          "recurringSubscriptionPeriod" : "P2M",
+          "referenceName" : "Standard 2 Month",
+          "subscriptionGroupID" : "9168B5F2",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "49.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "66563094",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "1 GB storage, 12 month subscription",
+              "displayName" : "1 Year",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "social.kombucha.circles.standard12month",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Standard 12 Month",
           "subscriptionGroupID" : "9168B5F2",
           "type" : "RecurringSubscription"
         }

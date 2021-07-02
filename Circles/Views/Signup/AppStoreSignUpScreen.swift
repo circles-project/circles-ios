@@ -158,6 +158,12 @@ struct AppStoreSignUpScreen: View {
         }
     }
 
+    func sortProductsByPrice(p0: SKProduct, p1: SKProduct) -> Bool {
+        let d0 = p0.price as Decimal
+        let d1 = p1.price as Decimal
+        return d0 < d1
+    }
+
     var body: some View {
         VStack {
             buttonBar
@@ -190,8 +196,15 @@ struct AppStoreSignUpScreen: View {
                 .padding()
             }
             */
-            ForEach(appStore.products, id: \.self) { product in
+
+            let products = appStore.products.sorted(by: sortProductsByPrice)
+            ForEach(products, id: \.self) { product in
                 let alreadyPurchased = UserDefaults.standard.bool(forKey: product.productIdentifier) || appStore.purchased.contains(product.productIdentifier)
+                let selected = product == self.selectedProduct
+                //let borderColor = self.selectedProduct == nil ? Color.accentColor : (selected ? Color.primary : Color.accentColor)
+                let borderColor = Color.accentColor
+                //let textColor = self.selectedProduct == nil ? Color.primary : (selected ? Color.primary : Color.gray)
+                let backgroundColor = selected ? Color.accentColor : Color.clear
                 Button(action: {
                     self.selectedProduct = product
                 }) {
@@ -211,16 +224,19 @@ struct AppStoreSignUpScreen: View {
                                 Text("\(product.regularPrice!)")
                                     .font(bigFont)
                                     .fontWeight(.bold)
-                                    .foregroundColor(.blue)
+                                    //.foregroundColor(.blue)
                             }
                         }
 
                         Text(product.localizedDescription)
                             .font(.subheadline)
                     }
-                    .padding(5)
+                    //.foregroundColor(textColor)
+                    .padding()
                     .frame(width: 300, height: 100)
-                    .background(RoundedRectangle(cornerRadius: 10).stroke(Color.accentColor, lineWidth: 2))
+                    .background(backgroundColor)
+                    .cornerRadius(10)
+                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(borderColor, lineWidth: 2))
                     .padding()
                 }
                 .buttonStyle(PlainButtonStyle())
@@ -243,7 +259,7 @@ struct AppStoreSignUpScreen: View {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
-            .disabled(selectedProduct == nil)
+            .disabled(selectedProduct == nil || appStore.purchased.contains(selectedProduct!.productIdentifier))
             .padding()
         }
     }

@@ -21,7 +21,7 @@ struct CirclesApp: App {
                 .environmentObject(iapObserver)
                 .onAppear {
                     SKPaymentQueue.default().add(iapObserver)
-                    iapObserver.fetchProducts(matchingIdentifiers: ["social.kombucha.circles.membership.standard_3_month", "com.temporary.id.nonconsumable.a", "com.temporary.id.nonconsumable.b"])
+                    iapObserver.fetchProducts(matchingIdentifiers: ["social.kombucha.circles.standard02month", "social.kombucha.circles.standard06month", "social.kombucha.circles.standard12month"])
                 }
                 .onDisappear {
                     SKPaymentQueue.default().remove(iapObserver)
