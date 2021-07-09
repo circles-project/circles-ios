@@ -12,6 +12,7 @@ struct PersonDetailView: View {
     @ObservedObject var user: MatrixUser
     @State var showComposer = false
     @State var selectedRoom: MatrixRoom? = nil
+    @State var selectedMessage: MatrixMessage?
     
     var avatar: Image {
         return (user.avatarImage != nil)
@@ -41,7 +42,8 @@ struct PersonDetailView: View {
             .padding(.leading, 20)
         }
     }
-    
+
+    /*
     var composer: some View {
         HStack {
             if let room = self.selectedRoom {
@@ -61,6 +63,7 @@ struct PersonDetailView: View {
         }
         .padding(.leading, 10)
     }
+    */
     
     var timeline: some View {
         VStack {
@@ -111,8 +114,10 @@ struct PersonDetailView: View {
                 Divider()
                 
                 if let room = self.selectedRoom {
+                    /*
                     composer
                         .padding([.top,.leading,.trailing])
+                    */
                     
                     TimelineView(room: room)
                         .padding(.leading, 10)

@@ -13,6 +13,7 @@ enum GroupScreenSheetType: String {
     case invite
     case configure
     case security
+    case composer
     //case pickHeaderImage
     //case pickProfileImage
     //case pickMessageImage
@@ -32,7 +33,7 @@ struct GroupTimelineScreen: View {
     @State var showComposer = false
 
     @State private var sheetType: GroupScreenSheetType? = nil
-    
+
     @State private var newImageForHeader = UIImage()
     @State private var newImageForProfile = UIImage()
     @State private var newImageForMessage = UIImage()
@@ -42,7 +43,10 @@ struct GroupTimelineScreen: View {
     
     @State private var newTopic = ""
     @State private var showTopicPopover = false
-    
+
+    @State var nilParentMessage: MatrixMessage? = nil
+
+    /*
     var composer: some View {
         HStack {
             if showComposer {
@@ -53,20 +57,15 @@ struct GroupTimelineScreen: View {
                 Button(action: {self.showComposer = true}) {
                     Label("Post a New Message", systemImage: "rectangle.badge.plus")
                 }
-                //.padding([.top, .leading, .trailing])
-                //.padding()
-                /*
-                .background(RoundedRectangle(cornerRadius: 10)
-                                .stroke(lineWidth: 2)
-                                .foregroundColor(.accentColor))
-                */
             }
         }
         .padding(.top, 5)
     }
+    */
     
     var timeline: some View {
-        TimelineView(room: group.room, displayStyle: .timeline)
+        TimelineView(room: group.room,
+                     displayStyle: .timeline)
     }
     
     var toolbarMenu: some View {
@@ -101,6 +100,12 @@ struct GroupTimelineScreen: View {
                 Label("Security", systemImage: "shield.fill")
             }
 
+            Button(action: {
+                self.sheetType = .composer
+            }) {
+                Label("Post a new message", systemImage: "rectangle.badge.plus")
+            }
+
         }
         label: {
             Label("More", systemImage: "ellipsis.circle")
@@ -114,8 +119,8 @@ struct GroupTimelineScreen: View {
     var body: some View {
         VStack(alignment: .center) {
 
-            composer
-                .layoutPriority(1)
+            //composer
+            //    .layoutPriority(1)
 
             timeline
                 .sheet(item: $sheetType) { st in
@@ -132,8 +137,9 @@ struct GroupTimelineScreen: View {
                     case .security:
                         RoomSecurityInfoSheet(room: room)
 
-                    default:
-                        Text("Something went wrong")
+                    case .composer:
+                        MessageComposerSheet(room: room, parentMessage: $nilParentMessage)
+
                     }
                 }
         }

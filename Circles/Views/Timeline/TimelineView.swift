@@ -13,6 +13,11 @@ struct TimelineView: View {
     var displayStyle: MessageDisplayStyle = .timeline
     @State var debug = false
     @State var loading = false
+    @State var selectedMessage: MatrixMessage?
+    //@State var showReplyComposer = false
+    //@State var showDetailView = false
+    //@State var showReportingView = false
+    @State var sheetType: TimelineSheetType?
 
     /*
     init(room: MatrixRoom, displayStyle: MessageDisplayStyle = .timeline) {
@@ -97,6 +102,11 @@ struct TimelineView: View {
                                 Text("\(messages.firstIndex(of: msg) ?? -1)")
                             }
                             MessageCard(message: msg, displayStyle: displayStyle)
+                                .contextMenu {
+                                    MessageContextMenu(message: msg,
+                                                       selectedMessage: $selectedMessage,
+                                                       sheetType: $sheetType)
+                                }
                                 .padding(.top, 5)
                         }
                         RepliesView(room: room, parent: msg)
@@ -111,6 +121,24 @@ struct TimelineView: View {
                 
                 footer
                 
+            }
+        }
+        .sheet(item: $sheetType) { st in
+            switch(st) {
+
+            case .composer:
+                MessageComposerSheet(room: room, parentMessage: $selectedMessage)
+
+            case .detail:
+                if let msg = selectedMessage {
+                    MessageDetailSheet(message: msg, displayStyle: .timeline)
+                }
+
+            case .reporting:
+                if let msg = selectedMessage {
+                    MessageReportingSheet(message: msg)
+                }
+
             }
         }
     }

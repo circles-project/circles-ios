@@ -30,7 +30,7 @@ struct CircleTimelineScreen: View {
     var composer: some View {
         HStack {
             if showComposer && circle.outbound != nil {
-                RoomMessageComposer(room: circle.outbound!, isPresented: self.$showComposer)
+                RoomMessageComposer(room: circle.outbound!)
                     //.padding([.top, .leading, .trailing])
                     .padding([.top, .leading, .trailing], 5)
 

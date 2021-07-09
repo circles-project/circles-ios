@@ -8,6 +8,7 @@
 
 import SwiftUI
 import Foundation
+import MarkdownUI
 
 enum MessageDisplayStyle {
     case timeline
@@ -93,7 +94,7 @@ struct MessageCard: View {
     @ObservedObject var message: MatrixMessage
     var displayStyle: MessageDisplayStyle
     @Environment(\.colorScheme) var colorScheme
-    @State var showReplyComposer = false
+    //@State var showReplyComposer = false
     @State var reporting = false
     private let debug = false
     @State var showDetailView = false
@@ -131,8 +132,8 @@ struct MessageCard: View {
         VStack {
             switch(message.content) {
             case .text(let textContent):
-                // FIXME Do some GeometryReader stuff here to scale the frame appropriately for the given screen size
-                MessageText(textContent.body)
+                //MessageText(textContent.body)
+                Markdown(Document(textContent.body))
                     //.frame(minHeight: 30, maxHeight:400)
                     .padding(.horizontal, 3)
                     .padding(.vertical, 5)
@@ -144,7 +145,7 @@ struct MessageCard: View {
                             .padding(3)
 
                         if let caption = getCaption(body: imageContent.body) {
-                            Text(caption)
+                            Markdown(Document(caption))
                                 .padding(.horizontal, 3)
                                 .padding(.bottom, 5)
                         }
@@ -242,6 +243,7 @@ struct MessageCard: View {
                 .foregroundColor(colorScheme == .dark ? .black : .white)
                 .shadow(color: .gray, radius: 2, x: 0, y: 1)
         )
+        /*
         .contextMenu /*@START_MENU_TOKEN@*/{
             // Only allow replies for top-level posts
             // Otherwise it gets too crazy trying to display a threaded view on mobile
@@ -324,8 +326,10 @@ struct MessageCard: View {
                 Label("Delete", systemImage: "trash")
             }
         }/*@END_MENU_TOKEN@*/
+        */
     }
-    
+
+    /*
     var reportingDialog: some View {
         VStack {
             MessageReportingSheet(message: message, show: self.$reporting)
@@ -337,27 +341,34 @@ struct MessageCard: View {
                 .shadow(color: .gray, radius: 2, x: 0, y: 1)
         )
     }
+    */
     
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
                 mainCard
-                
+
+                /* // Moving this outside of the card itself, hoping to get SwiftUI to allocate it more space
                 if showReplyComposer {
                     RoomMessageComposer(room: message.room,
                                         isPresented: $showReplyComposer,
                                         inReplyTo: message)
                         .padding(.leading, 20)
+                        .layoutPriority(1)
                 }
+                */
             }
-            
+
+            /*
             if reporting {
                 reportingDialog
             }
+            */
         }
 
     }
-    
+
+    /*
     func saveEncryptedImage(content: mImageContent) {
         // FIXME TODO
     }
@@ -397,4 +408,5 @@ struct MessageCard: View {
             return
         }
     }
+ */
 }

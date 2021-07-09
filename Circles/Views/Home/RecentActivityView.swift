@@ -9,6 +9,7 @@
 import SwiftUI
 
 struct RecentActivityView: View {
+    @State var showReplyComposer = false
     var store: KSStore
     var body: some View {
         // Having multiple ScrollViews one inside the other makes things wonky

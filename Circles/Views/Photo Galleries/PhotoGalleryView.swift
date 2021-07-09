@@ -20,6 +20,7 @@ extension GallerySheetType: Identifiable {
 struct PhotoGalleryView: View {
     //@ObservedObject var room: MatrixRoom
     @ObservedObject var gallery: PhotoGallery
+    @State var selectedMessage: MatrixMessage?
     @Environment(\.presentationMode) var presentation
 
     @State var sheetType: GallerySheetType? = nil

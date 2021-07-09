@@ -11,8 +11,9 @@ import PhotosUI
 
 struct RoomMessageComposer: View {
     @ObservedObject var room: MatrixRoom
-    @Binding var isPresented: Bool
+    //@Binding var isPresented: Bool
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.presentationMode) var presentation
     var inReplyTo: MatrixMessage?
 
     
@@ -93,7 +94,8 @@ struct RoomMessageComposer: View {
 
             Spacer()
             Button(action: {
-                self.isPresented = false
+                //self.isPresented = false
+                self.presentation.wrappedValue.dismiss()
                 self.newMessageText = ""
                 self.newImage = UIImage()
             }) {
@@ -114,7 +116,8 @@ struct RoomMessageComposer: View {
                         print("REPLY\tSending reply")
                         parentMessage.postReply(text: self.newMessageText) { response in
                             if response.isSuccess {
-                                self.isPresented = false
+                                //self.isPresented = false
+                                self.presentation.wrappedValue.dismiss()
                             }
                             self.inProgress = false
                         }
@@ -129,7 +132,8 @@ struct RoomMessageComposer: View {
                                 if let eventId = str {
                                       print("COMPOSER Got event id \(eventId)")
                                 }
-                                self.isPresented = false
+                                //self.isPresented = false
+                                self.presentation.wrappedValue.dismiss()
                             }
                             self.inProgress = false
                         }
@@ -146,7 +150,8 @@ struct RoomMessageComposer: View {
                             print("COMPOSER Failed to post image: \(err)")
                         case .success(let maybeMsg):
                             print("COMPOSER Successfully posted image.  Got response [\(maybeMsg ?? "(No message)")].")
-                            self.isPresented = false
+                            //self.isPresented = false
+                            self.presentation.wrappedValue.dismiss()
                         }
                         self.inProgress = false
                     }

@@ -13,6 +13,7 @@ struct StreamTimeline: View {
     private var formatter: DateFormatter
     @State private var showDebug = false
     @State private var loading = false
+    @State var showReplyComposer = false
     
     init(stream: SocialStream) {
         self.stream = stream

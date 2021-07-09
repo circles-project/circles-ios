@@ -11,6 +11,7 @@ struct RepliesView: View {
     @ObservedObject var room: MatrixRoom
     var parent: MatrixMessage
     @State var expanded = false
+    @State var showReplyComposer = false
 
     var body: some View {
         VStack(alignment: .leading) {

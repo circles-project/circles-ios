@@ -14,8 +14,8 @@ struct MessageDetailSheet: View {
         VStack {
             MessageCard(message: message, displayStyle: displayStyle)
 
-            Text("Type: \(message.type)")
-            Text("Relates to: \(message.relatesToId ?? "none")")
+            //Text("Type: \(message.type)")
+            //Text("Relates to: \(message.relatesToId ?? "none")")
         }
     }
 }

@@ -10,7 +10,8 @@ import SwiftUI
 
 struct MessageReportingSheet: View {
     @ObservedObject var message: MatrixMessage
-    @Binding var show: Bool
+    //@Binding var show: Bool
+    @Environment(\.presentationMode) var presentation
     @State private var reportedSeverity: Double = 0.0
     let categories: [String] = [
         "Crude language",
@@ -32,7 +33,9 @@ struct MessageReportingSheet: View {
         HStack {
             let buttonPadding: CGFloat = 5
 
-            Button(action: {self.show = false}) {
+            Button(action: {
+                self.presentation.wrappedValue.dismiss()
+            }) {
                 Label("Cancel", systemImage: "xmark")
             }
             .padding(buttonPadding)
@@ -43,7 +46,7 @@ struct MessageReportingSheet: View {
                                     severity: Int(reportedSeverity),
                                     reasons: reasons) { response in
                     if response.isSuccess {
-                        self.show = false
+                        self.presentation.wrappedValue.dismiss()
                     }
                 }
             }) {

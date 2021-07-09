@@ -10,6 +10,7 @@ import SwiftUI
 
 struct SystemNoticesView: View {
     var store: KSStore
+    @State var selectedMessage: MatrixMessage?
     
     var body: some View {
         VStack(alignment: .leading) {
