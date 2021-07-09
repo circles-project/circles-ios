@@ -49,9 +49,19 @@ struct MessageContextMenu: View {
         }
 
         Button(action: {
+            // Well this is annoying.
+            // Apparently SwiftUI can't update the binding quickly enough
+            // So selectedMessage is still nil when the Sheet pops up
+            // Argh.
             self.selectedMessage = self.message
             //self.showDetailView = true
-            self.sheetType = .detail
+            print("MENU\tSelected message is \(self.selectedMessage?.id)")
+
+            let secondsDelay = 0.50
+            DispatchQueue.main.asyncAfter(deadline: .now() + secondsDelay) {
+                self.sheetType = .detail
+            }
+
         }) {
             Label("Show detailed view", systemImage: "magnifyingglass")
         }

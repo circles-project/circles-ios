@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MessageComposerSheet: View {
     var room: MatrixRoom
-    @Binding var parentMessage: MatrixMessage?
+    var parentMessage: MatrixMessage?
     @State var isPresented = true
 
     var body: some View {

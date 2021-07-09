@@ -8,7 +8,7 @@
 
 import SwiftUI
 import Foundation
-import MarkdownUI
+//import MarkdownUI
 
 enum MessageDisplayStyle {
     case timeline
@@ -132,8 +132,8 @@ struct MessageCard: View {
         VStack {
             switch(message.content) {
             case .text(let textContent):
-                //MessageText(textContent.body)
-                Markdown(Document(textContent.body))
+                MessageText(textContent.body)
+                //Markdown(Document(textContent.body))
                     //.frame(minHeight: 30, maxHeight:400)
                     .padding(.horizontal, 3)
                     .padding(.vertical, 5)
@@ -142,10 +142,11 @@ struct MessageCard: View {
                     Spacer()
                     VStack(alignment: .center) {
                         MessageThumbnail(message: message)
-                            .padding(3)
+                            .padding(1)
 
                         if let caption = getCaption(body: imageContent.body) {
-                            Markdown(Document(caption))
+                            //Markdown(Document(caption))
+                            Text(caption)
                                 .padding(.horizontal, 3)
                                 .padding(.bottom, 5)
                         }

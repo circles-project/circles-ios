@@ -12,6 +12,11 @@ struct RepliesView: View {
     var parent: MatrixMessage
     @State var expanded = false
     @State var showReplyComposer = false
+    // These are passed down through the View hierarchy from whatever View
+    // contains this timeline.  We could use @Environment, but I still don't
+    // trust SwiftUI with this after its total failure in the 1.0 days.
+    @Binding var selectedMessage: MatrixMessage?
+    @Binding var sheetType: TimelineSheetType?
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -31,6 +36,11 @@ struct RepliesView: View {
             if expanded {
                 ForEach(messages) { message in
                     MessageCard(message: message, displayStyle: .timeline)
+                        .contextMenu {
+                            MessageContextMenu(message: message,
+                                               selectedMessage: $selectedMessage,
+                                               sheetType: $sheetType)
+                        }
                 }
                 HStack {
                     Spacer()

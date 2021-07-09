@@ -14,9 +14,6 @@ struct TimelineView: View {
     @State var debug = false
     @State var loading = false
     @State var selectedMessage: MatrixMessage?
-    //@State var showReplyComposer = false
-    //@State var showDetailView = false
-    //@State var showReportingView = false
     @State var sheetType: TimelineSheetType?
 
     /*
@@ -109,7 +106,9 @@ struct TimelineView: View {
                                 }
                                 .padding(.top, 5)
                         }
-                        RepliesView(room: room, parent: msg)
+                        RepliesView(room: room, parent: msg,
+                                    selectedMessage: $selectedMessage,
+                                    sheetType: $sheetType)
                     }
                     .padding([.leading, .trailing], 3)
 
@@ -127,11 +126,22 @@ struct TimelineView: View {
             switch(st) {
 
             case .composer:
-                MessageComposerSheet(room: room, parentMessage: $selectedMessage)
+                MessageComposerSheet(room: room, parentMessage: selectedMessage)
 
             case .detail:
-                if let msg = selectedMessage {
-                    MessageDetailSheet(message: msg, displayStyle: .timeline)
+                if let msg = self.selectedMessage {
+                    MessageDetailSheet(message: msg, displayStyle: .timeline,
+                                       selectedMessage: msg,
+                                       sheetType: nil)
+                } else {
+                    VStack {
+                        Text("Message Detail Sheet")
+                            .font(.title2)
+                        Text("No message selected...")
+                        if let msgTryAgain = self.selectedMessage {
+                            Text("Selected message is: \(msgTryAgain.id)")
+                        }
+                    }
                 }
 
             case .reporting:

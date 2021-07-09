@@ -138,7 +138,7 @@ struct GroupTimelineScreen: View {
                         RoomSecurityInfoSheet(room: room)
 
                     case .composer:
-                        MessageComposerSheet(room: room, parentMessage: $nilParentMessage)
+                        MessageComposerSheet(room: room, parentMessage: nilParentMessage)
 
                     }
                 }
