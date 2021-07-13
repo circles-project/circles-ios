@@ -166,7 +166,7 @@ struct TokenSignUpScreen: View {
                 Spacer()
                 Button(action: {
                     self.showAlert = true
-                    self.alertTitle = "Token"
+                    self.alertTitle = "Signup Token"
                     self.alertMessage = helpTextForToken
                 }) {
                     Image(systemName: "questionmark.circle")
