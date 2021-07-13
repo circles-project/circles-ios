@@ -466,7 +466,8 @@ struct TokenSignUpScreen: View {
             Button(action: {
                 //self.selectedScreen = .login
                 self.pending = true
-                matrix.finishSignupAndConnect()
+                //matrix.finishSignupAndConnect()
+                self.selectedScreen = .login
             }) {
                 Text("Next: Log in")
                     .padding()
