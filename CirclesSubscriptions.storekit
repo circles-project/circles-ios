@@ -1,4 +1,8 @@
 {
+  "identifier" : "D2EB4603",
+  "nonRenewingSubscriptions" : [
+
+  ],
   "products" : [
     {
       "displayPrice" : "2.99",
@@ -135,6 +139,6 @@
   ],
   "version" : {
     "major" : 1,
-    "minor" : 0
+    "minor" : 1
   }
 }

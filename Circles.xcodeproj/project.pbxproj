@@ -433,6 +433,7 @@
 				40878FC62694C00000A66EF0 /* MessageContextMenu.swift */,
 				40CEFCD326780D8300857D4D /* MessageDetailSheet.swift */,
 				409F4361265DE21A00690A61 /* MessageReportingSheet.swift */,
+				40F906BA269DF96100287B27 /* MessageSheetType.swift */,
 				409F439B265DE38200690A61 /* ProfileImageView.swift */,
 				4073E7C3267915AF001A80CF /* RepliesView.swift */,
 				409F4384265DE2A400690A61 /* RoomMessageComposer.swift */,
@@ -440,7 +441,6 @@
 				409F438B265DE2C200690A61 /* StreamTimelineScreen.swift */,
 				40878FCC2696198500A66EF0 /* TimelineSheetType.swift */,
 				409F4392265DE2DE00690A61 /* TimelineView.swift */,
-				40F906BA269DF96100287B27 /* MessageSheetType.swift */,
 			);
 			path = Timeline;
 			sourceTree = "<group>";
