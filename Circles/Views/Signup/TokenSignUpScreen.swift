@@ -43,7 +43,7 @@ struct TokenSignUpScreen: View {
     @State var alertMessage = ""
 
     @State var pending = false
-    @State var showTokenError = false
+    //@State var showTokenError = false
     
     let helpTextForToken = """
     In order to sign up for the service, every new user must present a valid registration token.
@@ -53,6 +53,14 @@ struct TokenSignUpScreen: View {
     
     let helpTextForTokenFailed = """
     Failed to validate token
+    """
+
+    let helpTextForName = "Your name as you would like it to appear to others"
+
+    let helpTextForEmailAddress = """
+    Must be a currently valid and active address.
+
+    Don't worry -- we will only use this address for security and other alerts about your account.  We don't send spam, and we don't sell your address.
     """
     
     let helpTextForEmailCode = """
@@ -82,7 +90,8 @@ struct TokenSignUpScreen: View {
 
     Punctuation characters are good, too, but don't make it *too* complicated.  A passphrase that you can't remember doesn't do you any good.
     """
-    
+
+    /*
     enum HelpItem: String, Identifiable {
         var id: String {
             return self.rawValue
@@ -96,6 +105,7 @@ struct TokenSignUpScreen: View {
         case password
     }
     @State var showHelpItem: HelpItem?
+    */
     
     enum SignupStage: String, Identifiable {
         var id: String {
@@ -154,7 +164,11 @@ struct TokenSignUpScreen: View {
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
                 Spacer()
-                Button(action: {showHelpItem = .signupToken}) {
+                Button(action: {
+                    self.showAlert = true
+                    self.alertTitle = "Token"
+                    self.alertMessage = helpTextForToken
+                }) {
                     Image(systemName: "questionmark.circle")
                 }
             }
@@ -171,7 +185,9 @@ struct TokenSignUpScreen: View {
                     switch response {
                     case .failure(let err):
                         print("SIGNUP\tToken stage failed: \(err)")
-                        self.showHelpItem = .tokenFailed
+                        self.showAlert = true
+                        self.alertTitle = "Token validation failed"
+                        self.alertMessage = helpTextForTokenFailed
                     case .success:
                         self.stage = next[currentStage]!
                     }
@@ -186,12 +202,14 @@ struct TokenSignUpScreen: View {
                     .cornerRadius(10)
             }
             .disabled(pending)
+            /*
             .alert(isPresented: $showTokenError) {
                 Alert(title: Text("Token validation failed"),
                       message: Text(helpTextForTokenFailed),
                       dismissButton: .cancel(Text("OK"))
                 )
             }
+            */
 
             Spacer()
 
@@ -254,7 +272,11 @@ struct TokenSignUpScreen: View {
                     .disableAutocorrection(true)
                     //.frame(width: 300.0, height: 40.0)
                 Spacer()
-                Button(action: {showHelpItem = .emailCode}) {
+                Button(action: {
+                    self.showAlert = true
+                    self.alertTitle = "Email code"
+                    self.alertMessage = helpTextForEmailCode
+                }) {
                     Image(systemName: "questionmark.circle")
                 }
             }
@@ -354,7 +376,7 @@ struct TokenSignUpScreen: View {
                     Button(action: {
                         self.showAlert = true
                         self.alertTitle = "Name"
-                        self.alertMessage = "Your name as you would like it to appear to others"
+                        self.alertMessage = helpTextForName
                     }) {
                         Image(systemName: "questionmark.circle")
                     }
@@ -370,7 +392,7 @@ struct TokenSignUpScreen: View {
                     Button(action: {
                         self.showAlert = true
                         self.alertTitle = "Email Address"
-                        self.alertMessage = "Must be a currently valid and active address.  Don't worry -- we will only use this address for security and other alerts about your account.  We don't send spam, and we don't sell your address."
+                        self.alertMessage = helpTextForEmailAddress
                     }) {
                         Image(systemName: "questionmark.circle")
                     }
@@ -390,7 +412,12 @@ struct TokenSignUpScreen: View {
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
                     Spacer()
-                    Button(action: {showHelpItem = .username}) {
+                    Button(action: {
+                        //showHelpItem = .username
+                        self.showAlert = true
+                        self.alertTitle = "Username"
+                        self.alertMessage = helpTextForUsername
+                    }) {
                         Image(systemName: "questionmark.circle")
                     }
                 }
@@ -399,7 +426,12 @@ struct TokenSignUpScreen: View {
                 HStack {
                     SecureField("New Passphrase", text: $password)
                     Spacer()
-                    Button(action: {showHelpItem = .password}) {
+                    Button(action: {
+                        //showHelpItem = .password
+                        self.showAlert = true
+                        self.alertTitle = "Passphrase"
+                        self.alertMessage = helpTextForPassword
+                    }) {
                         Image(systemName: "questionmark.circle")
                     }
                 }
