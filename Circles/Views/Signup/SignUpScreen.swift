@@ -52,6 +52,7 @@ struct SignupScreen: View {
 
             Spacer()
 
+            /*
             Text("No token?  No problem.")
             Button(action: {
                 selectedScreen = .appstoreSignup
@@ -66,6 +67,7 @@ struct SignupScreen: View {
             .disabled( !SKPaymentQueue.canMakePayments() )
 
             Spacer()
+            */
         }
     }
 }
