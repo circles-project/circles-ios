@@ -98,6 +98,7 @@ struct MessageCard: View {
     @State var reporting = false
     private let debug = false
     @State var showDetailView = false
+    @State var sheetType: MessageSheetType? = nil
 
     func getCaption(body: String) -> String? {
         // By default, Matrix sets the text body to be the filename
@@ -115,7 +116,7 @@ struct MessageCard: View {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .short
-        return Text("Posted \(message.timestamp, formatter: formatter)")
+        return Text("\(message.timestamp, formatter: formatter)")
             .font(.footnote)
             .foregroundColor(.gray)
     }
@@ -123,7 +124,7 @@ struct MessageCard: View {
     var relativeTimestamp: some View {
         // From https://noahgilmore.com/blog/swiftui-relativedatetimeformatter/
         let formatter = RelativeDateTimeFormatter()
-        return Text("Posted \(message.timestamp, formatter: formatter)")
+        return Text("\(message.timestamp, formatter: formatter)")
             .font(.footnote)
             .foregroundColor(.gray)
     }
@@ -244,90 +245,7 @@ struct MessageCard: View {
                 .foregroundColor(colorScheme == .dark ? .black : .white)
                 .shadow(color: .gray, radius: 2, x: 0, y: 1)
         )
-        /*
-        .contextMenu /*@START_MENU_TOKEN@*/{
-            // Only allow replies for top-level posts
-            // Otherwise it gets too crazy trying to display a threaded view on mobile
-            if message.relatesToId == nil {
-                Button(action: {self.showReplyComposer = true}) {
-                    HStack {
-                        Text("Reply")
-                        Image(systemName: "bubble.right")
-                    }
-                }
-            }
-            if message.type == MatrixMsgType.image.rawValue {
-                Button(action: saveImage) {
-                    Label("Save image", systemImage: "square.and.arrow.down")
-                }
-                // FIXME Add if message.sender == me.id
-                Button(action: {}) {
-                    Label("Share", systemImage: "square.and.arrow.up")
-                }
-            }
-            
-            Button(action: {
-                message.objectWillChange.send()
-            }) {
-                Label("Refresh", systemImage: "arrow.clockwise")
-            }
 
-            Button(action: {
-                self.showDetailView = true
-            }) {
-                Text("Show detailed view")
-            }
-            
-            Menu {
-                Button(action: {
-                    message.room.setPowerLevel(userId: message.sender, power: 0) { response in
-                        // Nothing we can do here, either way
-                    }
-                }) {
-                    Label("Block sender from posting here", systemImage: "person.crop.circle.badge.xmark")
-                }
-                .disabled( !message.room.amIaModerator() )
-
-                Button(action: {
-                        message.room.kick(userId: message.sender,
-                                          reason: "Removed by \(message.matrix.whoAmI()) for message \(message.id)")
-                }) {
-                    Label("Remove sender", systemImage: "trash.circle")
-                }
-                .disabled( !message.room.amIaModerator() )
-
-                Button(action: {
-                    message.room.ignoreUser(message.sender)
-                }) {
-                    Label("Ignore sender", systemImage: "person.crop.circle.badge.minus")
-                }
-            } label: {
-                Label("Block", systemImage: "xmark.shield")
-            }
-
-            Button(action: {self.reporting = true}) {
-                HStack {
-                    Image(systemName: "exclamationmark.shield")
-                    Text("Report")
-                }
-            }
-            Menu {
-                Button(action: {
-                    message.room.redact(message: message,
-                                        reason: "Deleted by \(message.matrix.whoAmI())") { response in
-                        // Nothing else to do?
-                        // If it failed, it failed...
-                    }
-                }) {
-                    Label("Delete", systemImage: "trash")
-                }
-                .foregroundColor(.red)
-
-            } label: {
-                Label("Delete", systemImage: "trash")
-            }
-        }/*@END_MENU_TOKEN@*/
-        */
     }
 
     /*
@@ -345,27 +263,26 @@ struct MessageCard: View {
     */
     
     var body: some View {
-        ZStack {
-            VStack(alignment: .leading) {
-                mainCard
 
-                /* // Moving this outside of the card itself, hoping to get SwiftUI to allocate it more space
-                if showReplyComposer {
-                    RoomMessageComposer(room: message.room,
-                                        isPresented: $showReplyComposer,
-                                        inReplyTo: message)
-                        .padding(.leading, 20)
-                        .layoutPriority(1)
+        mainCard
+            .contextMenu {
+                MessageContextMenu(message: message,
+                                   sheetType: $sheetType)
+            }
+            .sheet(item: $sheetType) { st in
+                switch(st) {
+
+                case .composer:
+                    MessageComposerSheet(room: message.room, parentMessage: message)
+
+                case .detail:
+                    MessageDetailSheet(message: message, displayStyle: .timeline)
+
+                case .reporting:
+                    MessageReportingSheet(message: message)
+
                 }
-                */
             }
-
-            /*
-            if reporting {
-                reportingDialog
-            }
-            */
-        }
 
     }
 

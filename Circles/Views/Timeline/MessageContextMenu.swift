@@ -7,20 +7,22 @@
 
 import SwiftUI
 
+
+
 struct MessageContextMenu: View {
     var message: MatrixMessage
-    @Binding var selectedMessage: MatrixMessage?
+    //@Binding var selectedMessage: MatrixMessage?
     //@Binding var showReplyComposer: Bool
     //@Binding var showDetailView: Bool
     //@Binding var showReportingView: Bool
-    @Binding var sheetType: TimelineSheetType?
+    @Binding var sheetType: MessageSheetType?
 
     var body: some View {
         // Only allow replies for top-level posts
         // Otherwise it gets too crazy trying to display a threaded view on mobile
         if message.relatesToId == nil {
             Button(action: {
-                self.selectedMessage = self.message
+                //self.selectedMessage = self.message
                 //self.showReplyComposer = true
                 self.sheetType = .composer
             }) {
@@ -49,19 +51,7 @@ struct MessageContextMenu: View {
         }
 
         Button(action: {
-            // Well this is annoying.
-            // Apparently SwiftUI can't update the binding quickly enough
-            // So selectedMessage is still nil when the Sheet pops up
-            // Argh.
-            self.selectedMessage = self.message
-            //self.showDetailView = true
-            print("MENU\tSelected message is \(self.selectedMessage?.id)")
-
-            let secondsDelay = 0.50
-            DispatchQueue.main.asyncAfter(deadline: .now() + secondsDelay) {
-                self.sheetType = .detail
-            }
-
+            self.sheetType = .detail
         }) {
             Label("Show detailed view", systemImage: "magnifyingglass")
         }
@@ -94,7 +84,7 @@ struct MessageContextMenu: View {
         }
 
         Button(action: {
-            self.selectedMessage = self.message
+            //self.selectedMessage = self.message
             //self.showReportingView = true
             self.sheetType = .reporting
         }) {

@@ -20,8 +20,12 @@ struct MessageComposerSheet: View {
             
             if let parent = parentMessage {
                 MessageCard(message: parent, displayStyle: .timeline)
+                    .padding(3)
             }
+            let pad: CGFloat = parentMessage == nil ? 0 : 10
             RoomMessageComposer(room: room, inReplyTo: parentMessage)
+                .padding(.horizontal, 3)
+                .padding(.leading, pad)
         }
     }
 }

@@ -78,15 +78,7 @@ struct TimelineView: View {
 
                 //let messages = room.messages.sorted(by: {$0.timestamp > $1.timestamp})
                 
-                if messages.isEmpty && room.localEchoMessage == nil {
-                    VStack {
-                        Text("(No recent posts)")
-                        .padding()
-                        
-                    }
-                }
-                else {
-                                        
+
                     if let msg = room.localEchoMessage {
                         MessageCard(message: msg, displayStyle: displayStyle)
                             .border(Color.red)
@@ -94,34 +86,29 @@ struct TimelineView: View {
                     }
                     
                     ForEach(messages) { msg in
-                        HStack {
-                            if KOMBUCHA_DEBUG && self.debug {
-                                Text("\(messages.firstIndex(of: msg) ?? -1)")
-                            }
-                            MessageCard(message: msg, displayStyle: displayStyle)
-                                .contextMenu {
-                                    MessageContextMenu(message: msg,
-                                                       selectedMessage: $selectedMessage,
-                                                       sheetType: $sheetType)
+                        VStack(alignment: .leading) {
+                            HStack {
+                                if KOMBUCHA_DEBUG && self.debug {
+                                    Text("\(messages.firstIndex(of: msg) ?? -1)")
                                 }
-                                .padding(.top, 5)
+                                MessageCard(message: msg, displayStyle: displayStyle)
+                                    .padding(.top, 5)
+                            }
+                            RepliesView(room: room, parent: msg,
+                                        selectedMessage: $selectedMessage,
+                                        sheetType: $sheetType)
                         }
-                        RepliesView(room: room, parent: msg,
-                                    selectedMessage: $selectedMessage,
-                                    sheetType: $sheetType)
                     }
                     .padding([.leading, .trailing], 3)
 
 
                     Spacer()
-                    
-
-                }
                 
                 footer
                 
             }
         }
+        /*
         .sheet(item: $sheetType) { st in
             switch(st) {
 
@@ -151,6 +138,7 @@ struct TimelineView: View {
 
             }
         }
+        */
     }
 }
 

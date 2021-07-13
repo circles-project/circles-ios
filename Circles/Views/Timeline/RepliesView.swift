@@ -36,11 +36,6 @@ struct RepliesView: View {
             if expanded {
                 ForEach(messages) { message in
                     MessageCard(message: message, displayStyle: .timeline)
-                        .contextMenu {
-                            MessageContextMenu(message: message,
-                                               selectedMessage: $selectedMessage,
-                                               sheetType: $sheetType)
-                        }
                 }
                 HStack {
                     Spacer()

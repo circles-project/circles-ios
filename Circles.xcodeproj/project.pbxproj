@@ -104,6 +104,7 @@
 		40CEFCD426780D8300857D4D /* MessageDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40CEFCD326780D8300857D4D /* MessageDetailSheet.swift */; };
 		40E4D887268A76070055968A /* AppStoreSignUpScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E4D886268A76070055968A /* AppStoreSignUpScreen.swift */; };
 		40E4D88A268A76CF0055968A /* SignupScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E4D889268A76CF0055968A /* SignupScreen.swift */; };
+		40F906BB269DF96100287B27 /* MessageSheetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F906BA269DF96100287B27 /* MessageSheetType.swift */; };
 		CFFB0431ED7E7DF3DFBE8C9A /* Pods_Circles.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02E198A24EAA52F3412414BB /* Pods_Circles.framework */; };
 /* End PBXBuildFile section */
 
@@ -210,6 +211,7 @@
 		40CEFCD326780D8300857D4D /* MessageDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageDetailSheet.swift; sourceTree = "<group>"; };
 		40E4D886268A76070055968A /* AppStoreSignUpScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreSignUpScreen.swift; sourceTree = "<group>"; };
 		40E4D889268A76CF0055968A /* SignupScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupScreen.swift; sourceTree = "<group>"; };
+		40F906BA269DF96100287B27 /* MessageSheetType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSheetType.swift; sourceTree = "<group>"; };
 		9050605B7F03BBC0A58F76C7 /* Pods-Circles.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Circles.release.xcconfig"; path = "Target Support Files/Pods-Circles/Pods-Circles.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -438,6 +440,7 @@
 				409F438B265DE2C200690A61 /* StreamTimelineScreen.swift */,
 				40878FCC2696198500A66EF0 /* TimelineSheetType.swift */,
 				409F4392265DE2DE00690A61 /* TimelineView.swift */,
+				40F906BA269DF96100287B27 /* MessageSheetType.swift */,
 			);
 			path = Timeline;
 			sourceTree = "<group>";
@@ -606,6 +609,7 @@
 				409F4340265DE17500690A61 /* GroupCreationSheet.swift in Sources */,
 				409F4364265DE21A00690A61 /* MessageReportingSheet.swift in Sources */,
 				409F42FB265DE0A200690A61 /* MatrixError.swift in Sources */,
+				40F906BB269DF96100287B27 /* MessageSheetType.swift in Sources */,
 				409F43A7265DE43B00690A61 /* RoomMembersSheet.swift in Sources */,
 				409F4310265DE0E700690A61 /* HomeScreen.swift in Sources */,
 				409F43A8265DE43B00690A61 /* RoomSecurityInfoSheet.swift in Sources */,

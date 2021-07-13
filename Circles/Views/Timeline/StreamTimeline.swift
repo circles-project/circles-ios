@@ -69,18 +69,13 @@ struct StreamTimeline: View {
                                     Text("\(index)")
                                 }
                                 MessageCard(message: msg, displayStyle: .timeline)
-                                    .contextMenu {
-                                        MessageContextMenu(message: msg,
-                                                           selectedMessage: $selectedMessage,
-                                                           sheetType: $sheetType)
-                                    }
                             }
                             RepliesView(room: msg.room, parent: msg,
                                         selectedMessage: $selectedMessage,
                                         sheetType: $sheetType)
                         }
                     }
-                    .padding([.top, .leading, .trailing], 5)
+                    .padding([.top, .leading, .trailing], 3)
                 }
             
                 HStack(alignment: .bottom) {
