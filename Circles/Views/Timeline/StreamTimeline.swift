@@ -13,9 +13,6 @@ struct StreamTimeline: View {
     private var formatter: DateFormatter
     @State private var showDebug = false
     @State private var loading = false
-    //@State var showReplyComposer = false
-    @State var selectedMessage: MatrixMessage?
-    @State var sheetType: TimelineSheetType?
 
     init(stream: SocialStream) {
         self.stream = stream
@@ -70,9 +67,7 @@ struct StreamTimeline: View {
                                 }
                                 MessageCard(message: msg, displayStyle: .timeline)
                             }
-                            RepliesView(room: msg.room, parent: msg,
-                                        selectedMessage: $selectedMessage,
-                                        sheetType: $sheetType)
+                            RepliesView(room: msg.room, parent: msg)
                         }
                     }
                     .padding([.top, .leading, .trailing], 3)
@@ -112,26 +107,7 @@ struct StreamTimeline: View {
             }
 
         }
-        .sheet(item: $sheetType) { st in
-            switch(st) {
 
-            case .composer:
-                if let msg = selectedMessage {
-                    MessageComposerSheet(room: msg.room, parentMessage: selectedMessage)
-                }
-
-            case .detail:
-                if let msg = selectedMessage {
-                    MessageDetailSheet(message: msg, displayStyle: .timeline)
-                }
-
-            case .reporting:
-                if let msg = selectedMessage {
-                    MessageReportingSheet(message: msg)
-                }
-
-            }
-        }
     }
 }
 

@@ -35,12 +35,10 @@ struct MessageDetailSheet: View {
             ScrollView {
                 LazyVStack {
                     MessageCard(message: message, displayStyle: displayStyle)
-                        //.padding(.top, 5)
+                        .padding(.top, 3)
 
                     RepliesView(room: message.room, parent: message,
-                                expanded: true,
-                                selectedMessage: $selectedMessage,
-                                sheetType: $sheetType)
+                                expanded: true)
 
                     //Text("Type: \(message.type)")
                     //Text("Relates to: \(message.relatesToId ?? "none")")

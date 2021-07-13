@@ -94,9 +94,7 @@ struct TimelineView: View {
                                 MessageCard(message: msg, displayStyle: displayStyle)
                                     .padding(.top, 5)
                             }
-                            RepliesView(room: room, parent: msg,
-                                        selectedMessage: $selectedMessage,
-                                        sheetType: $sheetType)
+                            RepliesView(room: room, parent: msg)
                         }
                     }
                     .padding([.leading, .trailing], 3)

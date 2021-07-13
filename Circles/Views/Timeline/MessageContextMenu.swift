@@ -11,10 +11,6 @@ import SwiftUI
 
 struct MessageContextMenu: View {
     var message: MatrixMessage
-    //@Binding var selectedMessage: MatrixMessage?
-    //@Binding var showReplyComposer: Bool
-    //@Binding var showDetailView: Bool
-    //@Binding var showReportingView: Bool
     @Binding var sheetType: MessageSheetType?
 
     var body: some View {
