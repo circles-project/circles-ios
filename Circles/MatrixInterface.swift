@@ -69,6 +69,10 @@ protocol MatrixInterface {
     func downloadEncryptedImage(fileinfo: mEncryptedFile, completion: @escaping (MXResponse<UIImage>) -> Void)
 
     func uploadImage(image original: UIImage, completion: @escaping (MXProgress<URL>) -> Void)
+
+    func addReaction(reaction: String, for eventId: String, in roomId: String, completion: @escaping (MXResponse<Void>) -> Void)
+
+    func removeReaction(reaction: String, for eventId: String, in roomId: String, completion: @escaping (MXResponse<Void>) -> Void)
     
     func setAvatarImage(image: UIImage, completion: @escaping (MXResponse<URL>) -> Void)
     

@@ -60,6 +60,13 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
             return
         } else if event.eventType == .roomMessage {
             print("TIMELINE Event [\(event.eventId ?? "???")] is a room message.  Processing...")
+        } else if event.eventType == .reaction {
+            // FIXME Look at MXAggregations.h for the SDK's way of supporting reactions
+            // * There's a `listenToReactionCountUpdateInRoom()` function that we can use to keep track of the reactions
+            // * There's a `aggregatedReactionsOnEvent()` function for getting all the reactions for an event
+            // So how in the world do we get an instance of this thing???
+            // --> It's matrix.session.aggregations :)
+            print("TIMELINE Event [\(event.eventId ?? "???")] is a reaction.  Ignoring for now...")
         }
         print("TIMELINE --------")
         

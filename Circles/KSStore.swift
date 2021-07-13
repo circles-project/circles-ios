@@ -692,6 +692,36 @@ extension KSStore: SocialGraph {
 
 
 extension KSStore: MatrixInterface {
+    func addReaction(reaction: String, for eventId: String, in roomId: String, completion: @escaping (MXResponse<Void>) -> Void) {
+
+        guard let agg = self.session.aggregations else {
+            let msg = "Failed to get Matrix aggregations manager"
+            print("REACTIONS\tError: \(msg)")
+            let err = KSError(message: msg)
+            completion(.failure(err))
+            return
+        }
+
+        agg.addReaction(reaction, forEvent: eventId, inRoom: roomId,
+                        success: { completion(.success(()))},
+                        failure: {err in completion(.failure(err))})
+    }
+
+    func removeReaction(reaction: String, for eventId: String, in roomId: String, completion: @escaping (MXResponse<Void>) -> Void) {
+
+        guard let agg = self.session.aggregations else {
+            let msg = "Failed to get Matrix aggregations manager"
+            print("REACTIONS\tError: \(msg)")
+            let err = KSError(message: msg)
+            completion(.failure(err))
+            return
+        }
+
+        agg.removeReaction(reaction, forEvent: eventId, inRoom: roomId,
+                           success: { completion(.success(()))},
+                           failure: {err in completion(.failure(err))})
+    }
+
 
     func generateSecrets(userId: String, password: String) -> MatrixSecrets? {
         // Update 2021-06-16 - Adding my crazy scheme for doing

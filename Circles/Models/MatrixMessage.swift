@@ -285,7 +285,15 @@ class MatrixMessage: ObservableObject, Identifiable {
                             text: text,
                             completion: completion)
     }
-    
+
+    func addReaction(reaction: String, completion: @escaping (MXResponse<Void>) -> Void) {
+        self.matrix.addReaction(reaction: reaction, for: self.id, in: self.room.id, completion: completion)
+    }
+
+    func removeReaction(reaction: String, completion: @escaping (MXResponse<Void>) -> Void) {
+        self.matrix.removeReaction(reaction: reaction, for: self.id, in: self.room.id, completion: completion)
+    }
+
 }
 
 extension MatrixMessage: Equatable {
