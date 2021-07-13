@@ -19,7 +19,9 @@ struct RecentActivityView: View {
                 ForEach(store.getCircles()) { circle in
                     if let message = circle.stream.latestMessage {
                         Text("From Circle: \(circle.name)")
-                            .font(.caption)
+                            //.font(.caption)
+                            .fontWeight(.bold)
+                            .padding(.top, 2)
                         Button(action: {
                             // Set the tab to be "Circles"
                             // Set the selected circle to be this one
@@ -33,7 +35,9 @@ struct RecentActivityView: View {
                 ForEach(store.getGroups().groups) { group in
                     if let message = group.room.last {
                         Text("From Group: \(group.room.displayName ?? "(unnamed group)")")
-                            .font(.caption)
+                            //.font(.caption)
+                            .fontWeight(.bold)
+                            .padding(.top, 2)
                         MessageCard(message: message, displayStyle: .timeline)
                             .padding(.leading)
                     }
