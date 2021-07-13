@@ -61,25 +61,29 @@ class PeopleContainer: ObservableObject {
         }
         print("RELOAD\tFound \(circleRooms.count) rooms")
 
+        // Find my followers
         for room in circleRooms {
-            dgroup.enter()
-            room.asyncMembers { response in
-                print("RELOAD\tGot response for circle room [\(room.displayName ?? room.id)]")
+            if room.tags.contains(ROOM_TAG_OUTBOUND) {
+                dgroup.enter()
+                room.asyncMembers { response in
+                    print("RELOAD\tGot response for circle room [\(room.displayName ?? room.id)]")
 
-                switch(response) {
-                case .failure(let err):
-                    break
-                case .success(let followers):
-                    self.queue.async {
-                        print("RELOAD\tGot \(followers.count) followers from circle room \(room.displayName ?? room.id)")
-                        //self.people.append(contentsOf: users)
-                        newPeople.formUnion(followers)
+                    switch(response) {
+                    case .failure(let err):
+                        break
+                    case .success(let followers):
+                        self.queue.async {
+                            print("RELOAD\tGot \(followers.count) followers from circle room \(room.displayName ?? room.id)")
+                            //self.people.append(contentsOf: users)
+                            newPeople.formUnion(followers)
+                        }
                     }
+                    dgroup.leave()
                 }
-                dgroup.leave()
             }
         }
 
+        // Find the people I'm following
         for room in circleRooms {
             dgroup.enter()
             room.asyncOwners { response in
