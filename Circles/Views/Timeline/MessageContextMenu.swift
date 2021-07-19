@@ -108,7 +108,30 @@ struct MessageContextMenu: View {
     }
 
     func saveEncryptedImage(content: mImageContent) {
-        // FIXME TODO
+        guard let file = content.info.file ?? content.info.thumbnail_file else {
+            print("SAVEIMAGE\tError: Encrypted image doesn't have an encrypted file :(")
+            return
+        }
+        let url = file.url
+        let matrix = message.matrix
+
+        guard let cachedImage = matrix.getCachedEncryptedImage(mxURI: url.absoluteString) else {
+            matrix.downloadEncryptedImage(fileinfo: file) { response in
+                switch response {
+                case .failure(let err):
+                    print("SAVEIMAGE\tError: Failed to download encrypted image - \(err)")
+                case .success(let img):
+                    print("SAVEIMAGE\tSuccess!  Downloaded encrypted file.  Saving...")
+                    let imageSaver = ImageSaver()
+                    imageSaver.writeToPhotoAlbum(image: img)
+                }
+            }
+            return
+        }
+        print("SAVEIMAGE\tEncrypted image was already in cache.  Saving...")
+        let imageSaver = ImageSaver()
+        imageSaver.writeToPhotoAlbum(image: cachedImage)
+
     }
 
     func savePlaintextImage(content: mImageContent) {
@@ -143,6 +166,7 @@ struct MessageContextMenu: View {
                 savePlaintextImage(content: imageContent)
             }
         default:
+            print("SAVEIMAGE\tTried to saveImage on something that wasn't an m.image (eventId = \(message.id))")
             return
         }
     }
