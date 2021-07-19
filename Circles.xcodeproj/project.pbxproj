@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4012C54526A5D70D00BB15E6 /* NativeMarkKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4012C54426A5D70D00BB15E6 /* NativeMarkKit */; };
 		404C72D1265DDF35000473DF /* CirclesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C72D0265DDF35000473DF /* CirclesApp.swift */; };
 		404C72D3265DDF35000473DF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C72D2265DDF35000473DF /* ContentView.swift */; };
 		404C72D5265DDF35000473DF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 404C72D4265DDF35000473DF /* Assets.xcassets */; };
@@ -14,7 +15,6 @@
 		4069F79826729DD200FB6090 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4069F79726729DD200FB6090 /* StoreKit.framework */; };
 		4073E7C4267915AF001A80CF /* RepliesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4073E7C3267915AF001A80CF /* RepliesView.swift */; };
 		40878FBC268E4D9000A66EF0 /* AppStoreInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40878FBB268E4D9000A66EF0 /* AppStoreInterface.swift */; };
-		40878FC32693B73400A66EF0 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = 40878FC22693B73400A66EF0 /* MarkdownUI */; };
 		40878FC72694C00000A66EF0 /* MessageContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40878FC62694C00000A66EF0 /* MessageContextMenu.swift */; };
 		40878FCA2694DBC400A66EF0 /* MessageComposerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40878FC92694DBC400A66EF0 /* MessageComposerSheet.swift */; };
 		40878FCD2696198500A66EF0 /* TimelineSheetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40878FCC2696198500A66EF0 /* TimelineSheetType.swift */; };
@@ -220,7 +220,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				40878FC32693B73400A66EF0 /* MarkdownUI in Frameworks */,
+				4012C54526A5D70D00BB15E6 /* NativeMarkKit in Frameworks */,
 				CFFB0431ED7E7DF3DFBE8C9A /* Pods_Circles.framework in Frameworks */,
 				4069F79826729DD200FB6090 /* StoreKit.framework in Frameworks */,
 			);
@@ -494,7 +494,7 @@
 			);
 			name = Circles;
 			packageProductDependencies = (
-				40878FC22693B73400A66EF0 /* MarkdownUI */,
+				4012C54426A5D70D00BB15E6 /* NativeMarkKit */,
 			);
 			productName = Circles;
 			productReference = 404C72CD265DDF35000473DF /* Circles.app */;
@@ -524,7 +524,7 @@
 			);
 			mainGroup = 404C72C4265DDF35000473DF;
 			packageReferences = (
-				40878FC12693B73400A66EF0 /* XCRemoteSwiftPackageReference "MarkdownUI" */,
+				4012C54326A5D70D00BB15E6 /* XCRemoteSwiftPackageReference "NativeMarkKit" */,
 			);
 			productRefGroup = 404C72CE265DDF35000473DF /* Products */;
 			projectDirPath = "";
@@ -890,21 +890,21 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		40878FC12693B73400A66EF0 /* XCRemoteSwiftPackageReference "MarkdownUI" */ = {
+		4012C54326A5D70D00BB15E6 /* XCRemoteSwiftPackageReference "NativeMarkKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/gonzalezreal/MarkdownUI";
+			repositoryURL = "git@github.com:andyfinnell/NativeMarkKit.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.5.1;
+				kind = upToNextMinorVersion;
+				minimumVersion = 2.0.2;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		40878FC22693B73400A66EF0 /* MarkdownUI */ = {
+		4012C54426A5D70D00BB15E6 /* NativeMarkKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 40878FC12693B73400A66EF0 /* XCRemoteSwiftPackageReference "MarkdownUI" */;
-			productName = MarkdownUI;
+			package = 4012C54326A5D70D00BB15E6 /* XCRemoteSwiftPackageReference "NativeMarkKit" */;
+			productName = NativeMarkKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

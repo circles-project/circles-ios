@@ -9,6 +9,7 @@
 import SwiftUI
 import Foundation
 //import MarkdownUI
+import NativeMarkKit
 
 enum MessageDisplayStyle {
     case timeline
@@ -133,8 +134,9 @@ struct MessageCard: View {
         VStack {
             switch(message.content) {
             case .text(let textContent):
-                MessageText(textContent.body)
+                //MessageText(textContent.body)
                 //Markdown(Document(textContent.body))
+                NativeMarkText(textContent.body)
                     //.frame(minHeight: 30, maxHeight:400)
                     .padding(.horizontal, 3)
                     .padding(.vertical, 5)
@@ -147,7 +149,8 @@ struct MessageCard: View {
 
                         if let caption = getCaption(body: imageContent.body) {
                             //Markdown(Document(caption))
-                            Text(caption)
+                            //Text(caption)
+                            NativeMarkText(caption)
                                 .padding(.horizontal, 3)
                                 .padding(.bottom, 5)
                         }
