@@ -247,20 +247,6 @@ struct MessageCard: View {
         )
 
     }
-
-    /*
-    var reportingDialog: some View {
-        VStack {
-            MessageReportingSheet(message: message, show: self.$reporting)
-        }
-        .padding(.all, 3.0)
-        .background(
-            RoundedRectangle(cornerRadius: 4)
-                .foregroundColor(colorScheme == .dark ? .black : .white)
-                .shadow(color: .gray, radius: 2, x: 0, y: 1)
-        )
-    }
-    */
     
     var body: some View {
 
@@ -285,46 +271,4 @@ struct MessageCard: View {
             }
 
     }
-
-    /*
-    func saveEncryptedImage(content: mImageContent) {
-        // FIXME TODO
-    }
-    
-    func savePlaintextImage(content: mImageContent) {
-        guard let fullresUrl: URL = content.url ?? content.info.thumbnail_url else {
-            return
-        }
-        print("Trying to save image from URL \(fullresUrl)")
-        // Are we really lucky and we already have it in cache?
-        guard let cachedImage = message.matrix.getCachedImage(mxURI: fullresUrl.absoluteString) else {
-            // If not, no worries, we just download it before we save it
-            print("Need to download image from URL \(fullresUrl)")
-            message.matrix.downloadImage(mxURI: fullresUrl.absoluteString) { image in
-                print("Downloaded image from URL \(fullresUrl), saving...")
-                let imageSaver = ImageSaver()
-                imageSaver.writeToPhotoAlbum(image: image)
-            }
-            return
-        }
-        print("Image was in cache, saving...")
-        let imageSaver = ImageSaver()
-        imageSaver.writeToPhotoAlbum(image: cachedImage)
-    }
-    
-    func saveImage() {
-        switch(message.content) {
-        case .image(let imageContent):
-            if message.isEncrypted {
-                saveEncryptedImage(content: imageContent)
-                return
-            }
-            else {
-                savePlaintextImage(content: imageContent)
-            }
-        default:
-            return
-        }
-    }
- */
 }
