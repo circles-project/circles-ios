@@ -193,6 +193,7 @@ struct MessageCard: View {
                 Text(emoji)
             }
 
+            /*
             Menu {
                 let emojis = ["😀", "👍", "❤️", "☹️", "👎"]
                 ForEach(emojis, id: \.self) { emoji in
@@ -208,6 +209,12 @@ struct MessageCard: View {
                 }
             }
             label: {
+                Label("Like", systemImage: "heart.circle")
+            }
+            */
+            Button(action: {
+                self.sheetType = .reactions
+            }) {
                 Label("Like", systemImage: "heart.circle")
             }
 
@@ -300,6 +307,9 @@ struct MessageCard: View {
 
                 case .detail:
                     MessageDetailSheet(message: message, displayStyle: .timeline)
+
+                case .reactions:
+                    EmojiPicker(message: message)
 
                 case .reporting:
                     MessageReportingSheet(message: message)

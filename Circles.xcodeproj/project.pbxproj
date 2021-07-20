@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		4012C54526A5D70D00BB15E6 /* NativeMarkKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4012C54426A5D70D00BB15E6 /* NativeMarkKit */; };
 		4012C54726A736D700BB15E6 /* MatrixReaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4012C54626A736D700BB15E6 /* MatrixReaction.swift */; };
+		4012C54926A752C400BB15E6 /* EmojiPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4012C54826A752C400BB15E6 /* EmojiPicker.swift */; };
+		4012C54C26A760F100BB15E6 /* KeyboardKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4012C54B26A760F100BB15E6 /* KeyboardKit */; };
 		404C72D1265DDF35000473DF /* CirclesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C72D0265DDF35000473DF /* CirclesApp.swift */; };
 		404C72D3265DDF35000473DF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C72D2265DDF35000473DF /* ContentView.swift */; };
 		404C72D5265DDF35000473DF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 404C72D4265DDF35000473DF /* Assets.xcassets */; };
@@ -113,6 +115,7 @@
 		02E198A24EAA52F3412414BB /* Pods_Circles.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Circles.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		319B9F089ED349AE15F0F86D /* Pods-Circles.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Circles.debug.xcconfig"; path = "Target Support Files/Pods-Circles/Pods-Circles.debug.xcconfig"; sourceTree = "<group>"; };
 		4012C54626A736D700BB15E6 /* MatrixReaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixReaction.swift; sourceTree = "<group>"; };
+		4012C54826A752C400BB15E6 /* EmojiPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiPicker.swift; sourceTree = "<group>"; };
 		404C72CD265DDF35000473DF /* Circles.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Circles.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		404C72D0265DDF35000473DF /* CirclesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesApp.swift; sourceTree = "<group>"; };
 		404C72D2265DDF35000473DF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -222,6 +225,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4012C54C26A760F100BB15E6 /* KeyboardKit in Frameworks */,
 				4012C54526A5D70D00BB15E6 /* NativeMarkKit in Frameworks */,
 				CFFB0431ED7E7DF3DFBE8C9A /* Pods_Circles.framework in Frameworks */,
 				4069F79826729DD200FB6090 /* StoreKit.framework in Frameworks */,
@@ -296,6 +300,7 @@
 				40AEA6732678E24200C9CBD1 /* BlurHashEncode.swift */,
 				409F4325265DE12600690A61 /* CloudImagePicker.swift */,
 				409F4318265DE0FF00690A61 /* EmbeddedImagePicker.swift */,
+				4012C54826A752C400BB15E6 /* EmojiPicker.swift */,
 				409F4313265DE0F300690A61 /* ImagePicker.swift */,
 				409F4314265DE0F400690A61 /* ImageSaver.swift */,
 				40CD7F6B2667D3B600DE315F /* PhotoPicker.swift */,
@@ -498,6 +503,7 @@
 			name = Circles;
 			packageProductDependencies = (
 				4012C54426A5D70D00BB15E6 /* NativeMarkKit */,
+				4012C54B26A760F100BB15E6 /* KeyboardKit */,
 			);
 			productName = Circles;
 			productReference = 404C72CD265DDF35000473DF /* Circles.app */;
@@ -528,6 +534,7 @@
 			mainGroup = 404C72C4265DDF35000473DF;
 			packageReferences = (
 				4012C54326A5D70D00BB15E6 /* XCRemoteSwiftPackageReference "NativeMarkKit" */,
+				4012C54A26A760F100BB15E6 /* XCRemoteSwiftPackageReference "KeyboardKit" */,
 			);
 			productRefGroup = 404C72CE265DDF35000473DF /* Products */;
 			projectDirPath = "";
@@ -691,6 +698,7 @@
 				409F436C265DE24000690A61 /* PersonsCircleRow.swift in Sources */,
 				409F431F265DE11000690A61 /* DeviceRemovalSheet.swift in Sources */,
 				409F4302265DE0A200690A61 /* SocialGraph.swift in Sources */,
+				4012C54926A752C400BB15E6 /* EmojiPicker.swift in Sources */,
 				409F4393265DE2DE00690A61 /* TimelineView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -902,6 +910,14 @@
 				minimumVersion = 2.0.2;
 			};
 		};
+		4012C54A26A760F100BB15E6 /* XCRemoteSwiftPackageReference "KeyboardKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/KeyboardKit/KeyboardKit.git";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 4.6.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -909,6 +925,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4012C54326A5D70D00BB15E6 /* XCRemoteSwiftPackageReference "NativeMarkKit" */;
 			productName = NativeMarkKit;
+		};
+		4012C54B26A760F100BB15E6 /* KeyboardKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4012C54A26A760F100BB15E6 /* XCRemoteSwiftPackageReference "KeyboardKit" */;
+			productName = KeyboardKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

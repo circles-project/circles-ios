@@ -287,11 +287,21 @@ class MatrixMessage: ObservableObject, Identifiable {
     }
 
     func addReaction(reaction: String, completion: @escaping (MXResponse<Void>) -> Void) {
-        self.matrix.addReaction(reaction: reaction, for: self.id, in: self.room.id, completion: completion)
+        self.matrix.addReaction(reaction: reaction, for: self.id, in: self.room.id) { response in
+            if response.isSuccess {
+                self.objectWillChange.send()
+            }
+            completion(response)
+        }
     }
 
     func removeReaction(reaction: String, completion: @escaping (MXResponse<Void>) -> Void) {
-        self.matrix.removeReaction(reaction: reaction, for: self.id, in: self.room.id, completion: completion)
+        self.matrix.removeReaction(reaction: reaction, for: self.id, in: self.room.id) { response in
+            if response.isSuccess {
+                self.objectWillChange.send()
+            }
+            completion(response)
+        }
     }
 
     var reactions: [MatrixReaction] {
