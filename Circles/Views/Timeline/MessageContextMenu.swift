@@ -14,6 +14,7 @@ struct MessageContextMenu: View {
     @Binding var sheetType: MessageSheetType?
 
     var body: some View {
+        /* // Moved the Reply button into the MessageCard itself
         // Only allow replies for top-level posts
         // Otherwise it gets too crazy trying to display a threaded view on mobile
         if message.relatesToId == nil {
@@ -28,6 +29,8 @@ struct MessageContextMenu: View {
                 }
             }
         }
+        */
+
         if message.type == MatrixMsgType.image.rawValue {
             Button(action: saveImage) {
                 Label("Save image", systemImage: "square.and.arrow.down")

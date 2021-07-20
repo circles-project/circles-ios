@@ -14,6 +14,7 @@ import NativeMarkKit
 enum MessageDisplayStyle {
     case timeline
     case photoGallery
+    case composer
 }
 
 struct MessageText: View {
@@ -186,66 +187,90 @@ struct MessageCard: View {
                 .foregroundColor(Color.red)
     }
 
+    var likeButton: some View {
+        Button(action: {
+            self.sheetType = .reactions
+        }) {
+            Label("Like", systemImage: "heart")
+        }
+    }
+
+    var replyButton: some View {
+        Button(action: {
+            self.sheetType = .composer
+        }) {
+            Label("Reply", systemImage: "bubble.right")
+        }
+    }
+
+    var menuButton: some View {
+        Menu {
+        MessageContextMenu(message: message,
+                           sheetType: $sheetType)
+        }
+        label: {
+            Label("More", systemImage: "ellipsis.circle")
+        }
+    }
+
     var reactions: some View {
         HStack {
-            ForEach(self.message.reactions.prefix(4)) { reaction in
+            //Spacer()
+            let sortedReactions = self.message.reactions.sorted(by: {$0.count > $1.count})
+            ForEach(sortedReactions.prefix(7)) { reaction in
                 let emoji = reaction.emoji
+                let count = reaction.count
                 Text(emoji)
+                //Text("\(emoji)\(count) ")
             }
+            if sortedReactions.count > 7 {
 
-            /*
-            Menu {
-                let emojis = ["😀", "👍", "❤️", "☹️", "👎"]
-                ForEach(emojis, id: \.self) { emoji in
-                    Button(action: {
-                        self.message.matrix.addReaction(reaction: emoji, for: self.message.id, in: self.message.room.id) { response in
-                            if response.isSuccess {
-                                self.message.objectWillChange.send()
-                            }
-                        }
-                    }) {
-                        Text(emoji)
-                    }
-                }
             }
-            label: {
-                Label("Like", systemImage: "heart.circle")
-            }
-            */
-            Button(action: {
-                self.sheetType = .reactions
-            }) {
-                Label("Like", systemImage: "heart.circle")
-            }
-
         }
-        .font(.footnote)
     }
     
     var footer: some View {
-        HStack(alignment: .center) {
-            
-            shield
-            
-            if self.displayStyle == .photoGallery {
-                //profileImage
-                //ProfileImageView(user: message.matrix.getUser(userId: message.sender)!)
-                avatarImage.resizable()
-                .frame(width: 20, height: 20)
-                .scaledToFill()
-                .clipShape(RoundedRectangle(cornerRadius: 4))
+        VStack(alignment: .leading) {
+            Divider()
+
+            HStack(alignment: .center) {
+
+                shield
+
+                if self.displayStyle == .photoGallery {
+                    //profileImage
+                    //ProfileImageView(user: message.matrix.getUser(userId: message.sender)!)
+                    avatarImage.resizable()
+                    .frame(width: 20, height: 20)
+                    .scaledToFill()
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
+                }
+
+                //Spacer()
+                timestamp
+                //relativeTimestamp
+                Spacer()
+                //likeButton
+
+                reactions
+            }
+            .padding(.trailing, 3)
+
+            if displayStyle != .composer {
+                HStack {
+                    Spacer()
+                    likeButton
+                    if message.relatesToId == nil {
+                        replyButton
+                    }
+                    menuButton
+                }
+                .padding(.top, 3)
+                .padding(.trailing, 3)
             }
 
-            //Spacer()
-            timestamp
-            //relativeTimestamp
-
-            Spacer()
-
-            reactions
-
         }
-        //.padding(.horizontal)
+        .padding(.bottom, 3)
     }
 
     var details: some View {
@@ -265,7 +290,7 @@ struct MessageCard: View {
         
         VStack(alignment: .leading, spacing: 2) {
 
-            if displayStyle == .timeline {
+            if displayStyle != .photoGallery {
                 MessageAuthorHeader(user: message.matrix.getUser(userId: message.sender)!)
             }
 
