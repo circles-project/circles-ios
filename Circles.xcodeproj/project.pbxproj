@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4012C54526A5D70D00BB15E6 /* NativeMarkKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4012C54426A5D70D00BB15E6 /* NativeMarkKit */; };
+		4012C54726A736D700BB15E6 /* MatrixReaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4012C54626A736D700BB15E6 /* MatrixReaction.swift */; };
 		404C72D1265DDF35000473DF /* CirclesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C72D0265DDF35000473DF /* CirclesApp.swift */; };
 		404C72D3265DDF35000473DF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C72D2265DDF35000473DF /* ContentView.swift */; };
 		404C72D5265DDF35000473DF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 404C72D4265DDF35000473DF /* Assets.xcassets */; };
@@ -111,6 +112,7 @@
 /* Begin PBXFileReference section */
 		02E198A24EAA52F3412414BB /* Pods_Circles.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Circles.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		319B9F089ED349AE15F0F86D /* Pods-Circles.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Circles.debug.xcconfig"; path = "Target Support Files/Pods-Circles/Pods-Circles.debug.xcconfig"; sourceTree = "<group>"; };
+		4012C54626A736D700BB15E6 /* MatrixReaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixReaction.swift; sourceTree = "<group>"; };
 		404C72CD265DDF35000473DF /* Circles.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Circles.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		404C72D0265DDF35000473DF /* CirclesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesApp.swift; sourceTree = "<group>"; };
 		404C72D2265DDF35000473DF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -313,6 +315,7 @@
 				409F42EB265DE09B00690A61 /* MatrixError.swift */,
 				409F42EE265DE09C00690A61 /* MatrixMessage.swift */,
 				409F42F6265DE0A000690A61 /* MatrixMsgContent.swift */,
+				4012C54626A736D700BB15E6 /* MatrixReaction.swift */,
 				409F42F4265DE09F00690A61 /* MatrixRoom.swift */,
 				409F42FA265DE0A200690A61 /* MatrixUser.swift */,
 				409F42F5265DE0A000690A61 /* PeopleContainer.swift */,
@@ -631,6 +634,7 @@
 				409F42FF265DE0A200690A61 /* SocialCircle.swift in Sources */,
 				409F4334265DE15F00690A61 /* CircleOverviewCard.swift in Sources */,
 				409F4342265DE17500690A61 /* GroupHeader.swift in Sources */,
+				4012C54726A736D700BB15E6 /* MatrixReaction.swift in Sources */,
 				409F437C265DE27F00690A61 /* RecentActivityView.swift in Sources */,
 				409F4362265DE21A00690A61 /* MessageCard.swift in Sources */,
 				409F42E3265DE00700690A61 /* Array+Sample.swift in Sources */,
@@ -818,7 +822,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Circles/Circles.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Circles/Preview Content\"";
 				DEVELOPMENT_TEAM = Y5CK8529S5;
 				ENABLE_PREVIEWS = YES;
@@ -828,7 +832,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.17;
+				MARKETING_VERSION = 0.18;
 				PRODUCT_BUNDLE_IDENTIFIER = social.kombucha.circles;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = NO;
@@ -846,7 +850,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Circles/Circles.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Circles/Preview Content\"";
 				DEVELOPMENT_TEAM = Y5CK8529S5;
 				ENABLE_PREVIEWS = YES;
@@ -856,7 +860,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.17;
+				MARKETING_VERSION = 0.18;
 				PRODUCT_BUNDLE_IDENTIFIER = social.kombucha.circles;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = NO;

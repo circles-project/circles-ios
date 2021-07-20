@@ -722,6 +722,29 @@ extension KSStore: MatrixInterface {
                            failure: {err in completion(.failure(err))})
     }
 
+    func getReactions(for eventId: String, in roomId: String) -> [MatrixReaction] {
+        guard let agg = self.session.aggregations else {
+            let msg = "Failed to get Matrix aggregations manager"
+            print("REACTIONS\tError: \(msg)")
+            //let err = KSError(message: msg)
+            //completion(.failure(err))
+            return []
+        }
+
+        var reactions = [MatrixReaction]()
+        guard let aggregated = agg.aggregatedReactions(onEvent: eventId, inRoom: roomId) else {
+            // No aggregated reactions for this event
+            // Ok, no problem, just return the empty array that we already have
+            return reactions
+        }
+        for mxReactionCount in aggregated.reactions {
+            let emoji = mxReactionCount.reaction
+            let count = mxReactionCount.count
+            reactions.append(MatrixReaction(emoji: emoji, count: count))
+        }
+        return reactions
+    }
+
 
     func generateSecrets(userId: String, password: String) -> MatrixSecrets? {
         // Update 2021-06-16 - Adding my crazy scheme for doing

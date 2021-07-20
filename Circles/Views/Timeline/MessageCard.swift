@@ -185,6 +185,35 @@ struct MessageCard: View {
             : Image(systemName: "xmark.shield")
                 .foregroundColor(Color.red)
     }
+
+    var reactions: some View {
+        HStack {
+            ForEach(self.message.reactions.prefix(4)) { reaction in
+                let emoji = reaction.emoji
+                Text(emoji)
+            }
+
+            Menu {
+                let emojis = ["😀", "👍", "❤️", "☹️", "👎"]
+                ForEach(emojis, id: \.self) { emoji in
+                    Button(action: {
+                        self.message.matrix.addReaction(reaction: emoji, for: self.message.id, in: self.message.room.id) { response in
+                            if response.isSuccess {
+                                self.message.objectWillChange.send()
+                            }
+                        }
+                    }) {
+                        Text(emoji)
+                    }
+                }
+            }
+            label: {
+                Label("Like", systemImage: "heart.circle")
+            }
+
+        }
+        .font(.footnote)
+    }
     
     var footer: some View {
         HStack(alignment: .center) {
@@ -200,9 +229,14 @@ struct MessageCard: View {
                 .clipShape(RoundedRectangle(cornerRadius: 4))
             }
 
-            Spacer()
+            //Spacer()
             timestamp
             //relativeTimestamp
+
+            Spacer()
+
+            reactions
+
         }
         //.padding(.horizontal)
     }

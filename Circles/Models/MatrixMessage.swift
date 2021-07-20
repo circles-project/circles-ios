@@ -294,6 +294,10 @@ class MatrixMessage: ObservableObject, Identifiable {
         self.matrix.removeReaction(reaction: reaction, for: self.id, in: self.room.id, completion: completion)
     }
 
+    var reactions: [MatrixReaction] {
+        self.matrix.getReactions(for: self.id, in: self.room.id)
+    }
+
 }
 
 extension MatrixMessage: Equatable {
