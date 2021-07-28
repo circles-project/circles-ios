@@ -9,7 +9,7 @@ target 'Circles' do
 
   #pod 'MatrixSDK', :git => 'https://github.com/matrix-org/matrix-ios-sdk.git', :branch => 'develop', :commit => '0eb9cbc'
   #pod 'MatrixSDK', '~> 0.18.12'
-  pod 'MatrixSDK', :git => 'https://github.com/KombuchaPrivacy/matrix-ios-sdk.git', :branch => 'kombucha'
+  pod 'MatrixSDK', :git => 'https://github.com/KombuchaPrivacy/matrix-ios-sdk.git', :branch => 'circles'
   pod 'DictionaryCoding'
   pod 'BCrypt'
   #pod 'SwiftLint'

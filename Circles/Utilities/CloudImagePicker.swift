@@ -91,7 +91,7 @@ struct CloudImagePicker: View {
                                             self.presentation.wrappedValue.dismiss()
                                         }
                                     } else if let file = content.info.file {
-                                        matrix.downloadEncryptedImage(fileinfo: file) { response in
+                                        matrix.downloadEncryptedImage(fileinfo: file, mimetype: content.info.mimetype) { response in
                                             switch response {
                                             case .failure:
                                                 print("CLOUDPICKER\tFailed to download encrypted image for [\(message.id)]")

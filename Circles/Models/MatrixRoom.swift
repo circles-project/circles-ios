@@ -459,7 +459,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
     }
 
     var timestamp: Date {
-        let seconds = mxroom.summary.lastMessageOriginServerTs / 1000
+        let seconds = mxroom.summary.lastMessage.originServerTs / 1000
         return Date(timeIntervalSince1970: TimeInterval(seconds))
     }
     

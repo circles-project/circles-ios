@@ -206,6 +206,21 @@ class MatrixMessage: ObservableObject, Identifiable {
             return nil
         }
     }
+
+    var mimetype: String? {
+        switch self.content {
+        case .audio(let audioContent):
+            return audioContent.info.mimetype
+        case .file(let fileContent):
+            return fileContent.info.mimetype
+        case .image(let imageContent):
+            return imageContent.info.mimetype
+        case .video(let videoContent):
+            return videoContent.info.mimetype
+        default:
+            return nil
+        }
+    }
         
     var thumbnailImage: UIImage? {
         // Do we have the image already in our little one-off cache?
@@ -213,16 +228,16 @@ class MatrixMessage: ObservableObject, Identifiable {
             return img
         }
         // Do we have an encrypted thumbnail?
-        if let fileInfo = self.thumbnailFile ?? self.encryptedFile {
+        if let file = self.thumbnailFile ?? self.encryptedFile {
             //  Handle encrypted case
             print("THUMB\tImage is encrypted")
             // First, let's see if we've already downloaded and decrypted
-            guard let cachedImage = matrix.getCachedEncryptedImage(mxURI: fileInfo.url.absoluteString) else {
+            guard let cachedImage = matrix.getCachedEncryptedImage(mxURI: file.url.absoluteString) else {
                 queue.sync(flags: .barrier) {
                     if !self.downloadingThumbnail {
                         self.downloadingThumbnail = true
                         print("THUMB\tStarting download")
-                        self.matrix.downloadEncryptedImage(fileinfo: fileInfo) { response in
+                        self.matrix.downloadEncryptedImage(fileinfo: file, mimetype: self.mimetype) { response in
                             switch response {
                             case .success(let downloadedImage):
                                 print("THUMB\tDownload success")

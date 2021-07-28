@@ -66,7 +66,7 @@ protocol MatrixInterface {
     
     func getCachedEncryptedImage(mxURI: String) -> UIImage?
     
-    func downloadEncryptedImage(fileinfo: mEncryptedFile, completion: @escaping (MXResponse<UIImage>) -> Void)
+    func downloadEncryptedImage(fileinfo: mEncryptedFile, mimetype: String?, completion: @escaping (MXResponse<UIImage>) -> Void)
 
     func uploadImage(image original: UIImage, completion: @escaping (MXProgress<URL>) -> Void)
 

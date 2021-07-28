@@ -1564,7 +1564,7 @@ extension KSStore: MatrixInterface {
     }
 
     
-    func downloadEncryptedImage(fileinfo: mEncryptedFile, completion: @escaping (MXResponse<UIImage>) -> Void) {
+    func downloadEncryptedImage(fileinfo: mEncryptedFile, mimetype: String?, completion: @escaping (MXResponse<UIImage>) -> Void) {
         guard let cache_filename = MXMediaManager.cachePath(forMatrixContentURI: fileinfo.url.absoluteString, andType: nil, inFolder: DECRYPTED_CACHE_FOLDER) else {
             // FIXME Call the completion handler with an error
             let msg = "Couldn't get cache path"
@@ -1588,6 +1588,7 @@ extension KSStore: MatrixInterface {
             
             let loader = self.session.mediaManager.downloadEncryptedMedia(
                     fromMatrixContentFile: ecf,
+                    mimeType: mimetype,
                     inFolder: "encrypted",
                     success: { maybePath in
                         guard let encrypted_filename = maybePath else {
@@ -1605,24 +1606,22 @@ extension KSStore: MatrixInterface {
                         }
                         
                         // Finally we can call the decryption routine
-                        let decryptionError = MXEncryptedAttachments
-                            .decryptAttachment(
+                        MXEncryptedAttachments.decryptAttachment(
                                 ecf,
                                 inputStream: input,
-                                outputStream: output
+                                outputStream: output,
+                                success: {
+                                    // FIXME KLUDGE This is such a dirty hack
+                                    // If we have the file now, just call ourselves again and we'll get the UIImage
+                                    // As-is, this risks recursing forever if something happens to our downloaded file
+                                    // The fix is to break out the code that handles the downloaded file into its own function
+                                    self.downloadEncryptedImage(fileinfo: fileinfo, mimetype: mimetype, completion: completion)
+                                },
+                                failure: { error in
+                                    let msg = "Failed to decrypt: \(error)"
+                                    completion(.failure(KSError(message: msg)))
+                                }
                             )
-                        
-                        if let error = decryptionError {
-                            let msg = "Failed to decrypt: \(error)"
-                            completion(.failure(KSError(message: msg)))
-                        }
-                        else {
-                            // FIXME KLUDGE This is such a dirty hack
-                            // If we have the file now, just call ourselves again and we'll get the UIImage
-                            // As-is, this risks recursing forever if something happens to our downloaded file
-                            // The fix is to break out the code that handles the downloaded file into its own function
-                            self.downloadEncryptedImage(fileinfo: fileinfo, completion: completion)
-                        }
                     },
                     failure: { err in
                         let msg = "Failed to download encrypted data: \(err)"

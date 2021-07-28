@@ -119,7 +119,7 @@ struct MessageContextMenu: View {
         let matrix = message.matrix
 
         guard let cachedImage = matrix.getCachedEncryptedImage(mxURI: url.absoluteString) else {
-            matrix.downloadEncryptedImage(fileinfo: file) { response in
+            matrix.downloadEncryptedImage(fileinfo: file, mimetype: content.info.mimetype) { response in
                 switch response {
                 case .failure(let err):
                     print("SAVEIMAGE\tError: Failed to download encrypted image - \(err)")
