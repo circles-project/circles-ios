@@ -11,12 +11,12 @@ import SwiftUI
 
 struct InvitationsView: View {
     var store: KSStore
-    
+    @State var invitedRooms: [InvitedRoom] = []
     @State var showAcceptSheet = false
     
     var body: some View {
         VStack(alignment: .leading) {
-            var invitedRooms = store.getInvitedRooms()
+            //var invitedRooms = store.getInvitedRooms()
             if !invitedRooms.isEmpty {
                 // I think having this be a ScrollView is part of what makes it render weird on the screen
                 // Maybe if we make this View non-scrollable, we can just always wrap it in a ScrollView whenever we need to use it
@@ -30,6 +30,7 @@ struct InvitationsView: View {
                         for index in indexSet {
                             print("Need to delete \(index) -- That's \(invitedRooms[index].id)")
                             let room = invitedRooms[index]
+                            dgroup.enter()
                             store.leaveRoom(roomId: room.id) { success in
                                 dgroup.leave()
                             }
@@ -43,6 +44,9 @@ struct InvitationsView: View {
             } else {
                 Text("No new invitations")
             }
+        }
+        .onAppear {
+            invitedRooms = store.getInvitedRooms()
         }
         .sheet(isPresented: $showAcceptSheet) {
             VStack {

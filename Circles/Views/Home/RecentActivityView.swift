@@ -54,9 +54,10 @@ struct RecentActivityScreen: View {
     var body: some View {
         ScrollView {
             RecentActivityView(store: store)
-                .navigationBarTitle(Text("Recent Activity"))
                 //.padding()
         }
+        .navigationBarTitle(Text("Recent Activity"))
+
     }
 }
 

@@ -81,14 +81,14 @@ struct RoomInviteSheet: View {
                 for userId in newUserIds {
                     dgroup.enter()
                     room.invite(userId: userId) { response in
-                        print("Got invite response")
+                        print("INVITE\tGot invite response")
                         switch(response) {
                         case .failure(let error):
                             let msg = "Failed to send invitation: \(error)"
                             print(msg)
                             errors = errors ?? KSError(message: msg)
                         case .success:
-                            print("Successfully invited \(userId) to \(room.id)")
+                            print("INVITE\tSuccessfully invited \(userId) to \(room.id)")
                         }
                         dgroup.leave()
                     }
@@ -101,8 +101,7 @@ struct RoomInviteSheet: View {
                         return
                     }
 
-                    print("Invite(s) failed: \(err)")
-
+                    print("INVITE\tInvite(s) failed: \(err)")
                 }
             }) {
                 Label("Send Invitation(s)", systemImage: "envelope")

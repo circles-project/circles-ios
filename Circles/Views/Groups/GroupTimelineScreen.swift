@@ -119,8 +119,14 @@ struct GroupTimelineScreen: View {
     var body: some View {
         VStack(alignment: .center) {
 
-            //composer
-            //    .layoutPriority(1)
+            /*
+            VStack(alignment: .leading) {
+                Text("Debug Info")
+                Text("roomId: \(group.room.id)")
+                Text("type: \(group.room.type ?? "(none)")")
+            }
+            .font(.footnote)
+            */
 
             timeline
                 .sheet(item: $sheetType) { st in

@@ -12,6 +12,8 @@ import MatrixSDK
 
 protocol MatrixInterface {
 
+    func getStore() -> KSStore
+
     func generateSecrets(userId: String, password: String) -> MatrixSecrets? 
 
     func login(username: String, password: String,  completion: @escaping (MXResponse<Void>) -> Void)

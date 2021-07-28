@@ -9,8 +9,6 @@
 import SwiftUI
 import MatrixSDK
 
-
-
 struct InvitationCard: View {
     @ObservedObject var room: InvitedRoom
     //@State var showAcceptSheet = false
@@ -94,6 +92,8 @@ struct InvitationCard: View {
                             }
                             // Fetch some messages
                             //room.paginate(count: 10)
+                            let store = room.matrix.getStore()
+                            store.groups?.add(roomId: room.id)
                     
                         case ROOM_TYPE_CHAT:
                             // Tag the room as Chat

@@ -37,6 +37,15 @@ class GroupsContainer: ObservableObject {
         matrix.getRooms(for: ROOM_TAG_GROUP)
     }
     */
+
+    func add(roomId: String) {
+        guard let room = self.matrix.getRoom(roomId: roomId) else {
+            print("GROUPS\tFailed to add a group for roomId \(roomId)")
+            return
+        }
+        let group = SocialGroup(from: room, on: self)
+        self.groups.append(group)
+    }
         
     func create(name: String, completion: @escaping (MXResponse<SocialGroup>) -> Void)
     {

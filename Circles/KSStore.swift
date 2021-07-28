@@ -692,6 +692,10 @@ extension KSStore: SocialGraph {
 
 
 extension KSStore: MatrixInterface {
+    func getStore() -> KSStore {
+        self
+    }
+
     func addReaction(reaction: String, for eventId: String, in roomId: String, completion: @escaping (MXResponse<Void>) -> Void) {
 
         guard let agg = self.session.aggregations else {
@@ -826,7 +830,6 @@ extension KSStore: MatrixInterface {
                 completion(.failure(KSError(message: msg)))
                 return
             }
-            // FIXME Save the private key
 
             var params: [String:Any] = [:]
             params["type"] = "m.login.password"
@@ -1360,17 +1363,21 @@ extension KSStore: MatrixInterface {
         guard let mxrooms: [MXRoom] = self.session.invitedRooms() else {
             return []
         }
-        return mxrooms.filter { mxroom in
-            guard let roomType = mxroom.summary.roomTypeString else {
-                return false
+        return mxrooms
+            /*
+            .filter { mxroom in
+                guard let roomType = mxroom.summary.roomTypeString else {
+                    print("INVITED\tInvited MXRoom \(String(describing: mxroom.roomId)) has no room type.  Skipping...")
+                    return false
+                }
+                let validRoomTypes = [ROOM_TYPE_CIRCLE, ROOM_TYPE_GROUP, ROOM_TYPE_PHOTOS]
+                return validRoomTypes.contains(roomType)
             }
-            let validRoomTypes = [ROOM_TYPE_CIRCLE, ROOM_TYPE_GROUP, ROOM_TYPE_PHOTOS]
-            return validRoomTypes.contains(roomType)
-        }
-        .compactMap { mxroom in
-            //self.getRoom(roomId: mxroom.roomId)
-            InvitedRoom(from: mxroom, on: self)
-        }
+            */
+            .compactMap { mxroom in
+                //self.getRoom(roomId: mxroom.roomId)
+                InvitedRoom(from: mxroom, on: self)
+            }
     }
     
     func getSystemNoticesRoom() -> MatrixRoom? {
