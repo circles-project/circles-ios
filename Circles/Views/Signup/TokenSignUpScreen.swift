@@ -691,7 +691,7 @@ struct TokenSignUpScreen: View {
     }
     
     private func createCircleRoom(name: String, tag: String, avatar: UIImage?, completion: @escaping (MXResponse<Void>)->Void) {
-        matrix.createRoom(name: name, with: tag, insecure: false) { response1 in
+        matrix.createRoom(name: name, type: ROOM_TYPE_CIRCLE, tag: tag, insecure: false) { response1 in
             switch response1 {
             case .failure(let err):
                 print("SETUP\tFailed to create a room for circle \(name)")

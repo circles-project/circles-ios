@@ -41,7 +41,8 @@ class GroupsContainer: ObservableObject {
     func create(name: String, completion: @escaping (MXResponse<SocialGroup>) -> Void)
     {
         self.matrix.createRoom(name: name,
-                               with: ROOM_TAG_GROUP,
+                               type: ROOM_TYPE_GROUP,
+                               tag: ROOM_TAG_GROUP,
                                insecure: false
         ) { response in
             switch(response) {

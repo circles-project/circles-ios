@@ -49,7 +49,8 @@ class PhotoGalleriesContainer: ObservableObject {
     func create(name: String, completion: @escaping (MXResponse<PhotoGallery>) -> Void)
     {
         self.matrix.createRoom(name: name,
-                               with: ROOM_TAG_PHOTOS,
+                               type: ROOM_TYPE_PHOTOS,
+                               tag: ROOM_TAG_PHOTOS,
                                insecure: false
         ) { response in
             switch(response) {

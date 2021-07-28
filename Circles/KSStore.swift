@@ -583,7 +583,7 @@ extension KSStore: SocialGraph {
         // Also create our outbound room, and tag it appropriately so we can find it later
         print("CREATECIRCLE Creating new outbound Room for [\(circle.name)]")
         dgroup.enter()
-        self.createRoom(name: name, with: circle.tag) { response in
+        self.createRoom(name: name, type: ROOM_TYPE_CIRCLE, tag: circle.tag) { response in
             switch(response) {
             case .failure(let err):
                 let msg = "CREATECIRCLE Failed to create outbound room for circle \(name): \(error)"
@@ -1360,7 +1360,14 @@ extension KSStore: MatrixInterface {
         guard let mxrooms: [MXRoom] = self.session.invitedRooms() else {
             return []
         }
-        return mxrooms.compactMap { mxroom in
+        return mxrooms.filter { mxroom in
+            guard let roomType = mxroom.summary.roomTypeString else {
+                return false
+            }
+            let validRoomTypes = [ROOM_TYPE_CIRCLE, ROOM_TYPE_GROUP, ROOM_TYPE_PHOTOS]
+            return validRoomTypes.contains(roomType)
+        }
+        .compactMap { mxroom in
             //self.getRoom(roomId: mxroom.roomId)
             InvitedRoom(from: mxroom, on: self)
         }
@@ -1385,7 +1392,7 @@ extension KSStore: MatrixInterface {
         return self.getRoom(roomId: mxroom.roomId) 
     }
     
-    func createRoom(name: String, insecure: Bool = false, completion: @escaping (MXResponse<String>) -> Void) {
+    func createRoom(name: String, type: String, insecure: Bool = false, completion: @escaping (MXResponse<String>) -> Void) {
         /*
         // Easy way, but doesn't give us enough low-level access to set things up the way we want
         let params = MXRoomCreationParameters()
@@ -1403,6 +1410,7 @@ extension KSStore: MatrixInterface {
         params["visibility"] = "private"
         params["name"] = name
         params["preset"] = "private_chat"
+        params["room_type"] = type
 
         // TODO Fill in the starting power levels, etc
         // The convention could be something like this:
@@ -1467,8 +1475,8 @@ extension KSStore: MatrixInterface {
         }
     }
     
-    func createRoom(name: String, with tag: String, insecure: Bool = false, completion: @escaping (MXResponse<String>) -> Void) {
-        self.createRoom(name: name, insecure: insecure) { response in
+    func createRoom(name: String, type: String, tag: String, insecure: Bool = false, completion: @escaping (MXResponse<String>) -> Void) {
+        self.createRoom(name: name, type: type, insecure: insecure) { response in
             switch(response) {
             case .failure(let error):
                 print("Failed to create a room for \(name): \(error)")

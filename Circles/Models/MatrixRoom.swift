@@ -117,6 +117,10 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
         self.paginate() { _ in }
     }
 
+    var type: String? {
+        self.mxroom.summary.roomTypeString
+    }
+
     // FIXME Make this one settable as well as gettable
     //       The set() just makes the API call
     var displayName: String? {
@@ -801,30 +805,37 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
     }
 
     func getRoomType(completion: @escaping (MXResponse<String>) -> Void) {
-        mxroom.state { roomstate in
-            let events: [MXEvent] = roomstate?.stateEvents(with: .custom(EVENT_TYPE_ROOMTYPE)) ?? []
-            let maybeEvent = events
-                .sorted(by: {$0.originServerTs < $1.originServerTs})
-                .first
-            guard let event = maybeEvent else {
-                let msg = "Couldn't find room type - No state events"
-                print(msg)
-                completion(.failure(KSError(message: msg)))
-                return
+        // Do we have a room type from the creation event?
+        if let creationType = self.type {
+            completion(.success(creationType))
+        }
+        else {
+            // This room must be older -- No room type in the creation event :(
+            // Let's go spelunking through the room state and see if we can find a type
+            mxroom.state { roomstate in
+                let events: [MXEvent] = roomstate?.stateEvents(with: .custom(EVENT_TYPE_ROOMTYPE)) ?? []
+                let maybeEvent = events
+                    .sorted(by: {$0.originServerTs < $1.originServerTs})
+                    .first
+                guard let event = maybeEvent else {
+                    let msg = "Couldn't find room type - No state events"
+                    print(msg)
+                    completion(.failure(KSError(message: msg)))
+                    return
+                }
+
+                let maybeMyType = event.content["type"] as? String
+
+                guard let roomtype = maybeMyType else {
+                    let msg = "Room has no type"
+                    print(msg)
+                    completion(.failure(KSError(message: msg)))
+                    return
+                }
+
+                // Yay we finally found it
+                completion(.success(roomtype))
             }
-
-            let maybeMyType = event.content["type"] as? String
-
-            guard let roomtype = maybeMyType else {
-                let msg = "Room has no type"
-                print(msg)
-                completion(.failure(KSError(message: msg)))
-                return
-            }
-            
-            // Yay we finally found it
-            completion(.success(roomtype))
-
         }
     }
 

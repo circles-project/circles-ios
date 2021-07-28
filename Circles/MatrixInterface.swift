@@ -52,9 +52,9 @@ protocol MatrixInterface {
     
     func getSystemNoticesRoom() -> MatrixRoom?
     
-    func createRoom(name: String, insecure: Bool, completion: @escaping (MXResponse<String>) -> Void)
+    func createRoom(name: String, type:String, insecure: Bool, completion: @escaping (MXResponse<String>) -> Void)
     
-    func createRoom(name: String, with tag: String, insecure: Bool, completion: @escaping (MXResponse<String>) -> Void)
+    func createRoom(name: String, type: String, tag: String, insecure: Bool, completion: @escaping (MXResponse<String>) -> Void)
     
     func leaveRoom(roomId: String, completion: @escaping (Bool) -> Void)
     
