@@ -15,6 +15,8 @@ struct EmojiPicker: View {
     //let categories: [EmojiCategory] = [.smileys, .animals, .foods, .activities, .travels, .objects, .symbols, .flags] // Everything but "recent" and "frequent"
     let categories = EmojiCategory.all
 
+    @State var selectedCategory: EmojiCategory = .frequent
+
     var buttonBar: some View {
         HStack {
             Spacer()
@@ -32,45 +34,44 @@ struct EmojiPicker: View {
             buttonBar
             Divider()
 
+            Picker("Select Category: \(selectedCategory.title)", selection: $selectedCategory) {
+                ForEach(categories) { category in
+                    Text(category.title)
+                        .tag(category)
+                }
+            }
+            .pickerStyle(MenuPickerStyle())
+
             ScrollView {
                 let columns: [GridItem] =
                         Array(repeating: .init(.flexible()), count: 6)
 
-                ForEach(categories) { category in
-                    HStack {
-                        Text(category.title)
-                        Spacer()
-                    }
 
-                    LazyVGrid(columns: columns) {
+                LazyVGrid(columns: columns) {
 
-                        let emojis: [Emoji] = category.emojis
-                        let reactions = emojis.map { $0.char }
+                    let emojis: [Emoji] = selectedCategory.emojis
+                    let reactions = emojis.map { $0.char }
 
-                        ForEach(reactions, id: \.self) { reaction in
-                            //let reaction: String = emoji.char
-                            Button(action: {
-                                self.message.addReaction(reaction: reaction) { response in
-                                    // Does it make any difference whether the request
-                                    // succeeded or failed?
-                                    // Can we do anything about it either way?
+                    ForEach(reactions, id: \.self) { reaction in
+                        //let reaction: String = emoji.char
+                        Button(action: {
+                            self.message.addReaction(reaction: reaction) { response in
+                                // Does it make any difference whether the request
+                                // succeeded or failed?
+                                // Can we do anything about it either way?
 
-                                    // Log that we've used this emoji
-                                    let provider = MostRecentEmojiProvider()
-                                    provider.registerEmoji(Emoji(reaction))
+                                // Log that we've used this emoji
+                                let provider = MostRecentEmojiProvider()
+                                provider.registerEmoji(Emoji(reaction))
 
-                                    self.presentation.wrappedValue.dismiss()
-                                }
-                            }) {
-                                Text(reaction)
-                                    .font(.title)
-                                    .padding(3)
+                                self.presentation.wrappedValue.dismiss()
                             }
+                        }) {
+                            Text(reaction)
+                                .font(.title)
+                                .padding(3)
                         }
-
                     }
-
-                    Divider()
                 }
             }
         }
