@@ -42,7 +42,7 @@ struct ContentView: View {
                 // FIXME This should be some sort of pop-up that then sends you back to the login screen
                 // FIXME Alternatively, if we have a (seemingly) valid access token, we could allow the user to browse the data that we already have locally, in some sort of "offline" mode
                 VStack {
-                    ProgressView("Reconnecting to server \(store.homeserver.host ?? "(none)")")
+                    ProgressView("Reconnecting to server \(store.homeserver?.host ?? "")")
                 }
             case MXSessionStatePauseRequested:
                 VStack {

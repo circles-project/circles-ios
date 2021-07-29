@@ -78,13 +78,18 @@ class KSStore: ObservableObject {
     var identityServer: URL = URL(string: "https://\(server).kombucha.social")!
     */
 
-    private var server: String {
+    private var kombuchaServer: URL? {
 
-        let countryCode = SKPaymentQueue.default().storefront?.countryCode ?? "USA"
+        guard let countryCode = SKPaymentQueue.default().storefront?.countryCode else {
+            return nil
+        }
+
+        let usURL = URL(string: "https://matrix.kombucha.social/")!
+        let euURL = URL(string: "https://matrix.eu.kombucha.social/")!
 
         switch countryCode {
         case "USA":
-            return "matrix"
+            return usURL
 
         // EU Countries
         case "AUT", // Austria
@@ -114,14 +119,14 @@ class KSStore: ObservableObject {
              "ESP", // Spain
              "SWE"  // Sweden
             :
-            return "matrix.eu"
+            return euURL
 
         // EEA Countries
         case "ISL", // Iceland
              "LIE", // Liechtenstein
              "NOR"  // Norway
             :
-            return "matrix.eu"
+            return euURL
 
         // Other European-region countries
         case "ALB", // Albania
@@ -143,19 +148,32 @@ class KSStore: ObservableObject {
              "GBR", // UK
              "VAT"  // Holy See
             :
-            return "matrix.eu"
+            return euURL
 
+        // Everybody else uses the US server
         default:
-            return "matrix"
+            return usURL
         }
     }
 
+    /*
     var homeserver: URL {
         URL(string: "https://\(self.server).kombucha.social/")!
     }
+    */
 
+    /*
     var identityServer: URL {
         self.homeserver
+    }
+    */
+
+    var homeserver: URL? {
+        URL(string: self.session.matrixRestClient.homeserver)
+    }
+
+    var identityServer: URL? {
+        URL(string: self.session.matrixRestClient.identityServer)
     }
     
     // Update Feb 2021 -- Need to track a few things that are outside the scope of the MXSessionState
@@ -187,46 +205,60 @@ class KSStore: ObservableObject {
         // to Matrix, and we'll be up and running.
         // If we don't have an access token (yet), then we're stuck
         // offline for now.
-        
-        // I tried to use @AppStorage for these, but f&*$%# dammit
-        // it seems that we can't use it for vars that we want to
-        // use in init().  So screw it, we'll do this the old way.
-        // BONUS: We get to key the device ID and the access token
-        // off of the user ID.  No more ambiguity about who these
-        // belong to.
-        
-        let user_id = UserDefaults.standard.string(forKey: "user_id") ?? ""
-        let device_id = UserDefaults.standard.string(forKey: "device_id[\(user_id)]") ?? ""
-        let access_token = UserDefaults.standard.string(forKey: "access_token[\(user_id)]") ?? ""
-        
+
+        // Set up some basic SDK options that we will need either way
         MXSDKOptions.sharedInstance().disableIdenticonUseForUserAvatar = true
-        
+
+        self.loginMxRc = nil
+        self.sessionMxRc = nil
         self.session = MXSession()
-        
-        if !access_token.isEmpty && !device_id.isEmpty && !user_id.isEmpty {
-            let creds = MXCredentials(homeServer: homeserver.absoluteString, userId: user_id, accessToken: access_token)
+
+        // Set up our Combine listeners regardless of whether we're online or offline or whatever
+        setupListeners()
+
+        // Now let's see if we can connect to the server
+        // First thing to check: Do we have credentials?
+        guard let user_id = UserDefaults.standard.string(forKey: "user_id"),
+              let device_id = UserDefaults.standard.string(forKey: "device_id[\(user_id)]"),
+              let access_token = UserDefaults.standard.string(forKey: "access_token[\(user_id)]"),
+              let userDomain = _getDomainFromUserId(user_id),
+              let autoDiscovery = MXAutoDiscovery(domain: userDomain)
+        else {
+            // Apparently we're offline, waiting for (valid) credentials to log in
+            print("STORE\tDidn't find valid login credentials - Staying offline for now")
+            return
+        }
+
+        // Next: Where is the server for this user id?
+        // It might be something like matrix.domain.tld, or it might be something random
+        // We don't know -- Have to look it up via .well-known
+        autoDiscovery.wellKnow({ wellknown in
+            // Yay we found it
+            let creds = MXCredentials(homeServer: wellknown.homeServer.baseUrl,
+                                      userId: user_id,
+                                      accessToken: access_token)
             creds.deviceId = device_id // ARGH Why could they not have included this in the constructor???
-            
+
             self.userId = user_id
             self.deviceId = device_id
             self.accessToken = access_token
-            
+
             self.sessionMxRc = MXRestClient(credentials: creds, unrecognizedCertificateHandler: nil)
             self.loginMxRc = self.sessionMxRc
-            
+
             self.connect(restclient: self.sessionMxRc!) {
                 //_ = self.getCircles()
                 //self.state = .normal(<#T##MXSessionState#>)
             }
-        } else {
-            // Apparently we're offline, waiting for credentials to log in
-            //self.state =
-            self.loginMxRc = nil
-            self.sessionMxRc = nil
-            self.session = MXSession()
-        }
-        
+        }, failure: {err in
+            print("STORE\tFailed to look up homeserver for user [\(user_id)]")
+        })
 
+
+
+    }
+
+    func setupListeners() {
         // Update 10/26/2020 -- HOWEVER, we need to be careful how we do this.
         // The MXSession comes from crufty old ObjC code.  For integration
         // with SwiftUI, we need to speak Combine, which is Swift only.
@@ -239,13 +271,14 @@ class KSStore: ObservableObject {
         // kMXSessionStateDidChangeNotification when the session state changes.
         // Then we need to publish an ObjectWillChange (or whatever it's called)
         // so that SwiftUI can re-render the Views.
+        //
         // Based on MXSession.m, it looks like the Session just posts its
         // events to the default NotificationCenter.  So all we need to do
         // is listen for them and provide the closure to handle them.
         // Hmmm... This may be easier than I thought.  Apple provides a function
         // that will give you a Combine Publisher for a given Notification name:
         // https://developer.apple.com/documentation/foundation/notificationcenter
-
+        //
         // Subscribe to updates from the MXSession
         // NOTE: We can do this now, regardless of whether or not we have
         // an active MXSession yet.  For now, we just need to sign up with
@@ -377,7 +410,7 @@ class KSStore: ObservableObject {
             if let token = idAccessToken {
                 print("IDENTITY\tWe got a token!  \(token)")
                 
-                let serviceTerms = MXServiceTerms(baseUrl: self.identityServer.absoluteString,
+                let serviceTerms = MXServiceTerms(baseUrl: self.session.identityService.identityServer,
                                               serviceType: MXServiceTypeIdentityService,
                                               matrixSession: self.session,
                                               accessToken: token)
@@ -480,6 +513,16 @@ class KSStore: ObservableObject {
         }
         
         return .normal(self.session.state)
+    }
+
+    func _getDomainFromUserId(_ userId: String) -> String? {
+        let toks = userId.split(separator: ":")
+        if toks.count != 2 {
+            return nil
+        }
+
+        let domain = String(toks[1])
+        return domain
     }
     
 }
@@ -821,89 +864,116 @@ extension KSStore: MatrixInterface {
         case MXSessionStateClosed,
              MXSessionStateUnknownToken,
              MXSessionStateSoftLogout:
-            self.loginMxRc = MXRestClient(homeServer: self.homeserver, unrecognizedCertificateHandler: nil)
-
-            guard let secrets = generateSecrets(userId: username, password: password)
+            guard let userDomain = _getDomainFromUserId(username) ?? kombuchaServer?.host,
+                  let autoDiscovery = MXAutoDiscovery(domain: userDomain)
             else {
-                let msg = "Failed to generate secrets from username and password"
-                print(msg)
-                completion(.failure(KSError(message: msg)))
+                let msg = "Failed to determine domain for username [\(username)]"
+                print("LOGIN\t\(msg)")
+                let err = KSError(message: msg)
+                completion(.failure(err))
                 return
             }
 
-            var params: [String:Any] = [:]
-            params["type"] = "m.login.password"
-            params["identifier"] = ["type" : "m.id.user"]
-            params["user"] = username
-            params["password"] = secrets.loginPassword
-            if let saved_device_id = UserDefaults.standard.string(forKey: "device_id[\(username)]") {
-                params["device_id"] = saved_device_id
-                print("LOGIN\tUsing existing deviceId [\(saved_device_id)]")
-            } else {
-                print("LOGIN\tNo saved deviceId")
-            }
-            params["initial_device_display_name"] = UIDevice.current.model
-
-            self.loginMxRc!.login(parameters: params) { response in
-                print("LOGIN\tGot login response")
-                switch(response) {
-                case .failure(let err):
-                    print("LOGIN\tFailed: \(err)")
+            autoDiscovery.wellKnow({ wellknown in
+                guard let serverUrl = URL(string: wellknown.homeServer.baseUrl) else {
+                    let msg = "Got invalid homeserver url"
+                    let err = KSError(message: msg)
+                    print("LOGIN\t\(msg)")
                     completion(.failure(err))
-                case .success(let creds):
-                    print("LOGIN\tLogged in")
-                    // Validate the credentials that we received
-                    guard let user_id = creds["user_id"] as? String,
-                          let access_token = creds["access_token"] as? String,
-                          let device_id = creds["device_id"] as? String
-                    else {
-                        let msg = "LOGIN\tLogged in but some creds are bogus"
-                        print(msg)
-                        let error = KSError(message: msg)
-                        completion(.failure(error))
-                        return
-                    }
-                    
-                    // Print credentials for debugging
-                    print("LOGIN\tGot user id = \(user_id)")
-                    print("LOGIN\tGot device id = \(device_id)")
-                    print("LOGIN\tGot access token = \(access_token)")
-                    
-                    var newCreds = MXCredentials()
-                    newCreds.userId = user_id
-                    newCreds.accessToken = access_token
-                    newCreds.deviceId = device_id
-                    newCreds.homeServer = self.homeserver.absoluteString
-                    
-                    // Save credentials in case the app is closed and re-started
-                    let defaults = UserDefaults.standard
-                    defaults.set(user_id, forKey: "user_id")
-                    defaults.set(device_id, forKey: "device_id[\(user_id)]")
-                    defaults.set(access_token, forKey: "access_token[\(user_id)]")
+                    return
+                }
+                self.loginMxRc = MXRestClient(homeServer: serverUrl,
+                                              unrecognizedCertificateHandler: nil)
 
-                    // Also save a copy of the device_id for the plain username.
-                    // This way, we'll be able to retrieve it next time even if the user doesn't
-                    // type in their full Matrix user ID
+                guard let secrets = self.generateSecrets(userId: username, password: password)
+                else {
+                    let msg = "Failed to generate secrets from username and password"
+                    print(msg)
+                    completion(.failure(KSError(message: msg)))
+                    return
+                }
 
-                    if user_id != username {
-                        defaults.set(device_id, forKey: "device_id[\(username)]")
-                    }
-                    print("Saved credentials to UserDefaults")
-                    
-                    // Connect to the Matrix backend and go live
-                    self.sessionMxRc = MXRestClient(credentials: newCreds, unrecognizedCertificateHandler: nil)
-                    self.connect(restclient: self.sessionMxRc!) {
-                        // Now we can run anything that needs the running session and/or the crypto interface AND the password
+                var params: [String:Any] = [:]
+                params["type"] = "m.login.password"
+                params["identifier"] = ["type" : "m.id.user"]
+                params["user"] = username
+                params["password"] = secrets.loginPassword
+                if let saved_device_id = UserDefaults.standard.string(forKey: "device_id[\(username)]") {
+                    params["device_id"] = saved_device_id
+                    print("LOGIN\tUsing existing deviceId [\(saved_device_id)]")
+                } else {
+                    print("LOGIN\tNo saved deviceId")
+                }
+                params["initial_device_display_name"] = UIDevice.current.model
 
-                        self.setupCrossSigning(password: secrets.loginPassword)
+                self.loginMxRc!.login(parameters: params) { response in
+                    print("LOGIN\tGot login response")
+                    switch(response) {
+                    case .failure(let err):
+                        print("LOGIN\tFailed: \(err)")
+                        completion(.failure(err))
+                    case .success(let creds):
+                        print("LOGIN\tLogged in")
+                        // Validate the credentials that we received
+                        guard let user_id = creds["user_id"] as? String,
+                              let access_token = creds["access_token"] as? String,
+                              let device_id = creds["device_id"] as? String
+                        else {
+                            let msg = "LOGIN\tLogged in but some creds are bogus"
+                            print(msg)
+                            let error = KSError(message: msg)
+                            completion(.failure(error))
+                            return
+                        }
 
-                        self.setupRecovery(password: password, secrets: secrets)
+                        // Print credentials for debugging
+                        print("LOGIN\tGot user id = \(user_id)")
+                        print("LOGIN\tGot device id = \(device_id)")
+                        print("LOGIN\tGot access token = \(access_token)")
 
-                        completion(.success(()))
+                        var newCreds = MXCredentials()
+                        newCreds.userId = user_id
+                        newCreds.accessToken = access_token
+                        newCreds.deviceId = device_id
+                        newCreds.homeServer = serverUrl.absoluteString
 
+                        // Save credentials in case the app is closed and re-started
+                        let defaults = UserDefaults.standard
+                        defaults.set(user_id, forKey: "user_id")
+                        defaults.set(device_id, forKey: "device_id[\(user_id)]")
+                        defaults.set(access_token, forKey: "access_token[\(user_id)]")
+
+                        // Also save a copy of the device_id for the plain username.
+                        // This way, we'll be able to retrieve it next time even if the user doesn't
+                        // type in their full Matrix user ID
+
+                        if user_id != username {
+                            defaults.set(device_id, forKey: "device_id[\(username)]")
+                        }
+                        print("Saved credentials to UserDefaults")
+
+                        // Connect to the Matrix backend and go live
+                        self.sessionMxRc = MXRestClient(credentials: newCreds, unrecognizedCertificateHandler: nil)
+                        self.connect(restclient: self.sessionMxRc!) {
+                            // Now we can run anything that needs the running session and/or the crypto interface AND the password
+
+                            self.setupCrossSigning(password: secrets.loginPassword)
+
+                            self.setupRecovery(password: password, secrets: secrets)
+
+                            completion(.success(()))
+
+                        }
                     }
                 }
-            }
+            }, failure: { error in
+                let msg = "Couldn't find well-known homeserver for domain [\(userDomain)]"
+                print("LOGIN\t\(msg)")
+                let err = KSError(message: msg)
+                completion(.failure(err))
+            })
+
+
         default:
             let msg = "In the wrong state... Not actually loggin in..."
             print(msg)
@@ -1047,7 +1117,7 @@ extension KSStore: MatrixInterface {
         }
         self.session = session
         
-        self.session.setIdentityServer(identityServer.absoluteString, andAccessToken: nil)
+        //self.session.setIdentityServer(identityServer.absoluteString, andAccessToken: nil)
         
         let store = MXFileStore(credentials: restclient.credentials)
         self.session.setStore(store) { store_response in
@@ -1385,10 +1455,12 @@ extension KSStore: MatrixInterface {
         if let room = self.getRooms(for: "m.server_notice").first {
             return room
         }
-        
-        let systemNoticesUserId = "@notices:\(self.homeserver.host!)"
-        print("NOTICES\tNotices userId = \(systemNoticesUserId)")
 
+        guard let userDomain = _getDomainFromUserId(whoAmI()) else {
+            return nil
+        }
+        let systemNoticesUserId = "@notices:\(userDomain)"
+        print("NOTICES\tNotices userId = \(systemNoticesUserId)")
         
         guard let mxroom = self.session.directJoinedRoom(withUserId: systemNoticesUserId) else {
             print("NOTICES\tNo system notices room")
@@ -1868,17 +1940,32 @@ extension KSStore: MatrixInterface {
                 }
             )
     }
+
+    func _getDefaultDomain() -> String? {
+        guard let server = self.kombuchaServer?.host else {
+            return nil
+        }
+        if server.starts(with: "matrix.") {
+            return String(server.dropFirst(7))
+        } else {
+            return server
+        }
+    }
     
     
     func canonicalizeUserId(userId: String) -> String? {
-
-        let domain = self.homeserver.host!.starts(with: "matrix.") ? String(self.homeserver.host!.dropFirst(7)) : self.homeserver.host!
+        let defaultDomain = _getDefaultDomain()
 
         let lowerCased = userId.lowercased()
         //print("lowered \t= \(lowerCased)")
         let prefixed = lowerCased.starts(with: "@") ? lowerCased : "@" + lowerCased
         //print("prefixed \t= \(prefixed)")
-        let suffixed = prefixed.contains(":") ? prefixed : prefixed + ":" + domain
+
+        guard defaultDomain != nil || prefixed.contains(":") else {
+            return nil
+        }
+
+        let suffixed = prefixed.contains(":") ? prefixed : prefixed + ":" + defaultDomain!
         //print("suffixed \t= \(suffixed)")
         let candidate = suffixed
         
@@ -2506,6 +2593,13 @@ extension KSStore: MatrixInterface {
             completion(.failure(err))
             return
         }
+
+        guard let homeServer = self.kombuchaServer else {
+            let msg = "Couldn't find the right Kombucha server"
+            let err = KSError(message: msg)
+            completion(.failure(err))
+            return
+        }
         
         // OK, at this point we have validated our email address with the identity server
         // But we have not yet done the UIAA auth stage for it
@@ -2524,7 +2618,7 @@ extension KSStore: MatrixInterface {
 
         
         let version = "r0"
-        let url = URL(string: "/_matrix/client/\(version)/register", relativeTo: self.homeserver)!
+        let url = URL(string: "/_matrix/client/\(version)/register", relativeTo: homeServer)!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.httpBody = """
@@ -2603,9 +2697,10 @@ extension KSStore: MatrixInterface {
                     completion(.failure(err))
                     return
                 }
-                let mxCreds = MXCredentials(homeServer: self.homeserver.host!, userId: creds.userId, accessToken: creds.accessToken)
+
+                let mxCreds = MXCredentials(homeServer: homeServer.host!, userId: creds.userId, accessToken: creds.accessToken)
                 mxCreds.deviceId = creds.deviceId
-                mxCreds.homeServer = self.homeserver.absoluteString
+                mxCreds.homeServer = homeServer.host!
                 
                 // Save credentials locally in the Store object
                 self.userId = creds.userId
