@@ -221,8 +221,9 @@ class KSStore: ObservableObject {
         guard let user_id = UserDefaults.standard.string(forKey: "user_id"),
               let device_id = UserDefaults.standard.string(forKey: "device_id[\(user_id)]"),
               let access_token = UserDefaults.standard.string(forKey: "access_token[\(user_id)]"),
-              let userDomain = _getDomainFromUserId(user_id),
-              let autoDiscovery = MXAutoDiscovery(domain: userDomain)
+              let userDomain = _getDomainFromUserId(user_id)
+              //let autoDiscovery = MXAutoDiscovery(domain: "matrix.org")
+              //let autoDiscovery = MXAutoDiscovery(domain: "matrix.kombucha.social")
         else {
             // Apparently we're offline, waiting for (valid) credentials to log in
             print("STORE\tDidn't find valid login credentials - Staying offline for now")
@@ -232,12 +233,30 @@ class KSStore: ObservableObject {
         // Next: Where is the server for this user id?
         // It might be something like matrix.domain.tld, or it might be something random
         // We don't know -- Have to look it up via .well-known
-        autoDiscovery.wellKnow({ wellknown in
+        let dgroup = DispatchGroup()
+        dgroup.enter()
+        //autoDiscovery.findClientConfig({ discoveredConfig in
+        _fetchWellKnown(for: userDomain) { wellKnownResponse in
+
+            guard case let .success(wellKnownInfo) = wellKnownResponse else {
+                print("STORE\tFailed to look up well-known server info for domain \(userDomain)")
+                dgroup.leave()
+                return
+            }
+
             // Yay we found it
-            let creds = MXCredentials(homeServer: wellknown.homeServer.baseUrl,
+            print("STORE\tGot well-known server info")
+            /*
+            guard let wellknown = discoveredConfig.wellKnown else {
+                print("STORE\tDiscovered config doesn't include well-known!!!")
+                return
+            }
+            */
+            let creds = MXCredentials(homeServer: wellKnownInfo.homeserver.base_url,
                                       userId: user_id,
                                       accessToken: access_token)
             creds.deviceId = device_id // ARGH Why could they not have included this in the constructor???
+            creds.identityServer = wellKnownInfo.identityserver.base_url
 
             self.userId = user_id
             self.deviceId = device_id
@@ -249,13 +268,68 @@ class KSStore: ObservableObject {
             self.connect(restclient: self.sessionMxRc!) {
                 //_ = self.getCircles()
                 //self.state = .normal(<#T##MXSessionState#>)
+                print("STORE\tBack from connect()")
+                dgroup.leave()
             }
-        }, failure: {err in
-            print("STORE\tFailed to look up homeserver for user [\(user_id)]")
-        })
+        }
 
+        print("STORE\tAfter looking for well known")
 
+        dgroup.notify(queue: .main) {
+            print("STORE\tBack from looking up well known")
+        }
 
+        print("STORE\tDone with init()")
+
+    }
+
+    private func _fetchWellKnown(for domain: String, completion: @escaping (MXResponse<MatrixWellKnown>) -> Void) {
+        print("WELLKNOWN\tFetching well-known server info for domain [\(domain)]")
+        guard let url = URL(string: "https://\(domain)/.well-known/matrix/client") else {
+            let msg = "Couldn't construct well-known URL"
+            print("WELLKNOWN\t\(msg)")
+            completion(.failure(KSError(message: msg)))
+            return
+        }
+        print("WELLKNOWN\tURL is \(url)")
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("WELLKNOWN\tFailed to fetch well-known URL")
+                completion(.failure(error))
+                return
+            }
+            guard let httpResponse = response as? HTTPURLResponse else {
+                let msg = "Couldn't decode HTTP response"
+                let err = KSError(message: msg)
+                print("WELLKNOWN\t\(msg)")
+                completion(.failure(err))
+                return
+            }
+            guard httpResponse.statusCode == 200 else {
+                let msg = "WELLKNOWN\tHTTP request failed"
+                let err = KSError(message: msg)
+                print("WELLKNOWN\t\(msg)")
+                completion(.failure(err))
+                return
+            }
+            let decoder = JSONDecoder()
+            //decoder.keyDecodingStrategy = .convertFromSnakeCase
+            let stuff = String(data: data!, encoding: .utf8)!
+            print("WELLKNOWN\tGot response data:\n\(stuff)")
+            guard let wellKnown = try? decoder.decode(MatrixWellKnown.self, from: data!) else {
+                let msg = "Couldn't decode response data"
+                let err = KSError(message: msg)
+                print("WELLKNOWN\t\(msg)")
+                completion(.failure(err))
+                return
+            }
+            print("WELLKNOWN\tSuccess!")
+            completion(.success(wellKnown))
+        }
+        task.resume()
     }
 
     func setupListeners() {
