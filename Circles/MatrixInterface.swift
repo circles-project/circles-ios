@@ -14,9 +14,9 @@ protocol MatrixInterface {
 
     func getStore() -> KSStore
 
-    func generateSecrets(userId: String, password: String) -> MatrixSecrets? 
+    func generateSecretsFromSinglePassword(userId: String, password: String) -> MatrixSecrets? 
 
-    func login(username: String, password: String,  completion: @escaping (MXResponse<Void>) -> Void)
+    func login(username: String, rawPassword: String, s4Password: String?, completion: @escaping (MXResponse<Void>) -> Void)
     
     //func logout()
     func pause()

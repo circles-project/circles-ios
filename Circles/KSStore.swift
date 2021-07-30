@@ -50,6 +50,12 @@ enum SignupState {
 struct MatrixSecrets {
     var loginPassword: String
     var secretKey: Data
+
+    enum KeygenMethod: String {
+        case fromSinglePassword
+        case fromTwoPasswords
+    }
+    var keygenMethod: KeygenMethod
 }
 
 class KSStore: ObservableObject {
@@ -866,8 +872,29 @@ extension KSStore: MatrixInterface {
         return reactions
     }
 
+    func generateSecrets(userId: String, rawPassword: String, s4Password: String? = nil) -> MatrixSecrets? {
+        guard let password2 = s4Password else {
+            return generateSecretsFromSinglePassword(userId: userId, password: rawPassword)
+        }
+        return generateSecretsFromTwoPasswords(userId: userId, loginPassword: rawPassword, s4Password: password2)
+    }
 
-    func generateSecrets(userId: String, password: String) -> MatrixSecrets? {
+    func generateSecretsFromTwoPasswords(userId: String, loginPassword: String, s4Password: String) -> MatrixSecrets? {
+
+        var nsSalt: NSString?
+
+        var pbkdf2iterations: UInt = 0
+        guard let key = try? MXKeyBackupPassword.generatePrivateKey(withPassword: s4Password, salt: &nsSalt, iterations: &pbkdf2iterations) else {
+            print("SECRETS\tPassword-based keygen failed")
+            return nil
+        }
+
+        return MatrixSecrets(loginPassword: loginPassword,
+                             secretKey: key,
+                             keygenMethod: .fromTwoPasswords)
+    }
+
+    func generateSecretsFromSinglePassword(userId: String, password: String) -> MatrixSecrets? {
         // Update 2021-06-16 - Adding my crazy scheme for doing
         //                     SSSS using only a single password
         //
@@ -927,11 +954,12 @@ extension KSStore: MatrixInterface {
         print("SECRETS\tGot new private key = [\(newPrivateKey)]")
 
         return MatrixSecrets(loginPassword: newLoginPassword,
-                             secretKey: newPrivateKey
+                             secretKey: newPrivateKey,
+                             keygenMethod: .fromSinglePassword
         )
     }
     
-    func login(username: String, password: String, completion: @escaping (MXResponse<Void>) -> Void) {
+    func login(username: String, rawPassword: String, s4Password: String? = nil, completion: @escaping (MXResponse<Void>) -> Void) {
         print("in login()")
         // First, check: Are we already logged in?
         switch(self.session.state) {
@@ -959,13 +987,20 @@ extension KSStore: MatrixInterface {
                 self.loginMxRc = MXRestClient(homeServer: serverUrl,
                                               unrecognizedCertificateHandler: nil)
 
-                guard let secrets = self.generateSecrets(userId: username, password: password)
+                // FIXME Only do this if we're using a single password
+                //       for both login and SSSS
+                // Actually - We should still use the "secrets" struct
+                // If we have two passwords, we should just generate it differently
+                //   - .loginPassword is just the "raw" password from the user
+                //   - .secretKey is generated from the special SSSS password
+                guard let secrets = self.generateSecrets(userId: username, rawPassword: rawPassword, s4Password: s4Password)
                 else {
-                    let msg = "Failed to generate secrets from username and password"
+                    let msg = "Failed to generate secrets from username and password(s)"
                     print(msg)
                     completion(.failure(KSError(message: msg)))
                     return
                 }
+
 
                 var params: [String:Any] = [:]
                 params["type"] = "m.login.password"
@@ -1016,6 +1051,9 @@ extension KSStore: MatrixInterface {
                         defaults.set(user_id, forKey: "user_id")
                         defaults.set(device_id, forKey: "device_id[\(user_id)]")
                         defaults.set(access_token, forKey: "access_token[\(user_id)]")
+                        // Also remember how we handle the user's raw password
+                        //   - eg Do we need to hash it before we use it for UIAA?
+                        defaults.set(secrets.keygenMethod, forKey: "keygen_method[\(user_id)]")
 
                         // Also save a copy of the device_id for the plain username.
                         // This way, we'll be able to retrieve it next time even if the user doesn't
@@ -1033,7 +1071,7 @@ extension KSStore: MatrixInterface {
 
                             self.setupCrossSigning(password: secrets.loginPassword)
 
-                            self.setupRecovery(password: password, secrets: secrets)
+                            self.setupRecovery(secrets: secrets)
 
                             completion(.success(()))
 
@@ -1060,7 +1098,7 @@ extension KSStore: MatrixInterface {
         print("Leaving login()")
     }
 
-    func setupRecovery(password: String, secrets: MatrixSecrets) {
+    func setupRecovery(secrets: MatrixSecrets) {
         guard let crypto = self.session.crypto,
               let recovery = crypto.recoveryService else {
             print("RECOVERY\tCouldn't get recoveryService")
@@ -1097,19 +1135,6 @@ extension KSStore: MatrixInterface {
                 // Ok, we had already saved this key
                 // No worries - connect() will load the recovery on its own
             } else {
-                /*
-                recovery
-                    .privateKey(
-                        fromPassphrase: password,
-                        success: { privateKey in
-                            UserDefaults.standard.set(privateKey, forKey: "privateKey[\(userId)]")
-
-                            self.connectRecovery(privateKey: privateKey)
-                        },
-                        failure: { error in
-                            print("RECOVERY\tFailed to create private key from password")
-                        })
-                */
                 self.connectRecovery(privateKey: secrets.secretKey)
             }
         }
@@ -1364,17 +1389,29 @@ extension KSStore: MatrixInterface {
 
     func deleteMyAccount(password: String, completion: @escaping (MXResponse<Void>) -> Void) {
 
-        guard let secrets = self.generateSecrets(userId: self.whoAmI(), password: password) else {
-            let msg = "Failed to generate secrets from username/password"
-            print(msg)
-            completion(.failure(KSError(message: msg)))
-            return
+        // Does the user use one password for everything?
+        //   * If so, we should bcrypt() the raw password before sending it
+        // Or are they on an old Matrix account with two different passwords?
+        //   * If so, we should just send the raw password.
+        //     We don't care what the second password is right now.
+
+        let keygenMethod: String? = UserDefaults.standard.string(forKey: "keygen_method[\(self.whoAmI())]")
+
+        var params: [String:String] = [:]
+        params["username"] = self.whoAmI()
+
+        if keygenMethod == MatrixSecrets.KeygenMethod.fromSinglePassword.rawValue {
+            params["password"] = password
+        } else {
+            guard let secrets = self.generateSecretsFromSinglePassword(userId: self.whoAmI(), password: password) else {
+                let msg = "Failed to generate secrets from username/password"
+                print(msg)
+                completion(.failure(KSError(message: msg)))
+                return
+            }
+            params["password"] = secrets.loginPassword
         }
 
-        let params: [String:String] = [
-            "username": self.whoAmI(),
-            "password": secrets.loginPassword
-        ]
 
         self.session.pause()
 
@@ -2142,13 +2179,6 @@ extension KSStore: MatrixInterface {
             return
         }
 
-        guard let secrets = self.generateSecrets(userId: self.whoAmI(), password: password) else {
-            let msg = "DELETE\tFailed to generate secrets from username/password"
-            print(msg)
-            completion(.failure(KSError(message: msg)))
-            return
-        }
-        
         mxrc.getSession(toDeleteDevice: deviceId) { response1 in
             switch response1 {
             case .failure(let err):
@@ -2162,8 +2192,27 @@ extension KSStore: MatrixInterface {
                     "type" : "m.id.user",
                     "user" : self.whoAmI()
                 ]
-                params["password"] = secrets.loginPassword
                 params["session"] = mxAuthSession.session
+
+                // Now we have to figure out which version of the password we should send.
+                // If we wrote down that we're using two different passwords, then it's
+                // ok to just send the user's "raw" password here.
+                // Otherwise we're using the bcrypt'ed version, so we need to hash
+                // the password before we can send it.
+
+                let keygenMethod: String? = UserDefaults.standard.string(forKey: "keygen_method[\(self.whoAmI())]")
+
+                if keygenMethod == MatrixSecrets.KeygenMethod.fromTwoPasswords.rawValue {
+                    params["password"] = password
+                } else {
+                    guard let secrets = self.generateSecretsFromSinglePassword(userId: self.whoAmI(), password: password) else {
+                        let msg = "DELETEDEVICE\tFailed to generate secrets from username/password"
+                        print(msg)
+                        completion(.failure(KSError(message: msg)))
+                        return
+                    }
+                    params["password"] = secrets.loginPassword
+                }
 
                 print("DELETE\tSo far so good...")
 
@@ -2683,7 +2732,7 @@ extension KSStore: MatrixInterface {
         print("Attempting email UIAA stage with sid=\(sid) and client_secret=\(clientSecret)")
 
 
-        guard let secrets = self.generateSecrets(userId: username, password: password) else {
+        guard let secrets = self.generateSecretsFromSinglePassword(userId: username, password: password) else {
             let msg = "Failed to generate secrets from username and password"
             print("SIGNUP(email2)\t\(msg)")
             completion(.failure(KSError(message: msg)))

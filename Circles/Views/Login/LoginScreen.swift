@@ -53,7 +53,7 @@ struct LoginScreen: View {
 
             Button(action: {
                 self.pending = true
-                self.matrix.login(username: self.username, password: self.password) { response in
+                self.matrix.login(username: self.username, rawPassword: self.password, s4Password: nil) { response in
                     self.pending = false
                     if response.isFailure {
                         self.showAlert = true
