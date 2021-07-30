@@ -225,8 +225,10 @@ class KSStore: ObservableObject {
         // Now let's see if we can connect to the server
         // First thing to check: Do we have credentials?
         guard let user_id = UserDefaults.standard.string(forKey: "user_id"),
+              !user_id.isEmpty,
               let device_id = UserDefaults.standard.string(forKey: "device_id[\(user_id)]"),
               let access_token = UserDefaults.standard.string(forKey: "access_token[\(user_id)]"),
+              !access_token.isEmpty,
               let userDomain = _getDomainFromUserId(user_id)
               //let autoDiscovery = MXAutoDiscovery(domain: "matrix.org")
               //let autoDiscovery = MXAutoDiscovery(domain: "matrix.kombucha.social")
@@ -235,6 +237,9 @@ class KSStore: ObservableObject {
             print("STORE\tDidn't find valid login credentials - Staying offline for now")
             return
         }
+
+        print("STORE\tUser Id = \(user_id)")
+        print("STORE\tAccess token = \(access_token)")
 
         // Next: Where is the server for this user id?
         // It might be something like matrix.domain.tld, or it might be something random
@@ -976,15 +981,16 @@ extension KSStore: MatrixInterface {
                 return
             }
 
-            autoDiscovery.wellKnow({ wellknown in
-                guard let serverUrl = URL(string: wellknown.homeServer.baseUrl) else {
-                    let msg = "Got invalid homeserver url"
-                    let err = KSError(message: msg)
-                    print("LOGIN\t\(msg)")
-                    completion(.failure(err))
+            //autoDiscovery.wellKnow({ wellknown in
+            _fetchWellKnown(for: userDomain) { wellKnownResponse in
+                guard case let .success(wellKnownInfo) = wellKnownResponse,
+                      let hsURL = URL(string: wellKnownInfo.homeserver.base_url)
+                else {
+                    print("STORE\tFailed to look up well-known homeserver info for domain \(userDomain)")
                     return
                 }
-                self.loginMxRc = MXRestClient(homeServer: serverUrl,
+
+                self.loginMxRc = MXRestClient(homeServer: hsURL,
                                               unrecognizedCertificateHandler: nil)
 
                 // FIXME Only do this if we're using a single password
@@ -1044,7 +1050,7 @@ extension KSStore: MatrixInterface {
                         newCreds.userId = user_id
                         newCreds.accessToken = access_token
                         newCreds.deviceId = device_id
-                        newCreds.homeServer = serverUrl.absoluteString
+                        newCreds.homeServer = hsURL.absoluteString
 
                         // Save credentials in case the app is closed and re-started
                         let defaults = UserDefaults.standard
@@ -1053,7 +1059,7 @@ extension KSStore: MatrixInterface {
                         defaults.set(access_token, forKey: "access_token[\(user_id)]")
                         // Also remember how we handle the user's raw password
                         //   - eg Do we need to hash it before we use it for UIAA?
-                        defaults.set(secrets.keygenMethod, forKey: "keygen_method[\(user_id)]")
+                        defaults.set(secrets.keygenMethod.rawValue, forKey: "keygen_method[\(user_id)]")
 
                         // Also save a copy of the device_id for the plain username.
                         // This way, we'll be able to retrieve it next time even if the user doesn't
@@ -1078,13 +1084,7 @@ extension KSStore: MatrixInterface {
                         }
                     }
                 }
-            }, failure: { error in
-                let msg = "Couldn't find well-known homeserver for domain [\(userDomain)]"
-                print("LOGIN\t\(msg)")
-                let err = KSError(message: msg)
-                completion(.failure(err))
-            })
-
+            }
 
         default:
             let msg = "In the wrong state... Not actually loggin in..."
