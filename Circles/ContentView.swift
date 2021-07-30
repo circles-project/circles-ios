@@ -67,7 +67,10 @@ struct ContentView: View {
             default:
                 VStack {
                     Text("Something went wrong")
-                    Button(action: {self.store.pause()}) {
+                    Button(action: {
+                        self.store.pause()
+                        self.store.close()
+                    }) {
                         Text("Logout and try again...")
                     }
                 }
