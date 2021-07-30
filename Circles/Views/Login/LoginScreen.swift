@@ -14,9 +14,11 @@ struct LoginScreen: View {
 
     @State var username: String = ""
     @State var password: String = ""
+    @State var password2: String = ""
 
     @State var pending = false
     @State var showAlert = false
+    @State var showAdvanced = false
     
     var logo: some View {
         RandomizedCircles()
@@ -51,13 +53,49 @@ struct LoginScreen: View {
             SecureField("Password", text: $password)
                 .frame(width: 300.0, height: 40.0)
 
+            VStack(alignment: .leading) {
+                HStack {
+                    Button(action: {self.showAdvanced.toggle()}) {
+                        if showAdvanced {
+                            Label("Hide Advanced Options", systemImage: "chevron.down")
+
+                        } else {
+                            Label("Advanced Options", systemImage: "chevron.right")
+                        }
+                    }
+                    .font(.footnote)
+
+                    Spacer()
+                }
+                .frame(width: 300.0, height: 30.0)
+
+                if showAdvanced {
+                    SecureField("Encryption password", text: $password2)
+                        .frame(width: 300.0, height: 40.0)
+                }
+            }
+
+
+
             Button(action: {
                 self.pending = true
-                self.matrix.login(username: self.username, rawPassword: self.password, s4Password: nil) { response in
-                    self.pending = false
-                    if response.isFailure {
-                        self.showAlert = true
-                        self.password = ""
+                if self.password2.isEmpty {
+                    self.matrix.login(username: self.username, rawPassword: self.password, s4Password: nil) { response in
+                        self.pending = false
+                        if response.isFailure {
+                            self.showAlert = true
+                            self.password = ""
+                            self.password2 = ""
+                        }
+                    }
+                } else {
+                    self.matrix.login(username: self.username, rawPassword: self.password, s4Password: password2) { response in
+                        self.pending = false
+                        if response.isFailure {
+                            self.showAlert = true
+                            self.password = ""
+                            self.password2 = ""
+                        }
                     }
                 }
             }) {

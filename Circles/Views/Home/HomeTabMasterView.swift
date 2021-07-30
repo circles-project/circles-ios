@@ -43,20 +43,7 @@ struct HomeTabMasterView: View {
                         .font(.subheadline)
                 //}
             }
-            .actionSheet(isPresented: $showConfirmLogout) {
-                ActionSheet(
-                    title: Text("Confirm Logout"),
-                    message: Text("Do you really want to log out?"),
-                    buttons: [
-                        .cancel {self.showConfirmLogout = false},
-                        .destructive(Text("Yes, log me out")) {
-                            //self.store.logout()
-                            self.store.pause()
-                            self.presentation.wrappedValue.dismiss()
-                        }
-                    ]
-                )
-            }
+
         //}
     }
     
@@ -227,6 +214,20 @@ struct HomeTabMasterView: View {
             .navigationBarItems(trailing: menu)
             .sheet(isPresented: $showCredits) {
                 AcknowledgementsSheet()
+            }
+            .actionSheet(isPresented: $showConfirmLogout) {
+                ActionSheet(
+                    title: Text("Confirm Logout"),
+                    message: Text("Do you really want to log out?"),
+                    buttons: [
+                        .cancel {self.showConfirmLogout = false},
+                        .destructive(Text("Yes, log me out")) {
+                            //self.store.logout()
+                            self.store.pause()
+                            self.presentation.wrappedValue.dismiss()
+                        }
+                    ]
+                )
             }
         }
     }

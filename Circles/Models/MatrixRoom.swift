@@ -586,7 +586,14 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
     }
 
     func invite(userId: String, completion: @escaping (MXResponse<Void>) -> Void = { _ in }) {
+        print("ROOM\tInviting user [\(userId)]")
         mxroom.invite(.userId(userId)) { response in
+            switch response {
+            case .failure(let err):
+                print("ROOM\tFailed to invite \(userId) -- \(err)")
+            case .success:
+                print("ROOM\tSuccessfully invited \(userId)")
+            }
             completion(response)
         }
     }

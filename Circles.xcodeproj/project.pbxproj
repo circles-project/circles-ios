@@ -362,6 +362,7 @@
 			isa = PBXGroup;
 			children = (
 				409F4398265DE34700690A61 /* AccountScreen.swift */,
+				40BC0E4426B45FE600137A92 /* AcknowledgementsSheet.swift */,
 				409F431D265DE11000690A61 /* DeviceInfoView.swift */,
 				409F431C265DE10F00690A61 /* DeviceRemovalSheet.swift */,
 				409F431B265DE10F00690A61 /* DevicesScreen.swift */,
@@ -375,7 +376,6 @@
 				409F437B265DE27F00690A61 /* RecentActivityView.swift */,
 				409F438F265DE2CE00690A61 /* SystemNoticesView.swift */,
 				409F4395265DE2E900690A61 /* TermsScreen.swift */,
-				40BC0E4426B45FE600137A92 /* AcknowledgementsSheet.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
