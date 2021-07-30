@@ -16,6 +16,7 @@ struct HomeTabMasterView: View {
     @Binding var tab: LoggedinScreen.Tab
     
     @State var showConfirmLogout = false
+    @State var showCredits = false
 
     enum Screen: String {
         case home
@@ -179,7 +180,20 @@ struct HomeTabMasterView: View {
         }
     }
     
+    var menu: some View {
+        Menu {
+            Button(action: {
+                self.showCredits = true
+            }) {
+                Text("Credits")
+            }
 
+            logoutButton
+        }
+        label: {
+            Label("More", systemImage: "ellipsis.circle")
+        }
+    }
     
     var body: some View {
         NavigationView {
@@ -210,7 +224,10 @@ struct HomeTabMasterView: View {
             }
             .padding()
             .navigationBarTitle("Home", displayMode: .inline)
-            .navigationBarItems(trailing: logoutButton)
+            .navigationBarItems(trailing: menu)
+            .sheet(isPresented: $showCredits) {
+                AcknowledgementsSheet()
+            }
         }
     }
 }
