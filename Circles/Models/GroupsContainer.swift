@@ -57,9 +57,10 @@ class GroupsContainer: ObservableObject {
             switch(response) {
             case .failure(let err):
                 let msg = "Failed to create Room for new Group [\(name)]"
-                print(msg)
+                print("CREATEGROUP\t\(msg)")
                 completion(.failure(KSError(message: msg)))
             case .success(let roomId):
+                print("CREATEGROUP\tSuccess!  Created new group [\(name)]")
                 if let room = self.matrix.getRoom(roomId: roomId) {
                     room.setRoomType(type: ROOM_TYPE_GROUP) { response2 in
                         if response2.isSuccess {

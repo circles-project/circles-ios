@@ -12,6 +12,7 @@ import MatrixSDK
 struct InvitationCard: View {
     @ObservedObject var room: InvitedRoom
     //@State var showAcceptSheet = false
+    @Binding var selectedRoom: MatrixRoom?
     @Binding var showAcceptSheet: Bool
     @State var showDeclineAlert = false
     //@State var joinedRoom: MatrixRoom? = nil
@@ -65,6 +66,9 @@ struct InvitationCard: View {
                         print("ACCEPT Success fetching room type: Got [\(roomtype)]")
                         switch(roomtype) {
                         case ROOM_TYPE_CIRCLE:
+                            // Show the "accept" dialog so the user can decide whether to add it to any Circles
+                            self.selectedRoom = matrixroom
+                            self.showAcceptSheet = true
                             // Tag the room as a Circle that we're following
                             matrixroom.addTag(tag: ROOM_TAG_FOLLOWING) { response3 in
                                 switch(response3) {
@@ -74,8 +78,7 @@ struct InvitationCard: View {
                                     print("ACCEPT Successfully set room tag Circle")
                                 }
                             }
-                            // Show the "accept" dialog so the user can decide whether to add it to any Circles
-                            self.showAcceptSheet = true
+
                             // Fetch some messages
                             //room.paginate(count: 10)
                             

@@ -83,7 +83,7 @@ class InvitedRoom: ObservableObject, Identifiable {
         mxroom.join { response1 in
             switch(response1) {
             case .failure(let error):
-                print("Failed to join room \(self.id): \(error)")
+                print("INVITED\tFailed to join room \(self.id): \(error)")
                 completion(.failure(error))
                 
             case .success:
@@ -104,7 +104,7 @@ class InvitedRoom: ObservableObject, Identifiable {
                     dgroup.enter()
                     room.addTag(tag: tag) { response2 in
                         if response2.isFailure {
-                            let msg = "Failed to set tag [\(tag)]"
+                            let msg = "INVITED\tFailed to set tag [\(tag)]"
                             print(msg)
                             failures = failures ?? KSError(message: msg)
                         }
@@ -114,9 +114,11 @@ class InvitedRoom: ObservableObject, Identifiable {
                 
                 dgroup.notify(queue: .main) {
                     if let fail = failures {
+                        print("INVITED\tDone, but we had one or more failures.  FAIL.")
                         completion(.failure(fail))
                     }
                     else {
+                        print("INVITED\tSuccess!  We joined the room!")
                         completion(.success(room))
                     }
                 }

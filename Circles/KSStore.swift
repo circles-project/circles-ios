@@ -401,7 +401,7 @@ class KSStore: ObservableObject {
                     print("NEWROOM\tSink: Got new invited room notification:") // \(notification)")
                     self.objectWillChange.send()
                     self.invitedRooms = self.getInvitedRooms()
-                    
+
                     if let userInfo = notification.userInfo {
                         if let roomId = userInfo["roomId"] as? String,
                            let event = userInfo["event"] as? MXEvent {
@@ -1541,10 +1541,11 @@ extension KSStore: MatrixInterface {
     
     
     func getInvitedRooms() -> [InvitedRoom] {
+        print("INVITED\tGetting invited rooms...")
         guard let mxrooms: [MXRoom] = self.session.invitedRooms() else {
             return []
         }
-        return mxrooms
+        return Set(mxrooms)
             /*
             .filter { mxroom in
                 guard let roomType = mxroom.summary.roomTypeString else {
@@ -1557,7 +1558,8 @@ extension KSStore: MatrixInterface {
             */
             .compactMap { mxroom in
                 //self.getRoom(roomId: mxroom.roomId)
-                InvitedRoom(from: mxroom, on: self)
+                print("INVITED\tFound invited room [\(mxroom.roomId ?? "")]")
+                return InvitedRoom(from: mxroom, on: self)
             }
     }
     
@@ -1591,10 +1593,7 @@ extension KSStore: MatrixInterface {
         params.visibility = kMXRoomDirectoryVisibilityPrivate
         */
         
-        // FIXME set up the room to be encrypted by default...
-        //       Should look something like this:
-        //var params = MXRoomCreationParameters.initialStateEventForEncryption(withAlgorithm: "m.olm.v1.curve25519-aes-sha2")
-        //params["name"] = name
+
         
         var params: [String: Any] = [:]
         params["visibility"] = "private"
@@ -1624,6 +1623,14 @@ extension KSStore: MatrixInterface {
             "events_default": 10,
             "users_default": 10
         ]
+
+        // Let's see if we can turn on encryption here, by
+        // getting the proper incantation of combining JSON
+        // and MX ObjC data types...
+        if !insecure {
+        let encryptionEvent = MXRoomCreationParameters.initialStateEventForEncryption(withAlgorithm: "m.olm.v1.curve25519-aes-sha2")
+            params["initial_state"] = [encryptionEvent]
+        }
         
         // Any more-detailed tweaking of the setup params should be
         // done in the completion handler on behalf of the caller.
@@ -1635,7 +1642,9 @@ extension KSStore: MatrixInterface {
         restClient.createRoom(parameters: params) { response in
             switch(response) {
             case .success(let mxCreateRoomResponse):
+                print("CREATEROOM\tCreated new room")
                 self.objectWillChange.send()
+                /* // Already handled the encryption at creation time :)
                 if !insecure {
                     if let roomId = mxCreateRoomResponse.roomId {
                         let encryptionParams = [
@@ -1643,20 +1652,38 @@ extension KSStore: MatrixInterface {
                             "rotation_period_ms": "604800000",
                             "rotation_period_msgs": "100"
                         ]
+                        print("CREATEROOM\tSending room encryption event")
                         restClient.sendEvent(toRoom: roomId, eventType: .roomEncryption, content: encryptionParams, txnId: nil) { response2 in
-                            if response2.isSuccess {
+                            switch response2 {
+                            case .success(let _):
+                                print("CREATEROOM\tSuccess!  Room is now encrypted.")
                                 completion(.success(roomId))
+                            case .failure(let err):
+                                print("CREATEROOM\tFailed to encrypt room: \(err)")
+                                completion(.failure(err))
                             }
                         }
                     } else {
-                        let msg = "Failed to encrypt room [\(name)]"
-                        print(msg)
+                        let msg = "Failed to get new room id for [\(name)]"
+                        print("CREATEROOM\t\(msg)")
                         completion(.failure(KSError(message: msg)))
                     }
                 }
                 else {
+                    print("CREATEROOM\tCreated insecure room for [\(name)]")
                     completion(.success(mxCreateRoomResponse.roomId))
                 }
+                */
+                guard let roomId = mxCreateRoomResponse.roomId else {
+                    let msg = "Couldn't get id for new room"
+                    print("CREATEROOM\t\(msg)")
+                    let err = KSError(message: msg)
+                    completion(.failure(err))
+                    return
+                }
+                print("CREATEROOM\tSuccess!  Created room for \(name)")
+                completion(.success(roomId))
+                
             case .failure(let err):
                 let msg = "Failed to create room for \(name)"
                 print(msg)

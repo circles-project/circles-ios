@@ -12,8 +12,9 @@ import SwiftUI
 struct InvitationsView: View {
     var store: KSStore
     @State var invitedRooms: [InvitedRoom] = []
+    @State var selectedRoom: MatrixRoom?
     @State var showAcceptSheet = false
-    
+
     var body: some View {
         VStack(alignment: .leading) {
             //var invitedRooms = store.getInvitedRooms()
@@ -23,7 +24,7 @@ struct InvitationsView: View {
                 // Then we get the scrolling at the appropriate place on the screen, instead of a tiny little 300px area where we have to scroll through all the invitations
                 //ScrollView {
                     ForEach(invitedRooms) { room in
-                        InvitationCard(room: room, showAcceptSheet: $showAcceptSheet)
+                        InvitationCard(room: room, selectedRoom: $selectedRoom, showAcceptSheet: $showAcceptSheet)
                     }
                     .onDelete(perform: { indexSet in
                         let dgroup = DispatchGroup()
@@ -48,14 +49,15 @@ struct InvitationsView: View {
         .onAppear {
             invitedRooms = store.getInvitedRooms()
         }
-        .sheet(isPresented: $showAcceptSheet) {
+        //.sheet(isPresented: $showAcceptSheet) {
+        .sheet(item: $selectedRoom) { room in
             VStack {
-                if let room = store.newestRooms.first {
+                //if let room = self.selectedRoom {
                     InvitationAcceptSheet(store: store, room: room)
-                }
-                else {
-                    Text("Something went wrong")
-                }
+                //}
+                //else {
+                //    Text("Something went wrong")
+                //}
             }
         }
     }
