@@ -19,6 +19,7 @@ struct LoginScreen: View {
     @State var pending = false
     @State var showAlert = false
     @State var showAdvanced = false
+    @State var showPassword = false
     
     var logo: some View {
         RandomizedCircles()
@@ -50,7 +51,7 @@ struct LoginScreen: View {
                 .disableAutocorrection(true)
                 .frame(width: 300.0, height: 40.0)
 
-            SecureField("Password", text: $password)
+            EyeSecureField(label: "Password", text: $password)
                 .frame(width: 300.0, height: 40.0)
 
             VStack(alignment: .leading) {
@@ -70,8 +71,8 @@ struct LoginScreen: View {
                 .frame(width: 300.0, height: 30.0)
 
                 if showAdvanced {
-                    SecureField("Encryption password", text: $password2)
-                        .frame(width: 300.0, height: 40.0)
+                    EyeSecureField(label: "Encryption password", text: $password2)
+                        .frame(width: 300.0, height: 30.0)
                 }
             }
 
