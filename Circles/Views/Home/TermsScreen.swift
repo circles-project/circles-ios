@@ -118,7 +118,7 @@ struct TermsScreen: View {
                 }
             },
             failure: { err in
-                
+                print("TERMS\tFailed to get terms of service")
             })
         }
     }

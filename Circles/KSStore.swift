@@ -2012,7 +2012,7 @@ extension KSStore: MatrixInterface {
             restClient.setDisplayName(name, completion: completion)
         }
         else {
-            /*
+
             session
                 .myUser
                 .setDisplayName(
@@ -2026,8 +2026,8 @@ extension KSStore: MatrixInterface {
                         completion(.failure(err!))
                     }
                 )
-            */
-            self.session.matrixRestClient.setDisplayName(name, completion: completion)
+
+            //self.session.matrixRestClient.setDisplayName(name, completion: completion)
         }
         
         /*
@@ -2371,7 +2371,15 @@ extension KSStore: MatrixInterface {
         }
         */
         let version = "r0"
-        let url = URL(string: "/_matrix/client/\(version)/register", relativeTo: self.homeserver)!
+        guard let homeserverUrl = self.kombuchaServer,
+              let url = URL(string: "/_matrix/client/\(version)/register", relativeTo: homeserverUrl) else {
+            let msg = "Failed to generate registration URL"
+            print("SIGNUP(start)\t\(msg)")
+            let err = KSError(message: msg)
+            completion(.failure(err))
+            return
+        }
+        print("SIGNUP(start)\tStarting registration for an account on \(homeserverUrl.host ?? "???")")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         let kludge = """
@@ -2445,8 +2453,13 @@ extension KSStore: MatrixInterface {
         // it crashes the app when it receives an unexpected response
         // from the server.
         // Screw it, we're going to do this one ourselves
-        let version = "r0"
-        let url = URL(string: "/_matrix/client/\(version)/register", relativeTo: self.homeserver)!
+        guard let url = _getSignupUrl() else {
+            let msg = "Couldn't find Kombucha server or the signup URL"
+            print("SIGNUP(token)\t\(msg)")
+            let err = KSError(message: msg)
+            completion(.failure(err))
+            return
+        }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         let kludge = """
@@ -2508,6 +2521,11 @@ extension KSStore: MatrixInterface {
             return nil
         }
     }
+
+    func _getSignupUrl() -> URL? {
+        let version = "r0"
+        return URL(string: "/_matrix/client/\(version)/register", relativeTo: self.kombuchaServer)
+    }
     
     func signupDoTermsStage(completion: @escaping (MXResponse<Void>)->Void) {
         guard case let .inProgress(authSession) = self.signupState else {
@@ -2515,8 +2533,13 @@ extension KSStore: MatrixInterface {
             completion(.failure(err))
             return
         }
-        let version = "r0"
-        let url = URL(string: "/_matrix/client/\(version)/register", relativeTo: self.homeserver)!
+        guard let url = _getSignupUrl() else {
+            let msg = "Couldn't find Kombucha server or the signup URL"
+            print("SIGNUP(token)\t\(msg)")
+            let err = KSError(message: msg)
+            completion(.failure(err))
+            return
+        }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         let kludge = """
@@ -2569,7 +2592,13 @@ extension KSStore: MatrixInterface {
         var sendAttempt = 1
         
         let version = "r0"
-        let url = URL(string: "/_matrix/client/\(version)/register/email/requestToken", relativeTo: self.homeserver)!
+        guard let url = URL(string: "/_matrix/client/\(version)/register/email/requestToken", relativeTo: self.kombuchaServer) else {
+            let msg = "Couldn't find signup server or email token URL"
+            print("SIGNUP(email)\t\(msg)")
+            let err = KSError(message: msg)
+            completion(.failure(err))
+            return
+        }
         //let url = URL(string: "/_matrix/identity/api/v1/validate/email/requestToken", relativeTo: self.homeserver)!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -2648,7 +2677,13 @@ extension KSStore: MatrixInterface {
         // Obviously that's for SMS...  Assuming email is similar...
         // FIXME The actual URL comes down in one of the HTTP responses
         let version = "v1"
-        let url = URL(string: "/_matrix/identity/api/\(version)/validate/email/submitToken", relativeTo: self.homeserver)!
+        guard let url = URL(string: "/_matrix/identity/api/\(version)/validate/email/submitToken", relativeTo: self.kombuchaServer) else {
+            let msg = "Couldn't find Kombucha server or the token submission URL"
+            print("SIGNUP(validate)\t\(msg)")
+            let err = KSError(message: msg)
+            completion(.failure(err))
+            return
+        }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         let kludge = """
@@ -2743,13 +2778,6 @@ extension KSStore: MatrixInterface {
             completion(.failure(err))
             return
         }
-
-        guard let homeServer = self.kombuchaServer else {
-            let msg = "Couldn't find the right Kombucha server"
-            let err = KSError(message: msg)
-            completion(.failure(err))
-            return
-        }
         
         // OK, at this point we have validated our email address with the identity server
         // But we have not yet done the UIAA auth stage for it
@@ -2767,8 +2795,13 @@ extension KSStore: MatrixInterface {
         }
 
         
-        let version = "r0"
-        let url = URL(string: "/_matrix/client/\(version)/register", relativeTo: homeServer)!
+        guard let url = _getSignupUrl() else {
+            let msg = "Couldn't find Kombucha server or the signup URL"
+            print("SIGNUP(email2)\t\(msg)")
+            let err = KSError(message: msg)
+            completion(.failure(err))
+            return
+        }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.httpBody = """
@@ -2848,10 +2881,15 @@ extension KSStore: MatrixInterface {
                     return
                 }
 
-                let mxCreds = MXCredentials(homeServer: homeServer.host!, userId: creds.userId, accessToken: creds.accessToken)
+                guard let serverUrl = self.kombuchaServer else {
+                    let msg = "Failed to find kombucha server again"
+                    print("SIGNUP(email2)\t\(msg)")
+                    completion(.failure(KSError(message: msg)))
+                    return
+                }
+                let mxCreds = MXCredentials(homeServer: serverUrl.absoluteString, userId: creds.userId, accessToken: creds.accessToken)
                 mxCreds.deviceId = creds.deviceId
-                mxCreds.homeServer = homeServer.host!
-                
+
                 // Save credentials locally in the Store object
                 self.userId = creds.userId
                 self.deviceId = creds.deviceId

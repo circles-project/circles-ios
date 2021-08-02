@@ -84,11 +84,11 @@ struct TokenSignUpScreen: View {
     """
     
     let helpTextForPassword = """
-    The passphrase must be a phrase of four or more words, with at least 16 characters in total length.  Spaces at the beginning and end are ignored.
+    Please choose a passphrase that is hard to guess.
 
-    The passphrase must contain at least three spaces between words, and at least one numeric digit [0-9].
+    You should use at least one numeral and one punctuation character.
 
-    Punctuation characters are good, too, but don't make it *too* complicated.  A passphrase that you can't remember doesn't do you any good.
+    Combine at least 3 or 4 words to make an even stronger passphrase.
     """
 
     /*
