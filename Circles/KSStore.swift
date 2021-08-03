@@ -1019,7 +1019,7 @@ extension KSStore: MatrixInterface {
                 } else {
                     print("LOGIN\tNo saved deviceId")
                 }
-                params["initial_device_display_name"] = UIDevice.current.model
+                params["initial_device_display_name"] = "Circles (\(UIDevice.current.model))"
 
                 self.loginMxRc!.login(parameters: params) { response in
                     print("LOGIN\tGot login response")
@@ -2818,7 +2818,7 @@ extension KSStore: MatrixInterface {
             },
             "username": "\(username)",
             "password": "\(secrets.loginPassword)",
-            "initial_device_display_name": "\(UIDevice.current.model)"
+            "initial_device_display_name": "Circles (\(UIDevice.current.model))"
         }
         """
             .replacingOccurrences(of: " ", with: "")
