@@ -46,7 +46,6 @@ struct LoginScreen: View {
                 .fontWeight(.bold)
             
             TextField("Username", text: $username)
-                .keyboardType(.emailAddress)
                 .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
                 .disableAutocorrection(true)
                 .frame(width: 300.0, height: 40.0)
