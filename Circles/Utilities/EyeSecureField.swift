@@ -17,6 +17,7 @@ struct EyeSecureField: View {
             if showText {
                 TextField(label, text: $text)
                     .disableAutocorrection(true)
+                    .autocapitalization(.none)
                 Button(action: {self.showText.toggle()}) {
                     Image(systemName: "eye.slash")
                         .foregroundColor(.gray)
@@ -24,6 +25,7 @@ struct EyeSecureField: View {
             } else {
                 SecureField(label, text: $text)
                     .disableAutocorrection(true)
+                    .autocapitalization(.none)
                 Button(action: {self.showText.toggle()}) {
                     Image(systemName: "eye")
                         .foregroundColor(.gray)
