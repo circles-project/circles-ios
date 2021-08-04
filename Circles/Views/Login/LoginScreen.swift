@@ -50,7 +50,7 @@ struct LoginScreen: View {
                 .disableAutocorrection(true)
                 .frame(width: 300.0, height: 40.0)
 
-            EyeSecureField(label: "Password", text: $password)
+            SecureFieldWithEye(label: "Password", text: $password)
                 .frame(width: 300.0, height: 40.0)
 
             VStack(alignment: .leading) {
@@ -70,7 +70,7 @@ struct LoginScreen: View {
                 .frame(width: 300.0, height: 30.0)
 
                 if showAdvanced {
-                    EyeSecureField(label: "Encryption password", text: $password2)
+                    SecureFieldWithEye(label: "Encryption password", text: $password2)
                         .frame(width: 300.0, height: 30.0)
                 }
             }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct EyeSecureField: View {
+struct SecureFieldWithEye: View {
     let label: String
     @Binding var text: String
     @State var showText: Bool = false
