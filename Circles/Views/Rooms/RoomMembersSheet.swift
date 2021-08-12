@@ -151,7 +151,9 @@ struct RoomMemberRow: View {
                     let today = Date()
                     let formatter = DateFormatter()
                     formatter.dateStyle = .short
-                    room.kick(userId: user.id, reason: "Kicked by \(room.matrix.whoAmI()) on \(formatter.string(from: today))")
+                    room.kick(userId: user.id, reason: "Kicked by \(room.matrix.whoAmI()) on \(formatter.string(from: today))") { response in
+                        // FIXME Not sure what to do here...
+                    }
                 }) {
                     Text("Remove this user")
                     Image(systemName: "person.fill.xmark")
@@ -171,6 +173,9 @@ struct RoomMembersSheet: View {
     @ObservedObject var room: MatrixRoom
     var title: String? = nil
     @Environment(\.presentationMode) var presentation
+
+    @State var members: [MatrixUser] = []
+
     @State var showInviteSheet = false
     @State var currentToBeRemoved: Set<MatrixUser> = []
     @State var showConfirmRemove = false
@@ -346,6 +351,22 @@ struct RoomMembersSheet: View {
 
         }
         .padding()
+        .onAppear {
+            // Let's at least try this the SwiftUI way
+            room.updateMembers()
+            // Then if it fails, we can do the "manually update the UI" way below...
+            /*
+            room.asyncMembers { response in
+                switch response {
+                case .failure(let err):
+                    print("MEMBERS\tFailed to get member list for room \(room.displayName) (\(room.id) -- \(err)")
+                    return
+                case .success(let memberList):
+                    self.members = memberList
+                }
+            }
+            */
+        }
     }
 }
 

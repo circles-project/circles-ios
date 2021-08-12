@@ -36,7 +36,9 @@
     }
   ],
   "settings" : {
-
+    "_askToBuyEnabled" : false,
+    "_storefront" : "USA",
+    "_timeRate" : 5
   },
   "subscriptionGroups" : [
     {
@@ -52,7 +54,7 @@
           ],
           "displayPrice" : "14.99",
           "familyShareable" : false,
-          "groupNumber" : 1,
+          "groupNumber" : 2,
           "internalID" : "6815828B",
           "introductoryOffer" : null,
           "localizations" : [
@@ -74,7 +76,7 @@
           ],
           "displayPrice" : "24.99",
           "familyShareable" : false,
-          "groupNumber" : 1,
+          "groupNumber" : 2,
           "internalID" : "E36E940D",
           "introductoryOffer" : null,
           "localizations" : [
@@ -96,7 +98,7 @@
           ],
           "displayPrice" : "9.99",
           "familyShareable" : false,
-          "groupNumber" : 1,
+          "groupNumber" : 2,
           "internalID" : "EC5F0430",
           "introductoryOffer" : null,
           "localizations" : [
@@ -118,7 +120,7 @@
           ],
           "displayPrice" : "49.99",
           "familyShareable" : false,
-          "groupNumber" : 1,
+          "groupNumber" : 2,
           "internalID" : "66563094",
           "introductoryOffer" : null,
           "localizations" : [
@@ -131,6 +133,50 @@
           "productID" : "social.kombucha.circles.standard12month",
           "recurringSubscriptionPeriod" : "P1Y",
           "referenceName" : "Standard 12 Month",
+          "subscriptionGroupID" : "9168B5F2",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "0.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "5CF1C50B",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Use Circles with your own Matrix server",
+              "displayName" : "Bring Your Own Server 1 month",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "social.kombucha.circles.byos01month",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "BYOS 1 Month",
+          "subscriptionGroupID" : "9168B5F2",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "9.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "C8E88F07",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Use Circles with your own Matrix server",
+              "displayName" : "Bring Your Own Server 1 year",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "social.kombucha.circles.byos12month",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "BYOS 12 Month",
           "subscriptionGroupID" : "9168B5F2",
           "type" : "RecurringSubscription"
         }

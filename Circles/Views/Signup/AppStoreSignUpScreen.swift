@@ -115,6 +115,58 @@ extension SKProduct {
     }
 }
 
+struct MembershipProductCard: View {
+    @EnvironmentObject var appStore: AppStoreInterface
+    var product: SKProduct
+    @Binding var selectedProduct: SKProduct?
+
+    var body: some View {
+        let alreadyPurchased = UserDefaults.standard.bool(forKey: product.productIdentifier) || appStore.purchased.contains(product.productIdentifier)
+        let selected: Bool = product == self.selectedProduct
+        //let borderColor = self.selectedProduct == nil ? Color.accentColor : (selected ? Color.primary : Color.accentColor)
+        let borderColor = Color.accentColor
+        //let textColor = self.selectedProduct == nil ? Color.primary : (selected ? Color.primary : Color.gray)
+        let backgroundColor = selected ? Color.accentColor : Color.clear
+
+        return Button(action: {
+            self.selectedProduct = product
+        }) {
+            VStack(alignment: .leading) {
+                let bigFont = Font.title2
+                HStack {
+                    Text(product.localizedTitle)
+                        .font(bigFont)
+                        .fontWeight(.bold)
+                    Spacer()
+                    if alreadyPurchased {
+                        Text ("Purchased")
+                            .font(bigFont)
+                            .fontWeight(.bold)
+                            .foregroundColor(.green)
+                    } else {
+                        Text("\(product.regularPrice!)")
+                            .font(bigFont)
+                            .fontWeight(.bold)
+                            //.foregroundColor(.blue)
+                    }
+                }
+
+                Text(product.localizedDescription)
+                    .font(.subheadline)
+            }
+            //.foregroundColor(textColor)
+            .padding()
+            .frame(width: 300, height: 100)
+            .background(backgroundColor)
+            .cornerRadius(10)
+            .overlay(RoundedRectangle(cornerRadius: 10).stroke(borderColor, lineWidth: 2))
+            .padding()
+        }
+        .buttonStyle(PlainButtonStyle())
+        .disabled(alreadyPurchased)
+    }
+}
+
 struct AppStoreSignUpScreen: View {
     var matrix: MatrixInterface
     @EnvironmentObject var appStore: AppStoreInterface
@@ -197,50 +249,9 @@ struct AppStoreSignUpScreen: View {
             }
             */
 
-            let products = appStore.products.sorted(by: sortProductsByPrice)
+            let products = appStore.membershipProducts.sorted(by: sortProductsByPrice)
             ForEach(products, id: \.self) { product in
-                let alreadyPurchased = UserDefaults.standard.bool(forKey: product.productIdentifier) || appStore.purchased.contains(product.productIdentifier)
-                let selected = product == self.selectedProduct
-                //let borderColor = self.selectedProduct == nil ? Color.accentColor : (selected ? Color.primary : Color.accentColor)
-                let borderColor = Color.accentColor
-                //let textColor = self.selectedProduct == nil ? Color.primary : (selected ? Color.primary : Color.gray)
-                let backgroundColor = selected ? Color.accentColor : Color.clear
-                Button(action: {
-                    self.selectedProduct = product
-                }) {
-                    VStack(alignment: .leading) {
-                        let bigFont = Font.title2
-                        HStack {
-                            Text(product.localizedTitle)
-                                .font(bigFont)
-                                .fontWeight(.bold)
-                            Spacer()
-                            if alreadyPurchased {
-                                Text ("Purchased")
-                                    .font(bigFont)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.green)
-                            } else {
-                                Text("\(product.regularPrice!)")
-                                    .font(bigFont)
-                                    .fontWeight(.bold)
-                                    //.foregroundColor(.blue)
-                            }
-                        }
-
-                        Text(product.localizedDescription)
-                            .font(.subheadline)
-                    }
-                    //.foregroundColor(textColor)
-                    .padding()
-                    .frame(width: 300, height: 100)
-                    .background(backgroundColor)
-                    .cornerRadius(10)
-                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(borderColor, lineWidth: 2))
-                    .padding()
-                }
-                .buttonStyle(PlainButtonStyle())
-                .disabled(alreadyPurchased)
+                MembershipProductCard(product: product, selectedProduct: $selectedProduct)
             }
 
             Spacer()
@@ -249,10 +260,12 @@ struct AppStoreSignUpScreen: View {
                 .font(.footnote)
             Button(action: {
                 if let product = selectedProduct {
-                    appStore.purchaseProduct(product: product)
+                    appStore.purchaseProduct(product: product) { response in
+                        // FIXME -- Handle the callback here...
+                    }
                 }
             }) {
-                Text("Purchase \(selectedProduct?.localizedTitle ?? "")")
+                Text("Subscribe for \(selectedProduct?.localizedTitle ?? "")")
                     .padding()
                     .frame(width: 300.0, height: 40.0)
                     .foregroundColor(.white)

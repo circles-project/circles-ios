@@ -11,7 +11,9 @@
 		4012C54726A736D700BB15E6 /* MatrixReaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4012C54626A736D700BB15E6 /* MatrixReaction.swift */; };
 		4012C54926A752C400BB15E6 /* EmojiPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4012C54826A752C400BB15E6 /* EmojiPicker.swift */; };
 		4012C54C26A760F100BB15E6 /* KeyboardKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4012C54B26A760F100BB15E6 /* KeyboardKit */; };
-		4047F3DE26B895B80010B2C3 /* EyeSecureField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4047F3DD26B895B80010B2C3 /* EyeSecureField.swift */; };
+		40395EBA26C2D58A0044FB51 /* BringYourOwnServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40395EB926C2D58A0044FB51 /* BringYourOwnServer.swift */; };
+		4047F3DE26B895B80010B2C3 /* SecureFieldWithEye.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4047F3DD26B895B80010B2C3 /* SecureFieldWithEye.swift */; };
+		4047F3E126BB05D50010B2C3 /* TPInAppReceipt in Frameworks */ = {isa = PBXBuildFile; productRef = 4047F3E026BB05D50010B2C3 /* TPInAppReceipt */; };
 		404C72D1265DDF35000473DF /* CirclesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C72D0265DDF35000473DF /* CirclesApp.swift */; };
 		404C72D3265DDF35000473DF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C72D2265DDF35000473DF /* ContentView.swift */; };
 		404C72D5265DDF35000473DF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 404C72D4265DDF35000473DF /* Assets.xcassets */; };
@@ -22,6 +24,8 @@
 		40878FC72694C00000A66EF0 /* MessageContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40878FC62694C00000A66EF0 /* MessageContextMenu.swift */; };
 		40878FCA2694DBC400A66EF0 /* MessageComposerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40878FC92694DBC400A66EF0 /* MessageComposerSheet.swift */; };
 		40878FCD2696198500A66EF0 /* TimelineSheetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40878FCC2696198500A66EF0 /* TimelineSheetType.swift */; };
+		408A48B926C1D45D00BEE9D9 /* BYOSScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 408A48B826C1D45D00BEE9D9 /* BYOSScreen.swift */; };
+		408A48BB26C2D0F500BEE9D9 /* ByosProducts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 408A48BA26C2D0F500BEE9D9 /* ByosProducts.plist */; };
 		409F42E3265DE00700690A61 /* Array+Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F42E2265DE00700690A61 /* Array+Sample.swift */; };
 		409F42E6265DE03B00690A61 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F42E5265DE03B00690A61 /* Utils.swift */; };
 		409F42E9265DE06C00690A61 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F42E8265DE06C00690A61 /* WebView.swift */; };
@@ -119,7 +123,8 @@
 		319B9F089ED349AE15F0F86D /* Pods-Circles.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Circles.debug.xcconfig"; path = "Target Support Files/Pods-Circles/Pods-Circles.debug.xcconfig"; sourceTree = "<group>"; };
 		4012C54626A736D700BB15E6 /* MatrixReaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixReaction.swift; sourceTree = "<group>"; };
 		4012C54826A752C400BB15E6 /* EmojiPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiPicker.swift; sourceTree = "<group>"; };
-		4047F3DD26B895B80010B2C3 /* EyeSecureField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EyeSecureField.swift; sourceTree = "<group>"; };
+		40395EB926C2D58A0044FB51 /* BringYourOwnServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BringYourOwnServer.swift; sourceTree = "<group>"; };
+		4047F3DD26B895B80010B2C3 /* SecureFieldWithEye.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureFieldWithEye.swift; sourceTree = "<group>"; };
 		404C72CD265DDF35000473DF /* Circles.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Circles.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		404C72D0265DDF35000473DF /* CirclesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesApp.swift; sourceTree = "<group>"; };
 		404C72D2265DDF35000473DF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -134,6 +139,8 @@
 		40878FC62694C00000A66EF0 /* MessageContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageContextMenu.swift; sourceTree = "<group>"; };
 		40878FC92694DBC400A66EF0 /* MessageComposerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageComposerSheet.swift; sourceTree = "<group>"; };
 		40878FCC2696198500A66EF0 /* TimelineSheetType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineSheetType.swift; sourceTree = "<group>"; };
+		408A48B826C1D45D00BEE9D9 /* BYOSScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BYOSScreen.swift; sourceTree = "<group>"; };
+		408A48BA26C2D0F500BEE9D9 /* ByosProducts.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ByosProducts.plist; sourceTree = "<group>"; };
 		409F42E2265DE00700690A61 /* Array+Sample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Sample.swift"; sourceTree = "<group>"; };
 		409F42E5265DE03B00690A61 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		409F42E8265DE06C00690A61 /* WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
@@ -231,6 +238,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4047F3E126BB05D50010B2C3 /* TPInAppReceipt in Frameworks */,
 				4012C54C26A760F100BB15E6 /* KeyboardKit in Frameworks */,
 				4012C54526A5D70D00BB15E6 /* NativeMarkKit in Frameworks */,
 				CFFB0431ED7E7DF3DFBE8C9A /* Pods_Circles.framework in Frameworks */,
@@ -278,13 +286,13 @@
 				409F4322265DE11900690A61 /* Constants.swift */,
 				404C72D2265DDF35000473DF /* ContentView.swift */,
 				404C72D9265DDF35000473DF /* Info.plist */,
-				409F434E265DE19C00690A61 /* KSError.swift */,
 				409F4351265DE1BA00690A61 /* KSStore.swift */,
 				409F4354265DE1C800690A61 /* MatrixInterface.swift */,
 				409F42E1265DDFEB00690A61 /* Models */,
 				404C72D6265DDF35000473DF /* Preview Content */,
 				409F42E0265DDFE300690A61 /* Utilities */,
 				409F430C265DE0CE00690A61 /* Views */,
+				408A48BA26C2D0F500BEE9D9 /* ByosProducts.plist */,
 			);
 			path = Circles;
 			sourceTree = "<group>";
@@ -304,16 +312,18 @@
 				409F42E2265DE00700690A61 /* Array+Sample.swift */,
 				40AEA6722678E24100C9CBD1 /* BlurHashDecode.swift */,
 				40AEA6732678E24200C9CBD1 /* BlurHashEncode.swift */,
+				40395EB926C2D58A0044FB51 /* BringYourOwnServer.swift */,
 				409F4325265DE12600690A61 /* CloudImagePicker.swift */,
 				409F4318265DE0FF00690A61 /* EmbeddedImagePicker.swift */,
 				4012C54826A752C400BB15E6 /* EmojiPicker.swift */,
 				409F4313265DE0F300690A61 /* ImagePicker.swift */,
 				409F4314265DE0F400690A61 /* ImageSaver.swift */,
+				409F434E265DE19C00690A61 /* KSError.swift */,
 				40CD7F6B2667D3B600DE315F /* PhotoPicker.swift */,
+				4047F3DD26B895B80010B2C3 /* SecureFieldWithEye.swift */,
 				409F42E5265DE03B00690A61 /* Utils.swift */,
 				40CD7F6E2667E16100DE315F /* VideoPicker.swift */,
 				409F42E8265DE06C00690A61 /* WebView.swift */,
-				4047F3DD26B895B80010B2C3 /* EyeSecureField.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -426,6 +436,7 @@
 			children = (
 				409F4359265DE1EE00690A61 /* LoggedOutScreen.swift */,
 				409F435A265DE1EE00690A61 /* LoginScreen.swift */,
+				408A48B826C1D45D00BEE9D9 /* BYOSScreen.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -513,6 +524,7 @@
 			packageProductDependencies = (
 				4012C54426A5D70D00BB15E6 /* NativeMarkKit */,
 				4012C54B26A760F100BB15E6 /* KeyboardKit */,
+				4047F3E026BB05D50010B2C3 /* TPInAppReceipt */,
 			);
 			productName = Circles;
 			productReference = 404C72CD265DDF35000473DF /* Circles.app */;
@@ -544,6 +556,7 @@
 			packageReferences = (
 				4012C54326A5D70D00BB15E6 /* XCRemoteSwiftPackageReference "NativeMarkKit" */,
 				4012C54A26A760F100BB15E6 /* XCRemoteSwiftPackageReference "KeyboardKit" */,
+				4047F3DF26BB05D50010B2C3 /* XCRemoteSwiftPackageReference "TPInAppReceipt" */,
 			);
 			productRefGroup = 404C72CE265DDF35000473DF /* Products */;
 			projectDirPath = "";
@@ -560,6 +573,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				404C72D8265DDF35000473DF /* Preview Assets.xcassets in Resources */,
+				408A48BB26C2D0F500BEE9D9 /* ByosProducts.plist in Resources */,
 				404C72D5265DDF35000473DF /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -615,16 +629,18 @@
 			files = (
 				409F4378265DE25000690A61 /* PhotosOverviewScreen.swift in Sources */,
 				409F4345265DE17500690A61 /* GroupsOverviewScreen.swift in Sources */,
-				4047F3DE26B895B80010B2C3 /* EyeSecureField.swift in Sources */,
+				4047F3DE26B895B80010B2C3 /* SecureFieldWithEye.swift in Sources */,
 				409F439F265DE3AD00690A61 /* LoggedinScreen.swift in Sources */,
 				409F4379265DE25000690A61 /* PhotoGalleryCreationSheet.swift in Sources */,
 				409F42FE265DE0A200690A61 /* MatrixMessage.swift in Sources */,
+				40395EBA26C2D58A0044FB51 /* BringYourOwnServer.swift in Sources */,
 				404C72D3265DDF35000473DF /* ContentView.swift in Sources */,
 				409F4388265DE2B100690A61 /* TokenSignUpScreen.swift in Sources */,
 				40BC0E4326B3199C00137A92 /* MatrixWellKnown.swift in Sources */,
 				40BC0E4526B45FE600137A92 /* AcknowledgementsSheet.swift in Sources */,
 				40878FCA2694DBC400A66EF0 /* MessageComposerSheet.swift in Sources */,
 				409F4326265DE12600690A61 /* CloudImagePicker.swift in Sources */,
+				408A48B926C1D45D00BEE9D9 /* BYOSScreen.swift in Sources */,
 				409F4333265DE15F00690A61 /* CircleAvatar.swift in Sources */,
 				409F438D265DE2C200690A61 /* StreamTimelineScreen.swift in Sources */,
 				409F4306265DE0A200690A61 /* MatrixMsgContent.swift in Sources */,
@@ -842,7 +858,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Circles/Circles.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Circles/Preview Content\"";
 				DEVELOPMENT_TEAM = Y5CK8529S5;
 				ENABLE_PREVIEWS = YES;
@@ -852,7 +868,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.90;
+				MARKETING_VERSION = 0.91;
 				PRODUCT_BUNDLE_IDENTIFIER = social.kombucha.circles;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = NO;
@@ -870,7 +886,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Circles/Circles.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Circles/Preview Content\"";
 				DEVELOPMENT_TEAM = Y5CK8529S5;
 				ENABLE_PREVIEWS = YES;
@@ -880,7 +896,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.90;
+				MARKETING_VERSION = 0.91;
 				PRODUCT_BUNDLE_IDENTIFIER = social.kombucha.circles;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = NO;
@@ -930,6 +946,14 @@
 				minimumVersion = 4.6.2;
 			};
 		};
+		4047F3DF26BB05D50010B2C3 /* XCRemoteSwiftPackageReference "TPInAppReceipt" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:tikhop/TPInAppReceipt.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -942,6 +966,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4012C54A26A760F100BB15E6 /* XCRemoteSwiftPackageReference "KeyboardKit" */;
 			productName = KeyboardKit;
+		};
+		4047F3E026BB05D50010B2C3 /* TPInAppReceipt */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4047F3DF26BB05D50010B2C3 /* XCRemoteSwiftPackageReference "TPInAppReceipt" */;
+			productName = TPInAppReceipt;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

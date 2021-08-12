@@ -12,6 +12,9 @@ struct LoginScreen: View {
     var matrix: MatrixInterface
     @Binding var selectedScreen: LoggedOutScreen.Screen
 
+    @EnvironmentObject var appStore: AppStoreInterface
+
+
     @State var username: String = ""
     @State var password: String = ""
     @State var password2: String = ""
@@ -20,6 +23,7 @@ struct LoginScreen: View {
     @State var showAlert = false
     @State var showAdvanced = false
     @State var showPassword = false
+    @State var showPurchaseSheet = false
     
     var logo: some View {
         RandomizedCircles()
@@ -31,6 +35,68 @@ struct LoginScreen: View {
                    idealHeight: 200,
                    maxHeight: 300,
                    alignment: .center)
+    }
+
+    func login() {
+
+        if self.username.isEmpty {
+            print("LoginScreen\tGot empty username; Ignoring...")
+            return
+        }
+
+        if self.password.isEmpty {
+            print("LoginScreen\tGot empty password; Ignoring...")
+            return
+        }
+
+        // Check for BYOS
+        if let domain = self.matrix.getDomainFromUserId(username) {
+            if domain == "kombucha.social" || domain.hasSuffix(".kombucha.social") {
+                // Not BYOS
+            } else {
+                // BYOS
+                // Ok, no problem.  Do we have a subscription?
+                var haveSubscription = false
+                guard let byosProductIds = BringYourOwnServer.loadProducts() else {
+                    // Looks like we don't support BYOS at this time
+                    // FIXME need to pop up an error message
+                    return
+                }
+                for productId in byosProductIds {
+                    if AppStoreInterface.validateReceiptOnDevice(for: productId) {
+                        haveSubscription = true
+                    }
+                }
+
+                if !haveSubscription {
+                    // Show subscription options
+                    showPurchaseSheet = true
+                    return
+                }
+            }
+        }
+
+        self.pending = true
+
+        if self.password2.isEmpty {
+            self.matrix.login(username: self.username, rawPassword: self.password, s4Password: nil) { response in
+                self.pending = false
+                if response.isFailure {
+                    self.showAlert = true
+                    self.password = ""
+                    self.password2 = ""
+                }
+            }
+        } else {
+            self.matrix.login(username: self.username, rawPassword: self.password, s4Password: password2) { response in
+                self.pending = false
+                if response.isFailure {
+                    self.showAlert = true
+                    self.password = ""
+                    self.password2 = ""
+                }
+            }
+        }
     }
     
     var body: some View {
@@ -77,28 +143,7 @@ struct LoginScreen: View {
 
 
 
-            Button(action: {
-                self.pending = true
-                if self.password2.isEmpty {
-                    self.matrix.login(username: self.username, rawPassword: self.password, s4Password: nil) { response in
-                        self.pending = false
-                        if response.isFailure {
-                            self.showAlert = true
-                            self.password = ""
-                            self.password2 = ""
-                        }
-                    }
-                } else {
-                    self.matrix.login(username: self.username, rawPassword: self.password, s4Password: password2) { response in
-                        self.pending = false
-                        if response.isFailure {
-                            self.showAlert = true
-                            self.password = ""
-                            self.password2 = ""
-                        }
-                    }
-                }
-            }) {
+            Button(action: login) {
                 Text("Log In")
                     .padding()
                     .frame(width: 300.0, height: 40.0)
@@ -136,6 +181,9 @@ struct LoginScreen: View {
 
         }
         .padding(.horizontal)
+        .sheet(isPresented: $showPurchaseSheet) {
+            BYOSScreen(appStore: appStore)
+        }
     }
 
 }

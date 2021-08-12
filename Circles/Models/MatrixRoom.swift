@@ -409,7 +409,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
                     }
                     completion(.success(users))
                 }
-            }
+            } 
         }
     }
 
@@ -608,8 +608,8 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
                 completion(.failure(KSError(message: msg)))
             case .success:
                 print("Successfully kicked user \(userId)")
-                self.objectWillChange.send()
                 self.updateMembers()
+                self.objectWillChange.send()
                 completion(.success(userId))
             }
         }

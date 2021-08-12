@@ -229,7 +229,7 @@ class KSStore: ObservableObject {
               let device_id = UserDefaults.standard.string(forKey: "device_id[\(user_id)]"),
               let access_token = UserDefaults.standard.string(forKey: "access_token[\(user_id)]"),
               !access_token.isEmpty,
-              let userDomain = _getDomainFromUserId(user_id)
+              let userDomain = getDomainFromUserId(user_id)
               //let autoDiscovery = MXAutoDiscovery(domain: "matrix.org")
               //let autoDiscovery = MXAutoDiscovery(domain: "matrix.kombucha.social")
         else {
@@ -600,7 +600,7 @@ class KSStore: ObservableObject {
         return .normal(self.session.state)
     }
 
-    func _getDomainFromUserId(_ userId: String) -> String? {
+    func getDomainFromUserId(_ userId: String) -> String? {
         let toks = userId.split(separator: ":")
         if toks.count != 2 {
             return nil
@@ -966,13 +966,43 @@ extension KSStore: MatrixInterface {
     
     func login(username: String, rawPassword: String, s4Password: String? = nil, completion: @escaping (MXResponse<Void>) -> Void) {
         print("in login()")
-        // First, check: Are we already logged in?
+
+        // If we're enforcing subscriptions, this is where we need to check for BYOS
+        guard let userDomain = getDomainFromUserId(username) ?? kombuchaServer?.host
+        else {
+            let msg = "Failed to determine domain for username [\(username)]"
+            print("LOGIN\t\(msg)")
+            let err = KSError(message: msg)
+            completion(.failure(err))
+            return
+        }
+
+        let REQUIRE_SUBSCRIPTIONS = true
+        if REQUIRE_SUBSCRIPTIONS && userDomain != kombuchaServer?.host {
+            // Check for a subscription to the BYOS products
+            var hasCurrentSubscription = false
+            let productIds = ["social.kombucha.circles.byos01month", "social.kombucha.circles.byos12month"]
+            for productId in productIds {
+                if AppStoreInterface.validateReceiptOnDevice(for: productId) {
+                    hasCurrentSubscription = true
+                    continue
+                }
+            }
+            if !hasCurrentSubscription {
+                let msg = "No current subscription for BYOS"
+                let err = KSError(message: msg)
+                print("LOGIN\t\(msg)")
+                completion(.failure(err))
+                return
+            }
+        }
+
+        // Check: Are we already logged in?
         switch(self.session.state) {
         case MXSessionStateClosed,
              MXSessionStateUnknownToken,
              MXSessionStateSoftLogout:
-            guard let userDomain = _getDomainFromUserId(username) ?? kombuchaServer?.host,
-                  let autoDiscovery = MXAutoDiscovery(domain: userDomain)
+            guard let autoDiscovery = MXAutoDiscovery(domain: userDomain)
             else {
                 let msg = "Failed to determine domain for username [\(username)]"
                 print("LOGIN\t\(msg)")
@@ -1569,7 +1599,7 @@ extension KSStore: MatrixInterface {
             return room
         }
 
-        guard let userDomain = _getDomainFromUserId(whoAmI()) else {
+        guard let userDomain = getDomainFromUserId(whoAmI()) else {
             return nil
         }
         let systemNoticesUserId = "@notices:\(userDomain)"
