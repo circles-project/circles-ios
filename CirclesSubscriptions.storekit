@@ -148,7 +148,7 @@
           "localizations" : [
             {
               "description" : "Use Circles with your own Matrix server",
-              "displayName" : "Bring Your Own Server 1 month",
+              "displayName" : "BYOS Individual Subscription",
               "locale" : "en_US"
             }
           ],
@@ -170,7 +170,7 @@
           "localizations" : [
             {
               "description" : "Use Circles with your own Matrix server",
-              "displayName" : "Bring Your Own Server 1 year",
+              "displayName" : "BYOS Individual Subscription",
               "locale" : "en_US"
             }
           ],

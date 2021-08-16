@@ -244,14 +244,14 @@ class KSStore: ObservableObject {
         // Next: Where is the server for this user id?
         // It might be something like matrix.domain.tld, or it might be something random
         // We don't know -- Have to look it up via .well-known
-        let dgroup = DispatchGroup()
-        dgroup.enter()
+        //let dgroup = DispatchGroup()
+        //dgroup.enter()
         //autoDiscovery.findClientConfig({ discoveredConfig in
         _fetchWellKnown(for: userDomain) { wellKnownResponse in
 
             guard case let .success(wellKnownInfo) = wellKnownResponse else {
                 print("STORE\tFailed to look up well-known server info for domain \(userDomain)")
-                dgroup.leave()
+                //dgroup.leave()
                 return
             }
 
@@ -280,15 +280,29 @@ class KSStore: ObservableObject {
                 //_ = self.getCircles()
                 //self.state = .normal(<#T##MXSessionState#>)
                 print("STORE\tBack from connect()")
-                dgroup.leave()
+                //dgroup.leave()
+
+                // Set up the recovery service for keys / secrets / etc
+                // login() does this in its own callback.  So we should do it too.
+                // This prevents calling it multiple times from inside connect() when it doesn't know what its caller is/isn't handling.
+                let defaults = UserDefaults.standard
+                if let privateKey = defaults.data(forKey: "privateKey[\(self.whoAmI())]") {
+                    print("STORE\tConnecting to recovery")
+                    self.connectRecovery(privateKey: privateKey)
+                } else {
+                    print("STORE\tNo private key for recovery for user \(self.whoAmI())")
+                }
+
             }
         }
 
         print("STORE\tAfter looking for well known")
 
+        /*
         dgroup.notify(queue: .main) {
             print("STORE\tBack from looking up well known")
         }
+        */
 
         print("STORE\tDone with init()")
 
@@ -877,15 +891,19 @@ extension KSStore: MatrixInterface {
         return reactions
     }
 
-    func generateSecrets(userId: String, rawPassword: String, s4Password: String? = nil) -> MatrixSecrets? {
+    /*
+    func generateSecrets(userId: String, rawPassword: String, s4Password: String? = nil, completion: @escaping (MXResponse<MatrixSecrets>)->Void) {
         guard let password2 = s4Password else {
-            return generateSecretsFromSinglePassword(userId: userId, password: rawPassword)
+            generateSecretsFromSinglePassword(userId: userId, password: rawPassword, completion: completion)
+            return
         }
-        return generateSecretsFromTwoPasswords(userId: userId, loginPassword: rawPassword, s4Password: password2)
+        generateSecretsFromTwoPasswords(userId: userId, loginPassword: rawPassword, s4Password: password2, completion: completion)
     }
+    */
 
-    func generateSecretsFromTwoPasswords(userId: String, loginPassword: String, s4Password: String) -> MatrixSecrets? {
+    func generateSecretsFromTwoPasswords(userId: String, loginPassword: String, s4Password: String, completion: @escaping (MXResponse<MatrixSecrets>)->Void) {
 
+        /* // This doesn't seem to work with what Element generates...
         var nsSalt: NSString?
 
         var pbkdf2iterations: UInt = 0
@@ -893,10 +911,26 @@ extension KSStore: MatrixInterface {
             print("SECRETS\tPassword-based keygen failed")
             return nil
         }
+        */
 
-        return MatrixSecrets(loginPassword: loginPassword,
-                             secretKey: key,
-                             keygenMethod: .fromTwoPasswords)
+        guard let crypto = self.session.crypto,
+              let recovery = crypto.recoveryService else {
+            let msg = "Failed to find Matrix recovery service"
+            print("SECRETS\t\(msg)")
+            let err = KSError(message: msg)
+            completion(.failure(err))
+            return
+        }
+
+        recovery.privateKey(fromPassphrase: s4Password,
+                            success: { privateKey in
+                                print("SECRETS\tGenerated private key")
+                                let secrets = MatrixSecrets(loginPassword: loginPassword, secretKey: privateKey, keygenMethod: .fromTwoPasswords)
+                                completion(.success(secrets))
+                            }, failure: { err in
+                                print("SECRETS\tKey generation failed")
+                                completion(.failure(err))
+                            })
     }
 
     func generateSecretsFromSinglePassword(userId: String, password: String) -> MatrixSecrets? {
@@ -923,14 +957,15 @@ extension KSStore: MatrixInterface {
             print("SECRETS\t\(msg)")
             return nil
         }
+
         let saltDigest = SHA256.hash(data: data)
         let saltString = saltDigest
             .map { String(format: "%02hhx", $0) }
             .prefix(16)
             .joined()
         print("SECRETS\tComputed salt string = [\(saltString)]")
-        let numRounds = 14
 
+        let numRounds = 14
         guard let bcrypt = try? BCrypt.Hash(password, salt: "$2a$\(numRounds)$\(saltString)") else {
             let msg = "BCrypt KDF failed"
             print("SECRETS\t\(msg)")
@@ -1004,7 +1039,7 @@ extension KSStore: MatrixInterface {
              MXSessionStateSoftLogout:
             guard let autoDiscovery = MXAutoDiscovery(domain: userDomain)
             else {
-                let msg = "Failed to determine domain for username [\(username)]"
+                let msg = "Failed to find Matrix autodiscovery service"
                 print("LOGIN\t\(msg)")
                 let err = KSError(message: msg)
                 completion(.failure(err))
@@ -1016,7 +1051,10 @@ extension KSStore: MatrixInterface {
                 guard case let .success(wellKnownInfo) = wellKnownResponse,
                       let hsURL = URL(string: wellKnownInfo.homeserver.base_url)
                 else {
-                    print("STORE\tFailed to look up well-known homeserver info for domain \(userDomain)")
+                    let msg = "Failed to look up well-known homeserver info for domain \(userDomain)"
+                    print("LOGIN\t\(msg))")
+                    let err = KSError(message: msg)
+                    completion(.failure(err))
                     return
                 }
 
@@ -1029,20 +1067,24 @@ extension KSStore: MatrixInterface {
                 // If we have two passwords, we should just generate it differently
                 //   - .loginPassword is just the "raw" password from the user
                 //   - .secretKey is generated from the special SSSS password
-                guard let secrets = self.generateSecrets(userId: username, rawPassword: rawPassword, s4Password: s4Password)
-                else {
-                    let msg = "Failed to generate secrets from username and password(s)"
-                    print(msg)
-                    completion(.failure(KSError(message: msg)))
-                    return
-                }
+                let keygenMethod: MatrixSecrets.KeygenMethod = s4Password == nil ? .fromSinglePassword : .fromTwoPasswords
+                var secrets: MatrixSecrets?
 
+                if keygenMethod == .fromSinglePassword {
+                    secrets = self.generateSecretsFromSinglePassword(userId: username, password: rawPassword)
+                    if secrets == nil {
+                        let msg = "Failed to generate secrets from username and password(s)"
+                        print(msg)
+                        completion(.failure(KSError(message: msg)))
+                        return
+                    }
+                }
 
                 var params: [String:Any] = [:]
                 params["type"] = "m.login.password"
                 params["identifier"] = ["type" : "m.id.user"]
                 params["user"] = username
-                params["password"] = secrets.loginPassword
+                params["password"] = secrets?.loginPassword ?? rawPassword // Use the bcrypt password if we generated one; Otherwise fall back to using the raw password
                 if let saved_device_id = UserDefaults.standard.string(forKey: "device_id[\(username)]") {
                     params["device_id"] = saved_device_id
                     print("LOGIN\tUsing existing deviceId [\(saved_device_id)]")
@@ -1089,7 +1131,7 @@ extension KSStore: MatrixInterface {
                         defaults.set(access_token, forKey: "access_token[\(user_id)]")
                         // Also remember how we handle the user's raw password
                         //   - eg Do we need to hash it before we use it for UIAA?
-                        defaults.set(secrets.keygenMethod.rawValue, forKey: "keygen_method[\(user_id)]")
+                        defaults.set(keygenMethod.rawValue, forKey: "keygen_method[\(user_id)]")
 
                         // Also save a copy of the device_id for the plain username.
                         // This way, we'll be able to retrieve it next time even if the user doesn't
@@ -1105,9 +1147,22 @@ extension KSStore: MatrixInterface {
                         self.connect(restclient: self.sessionMxRc!) {
                             // Now we can run anything that needs the running session and/or the crypto interface AND the password
 
-                            self.setupCrossSigning(password: secrets.loginPassword)
+                            self.setupCrossSigning(password: secrets?.loginPassword ?? rawPassword)
 
-                            self.setupRecovery(secrets: secrets)
+
+                            if let singlePasswordSecrets = secrets {
+                                self.setupRecovery(secrets: singlePasswordSecrets)
+                            } else {
+                                self.generateSecretsFromTwoPasswords(userId: user_id, loginPassword: rawPassword, s4Password: s4Password!) { secretsResponse in
+
+                                    switch secretsResponse {
+                                    case .failure(let err):
+                                        print("LOGIN\tFailed to generate secrets")
+                                    case .success(let twoPasswordSecrets):
+                                        self.setupRecovery(secrets: twoPasswordSecrets)
+                                    }
+                                }
+                            }
 
                             completion(.success(()))
 
@@ -1134,12 +1189,43 @@ extension KSStore: MatrixInterface {
             print("RECOVERY\tCouldn't get recoveryService")
             return
         }
-        let defaults = UserDefaults.standard
         let userId = self.whoAmI()
+        print("RECOVERY\tSetting up for user [\(userId)]")
+
+        if !recovery.hasRecovery() {
+            print("RECOVERY\tDidn't find an existing recovery.  Creating one now...")
+            createRecovery(privateKey: secrets.secretKey)
+        } else {
+            // We have a recovery already existing
+            print("RECOVERY\tWe have an existing recovery")
+            // Do we have the key already saved on this device?
+            if let savedKey = UserDefaults.standard.data(forKey: "privateKey[\(userId)]") {
+                // Ok, we had already saved this key
+                // So let's use it
+                print("RECOVERY\tConnecting with the saved key")
+                self.connectRecovery(privateKey: savedKey)
+            } else {
+                print("RECOVERY\tConnecting with our current secret key")
+                self.connectRecovery(privateKey: secrets.secretKey)
+            }
+        }
+    }
+
+    func createRecovery(privateKey: Data) {
+
+        let userId = self.whoAmI()
+
+        guard let crypto = self.session.crypto,
+              let recovery = crypto.recoveryService else {
+            print("RECOVERY\tCouldn't get recoveryService")
+            return
+        }
 
         func handleCreateSuccess(info: MXSecretStorageKeyCreationInfo) {
             let recoveryKey = info.recoveryKey
             let privateKey = info.privateKey
+            let defaults = UserDefaults.standard
+
             defaults.set(recoveryKey, forKey: "recoveryKey[\(userId)]")
             defaults.set(privateKey, forKey: "privateKey[\(userId)]")
             print("RECOVERY\tSetup success")
@@ -1149,25 +1235,14 @@ extension KSStore: MatrixInterface {
             print("RECOVERY\tSetup failed")
         }
 
-        if !recovery.hasRecovery() {
-            recovery
-                .createRecovery(
-                    forSecrets: nil,
-                    withPrivateKey: secrets.secretKey,
-                    createServicesBackups: true,
-                    success: handleCreateSuccess,
-                    failure: handleCreateFailure
-                )
-        } else {
-            // We have a recovery already existing
-            // Do we have the key already saved on this device?
-            if let _ = UserDefaults.standard.data(forKey: "privateKey[\(self.whoAmI())]") {
-                // Ok, we had already saved this key
-                // No worries - connect() will load the recovery on its own
-            } else {
-                self.connectRecovery(privateKey: secrets.secretKey)
-            }
-        }
+        recovery
+            .createRecovery(
+                forSecrets: nil,
+                withPrivateKey: privateKey,
+                createServicesBackups: true,
+                success: handleCreateSuccess,
+                failure: handleCreateFailure
+            )
     }
 
     func connectRecovery(privateKey: Data) {
@@ -1192,14 +1267,26 @@ extension KSStore: MatrixInterface {
         }
 
         func handleError(error: Error) {
-            print("RECOVERY\tFailed to connect to existing recovery")
+            print("RECOVERY\tFailed to connect to existing recovery.  Creating a new one instead.")
+            // Hmm OK we failed to connect to the existing one.
+            // Why don't we just create a new one?
+            // Answer: Because Matrix won't let us.
         }
 
-        recovery.recoverSecrets(nil,
-                                withPrivateKey: privateKey,
-                                recoverServices: true,
-                                success: handleSuccess,
-                                failure: handleError)
+        recovery.checkPrivateKey(privateKey) { match in
+            if match {
+                print("RECOVERY\tPrivate keys match.  Recovering secrets...")
+                recovery.recoverSecrets(nil,
+                                        withPrivateKey: privateKey,
+                                        recoverServices: true,
+                                        success: handleSuccess,
+                                        failure: handleError)
+            } else {
+                print("RECOVERY\tError: Private keys don't match!")
+            }
+        }
+
+
     }
        
     func setupCrossSigning(password: String) {
@@ -1274,19 +1361,22 @@ extension KSStore: MatrixInterface {
                         self.session.start() { start_response in
                             switch(start_response) {
                             case .failure(let error):
-                                print("Failed to start MXSession: \(error)")
+                                print("CONNECT\tFailed to start MXSession: \(error)")
                                 return
                             case .success:
                                 self.objectWillChange.send()
 
-                                print("Successfully started MXSession")
+                                print("CONNECT\tSuccessfully started MXSession")
                                 self.invitedRooms = self.getInvitedRooms()
-                                completion()
 
+                                /* // Moving this into the callback..  Caller will need to take care of it.  This should be OK, as we only ever have two callers.
                                 let defaults = UserDefaults.standard
                                 if let privateKey = defaults.data(forKey: "privateKey[\(self.whoAmI())]") {
                                     self.connectRecovery(privateKey: privateKey)
+                                } else {
+                                    print("CONNECT\tNo private key for recovery")
                                 }
+                                */
 
                                 /*
                                 for room in self.getAllRooms() {
@@ -1308,6 +1398,7 @@ extension KSStore: MatrixInterface {
                                             room.setRoomType(type: ROOM_TYPE_CIRCLE, completion: { _ in })
                                         }
                                     }
+                                    // Fixed this via better room-creation parameters in createRoom -- But you know what?  I'm going to keep it here, just in case.  We want to make sure we're all encrypted, all the time.
                                     // Freaking kludge upon kludge
                                     // For some reason our Circles are not getting encryption enabled at creation time
                                     // even though the completion handler comes back with .success
@@ -1323,6 +1414,9 @@ extension KSStore: MatrixInterface {
                                             }
                                         }
                                     }
+
+                                    // Finally call the completion handler
+                                    completion()
                                 }
                             }
                         }
@@ -2824,7 +2918,7 @@ extension KSStore: MatrixInterface {
             return
         }
 
-        
+
         guard let url = _getSignupUrl() else {
             let msg = "Couldn't find Kombucha server or the signup URL"
             print("SIGNUP(email2)\t\(msg)")
@@ -2857,7 +2951,7 @@ extension KSStore: MatrixInterface {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             print("SIGNUP(email2)\tGot response")
-        
+
             print("SIGNUP(email2)\tGot HTTP response")
             guard let httpResponse = response as? HTTPURLResponse else {
                 let msg = "Couldn't parse response"
@@ -2866,7 +2960,7 @@ extension KSStore: MatrixInterface {
                 completion(.failure(err))
                 return
             }
-            
+
             guard [200,401].contains(httpResponse.statusCode) else {
                 let msg = "Request was rejected: Status \(httpResponse.statusCode)"
                 let body = String(data: data!, encoding: .utf8)!
@@ -2876,10 +2970,10 @@ extension KSStore: MatrixInterface {
                 completion(.failure(err))
                 return
             }
-            
+
             if httpResponse.statusCode == 200 {
                 print("SIGNUP(email2)\tGot HTTP 200 OK -- Looks like we're done")
-                
+
                 if let data = data,
                    let string = String(data: data, encoding: .utf8) {
                     print("SIGNUP(email2)\tContent was [\(string)]")
@@ -2887,7 +2981,7 @@ extension KSStore: MatrixInterface {
                 else {
                     print("SIGNUP(email2)\tCouldn't even decode a string :(")
                 }
-                
+
                 // Looks like we were able to complete the registration
                 // Let's extract our MXCredentials and be on our way
                 struct MatrixCreds: Codable {
@@ -2900,13 +2994,6 @@ extension KSStore: MatrixInterface {
                 guard let creds = try? decoder.decode(MatrixCreds.self, from: data!) else {
                     let msg = "Couldn't decode response"
                     let err = KSError(message: msg)
-                    print("SIGNUP(email2)\t\(msg)")
-                    if let string = String(data: data!, encoding: .utf8) {
-                        print("SIGNUP(email2)\tContent was [\(string)]")
-                    }
-                    else {
-                        print("SIGNUP(email2)\tCouldn't even decode a string :(")
-                    }
                     completion(.failure(err))
                     return
                 }
@@ -2916,6 +3003,7 @@ extension KSStore: MatrixInterface {
                     print("SIGNUP(email2)\t\(msg)")
                     completion(.failure(KSError(message: msg)))
                     return
+
                 }
                 let mxCreds = MXCredentials(homeServer: serverUrl.absoluteString, userId: creds.userId, accessToken: creds.accessToken)
                 mxCreds.deviceId = creds.deviceId
@@ -2927,7 +3015,7 @@ extension KSStore: MatrixInterface {
                 // Also create our signup Matrix rest client,
                 // so we can set our displayname and avatar image
                 self.signupMxRc = MXRestClient(credentials: mxCreds, unrecognizedCertificateHandler: nil)
-                
+
                 // Save credentials in case the app is closed and re-started
                 let defaults = UserDefaults.standard
                 defaults.set(creds.userId, forKey: "user_id")
@@ -2944,12 +3032,7 @@ extension KSStore: MatrixInterface {
                 print("SIGNUP(email2)\tGot HTTP \(httpResponse.statusCode) -- No credentials :(")
                 self.__printUiaaState(tag: "SIGNUP(email2)", data: data, response: response, error: error)
             }
-            // If we're still here, we completed this stage but there are still more to be done
-            completion(.success(nil))
-            return
-            
         }
-        task.resume()
     }
     
     /*

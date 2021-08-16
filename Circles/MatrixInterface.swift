@@ -16,7 +16,7 @@ protocol MatrixInterface {
 
     func getDomainFromUserId(_ userId: String) -> String?
 
-    func generateSecretsFromSinglePassword(userId: String, password: String) -> MatrixSecrets? 
+    func generateSecretsFromSinglePassword(userId: String, password: String) -> MatrixSecrets?
 
     func login(username: String, rawPassword: String, s4Password: String?, completion: @escaping (MXResponse<Void>) -> Void)
     

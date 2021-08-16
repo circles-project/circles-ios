@@ -12,13 +12,13 @@ extension SKProduct.PeriodUnit {
     var string: String {
         switch(self) {
         case .day:
-            return "day"
+            return "Day"
         case .week:
-            return "week"
+            return "Week"
         case .month:
-            return "month"
+            return "Month"
         case .year:
-            return "year"
+            return "Year"
         }
     }
 }
@@ -35,10 +35,14 @@ struct BYOSProductCard: View {
 
         return Button(action: {self.selectedProduct = product}) {
             VStack {
+                /*
                 Text(product.localizedTitle)
                     .font(.headline)
                 Text(product.localizedDescription)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(3)
                     .font(.subheadline)
+                */
 
                 let period = product.subscriptionPeriod!
                 let price = product.regularPrice!
@@ -53,11 +57,12 @@ struct BYOSProductCard: View {
                     }
                 }
                 .font(.headline)
+                .padding()
 
             }
             .foregroundColor(textColor)
             .padding()
-            .frame(width: 300, height: 100)
+            .frame(width: 200, height: 40)
             .background(backgroundColor)
             .cornerRadius(10)
             .overlay(RoundedRectangle(cornerRadius: 10).stroke(borderColor, lineWidth: 2))
@@ -139,6 +144,17 @@ struct BYOSPurchaseView: View {
                     .cornerRadius(10)
             }
             .disabled(selectedProduct == nil)
+
+            Button(action: {
+                self.presentation.wrappedValue.dismiss()
+            }) {
+                Text("Cancel")
+                    .padding()
+                    .frame(width: 300.0, height: 40.0)
+                    .foregroundColor(.red)
+                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.red))
+
+            }
 
         }
         .padding()
