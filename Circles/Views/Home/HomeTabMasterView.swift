@@ -139,7 +139,7 @@ struct HomeTabMasterView: View {
                            tag: Screen.devices,
                            selection: $selected) {
                 HStack {
-                    Label("My Devices", systemImage: "desktopcomputer")
+                    Label("Login Sessions", systemImage: "desktopcomputer")
                         .font(.headline)
                     Spacer()
                     Image(systemName: "chevron.right")

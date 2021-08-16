@@ -36,7 +36,7 @@ struct DevicesScreen: View {
 
                 let unverifiedDevices = user.devices.filter { !$0.isVerified }
                 if !unverifiedDevices.isEmpty {
-                    Label("Other Unverified Devices", systemImage: "display.trianglebadge.exclamationmark")
+                    Label("Other Unverified Sessions", systemImage: "display.trianglebadge.exclamationmark")
                         .font(.headline)
                     ForEach(unverifiedDevices) { device in
                     //ForEach(user.devices) { device in
@@ -51,7 +51,7 @@ struct DevicesScreen: View {
 
                 let verifiedDevices = user.devices.filter { $0.isVerified }
                 if !verifiedDevices.isEmpty {
-                    Label("Other Verified Devices", systemImage: "desktopcomputer")
+                    Label("Other Verified Sessions", systemImage: "desktopcomputer")
                         .font(.headline)
                     ForEach(verifiedDevices) { device in
                         if myDevice == nil || device != myDevice {
@@ -63,7 +63,7 @@ struct DevicesScreen: View {
 
                 Spacer()
             }
-            .navigationBarTitle(Text("My Devices"))
+            .navigationBarTitle(Text("Login Sessions"))
             .padding()
         }
     }

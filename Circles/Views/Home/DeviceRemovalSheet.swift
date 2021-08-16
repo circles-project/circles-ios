@@ -17,7 +17,7 @@ struct DeviceRemovalSheet: View {
     
     var header: some View {
         VStack {
-            Text("Removing Device")
+            Text("Removing Session")
                 .font(.title2)
                 .fontWeight(.bold)
             Text("\(device.displayName ?? "(unknown)") (\(device.id))")
@@ -54,7 +54,7 @@ struct DeviceRemovalSheet: View {
     
     var passwordForm: some View {
         VStack {
-            Text("Removing a device requires authentication.")
+            Text("Removing a login session requires authentication.")
             //Spacer()
             Text("Please enter your password to proceed:")
             SecureField("Password", text: $password)

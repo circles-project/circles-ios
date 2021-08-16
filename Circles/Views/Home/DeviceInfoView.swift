@@ -123,20 +123,20 @@ struct DeviceInfoView: View {
                     //Text("> Details")
                     HStack {
                         Image(systemName: "chevron.right")
-                        Text("Show device details")
+                        Text("Show session details")
                     }
                 }
             } else {
                 Button(action: {self.showDetails = false}) {
                     HStack {
                         Image(systemName: "chevron.down")
-                        Text("Hide device details")
+                        Text("Hide session details")
                     }
                 }
                 VStack(alignment: .leading) {
                     HStack {
                         Text("Fingerprint: ")
-                        Text(device.fingerprint ?? "(No device fingerprint)")
+                        Text(device.fingerprint ?? "(No session fingerprint)")
                             .lineLimit(1)
                     }
                     HStack {
@@ -185,7 +185,7 @@ struct DeviceInfoView: View {
         VStack(alignment: .leading) {
             HStack {
                 icon
-                Text(device.displayName ?? "(Unnamed Device)")
+                Text(device.displayName ?? "(Unnamed Session)")
                 Text(device.id)
                     .fontWeight(.bold)
                 Spacer()
@@ -224,7 +224,7 @@ struct DeviceInfoView: View {
                 }
             }
             Button(action: {device.verify()}) {
-                Label("Verify Device", systemImage: "checkmark.shield")
+                Label("Verify Session", systemImage: "checkmark.shield")
             }
         }
     }
