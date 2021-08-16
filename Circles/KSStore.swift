@@ -1159,6 +1159,7 @@ extension KSStore: MatrixInterface {
                                     case .failure(let err):
                                         print("LOGIN\tFailed to generate secrets")
                                     case .success(let twoPasswordSecrets):
+                                        UserDefaults.standard.set(twoPasswordSecrets.secretKey, forKey: "privateKey[\(user_id)]")
                                         self.setupRecovery(secrets: twoPasswordSecrets)
                                     }
                                 }
@@ -1222,12 +1223,12 @@ extension KSStore: MatrixInterface {
         }
 
         func handleCreateSuccess(info: MXSecretStorageKeyCreationInfo) {
-            let recoveryKey = info.recoveryKey
-            let privateKey = info.privateKey
+            //let recoveryKey = info.recoveryKey
+            //let privateKey = info.privateKey
             let defaults = UserDefaults.standard
 
-            defaults.set(recoveryKey, forKey: "recoveryKey[\(userId)]")
-            defaults.set(privateKey, forKey: "privateKey[\(userId)]")
+            defaults.set(info.recoveryKey, forKey: "recoveryKey[\(userId)]")
+            defaults.set(info.privateKey, forKey: "privateKey[\(userId)]")
             print("RECOVERY\tSetup success")
         }
 
@@ -1253,7 +1254,7 @@ extension KSStore: MatrixInterface {
         }
 
         func handleSuccess(result: MXSecretRecoveryResult) {
-            print("RECOVERY\tSuccess connecting to recovery")
+            print("RECOVERY\tSuccess - connected to recovery")
             // Now we should probably update the recovery with any local secrets
             recovery.updateRecovery(
                 forSecrets: nil,
@@ -1428,7 +1429,8 @@ extension KSStore: MatrixInterface {
             }
         }
     }
-    
+
+    /*
     func finishSignupAndConnect() {
         if let restClient = self.signupMxRc {
             self.connect(restclient: restClient) {
@@ -1436,6 +1438,7 @@ extension KSStore: MatrixInterface {
             }
         }
     }
+    */
     
     //func logout() {
     func pause() {
