@@ -835,11 +835,23 @@ extension KSStore: SocialGraph {
 
 extension KSStore: MatrixInterface {
 
+    func getRoomAvatar(roomId: String, completion: @escaping (MXResponse<URL>) -> Void) {
+        guard let restClient = self.session.matrixRestClient else {
+            let msg = "Failed to get Matrix rest client"
+            let err = KSError(message: msg)
+            print("STORE\t\(msg)")
+            completion(.failure(err))
+            return
+        }
+        restClient.avatar(ofRoom: roomId, completion: completion)
+    }
+
+
     func getRoomName(roomId: String, completion: @escaping (MXResponse<String>) -> Void) {
         guard let restClient = self.session.matrixRestClient else {
             let msg = "Failed to get Matrix rest client"
             let err = KSError(message: msg)
-            print("ROOMNAME\t\(msg)")
+            print("STORE\t\(msg)")
             completion(.failure(err))
             return
         }

@@ -40,6 +40,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
         self.queue = DispatchQueue(label: self.id, qos: .background)
 
         self.updateDisplayName()
+        self.updateAvatar()
         self.initTimeline()
         self.refresh()
     }
@@ -128,6 +129,14 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
                 self.displayName = newName
             }
 
+        case .roomAvatar:
+            guard direction == .forwards else {
+                return
+            }
+            if let url = event.content["url"] as? String {
+                self._fetchAvatar(from: url)
+            }
+
         default:
             break
         }
@@ -193,24 +202,20 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
         mxroom.summary.topic
     }
 
+    /*
     // FIXME Make this one settable as well as gettable
     //       The set() just makes the API call
     var avatarURL: String? {
         mxroom.summary.avatar
     }
+    */
 
     // FIXME Make this one settable as well as gettable
     //       The set() just makes the API call
-    var avatarImage: UIImage? {
-        // Do we already have the image in our little one-off cache?
-        if let img = self.cachedAvatarImage {
-            return img
-        }
-        // Image isn't cached.  Do we have a URL?
-        guard let url = mxroom.summary.avatar else {
-            // No URL.  We're SOL.
-            return nil
-        }
+    @Published var avatarImage: UIImage?
+
+    func _fetchAvatar(from url: String) {
+
         // So we don't have the image, but we know where to find it.
         // Let's go get it.
         // Maybe it's in the disk cache?
@@ -222,7 +227,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
                 if !self.downloadingAvatar {
                     self.downloadingAvatar = true
                     self.matrix.downloadImage(mxURI: url) { downloadedImage in
-                        self.cachedAvatarImage = downloadedImage
+                        self.avatarImage = downloadedImage
                         DispatchQueue.main.async {
                             self.objectWillChange.send()
                         }
@@ -233,11 +238,30 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
                     print("ROOM\tAvatar is already being downloaded; Doing nothing")
                 }
             }
-            return nil
+            // Do nothing else for now
+            // Just gotta wait for the image to download
+            return
         }
         // Yay it was in the disk cache
         print("ROOM\tUsing cached image for \(self.id)")
-        return cached_image
+        self.avatarImage = cached_image
+    }
+
+    func updateAvatar() {
+        // Do we have a URL?
+        guard let url = mxroom.summary.avatar else {
+            // Hmm I wonder if we really don't have an avatar for this room?
+            // Or is the MatrixSDK just failing us right now?
+            matrix.getRoomAvatar(roomId: self.id) { response in
+                guard case let .success(newUrl) = response else {
+                    print("ROOM\tCouldn't get avatar URL from Matrix")
+                    return
+                }
+                self._fetchAvatar(from: newUrl.absoluteString)
+            }
+            return
+        }
+        _fetchAvatar(from: url)
     }
 
     func setAvatarURL(url: URL, completion: @escaping (MXResponse<Void>) -> Void = {_ in }) {

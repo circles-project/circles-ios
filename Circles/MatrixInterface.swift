@@ -92,6 +92,8 @@ protocol MatrixInterface {
     
     func setRoomAvatar(roomId: String, image: UIImage, completion: @escaping (MXResponse<Void>) -> Void)
 
+    func getRoomAvatar(roomId: String, completion: @escaping (MXResponse<URL>) -> Void)
+
     func fetchRoomMemberList(roomId: String, completion: @escaping (MXResponse<[String:String]>) -> Void)
     
     func canonicalizeUserId(userId: String) -> String?
