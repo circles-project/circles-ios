@@ -83,6 +83,8 @@ protocol MatrixInterface {
     func getReactions(for eventId: String, in roomId: String) -> [MatrixReaction]
     
     func setAvatarImage(image: UIImage, completion: @escaping (MXResponse<URL>) -> Void)
+
+    func getAvatarUrl(userId: String, completion: @escaping (MXResponse<URL>) -> Void)
     
     func getDisplayName(userId: String, completion: @escaping (MXResponse<String>) -> Void)
     

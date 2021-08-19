@@ -25,7 +25,8 @@ class MatrixUser: ObservableObject, Identifiable {
         self.queue = DispatchQueue(label: mxuser.userId, qos: .background)
         self.downloadingAvatar = false
         self.fetchingDisplayName = false
-        
+
+        self.updateAvatar()
         mxuser.listen(toUserUpdate: self.handleEvent)
     }
     
@@ -111,21 +112,20 @@ class MatrixUser: ObservableObject, Identifiable {
         return String(self.id.prefix(2).suffix(1).capitalized)
     }
     
-    var avatarImage: UIImage? {
-        guard let url = self.mxuser.avatarUrl else {
-            //print("Couldn't find an avatar URL for user \(self.displayName ?? self.id)")
-            return nil
-        }
-        //print("Getting avatar URL for \(self.mxuser.userId ?? "Uknown") = \(url)")
+    @Published var avatarImage: UIImage?
+
+    func _fetchAvatar(from url: String) {
+        print("USER\tFetching avatar image for \(self.id)")
         guard let cached_image = self.matrix.getCachedImage(mxURI: url) else {
-            //print("Cache: Couldn't find url \(url)  Downloading now...")
+            print("USER\tNo avatar image for \(self.id) in cache.  Downloading now...")
             //self.queue.async {
                 //if !self.downloadingAvatar {
                     //self.downloadingAvatar = true
-                    self.matrix.downloadImage(mxURI: url) { new_image in
-                        //print("Fetched profile image for \(self.id)")
+                    self.matrix.downloadImage(mxURI: url) { image in
+                        print("USER\tDownloaded avatar image for \(self.id)")
                         DispatchQueue.main.async {
-                            self.objectWillChange.send()
+                            //self.objectWillChange.send()
+                            self.avatarImage = image
                         }
                         //self.downloadingAvatar = false
 
@@ -135,10 +135,29 @@ class MatrixUser: ObservableObject, Identifiable {
                     }
                 //}
             //}
-            return nil
+            // Do Nothing for now.  Just wait for the image to download.
+            return
         }
-        //print("Using cached image for \(self.id)")
-        return cached_image
+        print("USER\tUsing cached image for \(self.id)")
+        self.avatarImage = cached_image
+        return
+    }
+
+    func updateAvatar() {
+        guard let url = self.mxuser.avatarUrl else {
+            print("USER\tCouldn't find an avatar URL for user \(self.displayName ?? self.id)")
+            matrix.getAvatarUrl(userId: self.id) { response in
+                guard case let .success(newUrl) = response else {
+                    print("USER\tCouldn't get avatar URL from Matrix for \(self.id)")
+                    return
+                }
+                print("USER\tGot an avatar URL from Matrix for \(self.id)")
+                self._fetchAvatar(from: newUrl.absoluteString)
+            }
+            return
+        }
+        print("USER\tAlready have the avatar URL for user \(self.id)")
+        self._fetchAvatar(from: url)
     }
     
     func setAvatarImage(image: UIImage, completion: @escaping (MXResponse<URL>) -> Void) {
