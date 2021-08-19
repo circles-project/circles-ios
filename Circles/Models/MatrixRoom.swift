@@ -43,15 +43,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
         self.updateAvatar()
         self.initTimeline()
         self.refresh()
-    }
-
-    func initPowerLevels() {
-        mxroom.state { state in
-            if let allPLs = state?.powerLevels {
-                self.objectWillChange.send()
-                self.cachedPowerLevels = allPLs
-            }
-        }
+        self.updatePowerLevels()
     }
 
 
@@ -300,55 +292,48 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
     }
 
 
-    // FIXME Why not just
-    //      @Published var owners: [MatrixUser]
-    // and then whenever the list changes, Combine will automagically
-    // send out an update, and we don't have to mess with it ourselves.
-    // Then we could have SwiftUI View's that observe *just* the owners
-    // list, and not the whole room.
-    private var cachedOwnerUserIds: Set<String> = []
-    var owners: [MatrixUser] {
-        cachedOwnerUserIds.compactMap { userId in
-            self.matrix.getUser(userId: userId)
+    var creator: MatrixUser? {
+        guard let userId = mxroom.summary.creatorUserId else {
+            return nil
         }
+        return matrix.getUser(userId: userId)
     }
 
-    private var cachedPowerLevels: MXRoomPowerLevels?
-    private var powerLevels: MXRoomPowerLevels? {
-        if let PLs = cachedPowerLevels {
-            //print("POWERLEVELS\tUsing cached power levels")
-            return PLs
-        }
-
-        print("POWERLEVELS\tNo cached power levels, asking the Matrix server ...")
-        mxroom.state { state in
-            if let allPLs = state?.powerLevels {
-                self.objectWillChange.send()
-                self.cachedPowerLevels = allPLs
+    var owners: [MatrixUser] {
+        userPowerLevels.keys.compactMap { key in
+            let userId = key as String
+            guard let power = self.userPowerLevels[userId] else {
+                return nil
+            }
+            if power >= 100 {
+                return matrix.getUser(userId: userId)
+            } else {
+                return nil
             }
         }
-        return nil
     }
 
-    var userPowerLevels: [String: Int] {
-        guard let PLs = self.powerLevels else {
-            print("POWERLEVELS\tNo power levels available for users")
-            return [:]
+    private var allPowerLevels: MXRoomPowerLevels?
+    @Published var userPowerLevels = [String: Int]()
+
+    func updatePowerLevels() {
+
+        mxroom.state { roomState in
+            guard let allPLs = roomState?.powerLevels else {
+                print("ROOM\tCouldn't get ANY power levels for room \(self.id) (\(self.displayName ?? "???"))")
+                return
+            }
+            print("ROOM\tGot basic power levels for room \(self.id)")
+            self.allPowerLevels = allPLs
+
+            guard let userPLs = allPLs.users as? [String:Int] else {
+                print("ROOM\tCouldn't get user power levels for room \(self.id) (\(self.displayName ?? "???"))")
+                return
+            }
+            print("ROOM\tGot user power levels for room \(self.id)")
+            self.userPowerLevels = userPLs
         }
 
-        guard let userPLs = PLs.users else {
-            print("POWERLEVELS\tNo user power levels")
-            return [:]
-        }
-
-        let upl = userPLs as? [String: Int] ?? [String: Int]()
-        /*
-        print("POWERLEVELS\tHave \(upl.count) user power levels")
-        for (u, p) in upl {
-            print("POWERLEVELS\t\(u)\t\(p)")
-        }
-        */
-        return upl
     }
 
     func getPowerLevel(userId: String) -> Int {
@@ -356,7 +341,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
             return power
         }
 
-        if let PLs = powerLevels {
+        if let PLs = allPowerLevels {
             return PLs.usersDefault
         }
 
@@ -368,7 +353,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
             if response.isSuccess {
                 self.objectWillChange.send()
                 // Also update our local cache
-                self.cachedPowerLevels?.users[userId] = power
+                self.userPowerLevels[userId] = power
             }
 
             handler(response)
@@ -408,36 +393,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
     }
 
     func updateOwners() {
-        // Find the owners (powerlevel 100) of the room
-        var newOwnerIds: Set<String> = []
-        mxroom.state { state in
-            guard let allPLs = state?.powerLevels else {
-                print("POWERLEVELS\tCouldn't find ANY power levels for room \(self.id)")
-                return
-            }
-            self.cachedPowerLevels = allPLs // Save this data for later
-
-            guard let userPowerLevels = allPLs.users else {
-                print("POWELEVELS\tCouldn't find user power levels for room \(self.id)")
-                return
-            }
-            for (u, l) in userPowerLevels {
-                // swiftlint:disable:next force_cast
-                let userId = u as! String
-                // swiftlint:disable:next force_cast
-                let level = l as! Int
-                print("POWERLEVELS\tFound user [\(userId)] with power level [\(level)] ")
-                if level >= 100 {
-                    self.objectWillChange.send()
-                    newOwnerIds.insert(userId)
-                }
-            }
-            // Did we find any changes?
-            if newOwnerIds.symmetricDifference(self.cachedOwnerUserIds).count > 0 {
-                self.objectWillChange.send()
-                self.cachedOwnerUserIds = newOwnerIds
-            }
-        }
+        self.updatePowerLevels()
     }
 
     private var cachedMemberUserIds: [String] = []

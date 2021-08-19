@@ -81,7 +81,7 @@ struct PersonsCircleRow: View {
     }
     
     var userName: String {
-        guard let user = room.owners.first else {
+        guard let user = room.creator ?? room.owners.first else {
             return "(unknown)"
         }
         guard let displayName = user.displayName else {
@@ -118,6 +118,12 @@ struct PersonsCircleRow: View {
                 Text(roomName)
                     .font(.headline)
                     .fontWeight(.semibold)
+
+                /*
+                Text(room.id)
+                    .font(.caption)
+                    .foregroundColor(Color.gray)
+                */
 
                 timestamp
                     .font(.caption)
