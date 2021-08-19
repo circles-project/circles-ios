@@ -19,7 +19,9 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
     private var backwardTimeline: MXEventTimeline?
 
     var first: MatrixMessage?
-    var last: MatrixMessage?
+    @Published var last: MatrixMessage?
+
+    @Published var membership = [String:String]()
 
     var queue: DispatchQueue
     var downloadingAvatar: Bool = false
@@ -37,6 +39,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
         self.matrix = matrix
         self.queue = DispatchQueue(label: self.id, qos: .background)
 
+        self.updateDisplayName()
         self.initTimeline()
         self.refresh()
     }
@@ -67,29 +70,66 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
             // So how in the world do we get an instance of this thing???
             // --> It's matrix.session.aggregations :)
             print("TIMELINE Event [\(event.eventId ?? "???")] is a reaction.  Ignoring for now...")
-        }
-        print("TIMELINE --------")
-        
-        // Hide messages from people on our ignore list
-        if self.ignoredSenders.contains(event.sender) {
             return
         }
+        print("TIMELINE --------")
 
-        let msg = MatrixMessage(from: event, in: self)
-        self.objectWillChange.send()
-        self.messages.insert(msg)
 
-        if self.first == nil || msg.timestamp < self.first!.timestamp {
-            self.first = msg
-        }
+        switch event.eventType {
 
-        if self.last == nil || msg.timestamp > self.last!.timestamp {
-            self.last = msg
-        }
+        case .roomMessage:
+            // Hide messages from people on our ignore list
+            if self.ignoredSenders.contains(event.sender) {
+                return
+            }
 
-        if self.localEchoEvent?.eventId == event.eventId {
-            // Aha, here's the "real" version of our local echo guy.  We only need this to exist in one place.
-            self.localEchoEvent = nil
+            let msg = MatrixMessage(from: event, in: self)
+            self.objectWillChange.send()
+            self.messages.insert(msg)
+
+            if self.first == nil || msg.timestamp < self.first!.timestamp {
+                self.first = msg
+            }
+
+            if self.last == nil || msg.timestamp > self.last!.timestamp {
+                self.last = msg
+            }
+
+            if self.localEchoEvent?.eventId == event.eventId {
+                // Aha, here's the "real" version of our local echo guy.  We only need this to exist in one place.
+                self.localEchoEvent = nil
+            }
+
+        case .roomMember:
+            guard direction == .forwards else {
+                // Ignore historical membership events
+                return
+            }
+            guard let userId = event.stateKey,
+                  let userState = event.content["membership"] as? String else {
+                print("ROOM.TIMELINE\tGot a bogus m.room.member event")
+                return
+            }
+
+            let validStates = ["invite", "join", "leave", "ban", "knock"]
+            guard validStates.contains(userState) else {
+                print("ROOM.TIMELINE\tGot a bogus membership state [\(userState)]")
+                return
+            }
+
+            print("ROOM.TIMELINE\tGot a membership update: \(userId) --> \(userState)")
+            self.membership[userId] = userState
+
+        case .roomName:
+            guard direction == .forwards else {
+                return
+            }
+            if let newName = event.content["name"] as? String {
+                self.displayName = newName
+            }
+
+        default:
+            break
         }
     }
 
@@ -98,7 +138,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
         self.backwardTimeline?.resetPagination()
 
         //let eventTypes: [MXEventType] = [.roomMessage, .roomEncrypted]
-        let eventTypes: [MXEventType] = [.roomMessage]
+        let eventTypes: [MXEventType] = [.roomMessage, .roomMember]
         _ = self.backwardTimeline?.listenToEvents(eventTypes, self._eventHandler)
 
         self.mxroom.liveTimeline() { maybeTimeline in
@@ -121,10 +161,18 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
         self.mxroom.summary.roomTypeString
     }
 
-    // FIXME Make this one settable as well as gettable
-    //       The set() just makes the API call
-    var displayName: String? {
-        mxroom.summary.displayname
+
+    @Published var displayName: String?
+
+    func updateDisplayName() {
+        //mxroom.summary.displayname
+        matrix.getRoomName(roomId: self.id) { response in
+            guard case let .success(name) = response else {
+                print("ROOM\tFailed to get displayname from Matrix")
+                return
+            }
+            self.displayName = name
+        }
     }
 
     func setDisplayName(_ name: String, completion: @escaping (MXResponse<Void>) -> Void) {
@@ -227,9 +275,6 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
                               completion: completion)
     }
 
-    var membership: MXMembership {
-        return mxroom.summary.membership
-    }
 
     // FIXME Why not just
     //      @Published var owners: [MatrixUser]
@@ -379,83 +424,52 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
     private var mxMembers: MXRoomMembers?
 
     func updateMembers() {
-        mxroom.members { response in
-            switch response {
-            case .failure(let error):
-                print("Failed to get members for room \(self.displayName ?? self.id) -- \(error)")
-            case .success(let maybeMembers):
-                // FIXME What if we already had a list of members, and now we get a nil?
-                self.mxMembers = maybeMembers
-                self.objectWillChange.send()
-            }
-        }
+        self.asyncMembers(completion: { _ in })
     }
 
     func asyncMembers(completion: @escaping (MXResponse<[MatrixUser]>) -> Void) {
-
-        mxroom.members { response in
-            switch response {
-            case .failure(let err):
-                let msg = "Failed to get members: \(err)"
-                print(msg)
-                completion(.failure(KSError(message: msg)))
-            case .success(let maybeMxMembers):
-                if let members = maybeMxMembers {
-                    self.mxMembers = members
-                    self.objectWillChange.send()
-
-                    let users = members.joinedMembers.compactMap { mxroommember in
-                        self.matrix.getUser(userId: mxroommember.userId)
-                    }
-                    completion(.success(users))
-                }
-            } 
+        print("ASYNCMEMBERS\tGetting members for room \(self.displayName) [\(self.id)]")
+        matrix.fetchRoomMemberList(roomId: self.id) { response in
+            guard case let .success(latestMembership) = response else {
+                let msg = "Matrix request failed"
+                print("ASYNCMEMBERS\t\(msg)")
+                let err = KSError(message: msg)
+                completion(.failure(err))
+                return
+            }
+            self.membership = latestMembership
         }
     }
 
-    // FIXME Create a single function to use for all these
+    func _getCurrentMembers(state: String) -> [MatrixUser] {
+        self.membership.keys.compactMap { key in
+            let userId = key as String
+            guard let userState = self.membership[key] else {
+                return nil
+            }
+            if userState == state {
+                return matrix.getUser(userId: userId)
+            } else {
+                return nil
+            }
+        }
+
+    }
+
     var joinedMembers: [MatrixUser] {
-        guard let mxm = self.mxMembers else {
-            updateMembers()
-            return []
-        }
-        let joinedList: [MXRoomMember] = mxm.joinedMembers
-        return joinedList.compactMap { mxroommember in
-            matrix.getUser(userId: mxroommember.userId)
-        }
+        _getCurrentMembers(state: "join")
     }
 
-    // FIXME Create a single function to use for all these
     var invitedMembers: [MatrixUser] {
-        guard let mxm = self.mxMembers else {
-            return []
-        }
-        let memberList: [MXRoomMember] = mxm.members(with: __MXMembershipInvite)
-        return memberList.compactMap { mxroommember in
-            matrix.getUser(userId: mxroommember.userId)
-        }
+        _getCurrentMembers(state: "invite")
     }
 
-    // FIXME Create a single function to use for all these
     var leftMembers: [MatrixUser] {
-        guard let mxm = self.mxMembers else {
-            return []
-        }
-        let memberList: [MXRoomMember] = mxm.members(with: __MXMembershipLeave)
-        return memberList.compactMap { mxroommember in
-            matrix.getUser(userId: mxroommember.userId)
-        }
+        _getCurrentMembers(state: "leave")
     }
 
-    // FIXME Create a single function to use for all these
     var bannedMembers: [MatrixUser] {
-        guard let mxm = self.mxMembers else {
-            return []
-        }
-        let memberList: [MXRoomMember] = mxm.members(with: __MXMembershipBan)
-        return memberList.compactMap { mxroommember in
-            matrix.getUser(userId: mxroommember.userId)
-        }
+        _getCurrentMembers(state: "ban")
     }
     
     var membersCount: UInt {
@@ -519,7 +533,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
 
     func getMessages(since date: Date? = nil) -> [MatrixMessage] {
         if let cutoff = date {
-            var result = self.messages
+            let result = self.messages
                 .filter({ $0.timestamp > cutoff })
                 .filter({ !self.ignoredSenders.contains($0.sender) })
                 .sorted(by: {$0.timestamp > $1.timestamp})

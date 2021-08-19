@@ -63,6 +63,8 @@ protocol MatrixInterface {
     func leaveRoom(roomId: String, completion: @escaping (Bool) -> Void)
     
     func addTag(_ tag: String, toRoom roomId: String, completion: @escaping (MXResponse<Void>) -> Void)
+
+    func getRoomName(roomId: String, completion: @escaping (MXResponse<String>) -> Void)
     
     func getCachedImage(mxURI: String) -> UIImage?
     
@@ -89,6 +91,8 @@ protocol MatrixInterface {
     func setStatusMessage(message: String, completion: @escaping (MXResponse<String>) -> Void)
     
     func setRoomAvatar(roomId: String, image: UIImage, completion: @escaping (MXResponse<Void>) -> Void)
+
+    func fetchRoomMemberList(roomId: String, completion: @escaping (MXResponse<[String:String]>) -> Void)
     
     func canonicalizeUserId(userId: String) -> String?
     

@@ -835,7 +835,19 @@ extension KSStore: SocialGraph {
 
 extension KSStore: MatrixInterface {
 
-    func getRoomMembers(roomId: String, completion: @escaping (MXResponse<[MatrixUser]>) -> Void) {
+    func getRoomName(roomId: String, completion: @escaping (MXResponse<String>) -> Void) {
+        guard let restClient = self.session.matrixRestClient else {
+            let msg = "Failed to get Matrix rest client"
+            let err = KSError(message: msg)
+            print("ROOMNAME\t\(msg)")
+            completion(.failure(err))
+            return
+        }
+        restClient.name(ofRoom: roomId, completion: completion)
+    }
+
+
+    func fetchRoomMemberList(roomId: String, completion: @escaping (MXResponse<[String:String]>) -> Void) {
         guard let restClient = self.session.matrixRestClient else {
             let msg = "Failed to get Matrix rest client"
             let err = KSError(message: msg)
@@ -850,23 +862,23 @@ extension KSStore: MatrixInterface {
                            withParameters: params,
                            success: { result in
 
-                            guard let events = result as? [MXEvent] else {
-                                print("MATRIXMEMBERS\tRest client gave us garbage")
-                                return
-                            }
+                                guard let events = result as? [MXEvent] else {
+                                    print("MATRIXMEMBERS\tRest client gave us garbage")
+                                    return
+                                }
 
                                 print("MATRIXMEMBERS\tGot \(events.count) state events from Matrix")
-                                let users: [MatrixUser] = events.compactMap { event in
+
+                                var membership = [String:String]()
+                                for event in events {
                                     guard let userId = event.stateKey,
-                                          let userState = event.content["membership"] else {
+                                          let userState = event.content["membership"] as? String else {
                                         print("MATRIXMEMBERS\tGot an event without valid membership info")
-                                        return nil
+                                        continue
                                     }
-                                    print("MATRIXMEMBERS\tGot an event for user [\(userId)]")
-                                    print("MATRIXMEMBERS\t\(roomId)\t\(userId)\t\(userState)")
-                                    return self.getUser(userId: userId)
+                                    membership[userId] = userState
                                 }
-                                completion(.success(users))
+                                completion(.success(membership))
                             },
                            failure: { error in
                                 let msg = "Failed to get room members from the homeserver"

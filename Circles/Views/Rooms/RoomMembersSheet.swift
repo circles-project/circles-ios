@@ -76,6 +76,7 @@ struct RoomMemberRow: View {
     
     var accessLevel: Int {
         let power = room.getPowerLevel(userId: user.id)
+        return power
         
         let maybeAccess = powerLevels.lastIndex { level in
             let result = level <= power
@@ -95,32 +96,11 @@ struct RoomMemberRow: View {
             HStack {
                 MessageAuthorHeader(user: user)
                 Spacer()
-                /*
-                Button(action: {self.showPicker.toggle()}) {
-                    Text(roles[selection])
-                        .font(.subheadline)
-                }
-                .disabled(!editable)
-                */
                 
-                Text(roles[accessLevel])
+                //Text(roles[accessLevel])
+                    Text("\(accessLevel)")
                     .font(.subheadline)
             }
-            /*
-            if editable && showPicker {
-                Picker("Access Level", selection: $selection) {
-                    ForEach(0 ..< roles.count) { index in
-                        Button(action: {
-                                self.showPicker = false
-                        }) {
-                            Text(roles[index])
-                        }
-                    }
-                }
-                .padding(.leading) // Ugh, SwiftUI bug?  This indents the whole row!
-            }
-            */
-
         }
         .contextMenu /*@START_MENU_TOKEN@*/{
             Menu("Set Access Level") {
@@ -351,22 +331,41 @@ struct RoomMembersSheet: View {
 
         }
         .padding()
+        /*
         .onAppear {
-            // Let's at least try this the SwiftUI way
-            room.updateMembers()
-            // Then if it fails, we can do the "manually update the UI" way below...
-            /*
-            room.asyncMembers { response in
-                switch response {
-                case .failure(let err):
-                    print("MEMBERS\tFailed to get member list for room \(room.displayName) (\(room.id) -- \(err)")
-                    return
-                case .success(let memberList):
-                    self.members = memberList
+
+            var doThisManually = false
+            if !doThisManually {
+
+                // Let's at least try this the SwiftUI way
+                room.updateMembers()
+                // Then if it fails, we can do the "manually update the UI" way below...
+                // Yeah that fails to do anything...  argh.
+                // (The problem seems to be that I'm holding on to some MX data structure in the MatrixRoom, and for whatever reason it's not getting refreshed.)
+            } else {
+                room.asyncMembers { response in
+                    switch response {
+                    case .failure(let err):
+                        print("MEMBERS\tFailed to get member list for room \(room.displayName) (\(room.id) -- \(err)")
+                        return
+                    case .success(let memberList):
+                        print("MEMBERS\tSucces!  Got \(memberList.count) room members for room \(room.id)")
+                        self.members = memberList
+                    }
                 }
             }
-            */
+
+            // Either way, let's use my new MatrixInterface method to poll the homeserver directly
+
+            room.matrix.fetchRoomMemberList(roomId: room.id) { response in
+                guard case let .success(newMembers) = response else {
+                    print("MEMBERS\tNew method for getting room members from the homeserver failed")
+                    return
+                }
+                print("MEMBERS\tGot \(newMembers.count) members from the homeserver")
+            }
         }
+        */
     }
 }
 
