@@ -834,6 +834,49 @@ extension KSStore: SocialGraph {
 
 
 extension KSStore: MatrixInterface {
+
+    func getRoomMembers(roomId: String, completion: @escaping (MXResponse<[MatrixUser]>) -> Void) {
+        guard let restClient = self.session.matrixRestClient else {
+            let msg = "Failed to get Matrix rest client"
+            let err = KSError(message: msg)
+            print("MATRIXMEMBERS\t\(msg)")
+            completion(.failure(err))
+            return
+        }
+
+        //let params = [kMXMembersOfRoomParametersMembership: "join"]
+        let params = [String:Any]()
+        restClient.members(ofRoom: roomId,
+                           withParameters: params,
+                           success: { result in
+
+                            guard let events = result as? [MXEvent] else {
+                                print("MATRIXMEMBERS\tRest client gave us garbage")
+                                return
+                            }
+
+                                print("MATRIXMEMBERS\tGot \(events.count) state events from Matrix")
+                                let users: [MatrixUser] = events.compactMap { event in
+                                    guard let userId = event.stateKey,
+                                          let userState = event.content["membership"] else {
+                                        print("MATRIXMEMBERS\tGot an event without valid membership info")
+                                        return nil
+                                    }
+                                    print("MATRIXMEMBERS\tGot an event for user [\(userId)]")
+                                    print("MATRIXMEMBERS\t\(roomId)\t\(userId)\t\(userState)")
+                                    return self.getUser(userId: userId)
+                                }
+                                completion(.success(users))
+                            },
+                           failure: { error in
+                                let msg = "Failed to get room members from the homeserver"
+                                print("MATRIXMEMBERS\t\(msg)")
+                                let err = KSError(message: msg)
+                                completion(.failure(err))
+                           }
+        )
+    }
+
     func getStore() -> KSStore {
         self
     }
@@ -1666,13 +1709,14 @@ extension KSStore: MatrixInterface {
         }
     }
     
-    
     func getInvitedRooms() -> [InvitedRoom] {
         print("INVITED\tGetting invited rooms...")
         guard let mxrooms: [MXRoom] = self.session.invitedRooms() else {
+            print("INVITED\tMatrix has no invited rooms.  Returning empty array.")
             return []
         }
-        return Set(mxrooms)
+        print("INVITED\tMatrix has \(mxrooms.count) invited mxrooms")
+        let rooms: [InvitedRoom] = Set(mxrooms)
             /*
             .filter { mxroom in
                 guard let roomType = mxroom.summary.roomTypeString else {
@@ -1688,6 +1732,8 @@ extension KSStore: MatrixInterface {
                 print("INVITED\tFound invited room [\(mxroom.roomId ?? "")]")
                 return InvitedRoom(from: mxroom, on: self)
             }
+        print("INVITED\tReturning \(rooms.count) invited rooms")
+        return rooms
     }
     
     func getSystemNoticesRoom() -> MatrixRoom? {
