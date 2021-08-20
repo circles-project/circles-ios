@@ -1090,8 +1090,7 @@ extension KSStore: MatrixInterface {
             return
         }
 
-        let REQUIRE_SUBSCRIPTIONS = true
-        if REQUIRE_SUBSCRIPTIONS && userDomain != kombuchaServer?.host {
+        if BYOS_REQUIRE_SUBSCRIPTION && userDomain != kombuchaServer?.host {
             // Check for a subscription to the BYOS products
             var hasCurrentSubscription = false
             let productIds = ["social.kombucha.circles.byos01month", "social.kombucha.circles.byos12month"]

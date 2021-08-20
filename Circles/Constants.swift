@@ -41,3 +41,5 @@ let DECRYPTED_CACHE_FOLDER: String = "decrypted"
 // the dimensions of the BH images.  I thought they
 // somehow encoded this info into the hash, but oh well...
 let BLURHASH_WIDTH: Int = 6
+
+let BYOS_REQUIRE_SUBSCRIPTION = false

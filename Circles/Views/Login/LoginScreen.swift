@@ -50,28 +50,30 @@ struct LoginScreen: View {
         }
 
         // Check for BYOS
-        if let domain = self.matrix.getDomainFromUserId(username) {
-            if domain == "kombucha.social" || domain.hasSuffix(".kombucha.social") {
-                // Not BYOS
-            } else {
-                // BYOS
-                // Ok, no problem.  Do we have a subscription?
-                var haveSubscription = false
-                guard let byosProductIds = BringYourOwnServer.loadProducts() else {
-                    // Looks like we don't support BYOS at this time
-                    // FIXME need to pop up an error message
-                    return
-                }
-                for productId in byosProductIds {
-                    if AppStoreInterface.validateReceiptOnDevice(for: productId) {
-                        haveSubscription = true
+        if BYOS_REQUIRE_SUBSCRIPTION {
+            if let domain = self.matrix.getDomainFromUserId(username) {
+                if domain == "kombucha.social" || domain.hasSuffix(".kombucha.social") {
+                    // Not BYOS
+                } else {
+                    // BYOS
+                    // Ok, no problem.  Do we have a subscription?
+                    var haveSubscription = false
+                    guard let byosProductIds = BringYourOwnServer.loadProducts() else {
+                        // Looks like we don't support BYOS at this time
+                        // FIXME need to pop up an error message
+                        return
                     }
-                }
+                    for productId in byosProductIds {
+                        if AppStoreInterface.validateReceiptOnDevice(for: productId) {
+                            haveSubscription = true
+                        }
+                    }
 
-                if !haveSubscription {
-                    // Show subscription options
-                    showPurchaseSheet = true
-                    return
+                    if !haveSubscription {
+                        // Show subscription options
+                        showPurchaseSheet = true
+                        return
+                    }
                 }
             }
         }
