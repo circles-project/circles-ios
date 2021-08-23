@@ -70,7 +70,7 @@ struct PhotosOverviewScreen: View {
                 }
             }
         }
-            
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

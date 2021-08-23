@@ -63,7 +63,7 @@ struct GroupsOverviewScreen: View {
                 }
             }
         }
-
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 
