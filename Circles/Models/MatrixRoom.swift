@@ -159,7 +159,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
     }
 
     var type: String? {
-        self.mxroom.summary.roomTypeString
+        self.mxroom.summary?.roomTypeString
     }
 
 
@@ -191,7 +191,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
     // FIXME Make this one settable as well as gettable
     //       The set() just makes the API call
     var topic: String? {
-        mxroom.summary.topic
+        mxroom.summary?.topic
     }
 
     /*
@@ -453,11 +453,18 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
     }
     
     var membersCount: UInt {
-        mxroom.summary.membersCount.joined
+        guard let summary = mxroom.summary else {
+            return 0
+        }
+        return summary.membersCount.joined
     }
 
     var timestamp: Date {
-        let seconds = mxroom.summary.lastMessage.originServerTs / 1000
+        guard let summary = mxroom.summary else {
+            // Garbage value
+            return Date()
+        }
+        let seconds = summary.lastMessage.originServerTs / 1000
         return Date(timeIntervalSince1970: TimeInterval(seconds))
     }
     
@@ -636,7 +643,10 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
     }
 
     var isEncrypted: Bool {
-        mxroom.summary.isEncrypted
+        guard let summary = mxroom.summary else {
+            return false
+        }
+        return summary.isEncrypted
     }
 
     func postText(text: String, completion: @escaping (MXResponse<String?>) -> Void) {
