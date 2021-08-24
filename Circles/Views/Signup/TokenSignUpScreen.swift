@@ -409,6 +409,7 @@ struct TokenSignUpScreen: View {
 
                 HStack {
                     TextField("New Username", text: $username)
+                        .textContentType(.username)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
                     Spacer()
@@ -425,6 +426,7 @@ struct TokenSignUpScreen: View {
 
                 HStack {
                     SecureField("New Passphrase", text: $password)
+                        .textContentType(.newPassword)
                     Spacer()
                     Button(action: {
                         //showHelpItem = .password
@@ -438,6 +440,7 @@ struct TokenSignUpScreen: View {
                 .frame(width: 300.0, height: 40.0)
 
                 SecureField("Repeat Passphrase", text: $repeatPassword)
+                    .textContentType(.newPassword)
                     .frame(width: 300.0, height: 40.0)
             }
 
