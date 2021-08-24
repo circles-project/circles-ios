@@ -3116,6 +3116,7 @@ extension KSStore: MatrixInterface {
                 self.__printUiaaState(tag: "SIGNUP(email2)", data: data, response: response, error: error)
             }
         }
+        task.resume()
     }
     
     /*
