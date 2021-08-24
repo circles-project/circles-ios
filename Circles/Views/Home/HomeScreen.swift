@@ -11,13 +11,29 @@ import SwiftUI
 struct HomeScreen: View {
     @ObservedObject var store: KSStore
     @ObservedObject var user: MatrixUser
-    @Binding var screen: HomeTabMasterView.Screen?
+    //@Binding var screen: HomeTabMasterView.Screen?
+    @Binding var tab: LoggedinScreen.Tab
     
     @State var showAcceptSheet = false
     @State var showImagePicker = false
     
     @State var showConfirmLogout = false
-    
+
+    enum SheetType: String, Identifiable {
+        var id: String {
+            self.rawValue
+        }
+
+        case profile
+        case account
+        case notices
+        case invites
+        case sessions
+        case credits
+    }
+    @State var sheetType: SheetType?
+
+
     var image: Image {
         if let img = user.avatarImage {
             return Image(uiImage: img)
@@ -25,11 +41,11 @@ struct HomeScreen: View {
             return Image(systemName: "person.crop.square.fill")
         }
     }
-    
+
     var profile: some View {
         VStack(alignment: .leading) {
             
-            Button(action: {self.screen = .profile}) {
+            Button(action: {self.sheetType = .profile}) {
                 ProfileView(user: user)
             }
             .buttonStyle(PlainButtonStyle())
@@ -68,7 +84,7 @@ struct HomeScreen: View {
                 */
                 
                 Button(action: {
-                    self.screen = .invites
+                    self.sheetType = .invites
                 }) {
                     Label("See \(invitedRooms.count) new invitations", systemImage: "envelope.circle")
                 }
@@ -89,13 +105,13 @@ struct HomeScreen: View {
                     //Image(systemName: "desktopcomputer")
                     Image(systemName: "exclamationmark.triangle.fill")
 
-                    Text("Unverified Devices")
+                    Text("Unverified Sessions")
                         .font(.headline)
                 }
                 
-                Text("It appears that you have some unverified device(s) connected to your account. Please take a look at these.")
+                Text("It appears that you have some unverified sessions(s) active for your account. Please take a look at these.")
                     .font(.footnote)
-                Text("If a new device is legitimate, please verify it so that other users can trust it. Otherwise you will not be able to see other users' postings from your new device.")
+                Text("If a new session is legitimate, please verify it so that other users can trust it. Otherwise you will not be able to see other users' postings from your new session.")
                     .font(.footnote)
                 
                 ForEach(unverifiedDevices) { device in
@@ -136,30 +152,112 @@ struct HomeScreen: View {
     var testing: some View {
         EmptyView()
     }
+
+    var menu: some View {
+        Menu {
+            Button(action: {
+                self.sheetType = .account
+            }) {
+                Label("My Account", systemImage: "folder.badge.person.crop")
+            }
+
+            Button(action: {
+                self.sheetType = .notices
+            }) {
+                Label("System Notices", systemImage: "exclamationmark.triangle.fill")
+            }
+
+            Button(action: {
+                self.sheetType = .invites
+            }) {
+                Label("New Invitations", systemImage: "envelope.open.fill")
+            }
+
+            Button(action: {
+                self.sheetType = .sessions
+            }) {
+                Label("Login Sessions", systemImage: "desktopcomputer")
+            }
+
+            Button(action: {
+                self.sheetType = .credits
+            }) {
+                Label("Credits", systemImage: "scroll")
+            }
+
+            Button(action: {
+                self.showConfirmLogout = true
+            }) {
+                Label("Logout", systemImage: "power")
+            }
+        }
+        label: {
+            Label("More", systemImage: "ellipsis.circle")
+        }
+    }
     
     var body: some View {
-        //NavigationView {
-        ScrollView {
-        VStack(alignment: .leading) {
-                
-                    profile
-                    
-                    notices
+        NavigationView {
+            ScrollView {
+                VStack(alignment: .leading) {
 
-                    invitations
-                        
-                    //events
-                                        
-                    devices
-            
-                    //testing
-                    
-                    recents
-                        .padding(.bottom, 10)
+                        profile
+
+                        notices
+
+                        invitations
+
+                        //events
+
+                        devices
+
+                        //testing
+
+                        recents
+                            .padding(.bottom, 10)
                 }
             }
-            //.padding()
             .navigationBarTitle("Welcome!", displayMode: .inline)
+            .navigationBarItems(trailing: menu)
+        }
+        .sheet(item: $sheetType) { st in
+            VStack {
+                switch st {
+                case .profile:
+                    ProfileScreen(user: self.user)
+                case .account:
+                    AccountScreen(user: self.user)
+                case .notices:
+                    SystemNoticesScreen(store: self.store)
+                case .invites:
+                    InvitationsScreen(store: self.store)
+                case .sessions:
+                    DevicesScreen(user: self.user)
+                case .credits:
+                    AcknowledgementsSheet()
+                /*
+                default:
+                    Text("Sheet for \(st.rawValue)")
+                */
+                }
+            }
+        }
+        .actionSheet(isPresented: $showConfirmLogout) {
+            ActionSheet(
+                title: Text("Confirm Logout"),
+                message: Text("Do you really want to log out?"),
+                buttons: [
+                    .cancel {self.showConfirmLogout = false},
+                    .destructive(Text("Yes, log me out")) {
+                        //self.store.logout()
+                        self.store.pause()
+                        //self.presentation.wrappedValue.dismiss()
+                    }
+                ]
+            )
+        }
+
+            //.padding()
         //}
     }
 }

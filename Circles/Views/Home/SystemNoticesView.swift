@@ -19,6 +19,7 @@ struct SystemNoticesView: View {
                     .padding(.leading)
             } else {
                 Text("No current notices")
+                Spacer()
             }
         }
     }
@@ -28,9 +29,15 @@ struct SystemNoticesScreen: View {
     var store: KSStore
     
     var body: some View {
-        SystemNoticesView(store: store)
-            .navigationBarTitle(Text("System Notices"))
-            .padding()
+        VStack {
+            Label("System Notices", systemImage: "exclamationmark.triangle.fill")
+                .font(.title2)
+                .padding()
+
+            SystemNoticesView(store: store)
+                .navigationBarTitle(Text("System Notices"))
+                .padding()
+        }
     }
 }
 

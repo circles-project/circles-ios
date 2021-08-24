@@ -24,11 +24,16 @@ struct LoggedinScreen: View {
     
     var body: some View {
         TabView(selection: $selection) {
-            
+
+            /*
             HomeTabMasterView(store: self.store,
                               user: self.store.me(),
                               tab: self.$selection
             )
+            */
+            HomeScreen(store: self.store,
+                       user: self.store.me(),
+                       tab: self.$selection)
                 .tabItem {
                     Image(systemName: "house.fill")
                     Text("Home")

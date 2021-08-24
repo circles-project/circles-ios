@@ -39,8 +39,8 @@ struct HomeTabMasterView: View {
                 self.showConfirmLogout = true
             }) {
                 //HStack {
-                    Text("Logout")
-                        .font(.subheadline)
+                Label("Logout", systemImage: "power")
+                    .font(.subheadline)
                 //}
             }
 
@@ -49,7 +49,7 @@ struct HomeTabMasterView: View {
     
     var home: some View {
         VStack(alignment: .leading) {
-            NavigationLink(destination: HomeScreen(store: store, user: user, screen: $selected),
+            NavigationLink(destination: HomeScreen(store: store, user: user, tab: self.$tab),
                            tag: Screen.home,
                            selection: $selected) {
                 HStack {
@@ -172,7 +172,7 @@ struct HomeTabMasterView: View {
             Button(action: {
                 self.showCredits = true
             }) {
-                Text("Credits")
+                Label("Credits", systemImage: "scroll")
             }
 
             logoutButton

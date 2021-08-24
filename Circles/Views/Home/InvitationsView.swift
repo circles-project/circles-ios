@@ -43,7 +43,7 @@ struct InvitationsView: View {
                     })
                 //}
             } else {
-                Text("No new invitations")
+                Text("No new invitations at this time")
             }
         }
         .onAppear {
@@ -67,9 +67,20 @@ struct InvitationsScreen: View {
     var store: KSStore
     
     var body: some View {
-        InvitationsView(store: store)
-            .navigationBarTitle(Text("Invitations"))
-            .padding()
+        ScrollView {
+            VStack {
+                Label("New Invitations", systemImage: "envelope.open.fill")
+                    .font(.title2)
+                    //.fontWeight(.bold)
+                    .padding()
+
+                InvitationsView(store: store)
+                    .navigationBarTitle(Text("Invitations"))
+                    .padding()
+
+                Spacer()
+            }
+        }
     }
 }
 
