@@ -9,14 +9,51 @@
 import SwiftUI
 
 struct RecentActivityView: View {
-    @State var showReplyComposer = false
+    //@State var showReplyComposer = false
     var store: KSStore
+
+    @State var recentCircles: [SocialCircle]
+    @State var recentGroups: [SocialGroup]
+
+    init(store: KSStore) {
+        self.store = store
+        self.recentCircles = store.getCircles().filter {
+            $0.stream.latestMessage != nil
+        }
+        self.recentGroups = store.getGroups().groups.filter {
+            $0.room.last != nil
+        }
+    }
+
     var body: some View {
         // Having multiple ScrollViews one inside the other makes things wonky
         // We're making the HomeScreen the only one with the ScrollView now
         //ScrollView {
             VStack(alignment: .leading) {
-                ForEach(store.getCircles()) { circle in
+
+                if recentCircles.isEmpty && recentGroups.isEmpty {
+                    HStack {
+                        Spacer()
+                        VStack {
+                            Text("No recent activity to display")
+                                .padding()
+                            Button(action: {
+                                recentCircles = store.getCircles().filter {
+                                    $0.stream.latestMessage != nil
+                                }
+                                recentGroups = store.getGroups().groups.filter {
+                                    $0.room.last != nil
+                                }
+                            }) {
+                                Label("Refresh", systemImage: "arrow.clockwise.circle")
+                            }
+                            .padding()
+                        }
+                        Spacer()
+                    }
+                }
+
+                ForEach(recentCircles) { circle in
                     if let message = circle.stream.latestMessage {
                         Text("From Circle: \(circle.name)")
                             //.font(.caption)
@@ -32,7 +69,7 @@ struct RecentActivityView: View {
                         .buttonStyle(PlainButtonStyle())
                     }
                 }
-                ForEach(store.getGroups().groups) { group in
+                ForEach(recentGroups) { group in
                     if let message = group.room.last {
                         Text("From Group: \(group.room.displayName ?? "(unnamed group)")")
                             //.font(.caption)
