@@ -19,7 +19,7 @@ struct LoggedinScreen: View {
         case photos
     }
 
-    @SceneStorage("tab") private var selection: Tab = .home
+    @State private var selection: Tab = .home
 
     
     var body: some View {
