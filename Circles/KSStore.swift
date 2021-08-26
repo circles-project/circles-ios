@@ -650,7 +650,7 @@ extension KSStore: SocialGraph {
     }
 
     func getCircles() -> [SocialCircle] {
-        if let data = session.accountData.accountData(forEventType: EVENT_TYPE_CIRCLES) as? [String : String] {
+        if let data = session.accountData?.accountData(forEventType: EVENT_TYPE_CIRCLES) as? [String : String] {
 
             for (id, name) in data {
                 print("Got circle data with id = \(id) name = \(name)")
