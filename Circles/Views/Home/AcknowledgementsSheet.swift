@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import NativeMarkKit
+//import NativeMarkKit
 
 struct AcknowledgementsSheet: View {
     let licenses: [String:String] = [
@@ -176,7 +176,8 @@ struct AcknowledgementsSheet: View {
                         Text(key)
                             .font(.title2)
                             .fontWeight(.bold)
-                        NativeMarkText(license)
+                        //NativeMarkText(license)
+                        Text(license)
                         Divider()
                     }
                 }

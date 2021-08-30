@@ -12,9 +12,10 @@ struct RecentActivityView: View {
     //@State var showReplyComposer = false
     var store: KSStore
 
-    @State var recentCircles: [SocialCircle]
-    @State var recentGroups: [SocialGroup]
+    @State var recentCircles: [SocialCircle] = []
+    @State var recentGroups: [SocialGroup] = []
 
+    /*
     init(store: KSStore) {
         self.store = store
         self.recentCircles = store.getCircles().filter {
@@ -24,6 +25,7 @@ struct RecentActivityView: View {
             $0.room.last != nil
         }
     }
+    */
 
     var body: some View {
         // Having multiple ScrollViews one inside the other makes things wonky
@@ -80,7 +82,20 @@ struct RecentActivityView: View {
                     }
                 }
             //}
-        }
+            }
+            .onAppear {
+                /*
+                let circles = store.getCircles()
+                self.recentCircles = circles.filter {
+                    $0.stream.latestMessage != nil
+                }
+
+                let groups = store.getGroups().groups
+                self.recentGroups = groups.filter {
+                    $0.room.last != nil
+                }
+                */
+            }
         //.navigationBarTitle(Text("Recent Activity"))
         //.padding()
     }

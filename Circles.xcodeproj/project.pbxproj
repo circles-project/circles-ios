@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4012C54526A5D70D00BB15E6 /* NativeMarkKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4012C54426A5D70D00BB15E6 /* NativeMarkKit */; };
 		4012C54726A736D700BB15E6 /* MatrixReaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4012C54626A736D700BB15E6 /* MatrixReaction.swift */; };
 		4012C54926A752C400BB15E6 /* EmojiPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4012C54826A752C400BB15E6 /* EmojiPicker.swift */; };
 		4012C54C26A760F100BB15E6 /* KeyboardKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4012C54B26A760F100BB15E6 /* KeyboardKit */; };
@@ -240,7 +239,6 @@
 			files = (
 				4047F3E126BB05D50010B2C3 /* TPInAppReceipt in Frameworks */,
 				4012C54C26A760F100BB15E6 /* KeyboardKit in Frameworks */,
-				4012C54526A5D70D00BB15E6 /* NativeMarkKit in Frameworks */,
 				CFFB0431ED7E7DF3DFBE8C9A /* Pods_Circles.framework in Frameworks */,
 				4069F79826729DD200FB6090 /* StoreKit.framework in Frameworks */,
 			);
@@ -522,7 +520,6 @@
 			);
 			name = Circles;
 			packageProductDependencies = (
-				4012C54426A5D70D00BB15E6 /* NativeMarkKit */,
 				4012C54B26A760F100BB15E6 /* KeyboardKit */,
 				4047F3E026BB05D50010B2C3 /* TPInAppReceipt */,
 			);
@@ -554,7 +551,6 @@
 			);
 			mainGroup = 404C72C4265DDF35000473DF;
 			packageReferences = (
-				4012C54326A5D70D00BB15E6 /* XCRemoteSwiftPackageReference "NativeMarkKit" */,
 				4012C54A26A760F100BB15E6 /* XCRemoteSwiftPackageReference "KeyboardKit" */,
 				4047F3DF26BB05D50010B2C3 /* XCRemoteSwiftPackageReference "TPInAppReceipt" */,
 			);
@@ -858,7 +854,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Circles/Circles.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Circles/Preview Content\"";
 				DEVELOPMENT_TEAM = Y5CK8529S5;
 				ENABLE_PREVIEWS = YES;
@@ -868,7 +864,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.93;
+				MARKETING_VERSION = 0.94;
 				PRODUCT_BUNDLE_IDENTIFIER = social.kombucha.circles;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = NO;
@@ -886,7 +882,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Circles/Circles.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Circles/Preview Content\"";
 				DEVELOPMENT_TEAM = Y5CK8529S5;
 				ENABLE_PREVIEWS = YES;
@@ -896,7 +892,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.93;
+				MARKETING_VERSION = 0.94;
 				PRODUCT_BUNDLE_IDENTIFIER = social.kombucha.circles;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = NO;
@@ -930,14 +926,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		4012C54326A5D70D00BB15E6 /* XCRemoteSwiftPackageReference "NativeMarkKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "git@github.com:andyfinnell/NativeMarkKit.git";
-			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 2.0.2;
-			};
-		};
 		4012C54A26A760F100BB15E6 /* XCRemoteSwiftPackageReference "KeyboardKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/KeyboardKit/KeyboardKit.git";
@@ -957,11 +945,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		4012C54426A5D70D00BB15E6 /* NativeMarkKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 4012C54326A5D70D00BB15E6 /* XCRemoteSwiftPackageReference "NativeMarkKit" */;
-			productName = NativeMarkKit;
-		};
 		4012C54B26A760F100BB15E6 /* KeyboardKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4012C54A26A760F100BB15E6 /* XCRemoteSwiftPackageReference "KeyboardKit" */;
