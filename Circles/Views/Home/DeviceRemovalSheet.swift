@@ -45,7 +45,7 @@ struct DeviceRemovalSheet: View {
                     }
                 }
             }) {
-                Label("Delete Device", systemImage: "xmark.shield")
+                Label("Delete Session", systemImage: "xmark.shield")
                     .foregroundColor(Color.red)
             }
             .disabled(password.isEmpty)
