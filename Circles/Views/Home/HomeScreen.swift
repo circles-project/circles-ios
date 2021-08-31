@@ -220,6 +220,7 @@ struct HomeScreen: View {
             .navigationBarTitle("Welcome!", displayMode: .inline)
             .navigationBarItems(trailing: menu)
         }
+        .navigationViewStyle(StackNavigationViewStyle())
         .sheet(item: $sheetType) { st in
             VStack {
                 switch st {
