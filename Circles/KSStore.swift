@@ -1844,7 +1844,7 @@ extension KSStore: MatrixInterface {
         // getting the proper incantation of combining JSON
         // and MX ObjC data types...
         if !insecure {
-        let encryptionEvent = MXRoomCreationParameters.initialStateEventForEncryption(withAlgorithm: "m.olm.v1.curve25519-aes-sha2")
+        let encryptionEvent = MXRoomCreationParameters.initialStateEventForEncryption(withAlgorithm: "m.megolm.v1.aes-sha2")
             params["initial_state"] = [encryptionEvent]
         }
         
