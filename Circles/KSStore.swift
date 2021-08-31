@@ -1516,6 +1516,15 @@ extension KSStore: MatrixInterface {
         }
     }
     */
+
+
+    func deactivateAccount(password: String, completion: @escaping (MXResponse<Void>) -> Void) {
+        pause()
+        let params = ["password": password]
+        self.session.deactivateAccount(withAuthParameters: params, eraseAccount: true) { response in
+            completion(response)
+        }
+    }
     
     //func logout() {
     func pause() {
