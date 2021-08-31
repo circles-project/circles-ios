@@ -835,6 +835,40 @@ extension KSStore: SocialGraph {
 
 extension KSStore: MatrixInterface {
 
+    func changeMyPassword(oldPassword: String, newPassword: String, completion: @escaping (MXResponse<Void>) -> Void) {
+        guard let restClient = self.session.matrixRestClient else {
+            let msg = "Failed to get Matrix rest client"
+            let err = KSError(message: msg)
+            print("STORE\t\(msg)")
+            completion(.failure(err))
+            return
+        }
+
+        // OK now we need to figure out whether we can use the raw passwords,
+        // or if we have to do our bcrypt hashing thing on them first.
+
+        let userId = self.whoAmI()
+
+        let keygenMethod: String? = UserDefaults.standard.string(forKey: "keygen_method[\(userId)]")
+
+        if keygenMethod == MatrixSecrets.KeygenMethod.fromTwoPasswords.rawValue {
+            // Easy version.  Just use the raw passwords.
+            restClient.changePassword(from: oldPassword, to: newPassword, completion: completion)
+        } else {
+            // If we're here, then we need to hash the passwords before we can use them
+            guard let oldSecrets = self.generateSecretsFromSinglePassword(userId: userId, password: oldPassword),
+                  let newSecrets = self.generateSecretsFromSinglePassword(userId: userId, password: newPassword)
+            else {
+                let msg = "Failed to generate secrets from password(s)"
+                print("CHANGEPASSWORD\t\(msg)")
+                let err = KSError(message: msg)
+                completion(.failure(err))
+                return
+            }
+            restClient.changePassword(from: oldSecrets.loginPassword, to: newSecrets.loginPassword, completion: completion)
+        }
+    }
+
     func get3Pids(completion: @escaping (MXResponse<[MXThirdPartyIdentifier]?>) -> Void) {
         guard let restClient = self.session.matrixRestClient else {
             let msg = "Failed to get Matrix rest client"

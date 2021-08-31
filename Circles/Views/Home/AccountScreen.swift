@@ -137,7 +137,13 @@ struct AccountScreen: View {
                 SecureField("Repeat new password", text: $repeatPassword)
                 Button(action: {
                     // Submit password change to the homeserver
-                    // If successful, reset oldPassword, newPassword, and repeatPassword
+                    user.matrix.changeMyPassword(oldPassword: oldPassword, newPassword: newPassword) { response in
+                        if response.isSuccess {
+                            self.oldPassword = ""
+                            self.newPassword = ""
+                            self.repeatPassword = ""
+                        }
+                    }
                 }) {
                     Label("Update my password", systemImage: "key.fill")
                 }
