@@ -835,6 +835,18 @@ extension KSStore: SocialGraph {
 
 extension KSStore: MatrixInterface {
 
+    func get3Pids(completion: @escaping (MXResponse<[MXThirdPartyIdentifier]?>) -> Void) {
+        guard let restClient = self.session.matrixRestClient else {
+            let msg = "Failed to get Matrix rest client"
+            let err = KSError(message: msg)
+            print("STORE\t\(msg)")
+            completion(.failure(err))
+            return
+        }
+
+        restClient.thirdPartyIdentifiers(completion)
+    }
+
     func getAvatarUrl(userId: String, completion: @escaping (MXResponse<URL>) -> Void) {
         guard let restClient = self.session.matrixRestClient else {
             let msg = "Failed to get Matrix rest client"

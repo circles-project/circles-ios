@@ -31,6 +31,8 @@ protocol MatrixInterface {
     
     func me() -> MatrixUser
 
+    func get3Pids(completion: @escaping (MXResponse<[MXThirdPartyIdentifier]?>) -> Void)
+
     func getUser(userId: String) -> MatrixUser?
     
     func refreshUser(userId: String, completion: @escaping (MXResponse<MatrixUser>) -> Void)
