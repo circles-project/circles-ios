@@ -12,9 +12,7 @@ struct ProfileImageView: View {
     @ObservedObject var user: MatrixUser
     
     var image: Image {
-        user.avatarImage != nil
-            ? Image(uiImage: user.avatarImage!)
-            : Image(systemName: "person.fill")
+        Image(uiImage: user.avatarImage ?? UIImage(systemName: "person.fill")!)
     }
     
     var body: some View {

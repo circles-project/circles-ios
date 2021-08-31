@@ -144,8 +144,8 @@ class MatrixUser: ObservableObject, Identifiable {
     }
 
     func updateAvatar() {
-        guard let url = self.mxuser.avatarUrl else {
-            print("USER\tCouldn't find an avatar URL for user \(self.displayName ?? self.id)")
+        //guard let url = self.mxuser.avatarUrl else {
+        //    print("USER\tCouldn't find an avatar URL for user \(self.displayName ?? self.id)")
             matrix.getAvatarUrl(userId: self.id) { response in
                 guard case let .success(newUrl) = response else {
                     print("USER\tCouldn't get avatar URL from Matrix for \(self.id)")
@@ -155,15 +155,17 @@ class MatrixUser: ObservableObject, Identifiable {
                 self._fetchAvatar(from: newUrl.absoluteString)
             }
             return
-        }
-        print("USER\tAlready have the avatar URL for user \(self.id)")
-        self._fetchAvatar(from: url)
+        //}
+        //print("USER\tAlready have the avatar URL for user \(self.id)")
+        //self._fetchAvatar(from: url)
     }
     
     func setAvatarImage(image: UIImage, completion: @escaping (MXResponse<URL>) -> Void) {
         if self.matrix.whoAmI() == self.id {
             self.matrix.setAvatarImage(image: image) { response in
                 if response.isSuccess {
+                    print("USER\tSuccessfully set avatar image")
+                    self.avatarImage = image
                     self.objectWillChange.send()
                 }
                 completion(response)
