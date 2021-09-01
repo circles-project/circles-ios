@@ -76,7 +76,7 @@ struct RoomMemberRow: View {
     
     var accessLevel: Int {
         let power = room.getPowerLevel(userId: user.id)
-        return power
+        //return power
         
         let maybeAccess = powerLevels.lastIndex { level in
             let result = level <= power
@@ -97,8 +97,8 @@ struct RoomMemberRow: View {
                 MessageAuthorHeader(user: user)
                 Spacer()
                 
-                //Text(roles[accessLevel])
-                    Text("\(accessLevel)")
+                Text(roles[accessLevel])
+                //Text("\(accessLevel)")
                     .font(.subheadline)
             }
         }
