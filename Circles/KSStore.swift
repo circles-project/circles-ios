@@ -1136,6 +1136,7 @@ extension KSStore: MatrixInterface {
             return
         }
 
+        /*
         if BYOS_REQUIRE_SUBSCRIPTION && userDomain != kombuchaServer?.host {
             // Check for a subscription to the BYOS products
             var hasCurrentSubscription = false
@@ -1153,6 +1154,14 @@ extension KSStore: MatrixInterface {
                 completion(.failure(err))
                 return
             }
+        }
+        */
+        if userDomain != kombuchaServer?.host {
+            let msg = "This version of Circles does not support BYOS"
+            let err = KSError(message: msg)
+            print("LOGIN\t\(msg)")
+            completion(.failure(err))
+            return
         }
 
         // Check: Are we already logged in?

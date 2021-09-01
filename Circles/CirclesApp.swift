@@ -12,12 +12,13 @@ import StoreKit
 @main
 struct CirclesApp: App {
     @StateObject private var store = KSStore()
-    @StateObject private var iapObserver = AppStoreInterface()
+    //@StateObject private var iapObserver = AppStoreInterface()
 
     var body: some Scene {
         WindowGroup {
             ContentView(store: store)
                 .environmentObject(store)
+                /*
                 .environmentObject(iapObserver)
                 .onAppear {
 
@@ -36,6 +37,7 @@ struct CirclesApp: App {
                 .onDisappear {
                     SKPaymentQueue.default().remove(iapObserver)
                 }
+                */
         }
     }
 }

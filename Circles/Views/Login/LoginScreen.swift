@@ -21,6 +21,8 @@ struct LoginScreen: View {
 
     @State var pending = false
     @State var showAlert = false
+    @State var alertTitle = ""
+    @State var alertMessage = ""
     @State var showAdvanced = false
     @State var showPassword = false
     @State var showPurchaseSheet = false
@@ -49,6 +51,7 @@ struct LoginScreen: View {
             return
         }
 
+        /*
         // Check for BYOS
         if BYOS_REQUIRE_SUBSCRIPTION {
             if let domain = self.matrix.getDomainFromUserId(username) {
@@ -77,6 +80,25 @@ struct LoginScreen: View {
                 }
             }
         }
+        */
+        if let domain = self.matrix.getDomainFromUserId(username) {
+            if domain == "kombucha.social" || domain.hasSuffix(".kombucha.social") {
+                // Not BYOS
+            } else {
+                print("LOGIN\tThis version of Circles does not support BYOS")
+
+
+                self.alertTitle = "Unsupported"
+                self.alertMessage = "This version of Circles does not support using your own server.  Please check back soon!"
+                self.showAlert = true
+
+                self.username = ""
+                self.password = ""
+                self.password2 = ""
+
+                return
+            }
+        }
 
         self.pending = true
 
@@ -84,6 +106,8 @@ struct LoginScreen: View {
             self.matrix.login(username: self.username, rawPassword: self.password, s4Password: nil) { response in
                 self.pending = false
                 if response.isFailure {
+                    self.alertTitle = "Login Failed"
+                    self.alertMessage = "Bad username or password?"
                     self.showAlert = true
                     self.password = ""
                     self.password2 = ""
@@ -93,6 +117,8 @@ struct LoginScreen: View {
             self.matrix.login(username: self.username, rawPassword: self.password, s4Password: password2) { response in
                 self.pending = false
                 if response.isFailure {
+                    self.alertTitle = "Login Failed"
+                    self.alertMessage = "Bad username or password?"
                     self.showAlert = true
                     self.password = ""
                     self.password2 = ""
@@ -183,9 +209,16 @@ struct LoginScreen: View {
 
         }
         .padding(.horizontal)
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text(alertTitle),
+                  message: Text(alertMessage),
+                  dismissButton: .default(Text("OK")))
+        }
+        /*
         .sheet(isPresented: $showPurchaseSheet) {
             BYOSScreen(appStore: appStore)
         }
+        */
     }
 
 }
