@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "circles-blue-42.png",
+      "filename" : "circles-blue-40.png",
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "20x20"
@@ -25,7 +25,7 @@
       "size" : "29x29"
     },
     {
-      "filename" : "circles-blue-81.png",
+      "filename" : "circles-blue-80.png",
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "40x40"
@@ -73,13 +73,13 @@
       "size" : "29x29"
     },
     {
-      "filename" : "circles-blue-40.png",
+      "filename" : "circles-blue-42.png",
       "idiom" : "ipad",
       "scale" : "1x",
       "size" : "40x40"
     },
     {
-      "filename" : "circles-blue-80.png",
+      "filename" : "circles-blue-81.png",
       "idiom" : "ipad",
       "scale" : "2x",
       "size" : "40x40"
