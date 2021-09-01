@@ -39,6 +39,11 @@ struct PeopleOverviewScreen: View {
             .navigationBarTitle("My People", displayMode: .inline)
         }
         .navigationViewStyle(StackNavigationViewStyle())
+        .onAppear {
+            if container.people.isEmpty {
+                container.reload()
+            }
+        }
     }
 }
 
