@@ -149,6 +149,8 @@ struct AccountScreen: View {
                 }
                 .disabled( oldPassword.isEmpty || newPassword.isEmpty || newPassword != repeatPassword )
             }
+
+            /*
             Section(header: Text("Subscription Information")) {
                 HStack {
                     Text("Membership Level")
@@ -164,6 +166,7 @@ struct AccountScreen: View {
                         .foregroundColor(Color.gray)
                 }
             }
+            */
 
             Section(header: Text("Account Deletion")) {
                 if showConfirmDelete {
