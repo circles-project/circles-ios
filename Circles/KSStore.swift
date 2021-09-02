@@ -87,6 +87,7 @@ class KSStore: ObservableObject {
     private var kombuchaServer: URL? {
 
         guard let countryCode = SKPaymentQueue.default().storefront?.countryCode else {
+            print("SERVER\tCouldn't get country code from SKPaymentQueue")
             return nil
         }
 
@@ -2646,6 +2647,7 @@ extension KSStore: MatrixInterface {
               let url = URL(string: "/_matrix/client/\(version)/register", relativeTo: homeserverUrl) else {
             let msg = "Failed to generate registration URL"
             print("SIGNUP(start)\t\(msg)")
+            print("SIGNUP(start)\tKombucha server is \(self.kombuchaServer?.absoluteString ?? "nil")")
             let err = KSError(message: msg)
             completion(.failure(err))
             return
