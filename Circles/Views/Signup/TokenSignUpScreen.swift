@@ -231,7 +231,7 @@ struct TokenSignUpScreen: View {
 
             WebView(webView: webViewStore.webView)
                 .onAppear {
-                    let req = URLRequest(url: URL(string: "https://beta.kombucha.social/_matrix/consent")!)
+                    let req = URLRequest(url: URL(string: "https://kombucha.social/_matrix/consent")!)
                     self.webViewStore.webView.load(req)
                 }
                 .font(.body)
