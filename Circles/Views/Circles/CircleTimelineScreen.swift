@@ -14,6 +14,7 @@ enum CircleSheetType: String {
     case following
     case invite
     case photo
+    case composer
 }
 extension CircleSheetType: Identifiable {
     var id: String { rawValue }
@@ -23,10 +24,11 @@ struct CircleTimelineScreen: View {
     @ObservedObject var circle: SocialCircle
     @Environment(\.presentationMode) var presentation
     
-    @State var showComposer = false
+    //@State var showComposer = false
     @State var sheetType: CircleSheetType? = nil
     @State var image: UIImage?
-    
+
+    /*
     var composer: some View {
         HStack {
             if showComposer && circle.outbound != nil {
@@ -43,6 +45,7 @@ struct CircleTimelineScreen: View {
             }
         }
     }
+    */
     
     var toolbarMenu: some View {
         Menu {
@@ -80,7 +83,7 @@ struct CircleTimelineScreen: View {
                 Label("Invite Followers", systemImage: "person.crop.circle.badge.plus")
             }
             
-            Button(action: {self.showComposer = true}) {
+            Button(action: {self.sheetType = .composer}) {
                 Label("Post a New Message", systemImage: "plus.bubble")
             }
             
@@ -130,9 +133,11 @@ struct CircleTimelineScreen: View {
     }
     
     var body: some View {
-        VStack {
+        //VStack {
+            /*
             composer
                 .layoutPriority(1)
+            */
             
             StreamTimeline(stream: circle.stream)
                 .navigationBarTitle(circle.name, displayMode: .inline)
@@ -160,11 +165,13 @@ struct CircleTimelineScreen: View {
                             room.setAvatarImage(image: newImage)
                             
                         }
+                    case .composer:
+                        MessageComposerSheet(room: circle.outbound!)
                     default:
                         Text("Coming soon!")
                     }
                 }
-            }
+        //}
     }
 }
 
