@@ -200,7 +200,7 @@ struct RoomMessageComposer: View {
                                 .lineLimit(2)
                                 //.frame(height: textHeight)
                                 //.foregroundColor(.gray)
-                                .multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
+                                .multilineTextAlignment(.leading)
                                 .padding(5)
                                 //.layoutPriority(1)
                         }
