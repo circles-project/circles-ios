@@ -85,18 +85,26 @@ class KSStore: ObservableObject {
     */
 
     private var kombuchaServer: URL? {
+        // FIXME At some point this should use .well-known instead of hardcoding
+        guard let domain = kombuchaDomain else {
+            return nil
+        }
+        return URL(string: "https://matrix.\(domain)/")
+    }
+
+    private var kombuchaDomain: String? {
 
         guard let countryCode = SKPaymentQueue.default().storefront?.countryCode else {
-            print("SERVER\tCouldn't get country code from SKPaymentQueue")
+            print("DOMAIN\tCouldn't get country code from SKPaymentQueue")
             return nil
         }
 
-        let usURL = URL(string: "https://matrix.kombucha.social/")!
-        let euURL = URL(string: "https://matrix.eu.kombucha.social/")!
+        let usDomain = "kombucha.social"
+        let euDomain = "eu.kombucha.social"
 
         switch countryCode {
         case "USA":
-            return usURL
+            return usDomain
 
         // EU Countries
         case "AUT", // Austria
@@ -126,14 +134,14 @@ class KSStore: ObservableObject {
              "ESP", // Spain
              "SWE"  // Sweden
             :
-            return euURL
+            return euDomain
 
         // EEA Countries
         case "ISL", // Iceland
              "LIE", // Liechtenstein
              "NOR"  // Norway
             :
-            return euURL
+            return euDomain
 
         // Other European-region countries
         case "ALB", // Albania
@@ -155,11 +163,11 @@ class KSStore: ObservableObject {
              "GBR", // UK
              "VAT"  // Holy See
             :
-            return euURL
+            return euDomain
 
         // Everybody else uses the US server
         default:
-            return usURL
+            return usDomain
         }
     }
 
@@ -201,7 +209,7 @@ class KSStore: ObservableObject {
     @Published var newestRooms: [MatrixRoom] = []
     
     // Model data for the social network layer
-    var circles: Set<SocialCircle> = []
+    @Published var circles: [SocialCircle] = []
     var groups: GroupsContainer? = nil
     var galleries: PhotoGalleriesContainer? = nil
     var people: PeopleContainer? = nil
@@ -650,17 +658,32 @@ extension KSStore: SocialGraph {
         return self.galleries!
     }
 
-    func getCircles() -> [SocialCircle] {
+    func loadCircles(completion: @escaping (MXResponse<[SocialCircle]>) -> Void) {
+        print("CIRCLES\tLoading circles from account data...")
         if let data = session.accountData?.accountData(forEventType: EVENT_TYPE_CIRCLES) as? [String : String] {
-
+            print("CIRCLES\tFound circle data in our account data")
+            var newCircles = Set<SocialCircle>()
             for (id, name) in data {
-                print("Got circle data with id = \(id) name = \(name)")
+                print("CIRCLES\tFound a circle with id = \(id) name = \(name)")
                 let circle = SocialCircle(circleId: id, name: name, graph: self)
-                circles.insert(circle)
+                newCircles.insert(circle)
             }
+            self.circles = newCircles.sorted(by: {$0.tag < $1.tag})
+            completion(.success(self.circles))
+        } else {
+            let msg = "Couldn't get account data for circles"
+            let err = KSError(message: msg)
+            completion(.failure(err))
         }
+
+    }
+
+    /*
+    func getCircles() -> [SocialCircle] {
+        print("CIRCLES\tGetting all circles")
         return circles.sorted(by: {$0.tag < $1.tag})
     }
+    */
     
     func saveCircles(completion: @escaping (MXResponse<String>) -> Void) {
         print("Saving circles")
@@ -783,7 +806,7 @@ extension KSStore: SocialGraph {
                 completion(.failure(error))
             } else {
                 print("CREATECIRCLE Created circle \(name)")
-                self.circles.insert(circle)
+                self.circles.append(circle)
                 //self.saveCircles()
                 self.objectWillChange.send()
                 completion(.success(circle))
@@ -794,7 +817,7 @@ extension KSStore: SocialGraph {
     func removeCircle(circle: SocialCircle) {
         if circles.contains(circle) {
             //self.objectWillChange.send()
-            circles.remove(circle)
+            circles.removeAll(where: {$0 == circle})
             //let tag = "social.kombucha.stream." + circle.id
             let tag = circle.tag
             for room in circle.stream.rooms {
@@ -1128,7 +1151,7 @@ extension KSStore: MatrixInterface {
         print("in login()")
 
         // If we're enforcing subscriptions, this is where we need to check for BYOS
-        guard let userDomain = getDomainFromUserId(username) ?? kombuchaServer?.host
+        guard let userDomain = getDomainFromUserId(username) ?? kombuchaDomain
         else {
             let msg = "Failed to determine domain for username [\(username)]"
             print("LOGIN\t\(msg)")
@@ -1157,7 +1180,8 @@ extension KSStore: MatrixInterface {
             }
         }
         */
-        if userDomain != kombuchaServer?.host {
+        let kombuchaDomains = ["kombucha.social", "eu.kombucha.social"]
+        if !kombuchaDomains.contains(userDomain) {
             let msg = "This version of Circles does not support BYOS"
             let err = KSError(message: msg)
             print("LOGIN\t\(msg)")
@@ -1522,6 +1546,10 @@ extension KSStore: MatrixInterface {
                                 */
                                 
                                 self.checkTermsOfService()
+
+                                // We're trying to be more careful about enumerating our circles now
+                                // So we have to initialize the local copy at some point
+                                self.loadCircles() { _ in }
 
                                 // cvw: Freaking kludge to fix my freaking bug where Circle rooms weren't getting a room type
                                 for room in self.getRooms(for: ROOM_TAG_OUTBOUND) {
@@ -2415,7 +2443,7 @@ extension KSStore: MatrixInterface {
         
         print("PEOPLE Getting users and their rooms")
         
-        for circle in self.getCircles() {
+        for circle in self.circles {
             print("PEOPLE Getting users and rooms for circle \(circle.name)")
             let circleIndex = circle.stream.invertedIndex
             for (user,rooms) in circleIndex {

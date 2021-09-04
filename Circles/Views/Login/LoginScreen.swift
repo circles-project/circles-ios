@@ -82,6 +82,7 @@ struct LoginScreen: View {
         }
         */
         if let domain = self.matrix.getDomainFromUserId(username) {
+            print("LOGIN\tFound domain [\(domain)]")
             if domain == "kombucha.social" || domain.hasSuffix(".kombucha.social") {
                 // Not BYOS
             } else {

@@ -36,7 +36,7 @@ struct CirclesOverviewScreen: View {
         NavigationView {
             VStack(alignment: .leading, spacing: 0) {
                 ScrollView {
-                    ForEach(store.getCircles()) { circle in
+                    ForEach(store.circles) { circle in
                         NavigationLink(destination: CircleTimelineScreen(circle: circle)) {
                             CircleOverviewCard(circle: circle)
                                 //.padding(.top)

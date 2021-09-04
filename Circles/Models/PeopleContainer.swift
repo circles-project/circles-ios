@@ -65,7 +65,7 @@ class PeopleContainer: ObservableObject {
         }
         */
         
-        let circles = store.getCircles()
+        let circles = store.circles
         print("RELOAD\tFound \(circles.count) circles")
         var circleRooms: Set<MatrixRoom> = []
         circleRooms = circles.reduce(circleRooms) { (curr,circle) in

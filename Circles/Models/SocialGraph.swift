@@ -15,7 +15,7 @@ protocol SocialGraph {
 
     func getGroups() -> GroupsContainer
         
-    func getCircles() -> [SocialCircle]
+    //func getCircles() -> [SocialCircle]
     
     //func getFollowedRooms(for user: MatrixUser) -> [MatrixRoom]
     

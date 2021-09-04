@@ -15,7 +15,7 @@ struct CirclePicker: View {
     var body: some View {
         VStack {
             List {
-                ForEach(store.getCircles()) { circle in
+                ForEach(store.circles) { circle in
                     Button(action: {
                         if selected.contains(circle) {
                             selected.remove(circle)

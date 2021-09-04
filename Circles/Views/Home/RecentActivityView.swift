@@ -18,9 +18,16 @@ struct RecentActivityView: View {
     @State var pending = true
 
     func refreshData() {
-        recentCircles = store.getCircles().filter {
-            $0.stream.latestMessage != nil
+        store.loadCircles() { response in
+            guard case let .success(circles) = response else {
+                print("RECENT\tCouldn't get an updated list of circles")
+                return
+            }
+            recentCircles = circles.filter {
+                $0.stream.latestMessage != nil
+            }
         }
+
         recentGroups = store.getGroups().groups.filter {
             $0.room.last != nil
         }
@@ -94,7 +101,7 @@ struct RecentActivityView: View {
             }
         }
         .onAppear {
-            if recentCircles.isEmpty && recentGroups.isEmpty {
+            if recentCircles.isEmpty || recentGroups.isEmpty {
                 // Maybe the UI loaded before the data was ready
                 // Wait a couple of seconds and try again
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
