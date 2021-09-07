@@ -97,7 +97,7 @@ struct BYOSPurchaseView: View {
 
     var body: some View {
         VStack {
-            Text("Bring-Your-Own-Server\nSubscription Options")
+            Text("Bring-Your-Own-Server")
                 .font(.title2)
                 .fontWeight(.bold)
                 .multilineTextAlignment(.center)
@@ -114,6 +114,7 @@ struct BYOSPurchaseView: View {
                 //Text("")
 
                 Text("Select a subscription option below to proceed:")
+                    .font(.headline)
             }
             .padding()
 

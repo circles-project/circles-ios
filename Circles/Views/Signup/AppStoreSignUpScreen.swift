@@ -173,8 +173,8 @@ struct AppStoreSignUpScreen: View {
 
     @Binding var selectedScreen: LoggedOutScreen.Screen
     @State var selectedPlan: String = "Standard"
-    @State var selectedTerm: Int = 3
-    let terms = [3, 6, 12]
+    @State var selectedTerm: Int = 1
+    let terms = [1, 6, 12]
 
     @State var selectedProduct: SKProduct?
 
@@ -225,7 +225,6 @@ struct AppStoreSignUpScreen: View {
                 .fontWeight(.bold)
                 .padding()
 
-            /*
             ForEach(terms, id: \.self) { term in
                 Button(action: {
                     self.selectedTerm = term
@@ -247,7 +246,6 @@ struct AppStoreSignUpScreen: View {
                 .buttonStyle(PlainButtonStyle())
                 .padding()
             }
-            */
 
             let products = appStore.membershipProducts.sorted(by: sortProductsByPrice)
             ForEach(products, id: \.self) { product in

@@ -41,6 +41,9 @@ struct CirclesOverviewScreen: View {
                             CircleOverviewCard(circle: circle)
                                 //.padding(.top)
                         }
+                        .onTapGesture {
+                            print("DEBUGUI\tNavigationLink tapped for Circle \(circle.id)")
+                        }
                         .buttonStyle(PlainButtonStyle())
                         Divider()
                     }

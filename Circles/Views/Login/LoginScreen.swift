@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import StoreKit
 
 struct LoginScreen: View {
     var matrix: MatrixInterface
@@ -51,53 +52,54 @@ struct LoginScreen: View {
             return
         }
 
-        /*
         // Check for BYOS
-        if BYOS_REQUIRE_SUBSCRIPTION {
-            if let domain = self.matrix.getDomainFromUserId(username) {
-                if domain == "kombucha.social" || domain.hasSuffix(".kombucha.social") {
-                    // Not BYOS
-                } else {
-                    // BYOS
-                    // Ok, no problem.  Do we have a subscription?
-                    var haveSubscription = false
-                    guard let byosProductIds = BringYourOwnServer.loadProducts() else {
-                        // Looks like we don't support BYOS at this time
-                        // FIXME need to pop up an error message
-                        return
-                    }
-                    for productId in byosProductIds {
-                        if AppStoreInterface.validateReceiptOnDevice(for: productId) {
-                            haveSubscription = true
+        if BYOS_ENABLED {
+            if BYOS_REQUIRE_SUBSCRIPTION {
+                if let domain = self.matrix.getDomainFromUserId(username) {
+                    if domain == "kombucha.social" || domain.hasSuffix(".kombucha.social") {
+                        // Not BYOS
+                    } else {
+                        // BYOS
+                        // Ok, no problem.  Do we have a subscription?
+                        var haveSubscription = false
+                        guard let byosProductIds = BringYourOwnServer.loadProducts() else {
+                            // Looks like we don't support BYOS at this time
+                            // FIXME need to pop up an error message
+                            return
                         }
-                    }
+                        for productId in byosProductIds {
+                            if AppStoreInterface.validateReceiptOnDevice(for: productId) {
+                                haveSubscription = true
+                            }
+                        }
 
-                    if !haveSubscription {
-                        // Show subscription options
-                        showPurchaseSheet = true
-                        return
+                        if !haveSubscription {
+                            // Show subscription options
+                            showPurchaseSheet = true
+                            return
+                        }
                     }
                 }
             }
-        }
-        */
-        if let domain = self.matrix.getDomainFromUserId(username) {
-            print("LOGIN\tFound domain [\(domain)]")
-            if domain == "kombucha.social" || domain.hasSuffix(".kombucha.social") {
-                // Not BYOS
-            } else {
-                print("LOGIN\tThis version of Circles does not support BYOS")
+        } else {
+            if let domain = self.matrix.getDomainFromUserId(username) {
+                print("LOGIN\tFound domain [\(domain)]")
+                if domain == "kombucha.social" || domain.hasSuffix(".kombucha.social") {
+                    // Not BYOS
+                } else {
+                    print("LOGIN\tThis version of Circles does not support BYOS")
 
 
-                self.alertTitle = "Unsupported"
-                self.alertMessage = "This version of Circles does not support using your own server.  Please check back soon!"
-                self.showAlert = true
+                    self.alertTitle = "Unsupported"
+                    self.alertMessage = "This version of Circles does not support using your own server.  Please check back soon!"
+                    self.showAlert = true
 
-                self.username = ""
-                self.password = ""
-                self.password2 = ""
+                    self.username = ""
+                    self.password = ""
+                    self.password2 = ""
 
-                return
+                    return
+                }
             }
         }
 
@@ -192,6 +194,13 @@ struct LoginScreen: View {
             
             Text("Not a member?")
             Button(action: {
+
+                if let countryCode = SKPaymentQueue.default().storefront?.countryCode {
+                    print("LOGIN\tGot country code = \(countryCode)")
+                } else {
+                    print("LOGIN\tFailed to get country code from StoreKit")
+                }
+                
                 self.matrix.startNewSignupSession { response in
                     if response.isSuccess {
                         self.selectedScreen = .signupMain
@@ -215,11 +224,9 @@ struct LoginScreen: View {
                   message: Text(alertMessage),
                   dismissButton: .default(Text("OK")))
         }
-        /*
         .sheet(isPresented: $showPurchaseSheet) {
             BYOSScreen(appStore: appStore)
         }
-        */
     }
 
 }

@@ -221,6 +221,17 @@ class AppStoreInterface: NSObject, SKPaymentTransactionObserver, ObservableObjec
         return false
     }
 
+    // This is where we'll be notified when the storefront changes
+    // This is great because sometimes at startup, the storefront is nil
+    func paymentQueueDidChangeStorefront(_ queue: SKPaymentQueue) {
+        print("APPSTORE\tStorefront changed")
+        if let countryCode = queue.storefront?.countryCode {
+            print("APPSTORE\tNew storefront country code is [\(countryCode)]")
+        } else {
+            print("APPSTORE\tNew storefront is nil :(")
+        }
+    }
+
 }
 
 extension AppStoreInterface: SKProductsRequestDelegate {

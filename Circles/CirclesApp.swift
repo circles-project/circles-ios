@@ -12,7 +12,7 @@ import StoreKit
 @main
 struct CirclesApp: App {
     @StateObject private var store = KSStore()
-    //@StateObject private var iapObserver = AppStoreInterface()
+    @StateObject private var iapObserver = AppStoreInterface()
     private var paymentQueue = SKPaymentQueue.default()
     private var countryCode = SKPaymentQueue.default().storefront?.countryCode
 
@@ -20,7 +20,7 @@ struct CirclesApp: App {
         WindowGroup {
             ContentView(store: store)
                 .environmentObject(store)
-                //.environmentObject(iapObserver)
+                .environmentObject(iapObserver)
                 .onAppear {
 
                     // For some strange reason, I'm getting nil for the storefront on the first run of the app.
@@ -32,26 +32,23 @@ struct CirclesApp: App {
                         print("APP\tCouldn't get country code from StoreKit")
                     }
 
-                    /*
-
                     SKPaymentQueue.default().add(iapObserver)
 
-                    // The Kombucha subscriptions should come from the server in a UIAA stage
-                    // For now, we need the BYOS options
-                    // We can store those in the app bundle as Apple explains here https://developer.apple.com/documentation/storekit/original_api_for_in-app_purchase/loading_in-app_product_identifiers
-                    guard let productIdentifiers = BringYourOwnServer.loadProducts() else {
-                        print("CIRCLES\tFailed to load BYOS product ids")
-                        return
-                    }
+                    if BYOS_ENABLED {
+                        // The Kombucha subscriptions should come from the server in a UIAA stage
+                        // For now, we need the BYOS options
+                        // We can store those in the app bundle as Apple explains here https://developer.apple.com/documentation/storekit/original_api_for_in-app_purchase/loading_in-app_product_identifiers
+                        guard let productIdentifiers = BringYourOwnServer.loadProducts() else {
+                            print("CIRCLES\tFailed to load BYOS product ids")
+                            return
+                        }
 
-                    iapObserver.fetchProducts(matchingIdentifiers: productIdentifiers)
-                    */
+                        iapObserver.fetchProducts(matchingIdentifiers: productIdentifiers)
+                    }
                 }
-                /*
                 .onDisappear {
                     SKPaymentQueue.default().remove(iapObserver)
                 }
-                */
         }
     }
 }

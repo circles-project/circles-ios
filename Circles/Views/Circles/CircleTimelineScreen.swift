@@ -131,6 +131,11 @@ struct CircleTimelineScreen: View {
             Label("More", systemImage: "ellipsis.circle")
         }
     }
+
+    var stupidSwiftUiTrick: Int {
+        print("DEBUGUI\tStreamTimeline rendering for Circle \(circle.id)")
+        return 0
+    }
     
     var body: some View {
         //VStack {
@@ -138,6 +143,7 @@ struct CircleTimelineScreen: View {
             composer
                 .layoutPriority(1)
             */
+        let foo = self.stupidSwiftUiTrick
             
             StreamTimeline(stream: circle.stream)
                 .navigationBarTitle(circle.name, displayMode: .inline)
@@ -145,6 +151,12 @@ struct CircleTimelineScreen: View {
                     ToolbarItemGroup(placement: .automatic) {
                         toolbarMenu
                     }
+                }
+                .onAppear {
+                    print("DEBUGUI\tStreamTimeline appeared for Circle \(circle.id)")
+                }
+                .onDisappear {
+                    print("DEBUGUI\tStreamTimeline disappeared for Circle \(circle.id)")
                 }
                 .sheet(item: $sheetType) { st in
                     switch(st) {

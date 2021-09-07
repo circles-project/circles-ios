@@ -179,6 +179,28 @@
           "referenceName" : "BYOS 12 Month",
           "subscriptionGroupID" : "9168B5F2",
           "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "4.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "699D8EAD",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "A Circles account on our server",
+              "displayName" : "1 month",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "social.kombucha.circles.standard01month",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Standard 1 Month",
+          "subscriptionGroupID" : "9168B5F2",
+          "type" : "RecurringSubscription"
         }
       ]
     }

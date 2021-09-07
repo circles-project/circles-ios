@@ -42,4 +42,5 @@ let DECRYPTED_CACHE_FOLDER: String = "decrypted"
 // somehow encoded this info into the hash, but oh well...
 let BLURHASH_WIDTH: Int = 6
 
-let BYOS_REQUIRE_SUBSCRIPTION = false
+let BYOS_ENABLED = true
+let BYOS_REQUIRE_SUBSCRIPTION = true
