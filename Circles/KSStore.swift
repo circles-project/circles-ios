@@ -1160,35 +1160,36 @@ extension KSStore: MatrixInterface {
             return
         }
 
-        /*
-        if BYOS_REQUIRE_SUBSCRIPTION && userDomain != kombuchaServer?.host {
-            // Check for a subscription to the BYOS products
-            var hasCurrentSubscription = false
-            let productIds = ["social.kombucha.circles.byos01month", "social.kombucha.circles.byos12month"]
-            for productId in productIds {
-                if AppStoreInterface.validateReceiptOnDevice(for: productId) {
-                    hasCurrentSubscription = true
-                    continue
+        if BYOS_ENABLED {
+            if BYOS_REQUIRE_SUBSCRIPTION && userDomain != kombuchaDomain {
+                // Check for a subscription to the BYOS products
+                var hasCurrentSubscription = false
+                let productIds = ["social.kombucha.circles.byos01month", "social.kombucha.circles.byos12month"]
+                for productId in productIds {
+                    if AppStoreInterface.validateReceiptOnDevice(for: productId) {
+                        hasCurrentSubscription = true
+                        continue
+                    }
+                }
+                if !hasCurrentSubscription {
+                    let msg = "No current subscription for BYOS"
+                    let err = KSError(message: msg)
+                    print("LOGIN\t\(msg)")
+                    completion(.failure(err))
+                    return
                 }
             }
-            if !hasCurrentSubscription {
-                let msg = "No current subscription for BYOS"
+        } else {
+            let kombuchaDomains = ["kombucha.social", "eu.kombucha.social"]
+            if !kombuchaDomains.contains(userDomain) {
+                let msg = "This version of Circles does not support BYOS"
                 let err = KSError(message: msg)
                 print("LOGIN\t\(msg)")
                 completion(.failure(err))
                 return
             }
         }
-        */
-        let kombuchaDomains = ["kombucha.social", "eu.kombucha.social"]
-        if !kombuchaDomains.contains(userDomain) {
-            let msg = "This version of Circles does not support BYOS"
-            let err = KSError(message: msg)
-            print("LOGIN\t\(msg)")
-            completion(.failure(err))
-            return
-        }
-
+        
         // Check: Are we already logged in?
         switch(self.session.state) {
         case MXSessionStateClosed,
