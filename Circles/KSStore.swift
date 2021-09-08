@@ -2686,7 +2686,7 @@ extension KSStore: MatrixInterface {
         request.httpMethod = "POST"
         let kludge = """
         {
-            "x_show_msisdn": true
+            "x_show_msisdn": false
         }
         """
             .replacingOccurrences(of: " ", with: "")

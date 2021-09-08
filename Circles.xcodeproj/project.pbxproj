@@ -119,7 +119,7 @@
 		40CD7F6C2667D3B600DE315F /* PhotoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40CD7F6B2667D3B600DE315F /* PhotoPicker.swift */; };
 		40CD7F6F2667E16100DE315F /* VideoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40CD7F6E2667E16100DE315F /* VideoPicker.swift */; };
 		40CEFCD426780D8300857D4D /* MessageDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40CEFCD326780D8300857D4D /* MessageDetailSheet.swift */; };
-		40E4D887268A76070055968A /* AppStoreSignUpScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E4D886268A76070055968A /* AppStoreSignUpScreen.swift */; };
+		40E4D887268A76070055968A /* AppStoreSubscriptionForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E4D886268A76070055968A /* AppStoreSubscriptionForm.swift */; };
 		40E4D88A268A76CF0055968A /* SignupScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E4D889268A76CF0055968A /* SignupScreen.swift */; };
 		40F906BB269DF96100287B27 /* MessageSheetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F906BA269DF96100287B27 /* MessageSheetType.swift */; };
 		CFFB0431ED7E7DF3DFBE8C9A /* Pods_Circles.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02E198A24EAA52F3412414BB /* Pods_Circles.framework */; };
@@ -242,7 +242,7 @@
 		40CD7F6B2667D3B600DE315F /* PhotoPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPicker.swift; sourceTree = "<group>"; };
 		40CD7F6E2667E16100DE315F /* VideoPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPicker.swift; sourceTree = "<group>"; };
 		40CEFCD326780D8300857D4D /* MessageDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageDetailSheet.swift; sourceTree = "<group>"; };
-		40E4D886268A76070055968A /* AppStoreSignUpScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreSignUpScreen.swift; sourceTree = "<group>"; };
+		40E4D886268A76070055968A /* AppStoreSubscriptionForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreSubscriptionForm.swift; sourceTree = "<group>"; };
 		40E4D889268A76CF0055968A /* SignupScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupScreen.swift; sourceTree = "<group>"; };
 		40F906BA269DF96100287B27 /* MessageSheetType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSheetType.swift; sourceTree = "<group>"; };
 		9050605B7F03BBC0A58F76C7 /* Pods-Circles.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Circles.release.xcconfig"; path = "Target Support Files/Pods-Circles/Pods-Circles.release.xcconfig"; sourceTree = "<group>"; };
@@ -460,16 +460,16 @@
 			children = (
 				403CEA9826E868F30054DBF4 /* AccountInfoForm.swift */,
 				403CEA9A26E86AA90054DBF4 /* AllDoneForm.swift */,
-				40E4D886268A76070055968A /* AppStoreSignUpScreen.swift */,
+				40E4D886268A76070055968A /* AppStoreSubscriptionForm.swift */,
 				403CEA9C26E86B920054DBF4 /* AvatarForm.swift */,
 				403CEA9E26E86C7F0054DBF4 /* CirclesForm.swift */,
 				409F4381265DE29600690A61 /* SetupCircleCard.swift */,
 				40E4D889268A76CF0055968A /* SignupScreen.swift */,
+				403CEAA026E90DE10054DBF4 /* SignupStartForm.swift */,
 				403CEA9226E864160054DBF4 /* TermsOfServiceForm.swift */,
 				403CEA9426E865740054DBF4 /* TokenForm.swift */,
 				409F4387265DE2B100690A61 /* TokenSignUpScreen.swift */,
 				403CEA9626E866B70054DBF4 /* ValidateEmailForm.swift */,
-				403CEAA026E90DE10054DBF4 /* SignupStartForm.swift */,
 			);
 			path = Signup;
 			sourceTree = "<group>";
@@ -713,7 +713,7 @@
 				409F4337265DE15F00690A61 /* CirclesOverviewScreen.swift in Sources */,
 				409F4308265DE0A200690A61 /* GroupsContainer.swift in Sources */,
 				409F42FC265DE0A200690A61 /* PhotoGallery.swift in Sources */,
-				40E4D887268A76070055968A /* AppStoreSignUpScreen.swift in Sources */,
+				40E4D887268A76070055968A /* AppStoreSubscriptionForm.swift in Sources */,
 				409F4336265DE15F00690A61 /* CircleTimelineScreen.swift in Sources */,
 				409F4370265DE24000690A61 /* PersonHeaderRow.swift in Sources */,
 				409F4304265DE0A200690A61 /* MatrixRoom.swift in Sources */,
@@ -886,7 +886,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Circles/Circles.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"Circles/Preview Content\"";
 				DEVELOPMENT_TEAM = Y5CK8529S5;
 				ENABLE_PREVIEWS = YES;
@@ -914,7 +914,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Circles/Circles.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"Circles/Preview Content\"";
 				DEVELOPMENT_TEAM = Y5CK8529S5;
 				ENABLE_PREVIEWS = YES;

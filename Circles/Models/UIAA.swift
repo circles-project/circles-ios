@@ -22,6 +22,14 @@ public struct UiaaAuthFlow: Codable {
     }
 }
 
+extension UiaaAuthFlow: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        for stage in stages {
+            hasher.combine(stage)
+        }
+    }
+}
+
 public struct mLoginTermsParams: Codable {
     struct PolicyInfo: Codable {
         struct LocalizedPolicy: Codable {
@@ -42,9 +50,15 @@ public struct mLoginTermsParams: Codable {
     var policies: [String:PolicyInfo]
 }
 
+
+public struct AppleSubscriptionParams: Codable {
+    var productIds: [String]
+}
+
 //typealias UiaaStateParams = [String: [String:String]]?
 public struct UiaaParams: Codable {
     var terms: mLoginTermsParams?
+    var appStore: AppleSubscriptionParams?
 }
 
 public struct UiaaSessionState: Codable {

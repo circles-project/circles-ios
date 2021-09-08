@@ -89,6 +89,21 @@ struct SignupStartForm: View {
             .disabled( nil == appleFlow || !SKPaymentQueue.canMakePayments() )
 
             Spacer()
+
+            if KOMBUCHA_DEBUG {
+                VStack {
+                    if let flows = uiaaState?.flows {
+                        ForEach(flows, id: \.self) { flow in
+                            Text("Auth flow:")
+                                .font(.body)
+                            ForEach(flow.stages, id: \.self) { stage in
+                                Text(stage)
+                                    .font(.caption)
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -18,6 +18,8 @@ struct SignupAccountInfo {
 }
 
 struct SignupScreen: View {
+    @EnvironmentObject var appStore: AppStoreInterface
+
     var matrix: MatrixInterface
     //@Binding var selectedScreen: LoggedOutScreen.Screen
     @Binding var uiaaState: UiaaSessionState?
@@ -34,8 +36,7 @@ struct SignupScreen: View {
     var body: some View {
         VStack {
             if let flow = selectedFlow {
-                Text("Do signup stuff")
-                    .font(.title2)
+
                 if let stage = flow.stages.first {
                     switch stage {
                     case LOGIN_STAGE_SIGNUP_TOKEN:
@@ -48,6 +49,8 @@ struct SignupScreen: View {
                         } else {
                             AccountInfoForm(matrix: matrix, authFlow: $selectedFlow, stage: stage, accountInfo: $accountInfo, emailSid: $emailSessionId)
                         }
+                    case LOGIN_STAGE_APPLE_SUBSCRIPTION:
+                        AppStoreSubscriptionForm(matrix: matrix, uiaaState: $uiaaState)
                     default:
                         Text("Stage is [\(stage)]")
                     }
@@ -70,6 +73,14 @@ struct SignupScreen: View {
                 SignupStartForm(matrix: matrix, uiaaState: $uiaaState, selectedFlow: $selectedFlow)
             }
 
+        }
+        .onAppear {
+            // Start the process of fetching the App Store products, so that it will be loaded by the time the user decides to tap the App Store button
+            if appStore.membershipProducts.isEmpty {
+                if let params = uiaaState?.params?.appStore {
+                    appStore.fetchProducts(matchingIdentifiers: params.productIds)
+                }
+            }
         }
     }
 }

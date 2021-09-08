@@ -125,7 +125,7 @@
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "1 GB storage, 12 month subscription",
+              "description" : "A standard Circles account on our server",
               "displayName" : "1 Year",
               "locale" : "en_US"
             }
@@ -191,14 +191,58 @@
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "A Circles account on our server",
-              "displayName" : "1 month",
+              "description" : "A standard Circles account on our server",
+              "displayName" : "1 Month",
               "locale" : "en_US"
             }
           ],
           "productID" : "social.kombucha.circles.standard01month",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Standard 1 Month",
+          "subscriptionGroupID" : "9168B5F2",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "9.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "DC00B209",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "A premium Circles account on our server",
+              "displayName" : "1 Month",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "social.kombucha.circles.premium01month",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Premium 1 Month",
+          "subscriptionGroupID" : "9168B5F2",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "99.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "37F31C69",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "A premium Circles account on our server",
+              "displayName" : "1 Year",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "social.kombucha.circles.premium12month",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Premium 12 Month",
           "subscriptionGroupID" : "9168B5F2",
           "type" : "RecurringSubscription"
         }

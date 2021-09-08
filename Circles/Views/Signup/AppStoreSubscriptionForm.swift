@@ -9,8 +9,6 @@
 import SwiftUI
 import StoreKit
 
-#if false
-
 struct SubscriptionCard: View {
     let plan: String
     @Binding var selectedPlan: String
@@ -118,9 +116,11 @@ struct MembershipProductCard: View {
         let alreadyPurchased = UserDefaults.standard.bool(forKey: product.productIdentifier) || appStore.purchased.contains(product.productIdentifier)
         let selected: Bool = product == self.selectedProduct
         //let borderColor = self.selectedProduct == nil ? Color.accentColor : (selected ? Color.primary : Color.accentColor)
-        let borderColor = Color.accentColor
-        //let textColor = self.selectedProduct == nil ? Color.primary : (selected ? Color.primary : Color.gray)
-        let backgroundColor = selected ? Color.accentColor : Color.clear
+        let textColor = self.selectedProduct == nil ? Color.primary : (selected ? Color.white : Color.gray)
+        let brightColor = getColor(product)
+        let backgroundColor = selected ? brightColor : Color.clear
+        let borderColor = brightColor
+
 
         return Button(action: {
             self.selectedProduct = product
@@ -128,29 +128,33 @@ struct MembershipProductCard: View {
             VStack(alignment: .leading) {
                 let bigFont = Font.title2
                 HStack {
+
+                    Text("\(product.regularPrice!)")
+                        .font(bigFont)
+                        .fontWeight(.bold)
+                        .foregroundColor(textColor)
+
+                    //Spacer()
+                    Text(" for ")
+                        .font(bigFont)
+                        .fontWeight(.bold)
+                        .foregroundColor(textColor)
                     Text(product.localizedTitle)
                         .font(bigFont)
                         .fontWeight(.bold)
-                    Spacer()
-                    if alreadyPurchased {
-                        Text ("Purchased")
-                            .font(bigFont)
-                            .fontWeight(.bold)
-                            .foregroundColor(.green)
-                    } else {
-                        Text("\(product.regularPrice!)")
-                            .font(bigFont)
-                            .fontWeight(.bold)
-                            //.foregroundColor(.blue)
-                    }
+                        .foregroundColor(textColor)
+
                 }
 
+                /*
                 Text(product.localizedDescription)
                     .font(.subheadline)
+                    .foregroundColor(textColor)
+                */
             }
             //.foregroundColor(textColor)
             .padding()
-            .frame(width: 300, height: 100)
+            .frame(width: 300, height: 50)
             .background(backgroundColor)
             .cornerRadius(10)
             .overlay(RoundedRectangle(cornerRadius: 10).stroke(borderColor, lineWidth: 2))
@@ -161,17 +165,33 @@ struct MembershipProductCard: View {
     }
 }
 
-struct AppStoreSignUpScreen: View {
-    var matrix: MatrixInterface
+func getColor(_ maybeProduct: SKProduct?) -> Color {
+    guard let product = maybeProduct else {
+        return Color.gray
+    }
+    if product.productIdentifier.contains("premium") {
+        return Color.pink
+    } else {
+        return Color.purple
+    }
+}
+
+struct AppStoreSubscriptionForm: View {
     @EnvironmentObject var appStore: AppStoreInterface
 
-    @Binding var selectedScreen: LoggedOutScreen.Screen
+    var matrix: MatrixInterface
+    @Binding var uiaaState: UiaaSessionState?
+
+    //@Binding var selectedScreen: LoggedOutScreen.Screen
+    /*
     @State var selectedPlan: String = "Standard"
     @State var selectedTerm: Int = 1
     let terms = [1, 6, 12]
+    */
 
     @State var selectedProduct: SKProduct?
 
+    /*
     func getProducts() {
         var identifiers = Set<String>()
         guard let storefront = SKPaymentQueue.default().storefront else {
@@ -180,12 +200,13 @@ struct AppStoreSignUpScreen: View {
         }
         //for (identifier, _) in
     }
-
+    */
 
     var buttonBar: some View {
         HStack {
             Button(action: {
-                self.selectedScreen = .signupMain
+                //self.selectedScreen = .signupMain
+                uiaaState = nil
             }) {
                 Text("Cancel")
                     .font(.footnote)
@@ -210,46 +231,81 @@ struct AppStoreSignUpScreen: View {
         return d0 < d1
     }
 
+    var individualStandardPlans: some View {
+        VStack {
+            VStack(alignment: .leading) {
+                Label("Individual plans - Standard", systemImage: "person.circle")
+                    .font(.headline)
+                    //.fontWeight(.bold)
+                Text("Our standard individual account gives you up to 5 primary social circles with up to 150 contacts each, unlimited private groups, and up to 5 GB of secure cloud storage.  Plus unlimited small circles of fewer than 20 people.")
+                    .font(.footnote)
+                    .padding()
+            }
+
+            let individualProducts = appStore.membershipProducts
+                .filter {
+                    $0.isFamilyShareable == false
+                }
+                .filter {
+                    $0.productIdentifier.contains("standard")
+                }
+                .sorted(by: sortProductsByPrice)
+
+            ForEach(individualProducts, id: \.self) { product in
+                MembershipProductCard(product: product, selectedProduct: $selectedProduct)
+            }
+        }
+    }
+
+    var individualPremiumPlans: some View {
+        VStack {
+
+            let products = appStore.membershipProducts
+                .filter {
+                    $0.isFamilyShareable == false
+                }
+                .filter {
+                    $0.productIdentifier.contains("premium")
+                }
+                .sorted(by: sortProductsByPrice)
+
+            VStack(alignment: .leading) {
+                Label("Individual plans - Premium", systemImage: "person.circle")
+                    .font(.headline)
+                    //.fontWeight(.bold)
+                Text("Our premium individual account gives you 10 circles with up to 250 contacts each, unlimited private groups, and 10 GB of secure cloud storage.  Plus an unlimited number of small circles with up to 20 people.")
+                    .font(.footnote)
+                    .padding()
+            }
+
+            ForEach(products, id: \.self) { product in
+                MembershipProductCard(product: product, selectedProduct: $selectedProduct)
+            }
+        }
+    }
+
     var body: some View {
         VStack {
             buttonBar
 
-            Text("Choose subscription term")
-                .font(.title)
+            Text("Select subscription")
+                .font(.title2)
                 .fontWeight(.bold)
                 .padding()
 
-            ForEach(terms, id: \.self) { term in
-                Button(action: {
-                    self.selectedTerm = term
-                }) {
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text("\(term) months for $X.YY")
-                                .font(.title3)
-                                .fontWeight(.bold)
-                            Text("Save $X.YZ")
-                                .padding(.leading)
-                        }
-                        .padding(.leading)
-                        Spacer()
-                    }
-                    .frame(width: 300, height: 100)
-                    .background(RoundedRectangle(cornerRadius: 10).stroke(Color.accentColor, lineWidth: 2))
-                }
-                .buttonStyle(PlainButtonStyle())
-                .padding()
-            }
+            ScrollView {
 
-            let products = appStore.membershipProducts.sorted(by: sortProductsByPrice)
-            ForEach(products, id: \.self) { product in
-                MembershipProductCard(product: product, selectedProduct: $selectedProduct)
-            }
+                individualStandardPlans
 
+                individualPremiumPlans
+
+            }
+            
             Spacer()
 
             Text("Subscriptions will automatically renew until canceled")
                 .font(.footnote)
+            let buttonColor = getColor(selectedProduct)
             Button(action: {
                 if let product = selectedProduct {
                     appStore.purchaseProduct(product: product) { response in
@@ -261,12 +317,13 @@ struct AppStoreSignUpScreen: View {
                     .padding()
                     .frame(width: 300.0, height: 40.0)
                     .foregroundColor(.white)
-                    .background(Color.accentColor)
+                    .background(buttonColor)
                     .cornerRadius(10)
             }
             .disabled(selectedProduct == nil || appStore.purchased.contains(selectedProduct!.productIdentifier))
             .padding()
         }
+        .padding()
     }
 }
 
@@ -277,5 +334,3 @@ struct AppStoreSignUpScreen_Previews: PreviewProvider {
     }
 }
 */
-
-#endif
