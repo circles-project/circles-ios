@@ -11,6 +11,13 @@
 		4012C54926A752C400BB15E6 /* EmojiPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4012C54826A752C400BB15E6 /* EmojiPicker.swift */; };
 		4012C54C26A760F100BB15E6 /* KeyboardKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4012C54B26A760F100BB15E6 /* KeyboardKit */; };
 		40395EBA26C2D58A0044FB51 /* BringYourOwnServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40395EB926C2D58A0044FB51 /* BringYourOwnServer.swift */; };
+		403CEA9326E864160054DBF4 /* TermsOfServiceForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403CEA9226E864160054DBF4 /* TermsOfServiceForm.swift */; };
+		403CEA9526E865740054DBF4 /* TokenForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403CEA9426E865740054DBF4 /* TokenForm.swift */; };
+		403CEA9726E866B70054DBF4 /* ValidateEmailForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403CEA9626E866B70054DBF4 /* ValidateEmailForm.swift */; };
+		403CEA9926E868F30054DBF4 /* AccountInfoForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403CEA9826E868F30054DBF4 /* AccountInfoForm.swift */; };
+		403CEA9B26E86AA90054DBF4 /* AllDoneForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403CEA9A26E86AA90054DBF4 /* AllDoneForm.swift */; };
+		403CEA9D26E86B920054DBF4 /* AvatarForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403CEA9C26E86B920054DBF4 /* AvatarForm.swift */; };
+		403CEA9F26E86C7F0054DBF4 /* CirclesForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403CEA9E26E86C7F0054DBF4 /* CirclesForm.swift */; };
 		4047F3DE26B895B80010B2C3 /* SecureFieldWithEye.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4047F3DD26B895B80010B2C3 /* SecureFieldWithEye.swift */; };
 		4047F3E126BB05D50010B2C3 /* TPInAppReceipt in Frameworks */ = {isa = PBXBuildFile; productRef = 4047F3E026BB05D50010B2C3 /* TPInAppReceipt */; };
 		404C72D1265DDF35000473DF /* CirclesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C72D0265DDF35000473DF /* CirclesApp.swift */; };
@@ -123,6 +130,13 @@
 		4012C54626A736D700BB15E6 /* MatrixReaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixReaction.swift; sourceTree = "<group>"; };
 		4012C54826A752C400BB15E6 /* EmojiPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiPicker.swift; sourceTree = "<group>"; };
 		40395EB926C2D58A0044FB51 /* BringYourOwnServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BringYourOwnServer.swift; sourceTree = "<group>"; };
+		403CEA9226E864160054DBF4 /* TermsOfServiceForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsOfServiceForm.swift; sourceTree = "<group>"; };
+		403CEA9426E865740054DBF4 /* TokenForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenForm.swift; sourceTree = "<group>"; };
+		403CEA9626E866B70054DBF4 /* ValidateEmailForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidateEmailForm.swift; sourceTree = "<group>"; };
+		403CEA9826E868F30054DBF4 /* AccountInfoForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountInfoForm.swift; sourceTree = "<group>"; };
+		403CEA9A26E86AA90054DBF4 /* AllDoneForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllDoneForm.swift; sourceTree = "<group>"; };
+		403CEA9C26E86B920054DBF4 /* AvatarForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarForm.swift; sourceTree = "<group>"; };
+		403CEA9E26E86C7F0054DBF4 /* CirclesForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesForm.swift; sourceTree = "<group>"; };
 		4047F3DD26B895B80010B2C3 /* SecureFieldWithEye.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureFieldWithEye.swift; sourceTree = "<group>"; };
 		404C72CD265DDF35000473DF /* Circles.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Circles.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		404C72D0265DDF35000473DF /* CirclesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesApp.swift; sourceTree = "<group>"; };
@@ -442,10 +456,17 @@
 		409F4358265DE1DE00690A61 /* Signup */ = {
 			isa = PBXGroup;
 			children = (
-				409F4381265DE29600690A61 /* SetupCircleCard.swift */,
-				409F4387265DE2B100690A61 /* TokenSignUpScreen.swift */,
+				403CEA9826E868F30054DBF4 /* AccountInfoForm.swift */,
+				403CEA9A26E86AA90054DBF4 /* AllDoneForm.swift */,
 				40E4D886268A76070055968A /* AppStoreSignUpScreen.swift */,
+				403CEA9C26E86B920054DBF4 /* AvatarForm.swift */,
+				403CEA9E26E86C7F0054DBF4 /* CirclesForm.swift */,
+				409F4381265DE29600690A61 /* SetupCircleCard.swift */,
 				40E4D889268A76CF0055968A /* SignupScreen.swift */,
+				403CEA9226E864160054DBF4 /* TermsOfServiceForm.swift */,
+				403CEA9426E865740054DBF4 /* TokenForm.swift */,
+				409F4387265DE2B100690A61 /* TokenSignUpScreen.swift */,
+				403CEA9626E866B70054DBF4 /* ValidateEmailForm.swift */,
 			);
 			path = Signup;
 			sourceTree = "<group>";
@@ -630,10 +651,13 @@
 				409F4379265DE25000690A61 /* PhotoGalleryCreationSheet.swift in Sources */,
 				409F42FE265DE0A200690A61 /* MatrixMessage.swift in Sources */,
 				40395EBA26C2D58A0044FB51 /* BringYourOwnServer.swift in Sources */,
+				403CEA9D26E86B920054DBF4 /* AvatarForm.swift in Sources */,
 				404C72D3265DDF35000473DF /* ContentView.swift in Sources */,
+				403CEA9F26E86C7F0054DBF4 /* CirclesForm.swift in Sources */,
 				409F4388265DE2B100690A61 /* TokenSignUpScreen.swift in Sources */,
 				40BC0E4326B3199C00137A92 /* MatrixWellKnown.swift in Sources */,
 				40BC0E4526B45FE600137A92 /* AcknowledgementsSheet.swift in Sources */,
+				403CEA9326E864160054DBF4 /* TermsOfServiceForm.swift in Sources */,
 				40878FCA2694DBC400A66EF0 /* MessageComposerSheet.swift in Sources */,
 				409F4326265DE12600690A61 /* CloudImagePicker.swift in Sources */,
 				408A48B926C1D45D00BEE9D9 /* BYOSScreen.swift in Sources */,
@@ -664,6 +688,7 @@
 				409F436F265DE24000690A61 /* PersonDetailView.swift in Sources */,
 				409F42FF265DE0A200690A61 /* SocialCircle.swift in Sources */,
 				409F4334265DE15F00690A61 /* CircleOverviewCard.swift in Sources */,
+				403CEA9926E868F30054DBF4 /* AccountInfoForm.swift in Sources */,
 				409F4342265DE17500690A61 /* GroupHeader.swift in Sources */,
 				4012C54726A736D700BB15E6 /* MatrixReaction.swift in Sources */,
 				409F437C265DE27F00690A61 /* RecentActivityView.swift in Sources */,
@@ -677,6 +702,7 @@
 				40878FBC268E4D9000A66EF0 /* AppStoreInterface.swift in Sources */,
 				409F4382265DE29600690A61 /* SetupCircleCard.swift in Sources */,
 				409F4390265DE2CE00690A61 /* SystemNoticesView.swift in Sources */,
+				403CEA9526E865740054DBF4 /* TokenForm.swift in Sources */,
 				409F438C265DE2C200690A61 /* StreamTimeline.swift in Sources */,
 				409F4305265DE0A200690A61 /* PeopleContainer.swift in Sources */,
 				409F43A2265DE3C800690A61 /* ProfileScreen.swift in Sources */,
@@ -700,10 +726,12 @@
 				409F4311265DE0E700690A61 /* HomeTabMasterView.swift in Sources */,
 				409F4343265DE17500690A61 /* GroupOverviewRow.swift in Sources */,
 				409F4352265DE1BA00690A61 /* KSStore.swift in Sources */,
+				403CEA9726E866B70054DBF4 /* ValidateEmailForm.swift in Sources */,
 				409F4300265DE0A200690A61 /* SocialStream.swift in Sources */,
 				404C72D1265DDF35000473DF /* CirclesApp.swift in Sources */,
 				409F4341265DE17500690A61 /* GroupTimelineScreen.swift in Sources */,
 				409F4307265DE0A200690A61 /* PhotoGalleriesContainer.swift in Sources */,
+				403CEA9B26E86AA90054DBF4 /* AllDoneForm.swift in Sources */,
 				409F43BA265DE51C00690A61 /* RoomInviteSheet.swift in Sources */,
 				409F4315265DE0F400690A61 /* ImagePicker.swift in Sources */,
 				409F4338265DE15F00690A61 /* CircleConnectionsSheet.swift in Sources */,
