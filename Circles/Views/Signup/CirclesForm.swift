@@ -10,8 +10,9 @@ import MatrixSDK
 
 struct CirclesForm: View {
     var matrix: MatrixInterface
+    let displayName: String
+    @Binding var pseudoFlow: UiaaAuthFlow
 
-    @Binding var displayName: String
 
     @State var friendsAvatar: UIImage?
     @State var familyAvatar: UIImage?
@@ -21,6 +22,8 @@ struct CirclesForm: View {
     @State var pickerSourceType: UIImagePickerController.SourceType = .photoLibrary
 
     @State var pending = false
+
+    let stage = "circles"
 
     var body: some View {
         VStack(alignment: .center) {
@@ -106,6 +109,7 @@ struct CirclesForm: View {
                         if response.isSuccess {
                             print("SETUP\tSaved circles data")
                             //self.stage = next[currentStage]!
+                            pseudoFlow.pop(stage: self.stage)
                         }
                         self.pending = false
                     }

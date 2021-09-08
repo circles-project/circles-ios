@@ -9,13 +9,15 @@ import SwiftUI
 
 struct TokenForm: View {
     var matrix: MatrixInterface
+    @Binding var authFlow: UiaaAuthFlow?
+
     @State var signupToken: String = ""
 
     @State var pending = false
 
-    @Binding var showAlert: Bool
-    @Binding var alertTitle: String
-    @Binding var alertMessage: String
+    @State var showAlert = false
+    @State var alertTitle = ""
+    @State var alertMessage = ""
 
     let helpTextForToken = """
     In order to sign up for the service, every new user must present a valid registration token.
@@ -26,6 +28,8 @@ struct TokenForm: View {
     let helpTextForTokenFailed = """
     Failed to validate token
     """
+
+    let stage = LOGIN_STAGE_SIGNUP_TOKEN
 
     var body: some View {
         VStack {
@@ -67,8 +71,9 @@ struct TokenForm: View {
                         self.alertTitle = "Token validation failed"
                         self.alertMessage = helpTextForTokenFailed
                     case .success:
+                        // We're done with the current stage.  Let's move on to the next one.
                         //self.stage = next[currentStage]!
-                        break
+                        authFlow?.pop(stage: stage)
                     }
                     self.pending = false
                 }
@@ -81,14 +86,12 @@ struct TokenForm: View {
                     .cornerRadius(10)
             }
             .disabled(pending)
-            /*
-            .alert(isPresented: $showTokenError) {
-                Alert(title: Text("Token validation failed"),
-                      message: Text(helpTextForTokenFailed),
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text(alertTitle),
+                      message: Text(alertMessage),
                       dismissButton: .cancel(Text("OK"))
                 )
             }
-            */
 
             Spacer()
 

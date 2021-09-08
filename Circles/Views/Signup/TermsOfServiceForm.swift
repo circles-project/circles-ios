@@ -9,10 +9,13 @@ import SwiftUI
 
 struct TermsOfServiceForm: View {
     var matrix: MatrixInterface
-    @Binding var selectedScreen: LoggedOutScreen.Screen
+    //@Binding var selectedScreen: LoggedOutScreen.Screen
+    @Binding var authFlow: UiaaAuthFlow?
 
     @State var webViewStore = WebViewStore()
     @State var pending = false
+
+    let stage = LOGIN_STAGE_TERMS_OF_SERVICE
 
     var body: some View {
         VStack {
@@ -33,7 +36,9 @@ struct TermsOfServiceForm: View {
                 self.pending = true
                 matrix.signupDoTermsStage { response in
                     if response.isSuccess {
+                        // Done with this stage, let's move on to the next
                         //self.stage = next[currentStage]!
+                        authFlow?.pop(stage: self.stage)
                     }
                     self.pending = false
                 }

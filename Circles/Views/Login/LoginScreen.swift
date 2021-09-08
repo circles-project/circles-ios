@@ -11,7 +11,8 @@ import StoreKit
 
 struct LoginScreen: View {
     var matrix: MatrixInterface
-    @Binding var selectedScreen: LoggedOutScreen.Screen
+    //@Binding var selectedScreen: LoggedOutScreen.Screen
+    @Binding var uiaaState: UiaaSessionState?
 
     @EnvironmentObject var appStore: AppStoreInterface
 
@@ -20,7 +21,9 @@ struct LoginScreen: View {
     @State var password: String = ""
     @State var password2: String = ""
 
-    @State var pending = false
+    @State var pendingLogin = false
+    @State var pendingSignup = false
+
     @State var showAlert = false
     @State var alertTitle = ""
     @State var alertMessage = ""
@@ -103,11 +106,11 @@ struct LoginScreen: View {
             }
         }
 
-        self.pending = true
+        self.pendingLogin = true
 
         if self.password2.isEmpty {
             self.matrix.login(username: self.username, rawPassword: self.password, s4Password: nil) { response in
-                self.pending = false
+                self.pendingLogin = false
                 if response.isFailure {
                     self.alertTitle = "Login Failed"
                     self.alertMessage = "Bad username or password?"
@@ -118,7 +121,7 @@ struct LoginScreen: View {
             }
         } else {
             self.matrix.login(username: self.username, rawPassword: self.password, s4Password: password2) { response in
-                self.pending = false
+                self.pendingLogin = false
                 if response.isFailure {
                     self.alertTitle = "Login Failed"
                     self.alertMessage = "Bad username or password?"
@@ -182,7 +185,7 @@ struct LoginScreen: View {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
-            .disabled(pending)
+            .disabled(pendingLogin)
             .alert(isPresented: $showAlert) {
                 Alert(title: Text("Login failed"),
                       message: Text("Bad username or password?"),
@@ -200,11 +203,22 @@ struct LoginScreen: View {
                 } else {
                     print("LOGIN\tFailed to get country code from StoreKit")
                 }
+
+                self.pendingSignup = true
                 
                 self.matrix.startNewSignupSession { response in
+                    /*
                     if response.isSuccess {
                         self.selectedScreen = .signupMain
                     }
+                    */
+                    switch response {
+                    case .failure(let err):
+                        print("Failed to start new signup session: \(err)")
+                    case .success(let newUiaaSession):
+                        self.uiaaState = newUiaaSession
+                    }
+                    self.pendingSignup = false
                 }
             }) {
                 Text("Sign Up")
@@ -214,6 +228,7 @@ struct LoginScreen: View {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
+            .disabled( pendingSignup )
             .padding(.bottom)
 
 

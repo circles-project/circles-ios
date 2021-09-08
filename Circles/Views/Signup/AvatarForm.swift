@@ -9,12 +9,15 @@ import SwiftUI
 
 struct AvatarForm: View {
     var matrix: MatrixInterface
+    @Binding var pseudoFlow: UiaaAuthFlow
 
     @State var avatarImage: UIImage?
     @State var showPicker = false
     @State var pickerSourceType: UIImagePickerController.SourceType = .photoLibrary
 
     @State var pending = false
+
+    let stage = "avatar"
 
     var avatar: Image {
         if let img = self.avatarImage {
@@ -65,6 +68,7 @@ struct AvatarForm: View {
                     self.matrix.setAvatarImage(image: img) { response in
                         if response.isSuccess {
                             //self.stage = next[currentStage]!
+                            pseudoFlow.pop(stage: self.stage)
                         }
                         self.pending = false
                     }

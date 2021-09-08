@@ -10,7 +10,10 @@ import SwiftUI
 
 struct LoggedOutScreen: View {
     var store: KSStore
-    
+
+    @State var uiaaState: UiaaSessionState?
+
+    /*
     enum Screen: String {
         case login
         case signupMain
@@ -22,8 +25,10 @@ struct LoggedOutScreen: View {
     }
     
     @State var screen: Screen = .login
+    */
     
     var body: some View {
+        /*
         switch screen {
         case .login:
             LoginScreen(matrix: store, selectedScreen: $screen)
@@ -34,6 +39,14 @@ struct LoggedOutScreen: View {
         case .appstoreSignup:
             AppStoreSignUpScreen(matrix: store, selectedScreen: $screen)
         }
+        */
+
+        if uiaaState == nil {
+            LoginScreen(matrix: store, uiaaState: $uiaaState)
+        } else {
+            SignupScreen(matrix: store, uiaaState: $uiaaState)
+        }
+
     }
 }
 

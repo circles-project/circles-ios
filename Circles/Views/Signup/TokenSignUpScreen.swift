@@ -10,6 +10,8 @@ import SwiftUI
 import MatrixSDK
 import WebKit
 
+#if false
+
 struct TokenSignUpScreen: View {
     var matrix: MatrixInterface
     @Binding var selectedScreen: LoggedOutScreen.Screen
@@ -788,3 +790,5 @@ struct SignUpScreen_Previews: PreviewProvider {
     }
 }
 */
+
+#endif

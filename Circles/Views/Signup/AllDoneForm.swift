@@ -9,9 +9,11 @@ import SwiftUI
 
 struct AllDoneForm: View {
     var matrix: MatrixInterface
-    @Binding var selectedScreen: LoggedOutScreen.Screen
+    let userId: String
+    @Binding var uiaaState: UiaaSessionState?
+    //@Binding var selectedScreen: LoggedOutScreen.Screen
 
-    @Binding var userId: String?
+    //@Binding var userId: String?
 
     @State var pending = false
 
@@ -25,12 +27,11 @@ struct AllDoneForm: View {
                 .font(.title)
                 .fontWeight(.bold)
 
-            if let uid = self.userId {
-                Spacer()
-                Text("Your user ID is:")
-                Text(uid)
+
+            Spacer()
+            Text("Your user ID is:")
+            Text(userId)
                     .fontWeight(.bold)
-            }
 
             Spacer()
 
@@ -38,7 +39,10 @@ struct AllDoneForm: View {
                 //self.selectedScreen = .login
                 self.pending = true
                 //matrix.finishSignupAndConnect()
-                self.selectedScreen = .login
+                //self.selectedScreen = .login
+
+                // Nuke our UIAA session state, which will send the UI back to the login screen
+                uiaaState = nil
             }) {
                 Text("Next: Log in")
                     .padding()

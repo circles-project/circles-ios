@@ -9,21 +9,24 @@ import SwiftUI
 
 struct AccountInfoForm: View {
     var matrix: MatrixInterface
+    @Binding var authFlow: UiaaAuthFlow?
+    let stage: String
+    @Binding var accountInfo: SignupAccountInfo
 
-    @Binding var displayName: String
-    @Binding var username: String
-    @Binding var password: String
+    //@Binding var displayName: String
+    //@Binding var username: String
+    //@Binding var password: String
     @State var repeatPassword: String = ""
-    @Binding var emailAddress: String
-    @Binding var userId: String?
+    //@Binding var emailAddress: String
+    //@Binding var userId: String?
 
-    @Binding var emailSid: String
+    @Binding var emailSid: String?
 
     @State var pending = false
 
-    @Binding var showAlert: Bool
-    @Binding var alertTitle: String
-    @Binding var alertMessage: String
+    @State var showAlert = false
+    @State var alertTitle = ""
+    @State var alertMessage = ""
 
     let helpTextForName = "Your name as you would like it to appear to others"
 
@@ -66,7 +69,7 @@ struct AccountInfoForm: View {
                     .padding(.top)
 
                 HStack {
-                    TextField("Your Name", text: $displayName)
+                    TextField("Your Name", text: $accountInfo.displayName)
                         .autocapitalization(.words)
                         .disableAutocorrection(true)
                     Spacer()
@@ -81,7 +84,7 @@ struct AccountInfoForm: View {
                 .frame(width: 300.0, height: 40.0)
 
                 HStack {
-                    TextField("you@example.com", text: $emailAddress)
+                    TextField("you@example.com", text: $accountInfo.emailAddress)
                         .keyboardType(.emailAddress)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
@@ -105,7 +108,7 @@ struct AccountInfoForm: View {
                     .padding(.top)
 
                 HStack {
-                    TextField("New Username", text: $username)
+                    TextField("New Username", text: $accountInfo.username)
                         .textContentType(.username)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
@@ -122,7 +125,7 @@ struct AccountInfoForm: View {
                 .frame(width: 300.0, height: 40.0)
 
                 HStack {
-                    SecureField("New Passphrase", text: $password)
+                    SecureField("New Passphrase", text: $accountInfo.password)
                         .textContentType(.newPassword)
                     Spacer()
                     Button(action: {
@@ -144,18 +147,17 @@ struct AccountInfoForm: View {
             Spacer()
 
             Button(action: {
-                guard !password.isEmpty,
-                      password == repeatPassword,
-                      !username.isEmpty else {
+                guard !accountInfo.password.isEmpty,
+                      accountInfo.password == repeatPassword,
+                      !accountInfo.username.isEmpty else {
                     return
                 }
                 // Call out to the server to send the verification mail
                 self.pending = true
-                matrix.signupRequestEmailToken(email: emailAddress) { response in
+                matrix.signupRequestEmailToken(email: accountInfo.emailAddress) { response in
                     if case let .success(sid) = response {
+                        // Setting the email session ID will send us to the next screen in the UI, since that's the next piece that we're missing.
                         self.emailSid = sid
-                        // If successful, set stage = .validateEmail
-                        //stage = next[currentStage]!
                     } else {
                         // :( Couldn't validate email
                         print(":( Couldn't send validation email")
@@ -170,9 +172,13 @@ struct AccountInfoForm: View {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
-            .disabled(password.isEmpty || password != repeatPassword || pending)
-
-
+            .disabled(accountInfo.password.isEmpty || accountInfo.password != repeatPassword || pending)
+        }
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text(alertTitle),
+                  message: Text(alertMessage),
+                  dismissButton: .cancel(Text("OK"))
+            )
         }
     }
 }

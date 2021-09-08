@@ -14,6 +14,12 @@ public struct UiaaAuthFlow: Codable {
     func isSatisfiedBy(completed: [String]) -> Bool {
         completed.starts(with: stages)
     }
+
+    mutating func pop(stage: String) {
+        if stages.starts(with: [stage]) {
+            stages = Array(stages.dropFirst())
+        }
+    }
 }
 
 public struct mLoginTermsParams: Codable {

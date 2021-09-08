@@ -3198,7 +3198,11 @@ extension KSStore: MatrixInterface {
                 let defaults = UserDefaults.standard
                 defaults.set(creds.userId, forKey: "user_id")
                 defaults.set(creds.deviceId, forKey: "device_id[\(creds.userId)]")
-                defaults.set(creds.accessToken, forKey: "access_token[\(creds.userId)]")
+                // Don't save the access token!
+                // We want the user to login with their password before they use the app, so we can set up the MXRecovery for key backup etc.
+                // I don't think we can set up the recovery now, because we don't have a full MXSession running.
+                //defaults.set(creds.accessToken, forKey: "access_token[\(creds.userId)]")
+
                 // We also need to save the device_id for the plain username,
                 // because when the user next logs in, they probably won't type out
                 // the whole @user:domain.tld mess
