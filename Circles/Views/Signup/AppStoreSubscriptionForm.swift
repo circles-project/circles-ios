@@ -9,104 +9,6 @@
 import SwiftUI
 import StoreKit
 
-struct SubscriptionCard: View {
-    let plan: String
-    @Binding var selectedPlan: String
-
-    static let colors = ["Basic": Color.pink, "Standard": Color.green, "Premium": Color.purple]
-
-    var background: some View {
-        if plan == selectedPlan {
-            return AnyView(backgroundColor
-                            .cornerRadius(10))
-        } else {
-            return AnyView(RoundedRectangle(cornerRadius: 10)
-                            .stroke(backgroundColor, lineWidth: 2))
-        }
-    }
-
-    var backgroundColor: Color {
-        SubscriptionCard.colors[plan] ?? Color.accentColor
-    }
-
-    var textColor: Color {
-        if plan == selectedPlan {
-            return Color.white
-        } else {
-            return Color.primary
-        }
-    }
-
-    var body: some View {
-        Button(action: {
-            self.selectedPlan = plan
-        }) {
-            HStack {
-                VStack(alignment: .leading) {
-                    Text(plan)
-                        .font(.title2)
-                        .fontWeight(.bold)
-                    Text("Plan details, blah blah blah")
-                        .font(.subheadline)
-                }
-                .frame(width: 200, height: 80)
-                .padding()
-                Spacer()
-                VStack {
-                    if plan == selectedPlan {
-                        Image(systemName: "checkmark.circle")
-                            .resizable()
-                            .scaledToFit()
-                    }
-                }
-                .frame(width: 30, height: 30, alignment: .center)
-                .padding()
-            }
-            .foregroundColor(textColor)
-            .frame(width: 300, height: 100)
-            .background(background)
-        }
-        .buttonStyle(PlainButtonStyle())
-        .padding()
-    }
-}
-
-struct SubscriptionLevelForm: View {
-    @Binding var selectedPlan: String
-    let plans = ["Basic", "Standard", "Premium"]
-
-    var body: some View {
-        VStack {
-            Text("Choose a subscription")
-                .font(.title)
-                .fontWeight(.bold)
-                .padding()
-
-            //Spacer()
-
-            ForEach(plans, id: \.self) { plan in
-                SubscriptionCard(plan: plan, selectedPlan: $selectedPlan)
-            }
-
-            Spacer()
-
-            Button(action: {}) {
-                Text("Sign Up for \(selectedPlan)")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    //.background(Color.accentColor)
-                    //.background(LinearGradient(gradient: Gradient(colors: [Color.blue, SubscriptionCard.colors[selectedPlan] ?? Color.accentColor]), startPoint: .leading, endPoint: .trailing))
-                    .background(SubscriptionCard.colors[selectedPlan] ?? Color.accentColor)
-                    .cornerRadius(10)
-            }
-            .padding()
-        }
-    }
-}
-
-
-
 struct MembershipProductCard: View {
     @EnvironmentObject var appStore: AppStoreInterface
     var product: SKProduct
@@ -182,25 +84,7 @@ struct AppStoreSubscriptionForm: View {
     var matrix: MatrixInterface
     @Binding var uiaaState: UiaaSessionState?
 
-    //@Binding var selectedScreen: LoggedOutScreen.Screen
-    /*
-    @State var selectedPlan: String = "Standard"
-    @State var selectedTerm: Int = 1
-    let terms = [1, 6, 12]
-    */
-
     @State var selectedProduct: SKProduct?
-
-    /*
-    func getProducts() {
-        var identifiers = Set<String>()
-        guard let storefront = SKPaymentQueue.default().storefront else {
-            print("STOREKIT\tError: Couldn't get storefront")
-            return
-        }
-        //for (identifier, _) in
-    }
-    */
 
     var buttonBar: some View {
         HStack {
@@ -284,10 +168,8 @@ struct AppStoreSubscriptionForm: View {
         }
     }
 
-    var body: some View {
+    var purchaseForm: some View {
         VStack {
-            buttonBar
-
             Text("Select subscription")
                 .font(.title2)
                 .fontWeight(.bold)
@@ -300,7 +182,7 @@ struct AppStoreSubscriptionForm: View {
                 individualPremiumPlans
 
             }
-            
+
             Spacer()
 
             Text("Subscriptions will automatically renew until canceled")
@@ -322,6 +204,47 @@ struct AppStoreSubscriptionForm: View {
             }
             .disabled(selectedProduct == nil || appStore.purchased.contains(selectedProduct!.productIdentifier))
             .padding()
+        }
+    }
+
+    var body: some View {
+        VStack {
+            buttonBar
+
+            if let purchasedProductId = appStore.purchased.first(where: { productId in
+                !productId.contains("byos")
+            })
+            {
+                Spacer()
+
+                HStack {
+                    Image(systemName: "checkmark")
+                        .foregroundColor(.green)
+                    Text("Subscription success!")
+                }
+                Text("Thank you!")
+
+                Spacer()
+
+                Button(action: {
+                    // Send the receipt
+                    print("SIGNUP-APPSTORE\tAuthenticating with purchased product \(purchasedProductId)")
+                }) {
+
+                    Text("Next: Create your account")
+                }
+                .padding()
+                .frame(width: 300.0, height: 40.0)
+                .foregroundColor(.white)
+                .background(Color.accentColor)
+                .cornerRadius(10)
+
+                Spacer()
+
+            } else {
+                purchaseForm
+            }
+
         }
         .padding()
     }
