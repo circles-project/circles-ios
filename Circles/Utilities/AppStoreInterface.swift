@@ -178,7 +178,7 @@ class AppStoreInterface: NSObject, SKPaymentTransactionObserver, ObservableObjec
             let payment = SKPayment(product: product)
             callbacks[product.productIdentifier] = completion
             SKPaymentQueue.default().add(payment)
-            completion(.success(product.productIdentifier))
+            //completion(.success(product.productIdentifier))
         } else {
             let msg = "User can't make payment."
             print("APPSTORE\tError: \(msg)")
