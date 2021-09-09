@@ -2743,6 +2743,57 @@ extension KSStore: MatrixInterface {
         
         return authSession.session
     }
+
+    func signupDoAppStoreStage(receipt: String, completion: @escaping (MXResponse<MXCredentials?>) -> Void) {
+        guard case let .inProgress(authSession) = self.signupState else {
+            let err = KSError(message: "No current signup session")
+            completion(.failure(err))
+            return
+        }
+
+        guard let url = _getSignupUrl() else {
+            let msg = "Couldn't find Kombucha server or the signup URL"
+            print("SIGNUP(token)\t\(msg)")
+            let err = KSError(message: msg)
+            completion(.failure(err))
+            return
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        let kludge = """
+        {
+            "auth": {
+                "receipt": "\(receipt)",
+                "type": "\(LOGIN_STAGE_APPLE_SUBSCRIPTION)",
+                "session": "\(authSession.session)"
+            },
+            "x_show_msisdn": true
+        }
+        """
+            .replacingOccurrences(of: " ", with: "")
+            .replacingOccurrences(of: "\n", with: "")
+        request.httpBody = kludge.data(using: .ascii)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            print("SIGNUP(apple)\tYay we got a response")
+            if let error = error {
+                print("SIGNUP(apple)\tBoo it's an error")
+                completion(.failure(error))
+                return
+            }
+
+            print("SIGNUP(apple)\tTrying to parse the response")
+            guard let httpResponse = response as? HTTPURLResponse,
+                  httpResponse.statusCode == 401 else {
+                let err = KSError(message: "Got unexpected HTTP response code")
+                completion(.failure(err))
+                return
+            }
+            print("SIGNUP(apple)\tSo far so good")
+            completion(.success(nil))
+        }
+        task.resume()
+    }
     
     func signupDoTokenStage(token: String, completion: @escaping (MXResponse<MXCredentials?>) -> Void) {
         guard case let .inProgress(authSession) = self.signupState else {

@@ -135,6 +135,8 @@ protocol MatrixInterface {
     func signupGetSessionId() -> String?
     
     func signupDoTokenStage(token: String, completion: @escaping (MXResponse<MXCredentials?>) -> Void)
+
+    func signupDoAppStoreStage(receipt: String, completion: @escaping (MXResponse<MXCredentials?>) -> Void)
     
     func signupRequestEmailToken(email: String, completion: @escaping (MXResponse<String>) -> Void)
     
