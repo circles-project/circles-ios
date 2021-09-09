@@ -83,8 +83,11 @@ struct AppStoreSubscriptionForm: View {
 
     var matrix: MatrixInterface
     @Binding var uiaaState: UiaaSessionState?
+    @Binding var authFlow: UiaaAuthFlow?
 
     @State var selectedProduct: SKProduct?
+
+    let stage = LOGIN_STAGE_APPLE_SUBSCRIPTION
 
     var buttonBar: some View {
         HStack {
@@ -117,16 +120,8 @@ struct AppStoreSubscriptionForm: View {
 
     var individualStandardPlans: some View {
         VStack {
-            VStack(alignment: .leading) {
-                Label("Individual plans - Standard", systemImage: "person.circle")
-                    .font(.headline)
-                    //.fontWeight(.bold)
-                Text("Our standard individual account gives you up to 5 primary social circles with up to 150 contacts each, unlimited private groups, and up to 5 GB of secure cloud storage.  Plus unlimited small circles of fewer than 20 people.")
-                    .font(.footnote)
-                    .padding()
-            }
 
-            let individualProducts = appStore.membershipProducts
+            let products = appStore.membershipProducts
                 .filter {
                     $0.isFamilyShareable == false
                 }
@@ -135,8 +130,19 @@ struct AppStoreSubscriptionForm: View {
                 }
                 .sorted(by: sortProductsByPrice)
 
-            ForEach(individualProducts, id: \.self) { product in
-                MembershipProductCard(product: product, selectedProduct: $selectedProduct)
+            if !products.isEmpty {
+                VStack(alignment: .leading) {
+                    Label("Individual plans - Standard", systemImage: "person.circle")
+                        .font(.headline)
+                        //.fontWeight(.bold)
+                    Text("Our standard individual account gives you up to 5 primary social circles with up to 150 contacts each, unlimited private groups, and up to 5 GB of secure cloud storage.  Plus unlimited small circles of fewer than 20 people.")
+                        .font(.footnote)
+                        .padding()
+                }
+
+                ForEach(products, id: \.self) { product in
+                    MembershipProductCard(product: product, selectedProduct: $selectedProduct)
+                }
             }
         }
     }
@@ -153,17 +159,19 @@ struct AppStoreSubscriptionForm: View {
                 }
                 .sorted(by: sortProductsByPrice)
 
-            VStack(alignment: .leading) {
-                Label("Individual plans - Premium", systemImage: "person.circle")
-                    .font(.headline)
-                    //.fontWeight(.bold)
-                Text("Our premium individual account gives you 10 circles with up to 250 contacts each, unlimited private groups, and 10 GB of secure cloud storage.  Plus an unlimited number of small circles with up to 20 people.")
-                    .font(.footnote)
-                    .padding()
-            }
+            if !products.isEmpty {
+                VStack(alignment: .leading) {
+                    Label("Individual plans - Premium", systemImage: "person.circle")
+                        .font(.headline)
+                        //.fontWeight(.bold)
+                    Text("Our premium individual account gives you 10 circles with up to 250 contacts each, unlimited private groups, and 10 GB of secure cloud storage.  Plus an unlimited number of small circles with up to 20 people.")
+                        .font(.footnote)
+                        .padding()
+                }
 
-            ForEach(products, id: \.self) { product in
-                MembershipProductCard(product: product, selectedProduct: $selectedProduct)
+                ForEach(products, id: \.self) { product in
+                    MembershipProductCard(product: product, selectedProduct: $selectedProduct)
+                }
             }
         }
     }
@@ -217,11 +225,12 @@ struct AppStoreSubscriptionForm: View {
             {
                 Spacer()
 
-                HStack {
-                    Image(systemName: "checkmark")
-                        .foregroundColor(.green)
-                    Text("Subscription success!")
-                }
+
+                Text("Subscription success!")
+                Image(systemName: "checkmark.circle")
+                    .resizable()
+                    .frame(width: 80.0, height: 80.0, alignment: .center)
+                    .foregroundColor(.green)
                 Text("Thank you!")
 
                 Spacer()
@@ -229,6 +238,11 @@ struct AppStoreSubscriptionForm: View {
                 Button(action: {
                     // Send the receipt
                     print("SIGNUP-APPSTORE\tAuthenticating with purchased product \(purchasedProductId)")
+                    matrix.signupDoAppStoreStage(receipt: "user bought some stuff, honest.") { response in
+                        if response.isSuccess {
+                            authFlow?.pop(stage: self.stage)
+                        }
+                    }
                 }) {
 
                     Text("Next: Create your account")
