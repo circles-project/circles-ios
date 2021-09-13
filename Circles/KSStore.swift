@@ -89,7 +89,8 @@ class KSStore: ObservableObject {
         guard let domain = kombuchaDomain else {
             return nil
         }
-        return URL(string: "https://matrix.\(domain)/")
+        //return URL(string: "https://matrix.\(domain)/")
+        return URL(string: "https://beta.kombucha.social/")!
     }
 
     private var kombuchaDomain: String? {
@@ -2672,8 +2673,7 @@ extension KSStore: MatrixInterface {
         }
         */
         let version = "r0"
-        guard let homeserverUrl = self.kombuchaServer,
-              let url = URL(string: "/_matrix/client/\(version)/register", relativeTo: homeserverUrl) else {
+        guard let url = _getSignupUrl() else {
             let msg = "Failed to generate registration URL"
             print("SIGNUP(start)\t\(msg)")
             print("SIGNUP(start)\tKombucha server is \(self.kombuchaServer?.absoluteString ?? "nil")")
@@ -2681,7 +2681,7 @@ extension KSStore: MatrixInterface {
             completion(.failure(err))
             return
         }
-        print("SIGNUP(start)\tStarting registration for an account on \(homeserverUrl.host ?? "???")")
+        print("SIGNUP(start)\tStarting registration for an account on \(url.host ?? "???")")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         let kludge = """
@@ -2767,14 +2767,38 @@ extension KSStore: MatrixInterface {
                 "type": "\(LOGIN_STAGE_APPLE_SUBSCRIPTION)",
                 "session": "\(authSession.session)"
             },
-            "x_show_msisdn": true
+            "x_show_msisdn": false
         }
         """
+
+        print("SIGNUP(apple)\tHere's the request body that we're about to send:")
+        print(kludge)
+
+        guard let requestAscii = kludge
             .replacingOccurrences(of: " ", with: "")
             .replacingOccurrences(of: "\n", with: "")
-        request.httpBody = kludge.data(using: .ascii)
+            .data(using: .ascii)
+        else {
+            let msg = "Failed to generate request body"
+            print("SIGNUP(apple)\t\(msg)")
+            let err = KSError(message: msg)
+            completion(.failure(err))
+            return
+        }
+
+        request.httpBody = requestAscii
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+
+        /*
+        // Debugging: Let's see what our request really looks like:
+        let x = String(data: request.httpBody!, encoding: .ascii)!
+        print("SIGNUP(apple)\tTrying to send a request like this:\n\(x)")
+        print("SIGNUP(apple)\tOur request body is \(requestAscii.count) bytes")
+        */
+
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        //let task = URLSession.shared.uploadTask(with: request, from: requestAscii) { data, response, error in
             print("SIGNUP(apple)\tYay we got a response")
             if let error = error {
                 print("SIGNUP(apple)\tBoo it's an error")
@@ -2785,10 +2809,17 @@ extension KSStore: MatrixInterface {
             print("SIGNUP(apple)\tTrying to parse the response")
             guard let httpResponse = response as? HTTPURLResponse,
                   httpResponse.statusCode == 401 else {
-                let err = KSError(message: "Got unexpected HTTP response code")
+                let msg = "Got unexpected HTTP response code"
+                print("SIGNUP(apple)\t\(msg)")
+                let err = KSError(message: msg)
                 completion(.failure(err))
                 return
             }
+
+            // FIXME Synapse seems to be returning HTTP 401 regardless of our success or failure in the UIAA
+            // Therefore we need to check our completed flows here before we can move on
+            // If our current stage isn't in our new UIAA state's "completed" array, then we haven't actually succeeded yet :(
+
             print("SIGNUP(apple)\tSo far so good")
             completion(.success(nil))
         }
@@ -2819,10 +2850,10 @@ extension KSStore: MatrixInterface {
         {
             "auth": {
                 "token": "\(token)",
-                "type": "social.kombucha.login.signup_token",
+                "type": "\(LOGIN_STAGE_SIGNUP_TOKEN)",
                 "session": "\(authSession.session)"
             },
-            "x_show_msisdn": true
+            "x_show_msisdn": false
         }
         """
             .replacingOccurrences(of: " ", with: "")
@@ -2877,7 +2908,8 @@ extension KSStore: MatrixInterface {
 
     func _getSignupUrl() -> URL? {
         let version = "r0"
-        return URL(string: "/_matrix/client/\(version)/register", relativeTo: self.kombuchaServer)
+        return URL(string: "/_matrix/client/\(version)/register",
+                   relativeTo: self.kombuchaServer)
     }
     
     func signupDoTermsStage(completion: @escaping (MXResponse<Void>)->Void) {

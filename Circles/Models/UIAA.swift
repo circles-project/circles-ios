@@ -59,6 +59,11 @@ public struct AppleSubscriptionParams: Codable {
 public struct UiaaParams: Codable {
     var terms: mLoginTermsParams?
     var appStore: AppleSubscriptionParams?
+
+    enum CodingKeys: String, CodingKey {
+        case terms = "terms"
+        case appStore = "social.kombucha.login.subscription.apple"
+    }
 }
 
 public struct UiaaSessionState: Codable {

@@ -22,6 +22,21 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>kombucha.social</key>
+			<dict>
+                                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                                <true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
+		</dict>
+	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Circles needs access to the camera if you would like to take new photos to share in the app.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

@@ -50,7 +50,7 @@ struct SignupScreen: View {
                             AccountInfoForm(matrix: matrix, authFlow: $selectedFlow, stage: stage, accountInfo: $accountInfo, emailSid: $emailSessionId)
                         }
                     case LOGIN_STAGE_APPLE_SUBSCRIPTION:
-                        AppStoreSubscriptionForm(matrix: matrix, uiaaState: $uiaaState)
+                        AppStoreSubscriptionForm(matrix: matrix, uiaaState: $uiaaState, authFlow: $selectedFlow)
                     default:
                         Text("Stage is [\(stage)]")
                     }
@@ -68,7 +68,7 @@ struct SignupScreen: View {
                     }
 
                 }
-
+                
             } else {
                 SignupStartForm(matrix: matrix, uiaaState: $uiaaState, selectedFlow: $selectedFlow)
             }
@@ -77,6 +77,8 @@ struct SignupScreen: View {
         .onAppear {
             // Start the process of fetching the App Store products, so that it will be loaded by the time the user decides to tap the App Store button
             if appStore.membershipProducts.isEmpty {
+                // Get the productIds from the initial UIAA state
+                // Ask the App Store interface to load information on them
                 if let params = uiaaState?.params?.appStore {
                     appStore.fetchProducts(matchingIdentifiers: params.productIds)
                 }

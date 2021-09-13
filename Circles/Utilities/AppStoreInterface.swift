@@ -35,6 +35,23 @@ class AppStoreInterface: NSObject, SKPaymentTransactionObserver, ObservableObjec
         //Other initialization here.
     }
 
+    // https://developer.apple.com/documentation/storekit/original_api_for_in-app_purchase/validating_receipts_with_the_app_store
+    static func getReceipt() -> String? {
+        // Get the receipt if it's available
+        guard let appStoreReceiptURL = Bundle.main.appStoreReceiptURL,
+              FileManager.default.fileExists(atPath: appStoreReceiptURL.path),
+              let receiptData = try? Data(contentsOf: appStoreReceiptURL, options: .alwaysMapped)
+        else {
+            print("APPSTORE\tCouldn't get receipt")
+            return nil
+        }
+
+        print(receiptData)
+
+        let receiptString = receiptData.base64EncodedString(options: [])
+        return receiptString
+    }
+
     // https://developer.apple.com/documentation/appstorereceipts/validating_receipts_on_the_device
     static func validateReceiptOnDevice(for productId: String) -> Bool {
         /// Initialize receipt

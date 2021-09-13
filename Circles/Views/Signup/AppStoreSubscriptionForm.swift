@@ -219,9 +219,7 @@ struct AppStoreSubscriptionForm: View {
         VStack {
             buttonBar
 
-            if let purchasedProductId = appStore.purchased.first(where: { productId in
-                !productId.contains("byos")
-            })
+            if let receipt = AppStoreInterface.getReceipt()
             {
                 Spacer()
 
@@ -237,10 +235,14 @@ struct AppStoreSubscriptionForm: View {
 
                 Button(action: {
                     // Send the receipt
-                    print("SIGNUP-APPSTORE\tAuthenticating with purchased product \(purchasedProductId)")
-                    matrix.signupDoAppStoreStage(receipt: "user bought some stuff, honest.") { response in
+                    print("SIGNUP-APPSTORE\tAuthenticating with purchase receipt \(receipt.prefix(20))...")
+                    matrix.signupDoAppStoreStage(receipt: receipt) { response in
+                        print("SIGNUP-APPSTORE\tGot response from homeserver")
                         if response.isSuccess {
+                            print("SIGNUP-APPSTORE\tSuccess!  Moving on to the next UIAA stage...")
                             authFlow?.pop(stage: self.stage)
+                        } else {
+                            print("SIGNUP-APPSTORE\tRequest failed.")
                         }
                     }
                 }) {
