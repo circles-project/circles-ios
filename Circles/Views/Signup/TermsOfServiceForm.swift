@@ -17,6 +17,14 @@ struct TermsOfServiceForm: View {
 
     let stage = LOGIN_STAGE_TERMS_OF_SERVICE
 
+    func getUrl() -> URL {
+        let termsparams = matrix.signupGetRequiredTerms()
+        let privacyPolicy = termsparams?.policies["privacy"]
+        let fallbackUrlString = "https://matrix.kombucha.social/_matrix/consent"
+        let url = privacyPolicy?.en?.url ?? URL(string: fallbackUrlString)!
+        return url
+    }
+
     var body: some View {
         VStack {
             //let currentStage: SignupStage = .acceptTermsOfService
@@ -27,7 +35,7 @@ struct TermsOfServiceForm: View {
 
             WebView(webView: webViewStore.webView)
                 .onAppear {
-                    let req = URLRequest(url: URL(string: "https://kombucha.social/_matrix/consent")!)
+                    let req = URLRequest(url: getUrl())
                     self.webViewStore.webView.load(req)
                 }
                 .font(.body)
