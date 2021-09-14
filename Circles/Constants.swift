@@ -32,7 +32,7 @@ let ROOM_TYPE_PHOTOS = APP_PREFIX + ".photos"
 // that we're following.
 let CIRCLE_TAG_FOLLOWING = APP_PREFIX + ".following"
 
-let KOMBUCHA_DEBUG = true
+let KOMBUCHA_DEBUG = false
 
 let PLAINTEXT_CACHE_FOLDER: String? = nil
 let DECRYPTED_CACHE_FOLDER: String = "decrypted"
@@ -43,7 +43,7 @@ let DECRYPTED_CACHE_FOLDER: String = "decrypted"
 let BLURHASH_WIDTH: Int = 6
 
 let BYOS_ENABLED = true
-let BYOS_REQUIRE_SUBSCRIPTION = true
+let BYOS_REQUIRE_SUBSCRIPTION = false
 
 let LOGIN_STAGE_SIGNUP_TOKEN = "social.kombucha.login.signup_token"
 let LOGIN_STAGE_APPLE_SUBSCRIPTION = "social.kombucha.login.subscription.apple"

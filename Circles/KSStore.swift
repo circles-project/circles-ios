@@ -89,8 +89,8 @@ class KSStore: ObservableObject {
         guard let domain = kombuchaDomain else {
             return nil
         }
-        //return URL(string: "https://matrix.\(domain)/")
-        return URL(string: "https://beta.kombucha.social/")!
+        return URL(string: "https://matrix.\(domain)/")
+        //return URL(string: "https://beta.kombucha.social/")!
     }
 
     private var kombuchaDomain: String? {

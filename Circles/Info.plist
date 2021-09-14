@@ -30,8 +30,8 @@
 		<dict>
 			<key>kombucha.social</key>
 			<dict>
-                                <key>NSExceptionAllowsInsecureHTTPLoads</key>
-                                <true/>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
 				<key>NSIncludesSubdomains</key>
 				<true/>
 			</dict>
