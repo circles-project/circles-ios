@@ -73,6 +73,13 @@ public struct UiaaSessionState: Codable {
     var params: UiaaParams?
     var completed: [String]?
     var session: String
+
+    func hasCompleted(stage: String) -> Bool {
+        guard let completed = completed else {
+            return false
+        }
+        return completed.contains(stage)
+    }
 }
 
 public struct UiaaSessionStateBare: Codable {

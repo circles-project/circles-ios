@@ -2816,11 +2816,31 @@ extension KSStore: MatrixInterface {
                 return
             }
 
-            // FIXME Synapse seems to be returning HTTP 401 regardless of our success or failure in the UIAA
+            // Synapse seems to be returning HTTP 401 regardless of our success or failure in the UIAA
             // Therefore we need to check our completed flows here before we can move on
             // If our current stage isn't in our new UIAA state's "completed" array, then we haven't actually succeeded yet :(
 
-            print("SIGNUP(apple)\tSo far so good")
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            guard let newUiaaState = try? decoder.decode(UiaaSessionState.self, from: data!) else {
+                let msg = "Couldn't parse the Matrix UIAA state"
+                print("SIGNUP(apple)\t\(msg)")
+                let err = KSError(message: msg)
+                completion(.failure(err))
+                return
+            }
+
+            self.signupState = .inProgress(newUiaaState)
+
+            guard newUiaaState.hasCompleted(stage: LOGIN_STAGE_APPLE_SUBSCRIPTION) else {
+                let msg = "App Store validation was not successful"
+                print("SIGNUP(apple)\t\(msg)")
+                let err = KSError(message: msg)
+                completion(.failure(err))
+                return
+            }
+
+            print("SIGNUP(apple)\tApp Store server validation succeeded!  So far so good...")
             completion(.success(nil))
         }
         task.resume()
