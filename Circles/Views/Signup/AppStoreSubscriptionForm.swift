@@ -28,7 +28,7 @@ struct MembershipProductCard: View {
             self.selectedProduct = product
         }) {
             VStack(alignment: .leading) {
-                let bigFont = Font.title2
+                let bigFont = Font.headline
                 HStack {
 
                     Text("\(product.regularPrice!)")
@@ -56,11 +56,11 @@ struct MembershipProductCard: View {
             }
             //.foregroundColor(textColor)
             .padding()
-            .frame(width: 300, height: 50)
+            .frame(width: 300, height: 40)
             .background(backgroundColor)
             .cornerRadius(10)
             .overlay(RoundedRectangle(cornerRadius: 10).stroke(borderColor, lineWidth: 2))
-            .padding()
+            //.padding()
         }
         .buttonStyle(PlainButtonStyle())
         .disabled(alreadyPurchased)
@@ -72,7 +72,7 @@ func getColor(_ maybeProduct: SKProduct?) -> Color {
         return Color.gray
     }
     if product.productIdentifier.contains("premium") {
-        return Color.pink
+        return Color.orange
     } else {
         return Color.purple
     }
@@ -97,7 +97,7 @@ struct AppStoreSubscriptionForm: View {
             }) {
                 Text("Cancel")
                     .font(.footnote)
-                    .padding(.top, 5)
+                    //.padding(.top, 5)
                     .padding(.leading, 10)
             }
             Spacer()
@@ -131,14 +131,23 @@ struct AppStoreSubscriptionForm: View {
                 .sorted(by: sortProductsByPrice)
 
             if !products.isEmpty {
+
                 VStack(alignment: .leading) {
                     Label("Individual plans - Standard", systemImage: "person.circle")
                         .font(.headline)
                         //.fontWeight(.bold)
-                    Text("Our standard individual account gives you up to 5 primary social circles with up to 150 contacts each, unlimited private groups, and up to 5 GB of secure cloud storage.  Plus unlimited small circles of fewer than 20 people.")
+
+                    Image("120896110_s")
+                        .resizable()
+                        .scaledToFit()
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                    Text("Our standard individual account gives you up to 5 primary social circles with up to 150 contacts each, unlimited private groups, and up to 5 GB of secure cloud storage.  Plus, you can have an unlimited number of small circles of fewer than 20 people.")
                         .font(.footnote)
-                        .padding()
+
+
                 }
+                .padding()
 
                 ForEach(products, id: \.self) { product in
                     MembershipProductCard(product: product, selectedProduct: $selectedProduct)
@@ -164,10 +173,16 @@ struct AppStoreSubscriptionForm: View {
                     Label("Individual plans - Premium", systemImage: "person.circle")
                         .font(.headline)
                         //.fontWeight(.bold)
-                    Text("Our premium individual account gives you 10 circles with up to 250 contacts each, unlimited private groups, and 10 GB of secure cloud storage.  Plus an unlimited number of small circles with up to 20 people.")
+
+                    Image("124972425_s")
+                        .resizable()
+                        .scaledToFit()
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                    Text("Our premium individual account lets you create 10 circles with up to 250 contacts each and unlimited private groups. Plus, you get 10 GB of secure cloud storage and an unlimited number of small circles with up to 20 people in each.")
                         .font(.footnote)
-                        .padding()
                 }
+                .padding()
 
                 ForEach(products, id: \.self) { product in
                     MembershipProductCard(product: product, selectedProduct: $selectedProduct)
@@ -177,21 +192,30 @@ struct AppStoreSubscriptionForm: View {
     }
 
     var purchaseForm: some View {
-        VStack {
-            Text("Select subscription")
-                .font(.title2)
-                .fontWeight(.bold)
-                .padding()
+        VStack(alignment: .center, spacing: 5) {
 
             ScrollView {
+
+                Text("Circles Subscription Plans")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .padding(.top)
+
+                let imageName = ["51616373_s", "134199050_s", "77851467_s"].randomElement()!
+                Image(imageName)
+                    .resizable()
+                    .scaledToFit()
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .padding()
 
                 individualStandardPlans
 
                 individualPremiumPlans
 
+                Spacer()
+
             }
 
-            Spacer()
 
             Text("Subscriptions will automatically renew until canceled")
                 .font(.footnote)
@@ -203,7 +227,8 @@ struct AppStoreSubscriptionForm: View {
                     }
                 }
             }) {
-                Text("Subscribe for \(selectedProduct?.localizedTitle ?? "")")
+                let buttonText = selectedProduct == nil ? "Select an option to subscribe" : "Subscribe for \(selectedProduct?.localizedTitle ?? "")"
+                Text(buttonText)
                     .padding()
                     .frame(width: 300.0, height: 40.0)
                     .foregroundColor(.white)
@@ -211,7 +236,7 @@ struct AppStoreSubscriptionForm: View {
                     .cornerRadius(10)
             }
             .disabled(selectedProduct == nil || appStore.purchased.contains(selectedProduct!.productIdentifier))
-            .padding()
+            //.padding()
         }
     }
 
@@ -262,7 +287,7 @@ struct AppStoreSubscriptionForm: View {
             }
 
         }
-        .padding()
+        .padding(5)
     }
 }
 

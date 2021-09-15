@@ -66,7 +66,7 @@ struct BYOSProductCard: View {
             .background(backgroundColor)
             .cornerRadius(10)
             .overlay(RoundedRectangle(cornerRadius: 10).stroke(borderColor, lineWidth: 2))
-            .padding()
+            //.padding()
         }
         .buttonStyle(PlainButtonStyle())
     }
@@ -97,16 +97,43 @@ struct BYOSPurchaseView: View {
 
     var body: some View {
         VStack {
-            Text("Bring-Your-Own-Server")
+            Text("Bring Your Own Server (BYOS)")
                 .font(.title2)
                 .fontWeight(.bold)
                 .multilineTextAlignment(.center)
-                .padding()
+                //.padding()
 
-            VStack(alignment: .leading, spacing: 10) {
-                Text("Use of Circles with non-Kombucha accounts requires an active subscription.")
+            ScrollView {
+
+            let imageName = ["124653629_s", "43324790_s"].randomElement()!
+            Image(imageName)
+                .resizable()
+                .scaledToFit()
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .padding(.horizontal)
+
+            VStack(alignment: .leading, spacing: 5) {
+                /*
+                Text("So, you want to use Circles with your own server? Awesome!")
+                    .font(.headline)
+                    .lineLimit(3)
+                */
+                Text("Circles gives you the flexibility to use your own server, or a friend's, or a server from some other provider.  Either way, you can still keep in touch with other Circles users, because the servers can all talk to each other using an open, extensible protocol.")
+                    .font(.caption)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text("Use of Circles with third party accounts requires an active subscription.")
+                    .font(.headline)
+                    //.lineLimit(3)
+                    //.minimumScaleFactor(0.5)
+                    .fixedSize(horizontal: false, vertical: true)
+
+
                 Text("Your support helps to keep Circles private and ad-free forever.  We don't show ads.  We will never track you or sell your data.  We work for you.")
                     .font(.caption)
+                    //.lineLimit(5)
+                    .fixedSize(horizontal: false, vertical: true)
+
                     //.padding()
 
                 //Spacer()
@@ -115,12 +142,16 @@ struct BYOSPurchaseView: View {
 
                 Text("Select a subscription option below to proceed:")
                     .font(.headline)
+                    //.minimumScaleFactor(0.5)
+                    .fixedSize(horizontal: false, vertical: true)
+
             }
             .padding()
 
             productsList
 
             Spacer()
+            }
 
             Text("Subscriptions will automatically renew until canceled")
                 .font(.footnote)
@@ -146,6 +177,7 @@ struct BYOSPurchaseView: View {
             }
             .disabled(selectedProduct == nil)
 
+            /*
             Button(action: {
                 self.presentation.wrappedValue.dismiss()
             }) {
@@ -156,7 +188,7 @@ struct BYOSPurchaseView: View {
                     .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.red))
 
             }
-
+            */
         }
         .padding()
     }

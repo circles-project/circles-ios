@@ -2909,7 +2909,8 @@ extension KSStore: MatrixInterface {
     func _getSignupUrl() -> URL? {
         let version = "r0"
         return URL(string: "/_matrix/client/\(version)/register",
-                   relativeTo: self.kombuchaServer)
+                   //relativeTo: self.kombuchaServer)
+                   relativeTo: URL(string: "https://beta.kombucha.social/")!)
     }
     
     func signupDoTermsStage(completion: @escaping (MXResponse<Void>)->Void) {
