@@ -2846,7 +2846,7 @@ extension KSStore: MatrixInterface {
         task.resume()
     }
     
-    func signupDoTokenStage(token: String, completion: @escaping (MXResponse<MXCredentials?>) -> Void) {
+    func signupDoTokenStage(token: String, tokenType: String, completion: @escaping (MXResponse<MXCredentials?>) -> Void) {
         guard case let .inProgress(authSession) = self.signupState else {
             let err = KSError(message: "No current signup session")
             completion(.failure(err))
@@ -2870,7 +2870,7 @@ extension KSStore: MatrixInterface {
         {
             "auth": {
                 "token": "\(token)",
-                "type": "\(LOGIN_STAGE_SIGNUP_TOKEN)",
+                "type": "\(tokenType)",
                 "session": "\(authSession.session)"
             },
             "x_show_msisdn": false
@@ -2910,6 +2910,27 @@ extension KSStore: MatrixInterface {
                 completion(.failure(err))
                 return
             }
+
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            guard let newUiaaState = try? decoder.decode(UiaaSessionState.self, from: data!) else {
+                let msg = "Couldn't parse the Matrix UIAA state"
+                print("SIGNUP(token)\t\(msg)")
+                let err = KSError(message: msg)
+                completion(.failure(err))
+                return
+            }
+
+            self.signupState = .inProgress(newUiaaState)
+
+            guard newUiaaState.hasCompleted(stage: tokenType) else {
+                let msg = "Token validation was not successful"
+                print("SIGNUP(token)\t\(msg)")
+                let err = KSError(message: msg)
+                completion(.failure(err))
+                return
+            }
+
             print("SIGNUP(token)\tSo far so good")
             completion(.success(nil))
         }
@@ -2929,8 +2950,8 @@ extension KSStore: MatrixInterface {
     func _getSignupUrl() -> URL? {
         let version = "r0"
         return URL(string: "/_matrix/client/\(version)/register",
-                   //relativeTo: self.kombuchaServer)
-                   relativeTo: URL(string: "https://beta.kombucha.social/")!)
+                   relativeTo: self.kombuchaServer)
+                   //relativeTo: URL(string: "https://beta.kombucha.social/")!)
     }
     
     func signupDoTermsStage(completion: @escaping (MXResponse<Void>)->Void) {

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct TokenForm: View {
+    let tokenType: String
     var matrix: MatrixInterface
     @Binding var authFlow: UiaaAuthFlow?
 
@@ -29,7 +30,7 @@ struct TokenForm: View {
     Failed to validate token
     """
 
-    let stage = LOGIN_STAGE_SIGNUP_TOKEN
+    //let stage = LOGIN_STAGE_SIGNUP_TOKEN
 
     var body: some View {
         VStack {
@@ -63,7 +64,7 @@ struct TokenForm: View {
                 // Call out to the server to validate our token
                 // If successful, set stage = .getEmail
                 self.pending = true
-                matrix.signupDoTokenStage(token: signupToken) { response in
+                matrix.signupDoTokenStage(token: signupToken, tokenType: tokenType) { response in
                     switch response {
                     case .failure(let err):
                         print("SIGNUP\tToken stage failed: \(err)")
@@ -73,7 +74,7 @@ struct TokenForm: View {
                     case .success:
                         // We're done with the current stage.  Let's move on to the next one.
                         //self.stage = next[currentStage]!
-                        authFlow?.pop(stage: stage)
+                        authFlow?.pop(stage: tokenType)
                     }
                     self.pending = false
                 }

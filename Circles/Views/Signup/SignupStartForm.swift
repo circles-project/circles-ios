@@ -42,7 +42,9 @@ struct SignupStartForm: View {
             Spacer()
 
             let tokenFlow = try? uiaaState?.flows.first(where: {
-                $0.stages.contains(LOGIN_STAGE_SIGNUP_TOKEN)
+                $0.stages.contains(LOGIN_STAGE_TOKEN_KOMBUCHA) ||
+                    $0.stages.contains(LOGIN_STAGE_TOKEN_MATRIX) ||
+                    $0.stages.contains(LOGIN_STAGE_TOKEN_MSC3231)
             })
             if tokenFlow != nil {
                 Text("Already have a Circles token?")

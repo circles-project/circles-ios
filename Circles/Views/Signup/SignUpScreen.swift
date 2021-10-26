@@ -39,8 +39,10 @@ struct SignupScreen: View {
 
                 if let stage = flow.stages.first {
                     switch stage {
-                    case LOGIN_STAGE_SIGNUP_TOKEN:
-                        TokenForm(matrix: matrix, authFlow: $selectedFlow)
+                    case LOGIN_STAGE_TOKEN_KOMBUCHA,
+                         LOGIN_STAGE_TOKEN_MATRIX,
+                         LOGIN_STAGE_TOKEN_MSC3231:
+                        TokenForm(tokenType: stage, matrix: matrix, authFlow: $selectedFlow)
                     case LOGIN_STAGE_TERMS_OF_SERVICE:
                         TermsOfServiceForm(matrix: matrix, authFlow: $selectedFlow)
                     case LOGIN_STAGE_VERIFY_EMAIL:
