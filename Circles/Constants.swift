@@ -43,7 +43,7 @@ let DECRYPTED_CACHE_FOLDER: String = "decrypted"
 let BLURHASH_WIDTH: Int = 6
 
 let BYOS_ENABLED = true
-let BYOS_REQUIRE_SUBSCRIPTION = true
+let BYOS_REQUIRE_SUBSCRIPTION = false
 
 let LOGIN_STAGE_TOKEN_KOMBUCHA = "social.kombucha.login.signup_token"
 let LOGIN_STAGE_TOKEN_MATRIX = "m.login.registration_token"
