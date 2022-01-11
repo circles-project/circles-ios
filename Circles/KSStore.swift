@@ -1193,9 +1193,9 @@ extension KSStore: MatrixInterface {
         
         // Check: Are we already logged in?
         switch(self.session.state) {
-        case MXSessionStateClosed,
-             MXSessionStateUnknownToken,
-             MXSessionStateSoftLogout:
+        case MXSessionState.closed,
+             MXSessionState.unknownToken,
+             MXSessionState.softLogout:
             guard let autoDiscovery = MXAutoDiscovery(domain: userDomain)
             else {
                 let msg = "Failed to find Matrix autodiscovery service"
