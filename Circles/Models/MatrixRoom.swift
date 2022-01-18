@@ -760,7 +760,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
             mimeType: "image/jpeg",
             thumbnail: thumb,
             blurhash: blurhash,
-            caption: caption,
+            //caption: caption,
             localEcho: &self.localEchoEvent
         ) { response in
             switch response {
