@@ -34,7 +34,7 @@ class MatrixMessage: ObservableObject, Identifiable {
         
         let decoder = DictionaryDecoder()
         // swiftlint:disable:next force_try
-        try! self.content = decoder.decode(MatrixMsgContent.self, from: mxevent.content)
+        self.content = try? decoder.decode(MatrixMsgContent.self, from: mxevent.content)
         
     }
     
