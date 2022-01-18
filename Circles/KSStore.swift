@@ -2598,10 +2598,13 @@ extension KSStore: MatrixInterface {
             return "Plaintext"
         }
         
-        return crypto.store.algorithm(forRoom: roomId)
+        //return crypto.store.algorithm(forRoom: roomId)
+        return "Encrypted/Unknown"
     }
     
     func getOlmSessions(deviceKey: String) -> [MXOlmSession] {
+        return [] // Returning nothing since we no longer have access to the crypto store
+        /*
         guard let crypto = self.session.crypto else {
             return []
         }
@@ -2609,9 +2612,12 @@ extension KSStore: MatrixInterface {
             return []
         }
         return result
+        */
     }
     
     func getInboundGroupSessions() -> [MXOlmInboundGroupSession] {
+        return [] // Returning nothing since our access to the crypto store went away
+        /*
         guard let crypto = self.session.crypto else {
             return []
         }
@@ -2633,13 +2639,17 @@ extension KSStore: MatrixInterface {
             print("CRYPTO\t---")
         }
         return sessions
+        */
     }
 
     func getOutboundGroupSessions() -> [MXOlmOutboundGroupSession] {
+        return [] // We no longer have access to the crypto store.  Returning nothing for now.
+        /*
         guard let crypto = self.session.crypto else {
             return []
         }
         return crypto.store.outboundGroupSessions()
+        */
     }
 
     func ensureEncryption(roomId: String, completion: @escaping (MXResponse<Void>) -> Void) {
