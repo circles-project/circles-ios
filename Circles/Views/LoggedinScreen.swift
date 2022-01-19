@@ -43,21 +43,21 @@ struct LoggedinScreen: View {
             CirclesOverviewScreen(store: self.store)
                 .tabItem {
                     Image(systemName: "circles.hexagonpath")
-                    Text("My Circles")
+                    Text("Circles")
                 }
                 .tag(Tab.circles)
             
             PeopleOverviewScreen(container: self.store.getPeopleContainer())
                 .tabItem {
                     Image(systemName: "rectangle.stack.person.crop")
-                    Text("My People")
+                    Text("People")
                 }
                 .tag(Tab.people)
             
             GroupsOverviewScreen(container: self.store.getGroups())
                 .tabItem {
                     Image(systemName: "person.2.square.stack")
-                    Text("My Groups")
+                    Text("Groups")
                 }
                 .tag(Tab.groups)
             
