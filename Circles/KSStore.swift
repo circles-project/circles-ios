@@ -1310,6 +1310,7 @@ extension KSStore: MatrixInterface {
 
 
                             if let singlePasswordSecrets = secrets {
+                                UserDefaults.standard.set(singlePasswordSecrets.secretKey, forKey: "privateKey[\(user_id)]")
                                 self.setupRecovery(secrets: singlePasswordSecrets)
                             } else {
                                 self.generateSecretsFromTwoPasswords(userId: user_id, loginPassword: rawPassword, s4Password: s4Password!) { secretsResponse in
