@@ -35,6 +35,8 @@ struct AccountScreen: View {
 
     @State var profileImage = UIImage(systemName: "person.crop.square")
 
+    @State var newRecoveryPassphrase = ""
+
     var threepidList: some View {
         //TextField("Email Address", text: $emailAddress)
         //TextField("Mobile Number", text: $mobileNumber)
@@ -145,7 +147,7 @@ struct AccountScreen: View {
                         }
                     }
                 }) {
-                    Label("Update my password", systemImage: "key.fill")
+                    Label("Update my password", systemImage: "lock.circle")
                 }
                 .disabled( oldPassword.isEmpty || newPassword.isEmpty || newPassword != repeatPassword )
             }
@@ -167,6 +169,33 @@ struct AccountScreen: View {
                 }
             }
             */
+
+            Section(header: Text("Encrypted Backup")) {
+                TextField("New passphrase", text: $newRecoveryPassphrase)
+                Button(action: {
+                    if newRecoveryPassphrase.isEmpty {
+                        return
+                    }
+                    let matrix = user.matrix
+                    guard let secrets = matrix.generateSecretsFromSinglePassword(userId: user.id, password: newRecoveryPassphrase) else {
+                        print("Failed to generate secrets")
+                        return
+                    }
+                    matrix.deleteRecovery { response in
+                        if response.isSuccess {
+                            print("RECOVERY\tDeleted old recovery")
+                            matrix.createRecovery(privateKey: secrets.secretKey)
+                        }
+                        else {
+                            print("RECOVERY\tError: Failed to delete old recovery")
+                        }
+                    }
+                }) {
+                    Label("Rebuild Encrypted Backup", systemImage: "key.fill")
+                        //.foregroundColor(.red)
+                }
+                .disabled(newRecoveryPassphrase.isEmpty)
+            }
 
             Section(header: Text("Account Deletion")) {
                 if showConfirmDelete {

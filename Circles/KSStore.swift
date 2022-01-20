@@ -214,6 +214,11 @@ class KSStore: ObservableObject {
     var groups: GroupsContainer? = nil
     var galleries: PhotoGalleriesContainer? = nil
     var people: PeopleContainer? = nil
+
+    // We need to use the Matrix 'recovery' feature to back up crypto keys etc
+    // This saves us from struggling with UISI errors and unverified devices
+    private var recoverySecretKey: Data?
+    private var recoveryTimestamp: Date?
         
     init() {
         // OK, let's see what we have to work with here.
@@ -250,6 +255,9 @@ class KSStore: ObservableObject {
 
         print("STORE\tUser Id = \(user_id)")
         print("STORE\tAccess token = \(access_token)")
+
+        // OK so far so good.  Now do we have a recovery key?
+        self.recoverySecretKey = UserDefaults.standard.data(forKey: "recoverySecretKey[\(user_id)]") ?? UserDefaults.standard.data(forKey: "privateKey[\(user_id)]")
 
         // Next: Where is the server for this user id?
         // It might be something like matrix.domain.tld, or it might be something random
@@ -292,6 +300,10 @@ class KSStore: ObservableObject {
                 print("STORE\tBack from connect()")
                 //dgroup.leave()
 
+                /*
+                 // Moving the recovery key stuff into the MXSession state handler
+                 // That way, it gets called every time we come back online, regardless of whether we just launched the app or no
+
                 // Set up the recovery service for keys / secrets / etc
                 // login() does this in its own callback.  So we should do it too.
                 // This prevents calling it multiple times from inside connect() when it doesn't know what its caller is/isn't handling.
@@ -302,6 +314,7 @@ class KSStore: ObservableObject {
                 } else {
                     print("STORE\tNo private key for recovery for user \(self.whoAmI())")
                 }
+                */
 
             }
         }
@@ -395,11 +408,31 @@ class KSStore: ObservableObject {
         // actually post the events...
         self.sessionStateSink = NotificationCenter.default.publisher(for: NSNotification.Name.mxSessionStateDidChange)
             .sink(receiveCompletion: { _ in
-                    print("Sink: Received completion")
+                    print("SESSIONSTATESINK: Received completion")
                 },
                 receiveValue: { notification in
-                    print("Sink: Got notification: \(notification)")
-                    self.objectWillChange.send()
+                    print("SESSIONSTATESINK: Got notification: \(notification)")
+                    //self.objectWillChange.send()
+                    let maybeMxSession: MXSession? = notification.object as? MXSession
+                    if let mxs = maybeMxSession {
+                        switch mxs.state {
+                        case MXSessionState.running:
+                            print("Session is now running")
+                            if let key = self.recoverySecretKey {
+                                self.connectRecovery(privateKey: key)
+                            }
+                        case MXSessionState.homeserverNotReachable:
+                            print("Session can't reach the homeserver")
+                        case MXSessionState.closed:
+                            print("Session is closed")
+                        case MXSessionState.syncError:
+                            print("Session has a sync error")
+                        case MXSessionState.syncInProgress:
+                            print("Session is syncing")
+                        default:
+                            print("Session is... doing something else")
+                        }
+                    }
                 }
             )
         
@@ -411,7 +444,7 @@ class KSStore: ObservableObject {
                 },
                 receiveValue: { value in
                     print("NEWROOM\tSink: Got notification: \(value)")
-                    self.objectWillChange.send()
+                    //self.objectWillChange.send()
                 }
             )
         
@@ -1196,16 +1229,7 @@ extension KSStore: MatrixInterface {
         case MXSessionState.closed,
              MXSessionState.unknownToken,
              MXSessionState.softLogout:
-            guard let autoDiscovery = MXAutoDiscovery(domain: userDomain)
-            else {
-                let msg = "Failed to find Matrix autodiscovery service"
-                print("LOGIN\t\(msg)")
-                let err = KSError(message: msg)
-                completion(.failure(err))
-                return
-            }
 
-            //autoDiscovery.wellKnow({ wellknown in
             _fetchWellKnown(for: userDomain) { wellKnownResponse in
                 guard case let .success(wellKnownInfo) = wellKnownResponse,
                       let hsURL = URL(string: wellKnownInfo.homeserver.base_url)
@@ -1311,6 +1335,8 @@ extension KSStore: MatrixInterface {
 
                             if let singlePasswordSecrets = secrets {
                                 UserDefaults.standard.set(singlePasswordSecrets.secretKey, forKey: "privateKey[\(user_id)]")
+                                UserDefaults.standard.set(singlePasswordSecrets.secretKey, forKey: "recoverySecretKey[\(user_id)]")
+                                self.recoverySecretKey = singlePasswordSecrets.secretKey
                                 self.setupRecovery(secrets: singlePasswordSecrets)
                             } else {
                                 self.generateSecretsFromTwoPasswords(userId: user_id, loginPassword: rawPassword, s4Password: s4Password!) { secretsResponse in
@@ -1320,6 +1346,8 @@ extension KSStore: MatrixInterface {
                                         print("LOGIN\tFailed to generate secrets")
                                     case .success(let twoPasswordSecrets):
                                         UserDefaults.standard.set(twoPasswordSecrets.secretKey, forKey: "privateKey[\(user_id)]")
+                                        UserDefaults.standard.set(twoPasswordSecrets.secretKey, forKey: "recoverySecretKey[\(user_id)]")
+                                        self.recoverySecretKey = twoPasswordSecrets.secretKey
                                         self.setupRecovery(secrets: twoPasswordSecrets)
                                     }
                                 }
@@ -1406,12 +1434,41 @@ extension KSStore: MatrixInterface {
             )
     }
 
+    func deleteRecovery(completion: @escaping(MXResponse<Void>) -> Void) {
+        guard let crypto = self.session.crypto,
+              let recovery = crypto.recoveryService else {
+            print("RECOVERY\tCouldn't get recoveryService")
+            completion(.failure(KSError(message: "Failed to delete recovery")))
+            return
+        }
+
+        recovery.deleteRecovery(withDeleteServicesBackups: true,
+                                success: {
+                                    let stillThere = recovery.hasRecovery()
+                                    print("RECOVERY\tDelete was successful.  But is the recovery still there?  Answer: \(stillThere)")
+                                    completion(.success(()))
+                                },
+                                failure: { err in
+                                    completion(.failure(err))
+                                })
+    }
+
     func connectRecovery(privateKey: Data) {
         guard let crypto = self.session.crypto,
               let recovery = crypto.recoveryService else {
             print("RECOVERY\tCouldn't get recoveryService")
             return
         }
+
+        let now = Date()
+        if let timestamp = self.recoveryTimestamp {
+            // Check to make sure we didn't *just* do this
+            if timestamp.distance(to: now) < RECOVERY_MIN_INTERVAL {
+                print("RECOVERY\tAborting connectRecovery() because we're still within the minimum interval")
+                return
+            }
+        }
+        self.recoveryTimestamp = now
 
         func handleSuccess(result: MXSecretRecoveryResult) {
             print("RECOVERY\tSuccess - connected to recovery")
@@ -1428,7 +1485,7 @@ extension KSStore: MatrixInterface {
         }
 
         func handleError(error: Error) {
-            print("RECOVERY\tFailed to connect to existing recovery.  Creating a new one instead.")
+            print("RECOVERY\tFailed to connect to existing recovery")
             // Hmm OK we failed to connect to the existing one.
             // Why don't we just create a new one?
             // Answer: Because Matrix won't let us.

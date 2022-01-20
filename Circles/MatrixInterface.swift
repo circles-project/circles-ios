@@ -28,6 +28,9 @@ protocol MatrixInterface {
     func changeMyPassword(oldPassword: String, newPassword: String, completion: @escaping (MXResponse<Void>) -> Void)
     
     //func finishSignupAndConnect()
+
+    func createRecovery(privateKey: Data)
+    func deleteRecovery(completion: @escaping(MXResponse<Void>) -> Void)
         
     func whoAmI() -> String
     
