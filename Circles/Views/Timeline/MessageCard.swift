@@ -26,6 +26,7 @@ struct MessageText: View {
         self.paragraphs = text.split(separator: "\n")
     }
     
+    /*
     var body: some View {
         VStack(alignment: .leading) {
             if paragraphs.count > 1 {
@@ -46,6 +47,16 @@ struct MessageText: View {
                 Text(self.text)
                     .font(.body)
             }
+        }
+    }
+    */
+    
+    var body: some View {
+        if let fancyText = try? AttributedString(markdown: self.text, options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)) {
+            return Text(fancyText)
+        }
+        else {
+            return Text(self.text)
         }
     }
 }
@@ -149,11 +160,16 @@ struct MessageCard: View {
                             .padding(1)
 
                         if let caption = getCaption(body: imageContent.body) {
-                            //Markdown(Document(caption))
-                            Text(caption)
-                            //NativeMarkText(caption)
-                                .padding(.horizontal, 3)
-                                .padding(.bottom, 5)
+                            if let fancyCaption = try? AttributedString(markdown: caption, options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)) {
+                                Text(fancyCaption)
+                                    .padding(.horizontal, 3)
+                                    .padding(.bottom, 5)
+                            }
+                            else {
+                                Text(caption)
+                                    .padding(.horizontal, 3)
+                                    .padding(.bottom, 5)
+                            }
                         }
                     }
                     Spacer()
