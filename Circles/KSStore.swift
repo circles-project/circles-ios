@@ -1553,6 +1553,37 @@ extension KSStore: MatrixInterface {
         
         //self.session.setIdentityServer(identityServer.absoluteString, andAccessToken: nil)
         
+        // Debugging a problem with the MXCryptoStore in MatrixSDK v0.20.7 --> v0.20.8
+        if let docsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+            print("[DEBUGCRYPTOSTORE] Found docs path: \(docsPath.absoluteString)")
+            if let userId = restclient.credentials?.userId {
+                let oldFilename = "\(userId).realm"
+                print("[DEBUGCRYPTOSTORE] Old filename = \(oldFilename)")
+                
+                let oldPath = docsPath.absoluteString + oldFilename
+                print("[DEBUGCRYPTOSTORE] Old path = \(oldPath)")
+
+                if FileManager.default.fileExists(atPath: oldPath) {
+                    print("[DEBUGCRYPTOSTORE] Old realm file exists")
+                } else {
+                    print("[DEBUGCRYPTOSTORE] No old realm file :(")
+                }
+                
+                let newFilename = "MXRealmCryptoStore/\(oldFilename)"
+                print("[DEBUGCRYPTOSTORE] New filename = \(newFilename)")
+
+                let newPath = docsPath.absoluteString + newFilename
+                print("[DEBUGCRYPTOSTORE] New path = \(newPath)")
+
+                if FileManager.default.fileExists(atPath: newPath) {
+                    print("[DEBUGCRYPTOSTORE] New realm file exists")
+                } else {
+                    print("[DEBUGCRYPTOSTORE] No new realm file :(")
+                }
+                
+            }
+        }
+        
         let store = MXFileStore(credentials: restclient.credentials)
         self.session.setStore(store) { store_response in
             self.objectWillChange.send()
