@@ -138,11 +138,11 @@ struct LoginScreen: View {
                     
             logo
             
-            Text("Kombucha.social")
-                .font(.headline)
-                .fontWeight(.bold)
             Text("Circles")
                 .font(.largeTitle)
+                .fontWeight(.bold)
+            Text("by FUTO Labs")
+                .font(.headline)
                 .fontWeight(.bold)
             
             TextField("Username", text: $username)
