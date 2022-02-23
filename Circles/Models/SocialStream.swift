@@ -102,10 +102,15 @@ class SocialStream: ObservableObject, Identifiable {
             return
         }
         
-        self.objectWillChange.send()
+        //self.objectWillChange.send()
         
         print("KSDEBUG Paginating room \(room.displayName ?? room.id)")
-        room.paginate(count: count, completion: completion)
+        room.paginate(count: count) { response in
+            if response.isSuccess {
+                self.objectWillChange.send()
+            }
+            completion(response)
+        }
     }
     
     /* // Switching this to an explicit getter function so
