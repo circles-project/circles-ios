@@ -93,6 +93,13 @@ struct TimelineView: View {
                                 }
                                 MessageCard(message: msg, displayStyle: displayStyle)
                                     .padding(.top, 5)
+                                    .onAppear {
+                                        //print("INFINITE_SCROLL\tChecking to see if we need to paginate")
+                                        if msg == messages.last && room.canPaginate() {
+                                            //print("INFINITE_SCROLL\tPaginating room \(room.displayName ?? "Unnamed room") [\(room.id)]")
+                                            room.paginate() { _ in }
+                                        }
+                                    }
                             }
                             RepliesView(room: room, parent: msg)
                         }
@@ -106,37 +113,7 @@ struct TimelineView: View {
                 
             }
         }
-        /*
-        .sheet(item: $sheetType) { st in
-            switch(st) {
 
-            case .composer:
-                MessageComposerSheet(room: room, parentMessage: selectedMessage)
-
-            case .detail:
-                if let msg = self.selectedMessage {
-                    MessageDetailSheet(message: msg, displayStyle: .timeline,
-                                       selectedMessage: msg,
-                                       sheetType: nil)
-                } else {
-                    VStack {
-                        Text("Message Detail Sheet")
-                            .font(.title2)
-                        Text("No message selected...")
-                        if let msgTryAgain = self.selectedMessage {
-                            Text("Selected message is: \(msgTryAgain.id)")
-                        }
-                    }
-                }
-
-            case .reporting:
-                if let msg = selectedMessage {
-                    MessageReportingSheet(message: msg)
-                }
-
-            }
-        }
-        */
     }
 }
 
