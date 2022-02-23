@@ -1962,7 +1962,10 @@ extension KSStore: MatrixInterface {
         var params: [String: Any] = [:]
         params["visibility"] = "private"
         params["name"] = name
-        params["preset"] = "private_chat"
+        //params["preset"] = "private_chat"
+        params["join_rules"] = "invite"
+        params["history_visibility"] = "shared"
+        params["guest_access"] = "forbidden"
         params["room_type"] = type
 
         // TODO Fill in the starting power levels, etc
@@ -1992,7 +1995,7 @@ extension KSStore: MatrixInterface {
         // getting the proper incantation of combining JSON
         // and MX ObjC data types...
         if !insecure {
-        let encryptionEvent = MXRoomCreationParameters.initialStateEventForEncryption(withAlgorithm: "m.megolm.v1.aes-sha2")
+            let encryptionEvent = MXRoomCreationParameters.initialStateEventForEncryption(withAlgorithm: "m.megolm.v1.aes-sha2")
             params["initial_state"] = [encryptionEvent]
         }
         
