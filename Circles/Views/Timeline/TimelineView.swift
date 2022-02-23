@@ -32,7 +32,9 @@ struct TimelineView: View {
                 if loading {
                     ProgressView("Loading...")
                         .progressViewStyle(LinearProgressViewStyle())
-                } else {
+                }
+                /*
+                else {
                     Button(action: {
                         self.loading = true
                         room.paginate() { response in
@@ -42,7 +44,8 @@ struct TimelineView: View {
                         Text("Load More")
                     }
                     .disabled(!room.canPaginate())
-                    }
+                }
+                */
                 Spacer()
             }
             

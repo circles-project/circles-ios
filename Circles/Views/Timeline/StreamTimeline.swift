@@ -84,7 +84,9 @@ struct StreamTimeline: View {
                     if loading {
                         ProgressView("Loading...")
                             .progressViewStyle(LinearProgressViewStyle())
-                    } else {
+                    }
+                    /*
+                    else {
                         Button(action: {
                             self.loading = true
                             stream.paginate() { response in
@@ -95,6 +97,7 @@ struct StreamTimeline: View {
                         }
                         .disabled(!stream.canPaginate)
                     }
+                    */
                     Spacer()
                 }
             }
