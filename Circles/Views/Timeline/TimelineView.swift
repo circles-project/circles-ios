@@ -33,8 +33,7 @@ struct TimelineView: View {
                     ProgressView("Loading...")
                         .progressViewStyle(LinearProgressViewStyle())
                 }
-                /*
-                else {
+                else if room.canPaginate() {
                     Button(action: {
                         self.loading = true
                         room.paginate() { response in
@@ -43,9 +42,15 @@ struct TimelineView: View {
                     }) {
                         Text("Load More")
                     }
-                    .disabled(!room.canPaginate())
+                    .onAppear {
+                        // It's a magic self-clicking button.
+                        // If it ever appears, we basically automatically click it for the user
+                        self.loading = true
+                        room.paginate() { response in
+                            self.loading = false
+                        }
+                    }
                 }
-                */
                 Spacer()
             }
             
@@ -96,13 +101,18 @@ struct TimelineView: View {
                                 }
                                 MessageCard(message: msg, displayStyle: displayStyle)
                                     .padding(.top, 5)
+                                    /*
                                     .onAppear {
                                         //print("INFINITE_SCROLL\tChecking to see if we need to paginate")
-                                        if msg == messages.last && room.canPaginate() {
-                                            //print("INFINITE_SCROLL\tPaginating room \(room.displayName ?? "Unnamed room") [\(room.id)]")
-                                            room.paginate() { _ in }
+                                        if msg == messages.last {
+                                            print("INFINITE_SCROLL\tPaginating room \(room.displayName ?? "Unnamed room") [\(room.id)]")
+                                            loading = true
+                                            room.paginate() { _ in
+                                                loading = false
+                                            }
                                         }
                                     }
+                                    */
                             }
                             RepliesView(room: room, parent: msg)
                         }
