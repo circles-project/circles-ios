@@ -66,6 +66,12 @@ struct StreamTimeline: View {
                                     Text("\(index)")
                                 }
                                 MessageCard(message: msg, displayStyle: .timeline)
+                                    .onAppear {
+                                        if msg == messages.last && stream.canPaginate {
+                                            print("INFINITE SCROLL\tPaginating social stream \(stream.name)")
+                                            stream.paginate() { _ in }
+                                        }
+                                    }
                             }
                             RepliesView(room: msg.room, parent: msg)
                         }
