@@ -34,7 +34,7 @@ struct MessageDetailSheet: View {
 
             ScrollView {
                 LazyVStack {
-                    MessageCard(message: message, displayStyle: displayStyle)
+                    MessageCard(message: message, displayStyle: .detail)
                         .padding(.top, 3)
 
                     RepliesView(room: message.room, parent: message,

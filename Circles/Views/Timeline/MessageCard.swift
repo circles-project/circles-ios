@@ -15,6 +15,7 @@ enum MessageDisplayStyle {
     case timeline
     case photoGallery
     case composer
+    case detail
 }
 
 struct MessageText: View {
