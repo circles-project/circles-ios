@@ -28,6 +28,10 @@ class SocialGroup: ObservableObject, Identifiable {
     {
         self.container.leave(group: self, completion: completion)
     }
+    
+    var name: String? {
+        self.room.displayName
+    }
 }
 
 /*
