@@ -45,6 +45,8 @@ struct GroupTimelineScreen: View {
     @State private var showTopicPopover = false
 
     @State var nilParentMessage: MatrixMessage? = nil
+    
+    @State private var confirmLeaveGroup = false
 
     /*
     var composer: some View {
@@ -88,8 +90,11 @@ struct GroupTimelineScreen: View {
             }
             
             Button(action: {
+                /*
                 self.group.container.leave(group: self.group, completion: { _ in })
                 self.presentation.wrappedValue.dismiss()
+                */
+                self.confirmLeaveGroup = true
             }) {
                 Label("Leave group", systemImage: "xmark")
             }
@@ -155,6 +160,21 @@ struct GroupTimelineScreen: View {
             }
         }
         .navigationBarTitle(title, displayMode: .inline)
+        .actionSheet(isPresented: $confirmLeaveGroup) {
+            ActionSheet(title: Text("Confirm leaving group"),
+                        message: Text("Do you really want to leave \(group.name ?? "this group")?\nYou will not be able to re-join the group unless another member invites you again."),
+                        buttons: [
+                            .cancel(),
+                            .destructive(
+                                Text("Leave Group"),
+                                action: {
+                                    self.group.leave(completion: { _ in })
+                                    self.presentation.wrappedValue.dismiss()
+                                }
+                            )
+                        ]
+            )
+        }
 
     }
 }
