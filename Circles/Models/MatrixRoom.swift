@@ -1,4 +1,5 @@
 //  Copyright 2020, 2021 Kombucha Digital Privacy Systems LLC
+//  Copyright 2022 FUTO Holdings, Inc
 //
 //  MatrixRoom.swift
 //  Circles for iOS
@@ -18,8 +19,9 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
     private var localEchoEvent: MXEvent?
     private var backwardTimeline: MXEventTimeline?
 
-    var first: MatrixMessage?
+    @Published var first: MatrixMessage?
     @Published var last: MatrixMessage?
+    @Published var isPaginating: Bool = false
 
     @Published var membership = [String:String]()
 
@@ -71,10 +73,13 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
         switch event.eventType {
 
         case .roomMessage:
+            /* FIXME: Need to find a better way to handle ignored users
+                      Right here, we really need to have an accurate list of which messages we've fetched
             // Hide messages from people on our ignore list
             if self.ignoredSenders.contains(event.sender) {
                 return
             }
+            */
 
             let msg = MatrixMessage(from: event, in: self)
             self.objectWillChange.send()
@@ -506,15 +511,19 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
             return
         }
         
-        timeline.paginate(count, direction: .backwards, onlyFromStore: false) { response in
-            // When we get this call, the timeline will have been populated in the MXSession/MXStore
-            switch response {
-            case .failure(let error):
-                print("Pagination request failed: \(error)")
-            case .success:
-                self.objectWillChange.send()
+        if !self.isPaginating {
+            self.isPaginating = true
+            timeline.paginate(count, direction: .backwards, onlyFromStore: false) { response in
+                // When we get this call, the timeline will have been populated in the MXSession/MXStore
+                switch response {
+                case .failure(let error):
+                    print("Pagination request failed: \(error)")
+                case .success:
+                    self.objectWillChange.send()
+                }
+                self.isPaginating = false
+                completion(response)
             }
-            completion(response)
         }
     }
 
