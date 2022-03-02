@@ -2812,11 +2812,22 @@ extension KSStore: MatrixInterface {
     }
        
     func signupGetSessionId() -> String? {
-        guard case let .inProgress(authSession) = self.signupState else {
+        switch signupState {
+        case .notStarted:
+            return nil
+        case .starting:
+            return nil
+        case .inProgress(let uiaaSessionState):
+            return uiaaSessionState.session
+        case .waitingForSMS(let uiaaSessionState):
+            return uiaaSessionState.session
+        case .waitingForEmail(let uiaaSessionState):
+            return uiaaSessionState.session
+        case .validatedEmail(let uiaaSessionState):
+            return uiaaSessionState.session
+        case .finished( _):
             return nil
         }
-        
-        return authSession.session
     }
 
     func signupDoAppStoreStage(receipt: String, completion: @escaping (MXResponse<MXCredentials?>) -> Void) {
