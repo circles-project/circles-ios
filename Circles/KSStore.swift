@@ -15,7 +15,7 @@ import UIKit
 import MatrixSDK
 import OLMKit
 import StoreKit
-import BCrypt
+import BCryptSwift
 import CryptoKit
 
 enum TermsOfServiceState {
@@ -1152,7 +1152,7 @@ extension KSStore: MatrixInterface {
         print("SECRETS\tComputed salt string = [\(saltString)]")
 
         let numRounds = 14
-        guard let bcrypt = try? BCrypt.Hash(password, salt: "$2a$\(numRounds)$\(saltString)") else {
+        guard let bcrypt = BCryptSwift.hashPassword(password, withSalt: "$2a$\(numRounds)$\(saltString)") else {
             let msg = "BCrypt KDF failed"
             print("SECRETS\t\(msg)")
             return nil
