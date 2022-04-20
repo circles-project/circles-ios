@@ -8,6 +8,8 @@
 import Foundation
 import AnyCodable
 
+// Implements the Matrix UI Auth for the Matrix /register endpoint
+// https://spec.matrix.org/v1.2/client-server-api/#post_matrixclientv3register
 actor SignupSession {
     
     enum State {
@@ -18,12 +20,17 @@ actor SignupSession {
     
     let url: URL
     var state: State
-    let userId: String
+    let username: String
+    let deviceId: String?
+    let initialDeviceDisplayName: String?
+    let inhibitLogin = true
     
-    init(_ url: URL, userId: String) {
+    init(_ url: URL, username: String, deviceId: String? = nil, initialDeviceDisplayName: String? = nil) {
         self.url = url
-        self.userId = userId
+        self.username = username
         self.state = .notStarted
+        self.deviceId = deviceId
+        self.initialDeviceDisplayName = initialDeviceDisplayName
     }
     
     var sessionId: String? {
@@ -205,9 +212,21 @@ actor SignupSession {
         request.httpMethod = "POST"
         struct GenericRegisterUIAuthRequestBody: Codable {
             var username: String?
+            var deviceId: String?
+            var initialDeviceDisplayName: String?
+            var inhibitLogin: Bool
             var auth: [String: AnyCodable]
-            init(username: String? = nil, auth: [String:AnyCodable], sessionId: String) {
+            init(username: String? = nil,
+                 deviceId: String? = nil,
+                 initialDeviceDisplayName: String? = nil,
+                 inhibitLogin: Bool,
+                 auth: [String:AnyCodable],
+                 sessionId: String)
+            {
                 self.username = username
+                self.deviceId = deviceId
+                self.inhibitLogin = inhibitLogin
+                
                 self.auth = .init()
                 self.auth.merge(auth, uniquingKeysWith: { (a,b) -> AnyCodable in
                     a
@@ -215,7 +234,13 @@ actor SignupSession {
                 self.auth["session"] = AnyCodable(sessionId)
             }
         }
-        let gruiarb = GenericRegisterUIAuthRequestBody(auth: auth, sessionId: uiaState.session)
+        let gruiarb = GenericRegisterUIAuthRequestBody(
+            username: self.username,
+            deviceId: self.deviceId,
+            initialDeviceDisplayName: self.initialDeviceDisplayName,
+            inhibitLogin: self.inhibitLogin,
+            auth: auth,
+            sessionId: uiaState.session)
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
         request.httpBody = try encoder.encode(gruiarb)
