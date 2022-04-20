@@ -29,7 +29,6 @@ struct LoginScreen: View {
     @State var alertMessage = ""
     @State var showAdvanced = false
     @State var showPassword = false
-    @State var showPurchaseSheet = false
     
     var logo: some View {
         RandomizedCircles()
@@ -53,57 +52,6 @@ struct LoginScreen: View {
         if self.password.isEmpty {
             print("LoginScreen\tGot empty password; Ignoring...")
             return
-        }
-
-        // Check for BYOS
-        if BYOS_ENABLED {
-            if BYOS_REQUIRE_SUBSCRIPTION {
-                if let domain = self.matrix.getDomainFromUserId(username) {
-                    if domain == "kombucha.social" || domain.hasSuffix(".kombucha.social") {
-                        // Not BYOS
-                    } else {
-                        // BYOS
-                        // Ok, no problem.  Do we have a subscription?
-                        var haveSubscription = false
-                        guard let byosProductIds = BringYourOwnServer.loadProducts() else {
-                            // Looks like we don't support BYOS at this time
-                            // FIXME need to pop up an error message
-                            return
-                        }
-                        for productId in byosProductIds {
-                            if AppStoreInterface.validateReceiptOnDevice(for: productId) {
-                                haveSubscription = true
-                            }
-                        }
-
-                        if !haveSubscription {
-                            // Show subscription options
-                            showPurchaseSheet = true
-                            return
-                        }
-                    }
-                }
-            }
-        } else {
-            if let domain = self.matrix.getDomainFromUserId(username) {
-                print("LOGIN\tFound domain [\(domain)]")
-                if domain == "kombucha.social" || domain.hasSuffix(".kombucha.social") {
-                    // Not BYOS
-                } else {
-                    print("LOGIN\tThis version of Circles does not support BYOS")
-
-
-                    self.alertTitle = "Unsupported"
-                    self.alertMessage = "This version of Circles does not support using your own server.  Please check back soon!"
-                    self.showAlert = true
-
-                    self.username = ""
-                    self.password = ""
-                    self.password2 = ""
-
-                    return
-                }
-            }
         }
 
         self.pendingLogin = true
@@ -239,9 +187,7 @@ struct LoginScreen: View {
                   message: Text(alertMessage),
                   dismissButton: .default(Text("OK")))
         }
-        .sheet(isPresented: $showPurchaseSheet) {
-            BYOSScreen(appStore: appStore)
-        }
+
     }
 
 }

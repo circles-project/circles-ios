@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		4012C54726A736D700BB15E6 /* MatrixReaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4012C54626A736D700BB15E6 /* MatrixReaction.swift */; };
 		4012C54926A752C400BB15E6 /* EmojiPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4012C54826A752C400BB15E6 /* EmojiPicker.swift */; };
-		4012C54C26A760F100BB15E6 /* KeyboardKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4012C54B26A760F100BB15E6 /* KeyboardKit */; };
 		40395EBA26C2D58A0044FB51 /* BringYourOwnServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40395EB926C2D58A0044FB51 /* BringYourOwnServer.swift */; };
 		403CEA9326E864160054DBF4 /* TermsOfServiceForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403CEA9226E864160054DBF4 /* TermsOfServiceForm.swift */; };
 		403CEA9526E865740054DBF4 /* TokenForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403CEA9426E865740054DBF4 /* TokenForm.swift */; };
@@ -20,7 +19,6 @@
 		403CEA9F26E86C7F0054DBF4 /* CirclesForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403CEA9E26E86C7F0054DBF4 /* CirclesForm.swift */; };
 		403CEAA126E90DE10054DBF4 /* SignupStartForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403CEAA026E90DE10054DBF4 /* SignupStartForm.swift */; };
 		4047F3DE26B895B80010B2C3 /* SecureFieldWithEye.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4047F3DD26B895B80010B2C3 /* SecureFieldWithEye.swift */; };
-		4047F3E126BB05D50010B2C3 /* TPInAppReceipt in Frameworks */ = {isa = PBXBuildFile; productRef = 4047F3E026BB05D50010B2C3 /* TPInAppReceipt */; };
 		404C72D1265DDF35000473DF /* CirclesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C72D0265DDF35000473DF /* CirclesApp.swift */; };
 		404C72D3265DDF35000473DF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C72D2265DDF35000473DF /* ContentView.swift */; };
 		404C72D5265DDF35000473DF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 404C72D4265DDF35000473DF /* Assets.xcassets */; };
@@ -31,8 +29,6 @@
 		40878FC72694C00000A66EF0 /* MessageContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40878FC62694C00000A66EF0 /* MessageContextMenu.swift */; };
 		40878FCA2694DBC400A66EF0 /* MessageComposerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40878FC92694DBC400A66EF0 /* MessageComposerSheet.swift */; };
 		40878FCD2696198500A66EF0 /* TimelineSheetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40878FCC2696198500A66EF0 /* TimelineSheetType.swift */; };
-		408A48B926C1D45D00BEE9D9 /* BYOSScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 408A48B826C1D45D00BEE9D9 /* BYOSScreen.swift */; };
-		408A48BB26C2D0F500BEE9D9 /* ByosProducts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 408A48BA26C2D0F500BEE9D9 /* ByosProducts.plist */; };
 		409F42E3265DE00700690A61 /* Array+Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F42E2265DE00700690A61 /* Array+Sample.swift */; };
 		409F42E6265DE03B00690A61 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F42E5265DE03B00690A61 /* Utils.swift */; };
 		409F42E9265DE06C00690A61 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F42E8265DE06C00690A61 /* WebView.swift */; };
@@ -122,6 +118,8 @@
 		40E4D887268A76070055968A /* AppStoreSubscriptionForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E4D886268A76070055968A /* AppStoreSubscriptionForm.swift */; };
 		40E4D88A268A76CF0055968A /* SignupScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E4D889268A76CF0055968A /* SignupScreen.swift */; };
 		40F906BB269DF96100287B27 /* MessageSheetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F906BA269DF96100287B27 /* MessageSheetType.swift */; };
+		A5BECC35280F7A1100B1FCC6 /* TPInAppReceipt in Frameworks */ = {isa = PBXBuildFile; productRef = A5BECC34280F7A1100B1FCC6 /* TPInAppReceipt */; };
+		A5BECC38280F7A2400B1FCC6 /* KeyboardKit in Frameworks */ = {isa = PBXBuildFile; productRef = A5BECC37280F7A2400B1FCC6 /* KeyboardKit */; };
 		CFFB0431ED7E7DF3DFBE8C9A /* Pods_Circles.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02E198A24EAA52F3412414BB /* Pods_Circles.framework */; };
 /* End PBXBuildFile section */
 
@@ -154,8 +152,6 @@
 		40878FC62694C00000A66EF0 /* MessageContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageContextMenu.swift; sourceTree = "<group>"; };
 		40878FC92694DBC400A66EF0 /* MessageComposerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageComposerSheet.swift; sourceTree = "<group>"; };
 		40878FCC2696198500A66EF0 /* TimelineSheetType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineSheetType.swift; sourceTree = "<group>"; };
-		408A48B826C1D45D00BEE9D9 /* BYOSScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BYOSScreen.swift; sourceTree = "<group>"; };
-		408A48BA26C2D0F500BEE9D9 /* ByosProducts.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ByosProducts.plist; sourceTree = "<group>"; };
 		409F42E2265DE00700690A61 /* Array+Sample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Sample.swift"; sourceTree = "<group>"; };
 		409F42E5265DE03B00690A61 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		409F42E8265DE06C00690A61 /* WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
@@ -253,10 +249,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4047F3E126BB05D50010B2C3 /* TPInAppReceipt in Frameworks */,
-				4012C54C26A760F100BB15E6 /* KeyboardKit in Frameworks */,
+				A5BECC38280F7A2400B1FCC6 /* KeyboardKit in Frameworks */,
 				CFFB0431ED7E7DF3DFBE8C9A /* Pods_Circles.framework in Frameworks */,
 				4069F79826729DD200FB6090 /* StoreKit.framework in Frameworks */,
+				A5BECC35280F7A1100B1FCC6 /* TPInAppReceipt in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -306,7 +302,6 @@
 				404C72D6265DDF35000473DF /* Preview Content */,
 				409F42E0265DDFE300690A61 /* Utilities */,
 				409F430C265DE0CE00690A61 /* Views */,
-				408A48BA26C2D0F500BEE9D9 /* ByosProducts.plist */,
 			);
 			path = Circles;
 			sourceTree = "<group>";
@@ -450,7 +445,6 @@
 			children = (
 				409F4359265DE1EE00690A61 /* LoggedOutScreen.swift */,
 				409F435A265DE1EE00690A61 /* LoginScreen.swift */,
-				408A48B826C1D45D00BEE9D9 /* BYOSScreen.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -544,8 +538,8 @@
 			);
 			name = Circles;
 			packageProductDependencies = (
-				4012C54B26A760F100BB15E6 /* KeyboardKit */,
-				4047F3E026BB05D50010B2C3 /* TPInAppReceipt */,
+				A5BECC34280F7A1100B1FCC6 /* TPInAppReceipt */,
+				A5BECC37280F7A2400B1FCC6 /* KeyboardKit */,
 			);
 			productName = Circles;
 			productReference = 404C72CD265DDF35000473DF /* Circles.app */;
@@ -575,8 +569,8 @@
 			);
 			mainGroup = 404C72C4265DDF35000473DF;
 			packageReferences = (
-				4012C54A26A760F100BB15E6 /* XCRemoteSwiftPackageReference "KeyboardKit" */,
-				4047F3DF26BB05D50010B2C3 /* XCRemoteSwiftPackageReference "TPInAppReceipt" */,
+				A5BECC33280F7A1100B1FCC6 /* XCRemoteSwiftPackageReference "TPInAppReceipt" */,
+				A5BECC36280F7A2400B1FCC6 /* XCRemoteSwiftPackageReference "KeyboardKit" */,
 			);
 			productRefGroup = 404C72CE265DDF35000473DF /* Products */;
 			projectDirPath = "";
@@ -593,7 +587,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				404C72D8265DDF35000473DF /* Preview Assets.xcassets in Resources */,
-				408A48BB26C2D0F500BEE9D9 /* ByosProducts.plist in Resources */,
 				404C72D5265DDF35000473DF /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -663,7 +656,6 @@
 				403CEA9326E864160054DBF4 /* TermsOfServiceForm.swift in Sources */,
 				40878FCA2694DBC400A66EF0 /* MessageComposerSheet.swift in Sources */,
 				409F4326265DE12600690A61 /* CloudImagePicker.swift in Sources */,
-				408A48B926C1D45D00BEE9D9 /* BYOSScreen.swift in Sources */,
 				409F4333265DE15F00690A61 /* CircleAvatar.swift in Sources */,
 				409F438D265DE2C200690A61 /* StreamTimelineScreen.swift in Sources */,
 				409F4306265DE0A200690A61 /* MatrixMsgContent.swift in Sources */,
@@ -958,34 +950,34 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		4012C54A26A760F100BB15E6 /* XCRemoteSwiftPackageReference "KeyboardKit" */ = {
+		A5BECC33280F7A1100B1FCC6 /* XCRemoteSwiftPackageReference "TPInAppReceipt" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/KeyboardKit/KeyboardKit.git";
-			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 4.6.2;
-			};
-		};
-		4047F3DF26BB05D50010B2C3 /* XCRemoteSwiftPackageReference "TPInAppReceipt" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "git@github.com:tikhop/TPInAppReceipt.git";
+			repositoryURL = "https://github.com/tikhop/TPInAppReceipt";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 3.0.0;
 			};
 		};
+		A5BECC36280F7A2400B1FCC6 /* XCRemoteSwiftPackageReference "KeyboardKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/KeyboardKit/KeyboardKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		4012C54B26A760F100BB15E6 /* KeyboardKit */ = {
+		A5BECC34280F7A1100B1FCC6 /* TPInAppReceipt */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4012C54A26A760F100BB15E6 /* XCRemoteSwiftPackageReference "KeyboardKit" */;
-			productName = KeyboardKit;
-		};
-		4047F3E026BB05D50010B2C3 /* TPInAppReceipt */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 4047F3DF26BB05D50010B2C3 /* XCRemoteSwiftPackageReference "TPInAppReceipt" */;
+			package = A5BECC33280F7A1100B1FCC6 /* XCRemoteSwiftPackageReference "TPInAppReceipt" */;
 			productName = TPInAppReceipt;
+		};
+		A5BECC37280F7A2400B1FCC6 /* KeyboardKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A5BECC36280F7A2400B1FCC6 /* XCRemoteSwiftPackageReference "KeyboardKit" */;
+			productName = KeyboardKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

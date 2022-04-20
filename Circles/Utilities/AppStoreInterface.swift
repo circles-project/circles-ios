@@ -18,7 +18,6 @@ import MatrixSDK
 
 class AppStoreInterface: NSObject, SKPaymentTransactionObserver, ObservableObject {
 
-    @Published var byosProducts = [SKProduct]()
     @Published var membershipProducts = [SKProduct]()
 
     @Published var purchased = [String]()
@@ -222,10 +221,9 @@ class AppStoreInterface: NSObject, SKPaymentTransactionObserver, ObservableObjec
 
             // Is this the product that we're trying to validate?
             let productId = purchase.productIdentifier
-            let matchingByosProducts = byosProducts.filter { $0.productIdentifier == productId }
             let matchingMembershipProducts = membershipProducts.filter { $0.productIdentifier == productId}
 
-            if !matchingByosProducts.isEmpty || !matchingMembershipProducts.isEmpty {
+            if !matchingMembershipProducts.isEmpty {
                 print("Found active subscription for [\(productId)]")
                 if let expiry = purchase.subscriptionExpirationDate {
                     print("\tExpires on \(expiry) -- Right now it's \(Date())")
@@ -259,11 +257,7 @@ extension AppStoreInterface: SKProductsRequestDelegate {
             for product in response.products {
                 DispatchQueue.main.async {
                     print("APPSTORE\tFound product: \(product.productIdentifier)")
-                    if product.productIdentifier.contains("byos") {
-                        self.byosProducts.append(product)
-                    } else {
-                        self.membershipProducts.append(product)
-                    }
+                    self.membershipProducts.append(product)
                 }
             }
         }
