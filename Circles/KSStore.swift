@@ -2995,7 +2995,7 @@ extension KSStore: MatrixInterface {
     func signupGetRequiredTerms() -> mLoginTermsParams? {
         switch self.signupState {
         case .inProgress(let authSession):
-            return authSession.params?.terms
+            return authSession.params?["terms"] as? mLoginTermsParams
         default:
             return nil
         }

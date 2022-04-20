@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AnyCodable
 
 public struct UiaaAuthFlow: Codable {
     var stages: [String]
@@ -55,6 +56,7 @@ public struct AppleSubscriptionParams: Codable {
     var productIds: [String]
 }
 
+/*
 //typealias UiaaStateParams = [String: [String:String]]?
 public struct UiaaParams: Codable {
     var terms: mLoginTermsParams?
@@ -65,6 +67,9 @@ public struct UiaaParams: Codable {
         case appStore = "social.kombucha.login.subscription.apple"
     }
 }
+*/
+
+typealias UiaaParams = [String: AnyCodable]
 
 public struct UiaaSessionState: Codable {
     var errcode: String?

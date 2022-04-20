@@ -81,8 +81,9 @@ struct SignupScreen: View {
             if appStore.membershipProducts.isEmpty {
                 // Get the productIds from the initial UIAA state
                 // Ask the App Store interface to load information on them
-                if let params = uiaaState?.params?.appStore {
-                    appStore.fetchProducts(matchingIdentifiers: params.productIds)
+                if let params = uiaaState?.params?["org.futo.subscription.apple"] as? AppleSubscriptionParams {
+                    let productIds = params.productIds
+                    appStore.fetchProducts(matchingIdentifiers: productIds)
                 }
             }
         }
