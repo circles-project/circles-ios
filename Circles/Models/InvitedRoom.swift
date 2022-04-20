@@ -62,7 +62,7 @@ class InvitedRoom: ObservableObject, Identifiable {
         var batch: [MXEvent]? = nil
         var inviteEvent: MXEvent? = nil
         repeat {
-            batch = enumerator.nextEventsBatch(100)
+            batch = enumerator.nextEventsBatch(100, threadId: nil)
             inviteEvent = batch?.last {
                 $0.type == kMXEventTypeStringRoomMember && $0.stateKey == me
             }

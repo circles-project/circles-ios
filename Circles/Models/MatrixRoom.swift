@@ -17,7 +17,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
     let id: String
     let matrix: MatrixInterface
     private var localEchoEvent: MXEvent?
-    private var backwardTimeline: MXEventTimeline?
+    private var backwardTimeline: MXRoomEventTimeline?
 
     @Published var first: MatrixMessage?
     @Published var last: MatrixMessage?
@@ -49,7 +49,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
     }
 
 
-    func _eventHandler(event: MXEvent, direction: MXTimelineDirection, state: MXRoomState) {
+    func _eventHandler(event: MXEvent, direction: MXTimelineDirection, state: MXRoomState?) {
 
         print("TIMELINE --------")
         print("TIMELINE Handling new event with id [\(event.eventId ?? "???")]")
@@ -140,7 +140,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
     }
 
     func initTimeline() {
-        self.backwardTimeline = MXEventTimeline(room: mxroom, andInitialEventId: nil)
+        self.backwardTimeline = MXRoomEventTimeline(room: mxroom, andInitialEventId: nil)
         self.backwardTimeline?.resetPagination()
 
         //let eventTypes: [MXEventType] = [.roomMessage, .roomEncrypted]
@@ -570,7 +570,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
 
     var membershipEvents: [MXEvent] {
         if let enumerator = mxroom.enumeratorForStoredMessagesWithType(in: ["m.room.member"]) {
-            return enumerator.nextEventsBatch(100) ?? []
+            return enumerator.nextEventsBatch(100, threadId: nil) ?? []
         }
         return []
     }
@@ -583,7 +583,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
         var batch: [MXEvent]?
         var inviteEvent: MXEvent?
         repeat {
-            batch = enumerator.nextEventsBatch(100)
+            batch = enumerator.nextEventsBatch(100, threadId: nil)
             inviteEvent = batch?.last {
                 $0.type == kMXEventTypeStringRoomMember && $0.stateKey == me
             }

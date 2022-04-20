@@ -1230,9 +1230,7 @@ extension KSStore: MatrixInterface {
         
         // Check: Are we already logged in?
         switch(self.session.state) {
-        case MXSessionState.closed,
-             MXSessionState.unknownToken,
-             MXSessionState.softLogout:
+        case MXSessionState.closed:
 
             _fetchWellKnown(for: userDomain) { wellKnownResponse in
                 guard case let .success(wellKnownInfo) = wellKnownResponse,

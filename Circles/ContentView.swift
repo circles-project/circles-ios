@@ -33,9 +33,7 @@ struct ContentView: View {
                  MXSessionState.backgroundSyncInProgress:
                 LoggedinScreen(store: self.store)
 
-            case MXSessionState.closed,
-                 MXSessionState.unknownToken,
-                 MXSessionState.softLogout:
+            case MXSessionState.closed:
                 LoggedOutScreen(store: self.store)
 
             case MXSessionState.homeserverNotReachable:
