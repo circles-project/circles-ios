@@ -294,19 +294,17 @@
 		404C72CF265DDF35000473DF /* Circles */ = {
 			isa = PBXGroup;
 			children = (
+				A5B32ACA2810E9EF001BB952 /* Backend */,
 				405F8E682698E8620057E970 /* Circles.entitlements */,
 				404C72D4265DDF35000473DF /* Assets.xcassets */,
 				404C72D0265DDF35000473DF /* CirclesApp.swift */,
 				409F4322265DE11900690A61 /* Constants.swift */,
 				404C72D2265DDF35000473DF /* ContentView.swift */,
 				404C72D9265DDF35000473DF /* Info.plist */,
-				409F4351265DE1BA00690A61 /* KSStore.swift */,
-				409F4354265DE1C800690A61 /* MatrixInterface.swift */,
 				409F42E1265DDFEB00690A61 /* Models */,
 				404C72D6265DDF35000473DF /* Preview Content */,
 				409F42E0265DDFE300690A61 /* Utilities */,
 				409F430C265DE0CE00690A61 /* Views */,
-				A5481C2128108580006F782F /* SignupSession.swift */,
 			);
 			path = Circles;
 			sourceTree = "<group>";
@@ -522,6 +520,16 @@
 				9050605B7F03BBC0A58F76C7 /* Pods-Circles.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		A5B32ACA2810E9EF001BB952 /* Backend */ = {
+			isa = PBXGroup;
+			children = (
+				A5481C2128108580006F782F /* SignupSession.swift */,
+				409F4351265DE1BA00690A61 /* KSStore.swift */,
+				409F4354265DE1C800690A61 /* MatrixInterface.swift */,
+			);
+			path = Backend;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
