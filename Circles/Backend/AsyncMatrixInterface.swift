@@ -12,18 +12,17 @@ protocol AsyncMatrixInterface {
 
     func getDomainFromUserId(_ userId: String) -> String?
 
-
+    // FIXME: Now with UIA on /login, we support more than just password
     func login(username: String, password: String) async throws
     
     //func logout()
     func pause() async throws
     func close() async throws
     func deleteMyAccount(password: String) async throws
-
+    
+    // FIXME: Now with UIA on /login, we support more than just password
     func changeMyPassword(oldPassword: String, newPassword: String) async throws
     
-    //func finishSignupAndConnect()
-
     func createRecovery(privateKey: Data) async throws
     func deleteRecovery() async throws
         

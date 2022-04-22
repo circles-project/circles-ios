@@ -8,9 +8,11 @@
 import SwiftUI
 import MatrixSDK
 
+#if false
+
 struct ValidateEmailForm: View {
     var matrix: MatrixInterface
-    @Binding var authFlow: UiaaAuthFlow?
+    @Binding var authFlow: UIAA.Flow?
     @Binding var emailSid: String?
     @Binding var accountInfo: SignupAccountInfo
     @Binding var creds: MXCredentials?
@@ -147,6 +149,7 @@ struct ValidateEmailForm: View {
         }
     }
 }
+#endif
 
 /*
 struct ValidateEmailView_Previews: PreviewProvider {

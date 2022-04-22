@@ -12,7 +12,8 @@ import StoreKit
 struct LoginScreen: View {
     var matrix: MatrixInterface
     //@Binding var selectedScreen: LoggedOutScreen.Screen
-    @Binding var uiaaState: UiaaSessionState?
+    //@Binding var uiaaState: UiaaSessionState?
+    @Binding var signupSession: SignupSession?
 
     @EnvironmentObject var appStore: AppStoreInterface
 
@@ -152,22 +153,9 @@ struct LoginScreen: View {
                     print("LOGIN\tFailed to get country code from StoreKit")
                 }
 
-                self.pendingSignup = true
-                
-                self.matrix.startNewSignupSession { response in
-                    /*
-                    if response.isSuccess {
-                        self.selectedScreen = .signupMain
-                    }
-                    */
-                    switch response {
-                    case .failure(let err):
-                        print("Failed to start new signup session: \(err)")
-                    case .success(let newUiaaSession):
-                        self.uiaaState = newUiaaSession
-                    }
-                    self.pendingSignup = false
-                }
+                let signupURL = URL(string: "/_matrix/client/v3/register", relativeTo: SIGNUP_HOMESERVER_URL)!
+                signupSession = SignupSession(signupURL)
+
             }) {
                 Text("Sign Up")
                     .padding()

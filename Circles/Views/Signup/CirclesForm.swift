@@ -11,7 +11,7 @@ import MatrixSDK
 struct CirclesForm: View {
     var matrix: MatrixInterface
     let displayName: String
-    @Binding var pseudoFlow: UiaaAuthFlow
+    @Binding var pseudoFlow: UIAA.Flow
 
 
     @State var friendsAvatar: UIImage?

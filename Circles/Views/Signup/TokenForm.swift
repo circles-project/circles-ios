@@ -9,12 +9,11 @@ import SwiftUI
 
 struct TokenForm: View {
     let tokenType: String
-    var matrix: MatrixInterface
-    @Binding var authFlow: UiaaAuthFlow?
+    //var matrix: MatrixInterface
+    var session: SignupSession
+    @Binding var authFlow: UIAA.Flow?
 
     @State var signupToken: String = ""
-
-    @State var pending = false
 
     @State var showAlert = false
     @State var alertTitle = ""
@@ -57,27 +56,21 @@ struct TokenForm: View {
             }
             .frame(width: 300.0, height: 40.0)
 
-            Button(action: {
-                if signupToken.isEmpty {
+            AsyncButton(action: {
+                if self.signupToken.isEmpty {
                     return
                 }
-                // Call out to the server to validate our token
-                // If successful, set stage = .getEmail
-                self.pending = true
-                matrix.signupDoTokenStage(token: signupToken, tokenType: tokenType) { response in
-                    switch response {
-                    case .failure(let err):
-                        print("SIGNUP\tToken stage failed: \(err)")
-                        self.showAlert = true
-                        self.alertTitle = "Token validation failed"
-                        self.alertMessage = helpTextForTokenFailed
-                    case .success:
-                        // We're done with the current stage.  Let's move on to the next one.
-                        //self.stage = next[currentStage]!
-                        authFlow?.pop(stage: tokenType)
-                    }
-                    self.pending = false
+                
+                do {
+                    try await session.doTokenRegistrationStage(token: self.signupToken)
+                    self.authFlow?.pop(stage: tokenType)
+                } catch {
+                    // Well crap, I guess it didn't work
+                    self.alertTitle = "Token validation failed"
+                    self.alertMessage = helpTextForTokenFailed
+                    self.showAlert = true
                 }
+
             }) {
                 Text("Validate Token")
                     .padding()
@@ -86,7 +79,6 @@ struct TokenForm: View {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
-            .disabled(pending)
             .alert(isPresented: $showAlert) {
                 Alert(title: Text(alertTitle),
                       message: Text(alertMessage),
@@ -96,11 +88,6 @@ struct TokenForm: View {
 
             Spacer()
 
-
-            if KOMBUCHA_DEBUG {
-                Text(matrix.signupGetSessionId() ?? "Error: No signup session")
-                    .font(.footnote)
-            }
         }
     }
 }

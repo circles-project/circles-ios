@@ -8,21 +8,33 @@
 import SwiftUI
 
 struct TermsOfServiceForm: View {
-    var matrix: MatrixInterface
+    //var matrix: MatrixInterface
+    var session: SignupSession
     //@Binding var selectedScreen: LoggedOutScreen.Screen
-    @Binding var authFlow: UiaaAuthFlow?
+    @Binding var authFlow: UIAA.Flow?
 
     @State var webViewStore = WebViewStore()
-    @State var pending = false
 
+    @State var showAlert = false
+    @State var alertTitle = ""
+    @State var alertMessage = ""
+    
     let stage = LOGIN_STAGE_TERMS_OF_SERVICE
+    
+    let langCode = Bundle.main.preferredLocalizations[0]
 
-    func getUrl() -> URL {
+    var url: URL {
+        /*
         let termsparams = matrix.signupGetRequiredTerms()
         let privacyPolicy = termsparams?.policies["privacy"]
         let fallbackUrlString = "https://matrix.kombucha.social/_matrix/consent"
         let url = privacyPolicy?.en?.url ?? URL(string: fallbackUrlString)!
         return url
+        */
+        let hsURL = session.url.baseURL!
+        let fallbackURL = URL(string: "\(hsURL.scheme)://\(hsURL.host):\(hsURL.port)/_matrix/consent")!
+
+        return fallbackURL
     }
 
     var body: some View {
@@ -35,21 +47,23 @@ struct TermsOfServiceForm: View {
 
             WebView(webView: webViewStore.webView)
                 .onAppear {
-                    let req = URLRequest(url: getUrl())
+                    let req = URLRequest(url: self.url)
                     self.webViewStore.webView.load(req)
                 }
                 .font(.body)
 
-            Button(action: {
-                self.pending = true
-                matrix.signupDoTermsStage { response in
-                    if response.isSuccess {
-                        // Done with this stage, let's move on to the next
-                        //self.stage = next[currentStage]!
-                        authFlow?.pop(stage: self.stage)
-                    }
-                    self.pending = false
+            AsyncButton(action: {
+                
+                do {
+                    try await session.doTermsStage()
+                    self.authFlow?.pop(stage: self.stage)
+                } catch {
+                    // Tell the user that we hit an error
+                    self.alertTitle = "Something went wrong"
+                    self.alertMessage = "Failed to complete Terms of Service stage"
+                    self.showAlert = true
                 }
+
             }) {
                 Text("Got it")
                     .padding()
@@ -58,7 +72,12 @@ struct TermsOfServiceForm: View {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
-            .disabled(pending)
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text(alertTitle),
+                      message: Text(alertMessage),
+                      dismissButton: .cancel(Text("OK"))
+                )
+            }
         }
     }
 }

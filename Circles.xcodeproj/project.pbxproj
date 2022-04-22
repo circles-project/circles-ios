@@ -118,10 +118,12 @@
 		40E4D887268A76070055968A /* AppStoreSubscriptionForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E4D886268A76070055968A /* AppStoreSubscriptionForm.swift */; };
 		40E4D88A268A76CF0055968A /* SignupScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E4D889268A76CF0055968A /* SignupScreen.swift */; };
 		40F906BB269DF96100287B27 /* MessageSheetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F906BA269DF96100287B27 /* MessageSheetType.swift */; };
+		A504DA7328120AF100EFF42E /* AsyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A504DA7228120AF100EFF42E /* AsyncButton.swift */; };
 		A5481C2228108580006F782F /* SignupSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5481C2128108580006F782F /* SignupSession.swift */; };
 		A5481C2528108DC7006F782F /* AnyCodable in Frameworks */ = {isa = PBXBuildFile; productRef = A5481C2428108DC7006F782F /* AnyCodable */; };
 		A5BECC35280F7A1100B1FCC6 /* TPInAppReceipt in Frameworks */ = {isa = PBXBuildFile; productRef = A5BECC34280F7A1100B1FCC6 /* TPInAppReceipt */; };
 		A5BECC38280F7A2400B1FCC6 /* KeyboardKit in Frameworks */ = {isa = PBXBuildFile; productRef = A5BECC37280F7A2400B1FCC6 /* KeyboardKit */; };
+		A5F111812810EAF400367DC0 /* AsyncMatrixInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F111802810EAF400367DC0 /* AsyncMatrixInterface.swift */; };
 		CFFB0431ED7E7DF3DFBE8C9A /* Pods_Circles.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02E198A24EAA52F3412414BB /* Pods_Circles.framework */; };
 /* End PBXBuildFile section */
 
@@ -244,7 +246,9 @@
 		40E4D889268A76CF0055968A /* SignupScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupScreen.swift; sourceTree = "<group>"; };
 		40F906BA269DF96100287B27 /* MessageSheetType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSheetType.swift; sourceTree = "<group>"; };
 		9050605B7F03BBC0A58F76C7 /* Pods-Circles.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Circles.release.xcconfig"; path = "Target Support Files/Pods-Circles/Pods-Circles.release.xcconfig"; sourceTree = "<group>"; };
+		A504DA7228120AF100EFF42E /* AsyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncButton.swift; sourceTree = "<group>"; };
 		A5481C2128108580006F782F /* SignupSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupSession.swift; sourceTree = "<group>"; };
+		A5F111802810EAF400367DC0 /* AsyncMatrixInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncMatrixInterface.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -336,6 +340,7 @@
 				409F42E5265DE03B00690A61 /* Utils.swift */,
 				40CD7F6E2667E16100DE315F /* VideoPicker.swift */,
 				409F42E8265DE06C00690A61 /* WebView.swift */,
+				A504DA7228120AF100EFF42E /* AsyncButton.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -528,6 +533,7 @@
 				A5481C2128108580006F782F /* SignupSession.swift */,
 				409F4351265DE1BA00690A61 /* KSStore.swift */,
 				409F4354265DE1C800690A61 /* MatrixInterface.swift */,
+				A5F111802810EAF400367DC0 /* AsyncMatrixInterface.swift */,
 			);
 			path = Backend;
 			sourceTree = "<group>";
@@ -714,6 +720,7 @@
 				409F4382265DE29600690A61 /* SetupCircleCard.swift in Sources */,
 				409F4390265DE2CE00690A61 /* SystemNoticesView.swift in Sources */,
 				A5481C2228108580006F782F /* SignupSession.swift in Sources */,
+				A504DA7328120AF100EFF42E /* AsyncButton.swift in Sources */,
 				403CEA9526E865740054DBF4 /* TokenForm.swift in Sources */,
 				409F438C265DE2C200690A61 /* StreamTimeline.swift in Sources */,
 				409F4305265DE0A200690A61 /* PeopleContainer.swift in Sources */,
@@ -730,6 +737,7 @@
 				40CD7F6F2667E16100DE315F /* VideoPicker.swift in Sources */,
 				409F4319265DE0FF00690A61 /* EmbeddedImagePicker.swift in Sources */,
 				409F43B4265DE4C800690A61 /* ProfileView.swift in Sources */,
+				A5F111812810EAF400367DC0 /* AsyncMatrixInterface.swift in Sources */,
 				409F4355265DE1C800690A61 /* MatrixInterface.swift in Sources */,
 				409F435B265DE1EE00690A61 /* LoggedOutScreen.swift in Sources */,
 				40AEA6742678E24200C9CBD1 /* BlurHashDecode.swift in Sources */,

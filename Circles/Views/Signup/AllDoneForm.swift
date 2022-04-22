@@ -10,7 +10,7 @@ import SwiftUI
 struct AllDoneForm: View {
     var matrix: MatrixInterface
     let userId: String
-    @Binding var uiaaState: UiaaSessionState?
+    @Binding var uiaaState: UIAA.SessionState?
     //@Binding var selectedScreen: LoggedOutScreen.Screen
 
     //@Binding var userId: String?

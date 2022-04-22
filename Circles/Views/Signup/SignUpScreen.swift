@@ -20,19 +20,53 @@ struct SignupAccountInfo {
 struct SignupScreen: View {
     @EnvironmentObject var appStore: AppStoreInterface
 
-    var matrix: MatrixInterface
-    //@Binding var selectedScreen: LoggedOutScreen.Screen
-    @Binding var uiaaState: UiaaSessionState?
+    //var matrix: MatrixInterface
+    //@Binding var uiaaState: UiaaSessionState?
+    @Binding var session: SignupSession?
 
-    @State var selectedFlow: UiaaAuthFlow?
+    @State var selectedFlow: UIAA.Flow?
     @State var creds: MXCredentials?
     @State var emailSessionId: String?
 
     @State var accountInfo = SignupAccountInfo()
 
     // And this one is a fake "flow" for the post-signup account setup process
-    @State var postSignupFlow = UiaaAuthFlow(stages: ["avatar", "circles"])
+    @State var postSignupFlow = UIAA.Flow(stages: ["avatar", "circles"])
+    
+    var body: some View {
+        VStack {
+            if let currentSession = session {
+                switch currentSession.state {
+                case .notInitialized:
+                    ProgressView()
+                        .onAppear() {
+                            let task = Task {
+                                try await currentSession.initialize()
+                            }
+                        }
+                case .initialized(let state):
+                    Text("Start screen goes here")
+                    SignupStartForm(session: $session, state: state, selectedFlow: $selectedFlow)
+                case .inProgress(let state, let flow):
+                    // Text("Forms for the various stages go here")
+                    if let stage = flow.stages.first {
+                        Text("Current stage is \(stage)")
+                    } else {
+                        // FIXME: Uh oh, looks like we ran out of stages...
+                    }
+                case .finished:
+                    Text("All done!")
+                }
+            } else {
+                ProgressView()
+                    .onAppear {
+                        self.session = SignupSession(SIGNUP_HOMESERVER_URL)
+                    }
+            }
+        }
+    }
 
+    /*
     var body: some View {
         VStack {
             if let flow = selectedFlow {
@@ -42,9 +76,9 @@ struct SignupScreen: View {
                     case LOGIN_STAGE_TOKEN_KOMBUCHA,
                          LOGIN_STAGE_TOKEN_MATRIX,
                          LOGIN_STAGE_TOKEN_MSC3231:
-                        TokenForm(tokenType: stage, matrix: matrix, authFlow: $selectedFlow)
+                        TokenForm(tokenType: stage, session: session, authFlow: $selectedFlow)
                     case LOGIN_STAGE_TERMS_OF_SERVICE:
-                        TermsOfServiceForm(matrix: matrix, authFlow: $selectedFlow)
+                        TermsOfServiceForm(session: session, authFlow: $selectedFlow)
                     case LOGIN_STAGE_VERIFY_EMAIL:
                         if emailSessionId != nil {
                             ValidateEmailForm(matrix: matrix, authFlow: $selectedFlow, emailSid: $emailSessionId, accountInfo: $accountInfo, creds: $creds)
@@ -88,6 +122,8 @@ struct SignupScreen: View {
             }
         }
     }
+     */
+
 }
 
 /*

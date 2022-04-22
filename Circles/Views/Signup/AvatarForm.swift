@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AvatarForm: View {
     var matrix: MatrixInterface
-    @Binding var pseudoFlow: UiaaAuthFlow
+    @Binding var pseudoFlow: UIAA.Flow
 
     @State var avatarImage: UIImage?
     @State var showPicker = false

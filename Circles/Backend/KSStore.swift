@@ -40,10 +40,10 @@ enum KombuchaStoreState  {
 enum SignupState {
     case notStarted
     case starting
-    case inProgress(UiaaSessionState)
-    case waitingForEmail(UiaaSessionState)
-    case validatedEmail(UiaaSessionState)
-    case waitingForSMS(UiaaSessionState)
+    case inProgress(UIAA.SessionState)
+    case waitingForEmail(UIAA.SessionState)
+    case validatedEmail(UIAA.SessionState)
+    case waitingForSMS(UIAA.SessionState)
     case finished(MXCredentials)
 }
 
@@ -1152,6 +1152,7 @@ extension KSStore: MatrixInterface {
         print("SECRETS\tComputed salt string = [\(saltString)]")
 
         let numRounds = 14
+        // FIXME: BCryptSwift is so unbelievably freaking slow...
         guard let bcrypt = BCryptSwift.hashPassword(password, withSalt: "$2a$\(numRounds)$\(saltString)") else {
             let msg = "BCrypt KDF failed"
             print("SECRETS\t\(msg)")
@@ -2700,8 +2701,8 @@ extension KSStore: MatrixInterface {
         )
     }
 
-    
-    func startNewSignupSession(completion: @escaping (MXResponse<UiaaSessionState>) -> Void) {
+#if false
+    func startNewSignupSession(completion: @escaping (MXResponse<UIAA.SessionState>) -> Void) {
         self.signupState = .starting
 
         /*
@@ -2763,7 +2764,7 @@ extension KSStore: MatrixInterface {
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
             
-            guard let sessionState = try? decoder.decode(UiaaSessionState.self, from: data!) else {
+            guard let sessionState = try? decoder.decode(UIAA.SessionState.self, from: data!) else {
                 let msg = "Couldn't decode response"
                 let err = KSError(message: msg)
                 print("SIGNUP(start)\t\(msg)")
@@ -2876,7 +2877,7 @@ extension KSStore: MatrixInterface {
 
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
-            guard let newUiaaState = try? decoder.decode(UiaaSessionState.self, from: data!) else {
+            guard let newUiaaState = try? decoder.decode(UIAA.SessionState.self, from: data!) else {
                 let msg = "Couldn't parse the Matrix UIAA state"
                 print("SIGNUP(apple)\t\(msg)")
                 let err = KSError(message: msg)
@@ -2967,7 +2968,7 @@ extension KSStore: MatrixInterface {
 
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
-            guard let newUiaaState = try? decoder.decode(UiaaSessionState.self, from: data!) else {
+            guard let newUiaaState = try? decoder.decode(UIAA.SessionState.self, from: data!) else {
                 let msg = "Couldn't parse the Matrix UIAA state"
                 print("SIGNUP(token)\t\(msg)")
                 let err = KSError(message: msg)
@@ -3239,7 +3240,7 @@ extension KSStore: MatrixInterface {
         }
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        if let uiaa = try? decoder.decode(UiaaSessionState.self, from: data!) {
+        if let uiaa = try? decoder.decode(UIAA.SessionState.self, from: data!) {
             print("SIGNUP(email2)\tGot the following UIAA session state:")
             print("SIGNUP(email2)\t\tSessionID: \(uiaa.session)")
             print("SIGNUP(email2)\t\tCompleted: \(uiaa.completed ?? [])")
@@ -3396,6 +3397,7 @@ extension KSStore: MatrixInterface {
         }
         task.resume()
     }
+#endif // end of the signup stuff
     
     /*
     func beginAccountSetup() {

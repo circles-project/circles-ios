@@ -128,8 +128,9 @@ protocol MatrixInterface {
     func getOutboundGroupSessions() -> [MXOlmOutboundGroupSession]
 
     func ensureEncryption(roomId: String, completion: @escaping (MXResponse<Void>) -> Void)
-    
-    func startNewSignupSession(completion: @escaping (MXResponse<UiaaSessionState>) -> Void)
+
+    /*
+    func startNewSignupSession(completion: @escaping (MXResponse<UIAA.SessionState>) -> Void)
     
     func signupGetRequiredTerms() -> mLoginTermsParams?
     
@@ -146,6 +147,7 @@ protocol MatrixInterface {
     func signupValidateEmailAddress(sid: String, token: String, completion: @escaping (MXResponse<String>) -> Void)
     
     func signupDoEmailStage(username: String, password: String, sid: String, completion: @escaping (MXResponse<MXCredentials?>)->Void)
+    */
 
     func setRoomType(roomId: String, roomType: String, completion: @escaping (MXResponse<String>) -> Void)
 

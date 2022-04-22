@@ -9,6 +9,8 @@
 import SwiftUI
 import StoreKit
 
+#if false
+
 struct MembershipProductCard: View {
     @EnvironmentObject var appStore: AppStoreInterface
     var product: SKProduct
@@ -82,8 +84,8 @@ struct AppStoreSubscriptionForm: View {
     @EnvironmentObject var appStore: AppStoreInterface
 
     var matrix: MatrixInterface
-    @Binding var uiaaState: UiaaSessionState?
-    @Binding var authFlow: UiaaAuthFlow?
+    @Binding var uiaaState: UIAA.SessionState?
+    @Binding var authFlow: UIAA.Flow?
 
     @State var selectedProduct: SKProduct?
 
@@ -290,6 +292,7 @@ struct AppStoreSubscriptionForm: View {
         .padding(5)
     }
 }
+#endif
 
 /*
 struct AppStoreSignUpScreen_Previews: PreviewProvider {

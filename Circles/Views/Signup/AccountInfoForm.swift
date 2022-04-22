@@ -7,9 +7,11 @@
 
 import SwiftUI
 
+#if false
+
 struct AccountInfoForm: View {
     var matrix: MatrixInterface
-    @Binding var authFlow: UiaaAuthFlow?
+    @Binding var authFlow: UIAA.Flow?
     let stage: String
     @Binding var accountInfo: SignupAccountInfo
 
@@ -182,6 +184,7 @@ struct AccountInfoForm: View {
         }
     }
 }
+#endif
 
 /*
 struct AccountInfoForm_Previews: PreviewProvider {

@@ -9,17 +9,18 @@ import SwiftUI
 import StoreKit
 
 struct SignupStartForm: View {
-    var matrix: MatrixInterface
+    //var matrix: MatrixInterface
+    @Binding var session: SignupSession?
     //@Binding var selectedScreen: LoggedOutScreen.Screen
-    @Binding var uiaaState: UiaaSessionState?
+    var state: UIAA.SessionState
 
-    @Binding var selectedFlow: UiaaAuthFlow?
+    @Binding var selectedFlow: UIAA.Flow?
 
     var cancel: some View {
         HStack {
             Button(action: {
                 //self.selectedScreen = .login
-                self.uiaaState = nil
+                self.session = nil
             }) {
                 Text("Cancel")
                     .font(.footnote)
@@ -41,7 +42,7 @@ struct SignupStartForm: View {
 
             Spacer()
 
-            let tokenFlow = try? uiaaState?.flows.first(where: {
+            let tokenFlow = state.flows.first(where: {
                 $0.stages.contains(LOGIN_STAGE_TOKEN_KOMBUCHA) ||
                     $0.stages.contains(LOGIN_STAGE_TOKEN_MATRIX) ||
                     $0.stages.contains(LOGIN_STAGE_TOKEN_MSC3231)
@@ -54,7 +55,8 @@ struct SignupStartForm: View {
                     .padding(.horizontal, 20)
             }
             Button(action: {
-                selectedFlow = tokenFlow
+                //selectedFlow = tokenFlow
+                session?.selectFlow(flow: tokenFlow!)
             }) {
                 Text("Sign up with token")
                     .padding()
@@ -68,7 +70,7 @@ struct SignupStartForm: View {
 
             Spacer()
 
-            let appleFlow = try? uiaaState?.flows.first(where: {
+            let appleFlow = state.flows.first(where: {
                 $0.stages.contains(LOGIN_STAGE_APPLE_SUBSCRIPTION)
             })
             if appleFlow != nil {
@@ -79,7 +81,8 @@ struct SignupStartForm: View {
                     .padding(.horizontal, 20)
             }
             Button(action: {
-                selectedFlow = appleFlow
+                //selectedFlow = appleFlow
+                session?.selectFlow(flow: appleFlow!)
             }) {
                 Text("New Circles subscription")
                     .padding()
@@ -94,7 +97,7 @@ struct SignupStartForm: View {
 
             if KOMBUCHA_DEBUG {
                 VStack {
-                    if let flows = uiaaState?.flows {
+                    if let flows = state.flows {
                         ForEach(flows, id: \.self) { flow in
                             Text("Auth flow:")
                                 .font(.body)
