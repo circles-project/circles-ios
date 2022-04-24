@@ -9,7 +9,7 @@ target 'Circles' do
 
   pod 'MatrixSDK', '0.23.2'
   pod 'DictionaryCoding'
-  pod "BCryptSwift"
+  #pod "BCrypt"
   #pod 'SwiftLint'
 
 end

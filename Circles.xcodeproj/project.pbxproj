@@ -123,6 +123,9 @@
 		A5481C2528108DC7006F782F /* AnyCodable in Frameworks */ = {isa = PBXBuildFile; productRef = A5481C2428108DC7006F782F /* AnyCodable */; };
 		A5BECC35280F7A1100B1FCC6 /* TPInAppReceipt in Frameworks */ = {isa = PBXBuildFile; productRef = A5BECC34280F7A1100B1FCC6 /* TPInAppReceipt */; };
 		A5BECC38280F7A2400B1FCC6 /* KeyboardKit in Frameworks */ = {isa = PBXBuildFile; productRef = A5BECC37280F7A2400B1FCC6 /* KeyboardKit */; };
+		A5E101F82814FAFD000B2C42 /* bcrypt.c in Sources */ = {isa = PBXBuildFile; fileRef = A5E101F72814FAFD000B2C42 /* bcrypt.c */; };
+		A5E101FA2814FB60000B2C42 /* blf.c in Sources */ = {isa = PBXBuildFile; fileRef = A5E101F92814FB60000B2C42 /* blf.c */; };
+		A5E101FE2814FC9F000B2C42 /* PerfectBCrypt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E101FD2814FC9F000B2C42 /* PerfectBCrypt.swift */; };
 		A5F111812810EAF400367DC0 /* AsyncMatrixInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F111802810EAF400367DC0 /* AsyncMatrixInterface.swift */; };
 		CFFB0431ED7E7DF3DFBE8C9A /* Pods_Circles.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02E198A24EAA52F3412414BB /* Pods_Circles.framework */; };
 /* End PBXBuildFile section */
@@ -248,6 +251,13 @@
 		9050605B7F03BBC0A58F76C7 /* Pods-Circles.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Circles.release.xcconfig"; path = "Target Support Files/Pods-Circles/Pods-Circles.release.xcconfig"; sourceTree = "<group>"; };
 		A504DA7228120AF100EFF42E /* AsyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncButton.swift; sourceTree = "<group>"; };
 		A5481C2128108580006F782F /* SignupSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupSession.swift; sourceTree = "<group>"; };
+		A5E101F62814FAFD000B2C42 /* Circles-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Circles-Bridging-Header.h"; sourceTree = "<group>"; };
+		A5E101F72814FAFD000B2C42 /* bcrypt.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = bcrypt.c; sourceTree = "<group>"; };
+		A5E101F92814FB60000B2C42 /* blf.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = blf.c; sourceTree = "<group>"; };
+		A5E101FB2814FBA6000B2C42 /* blf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = blf.h; sourceTree = "<group>"; };
+		A5E101FC2814FBE3000B2C42 /* pycabcrypt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pycabcrypt.h; sourceTree = "<group>"; };
+		A5E101FD2814FC9F000B2C42 /* PerfectBCrypt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerfectBCrypt.swift; sourceTree = "<group>"; };
+		A5E101FF2814FD6D000B2C42 /* portable_endian.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = portable_endian.h; sourceTree = "<group>"; };
 		A5F111802810EAF400367DC0 /* AsyncMatrixInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncMatrixInterface.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -279,6 +289,7 @@
 		404C72C4265DDF35000473DF = {
 			isa = PBXGroup;
 			children = (
+				A52B7C382814E53F0016A366 /* Packages */,
 				405BF7862683C5FA006E8756 /* CirclesSubscriptions.storekit */,
 				404C72CF265DDF35000473DF /* Circles */,
 				404C72CE265DDF35000473DF /* Products */,
@@ -324,6 +335,7 @@
 		409F42E0265DDFE300690A61 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				A5E101F52814FABC000B2C42 /* BCrypt */,
 				40878FBB268E4D9000A66EF0 /* AppStoreInterface.swift */,
 				409F42E2265DE00700690A61 /* Array+Sample.swift */,
 				40AEA6722678E24100C9CBD1 /* BlurHashDecode.swift */,
@@ -527,6 +539,13 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		A52B7C382814E53F0016A366 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
 		A5B32ACA2810E9EF001BB952 /* Backend */ = {
 			isa = PBXGroup;
 			children = (
@@ -536,6 +555,20 @@
 				A5F111802810EAF400367DC0 /* AsyncMatrixInterface.swift */,
 			);
 			path = Backend;
+			sourceTree = "<group>";
+		};
+		A5E101F52814FABC000B2C42 /* BCrypt */ = {
+			isa = PBXGroup;
+			children = (
+				A5E101F72814FAFD000B2C42 /* bcrypt.c */,
+				A5E101F62814FAFD000B2C42 /* Circles-Bridging-Header.h */,
+				A5E101F92814FB60000B2C42 /* blf.c */,
+				A5E101FB2814FBA6000B2C42 /* blf.h */,
+				A5E101FC2814FBE3000B2C42 /* pycabcrypt.h */,
+				A5E101FD2814FC9F000B2C42 /* PerfectBCrypt.swift */,
+				A5E101FF2814FD6D000B2C42 /* portable_endian.h */,
+			);
+			path = BCrypt;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -576,6 +609,7 @@
 				TargetAttributes = {
 					404C72CC265DDF35000473DF = {
 						CreatedOnToolsVersion = 12.4;
+						LastSwiftMigration = 1330;
 					};
 				};
 			};
@@ -671,9 +705,12 @@
 				403CEA9D26E86B920054DBF4 /* AvatarForm.swift in Sources */,
 				404C72D3265DDF35000473DF /* ContentView.swift in Sources */,
 				403CEA9F26E86C7F0054DBF4 /* CirclesForm.swift in Sources */,
+				A5E101FA2814FB60000B2C42 /* blf.c in Sources */,
 				409F4388265DE2B100690A61 /* TokenSignUpScreen.swift in Sources */,
 				40BC0E4326B3199C00137A92 /* MatrixWellKnown.swift in Sources */,
+				A5E101FE2814FC9F000B2C42 /* PerfectBCrypt.swift in Sources */,
 				40BC0E4526B45FE600137A92 /* AcknowledgementsSheet.swift in Sources */,
+				A5E101F82814FAFD000B2C42 /* bcrypt.c in Sources */,
 				403CEA9326E864160054DBF4 /* TermsOfServiceForm.swift in Sources */,
 				40878FCA2694DBC400A66EF0 /* MessageComposerSheet.swift in Sources */,
 				409F4326265DE12600690A61 /* CloudImagePicker.swift in Sources */,
@@ -900,6 +937,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Circles/Circles.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -917,6 +955,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "Circles/Utilities/BCrypt/Circles-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -928,6 +968,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Circles/Circles.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -945,6 +986,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "Circles/Utilities/BCrypt/Circles-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

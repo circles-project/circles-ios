@@ -15,7 +15,8 @@ import UIKit
 import MatrixSDK
 import OLMKit
 import StoreKit
-import BCryptSwift
+//import BCryptSwift // BCryptSwift is super freaking slow
+//import BCrypt      // The version based on PerfectBCrypt worked great, until Xcode started refusing to compile it.  So I just imported its sources under Utilities/BCrypt, and it works.  :shrug:
 import CryptoKit
 
 enum TermsOfServiceState {
@@ -1152,8 +1153,7 @@ extension KSStore: MatrixInterface {
         print("SECRETS\tComputed salt string = [\(saltString)]")
 
         let numRounds = 14
-        // FIXME: BCryptSwift is so unbelievably freaking slow...
-        guard let bcrypt = BCryptSwift.hashPassword(password, withSalt: "$2a$\(numRounds)$\(saltString)") else {
+        guard let bcrypt = try? BCrypt.Hash(password, salt: "$2a$\(numRounds)$\(saltString)") else {
             let msg = "BCrypt KDF failed"
             print("SECRETS\t\(msg)")
             return nil
