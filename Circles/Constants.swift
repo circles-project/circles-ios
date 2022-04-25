@@ -23,6 +23,7 @@ let EVENT_TYPE_CIRCLES = "social.kombucha.circles"
 let EVENT_TYPE_CONFIGURED = "social.kombucha.configured"
 let EVENT_TYPE_ROOMTYPE = "social.kombucha.room_type"
 
+// FIXME: Use new m.social room types
 let ROOM_TYPE_CIRCLE = APP_PREFIX + ".circle"
 let ROOM_TYPE_GROUP = APP_PREFIX + ".group"
 let ROOM_TYPE_CHAT = APP_PREFIX + ".chat"

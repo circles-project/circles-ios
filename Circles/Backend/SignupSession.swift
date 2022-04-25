@@ -8,30 +8,145 @@
 import Foundation
 import AnyCodable
 
+protocol UIASession {
+    var url: URL { get }
+    
+    var state: UIAuthSession.State { get }
+    
+    var sessionId: String? { get }
+    
+    func initialize() async throws
+    
+    func selectFlow(flow: UIAA.Flow)
+    
+    func doUIAuthStage(auth: [String:String]) async throws
+    
+    func doTermsStage() async throws
+    
+}
+
+class SignupSession: UIASession {
+    var uia: UIAuthSession
+    //var username: String?
+    //let deviceId: String?
+    //let initialDeviceDisplayName: String?
+    //let inhibitLogin = false
+    
+    var url: URL {
+        self.uia.url
+    }
+    
+    var state: UIAuthSession.State {
+        self.uia.state
+    }
+    
+    var sessionId: String? {
+        self.uia.sessionId
+    }
+
+    init(homeserver: URL,
+         username: String? = nil,
+         deviceId: String? = nil,
+         initialDeviceDisplayName: String? = nil,
+         showMSISDN: Bool = false,
+         inhibitLogin: Bool = false
+    ) {
+        
+        let signupURL = URL(string: "/_matrix/client/v3/register", relativeTo: homeserver.baseURL)!
+        let requestDict: [String: AnyCodable] = [
+            "username": AnyCodable(username),
+            "device_id": AnyCodable(deviceId),
+            "initial_device_display_name": AnyCodable(initialDeviceDisplayName),
+            "x_show_msisdn": AnyCodable(showMSISDN),
+            "inhibit_login": AnyCodable(inhibitLogin),
+        ]
+        self.uia = UIAuthSession(signupURL, requestDict: requestDict)
+    }
+    
+    func initialize() async throws {
+        try await self.uia.initialize()
+    }
+    
+    func selectFlow(flow: UIAA.Flow) {
+        self.uia.selectFlow(flow: flow)
+    }
+
+    func doUIAuthStage(auth: [String : String]) async throws {
+        try await self.uia.doUIAuthStage(auth: auth)
+    }
+    
+    func doTokenRegistrationStage(token: String) async throws {
+        guard self.uia._checkBasicSanity(userInput: token) == true
+        else {
+            // Throw some kind of error
+            print("Error: Invalid token")
+            return
+        }
+        
+        let tokenAuthDict: [String: String] = [
+            "type": "m.login.registration_token",
+            "token": token,
+        ]
+        try await doUIAuthStage(auth: tokenAuthDict)
+    }
+    
+    func doTermsStage() async throws {
+        try await self.uia.doTermsStage()
+    }
+    
+    func doEmailRequestTokenStage(email: String) async throws -> String? {
+
+        guard self.uia._looksLikeValidEmail(userInput: email) == true
+        else {
+            // Throw some kind of error
+            print("Error: Invalid email")
+            return nil
+        }
+        
+        let clientSecretNumber = UInt64.random(in: 0 ..< UInt64.max)
+        let clientSecret = String(format: "%016x", clientSecretNumber)
+        
+        let emailAuthDict: [String: String] = [
+            "type": "m.enroll.email.request_token",
+            "email": email,
+            "client_secret": clientSecret,
+        ]
+        
+        // FIXME: We need to know if this succeeded or failed
+        try await doUIAuthStage(auth: emailAuthDict)
+        
+        return clientSecret
+    }
+    
+    func doEmailSubmitTokenStage(token: String, secret: String) async throws {
+        let emailAuthDict: [String: String] = [
+            "type": "m.enroll.email.submit_token",
+            "token": token,
+            "client_secret": secret,
+        ]
+        try await doUIAuthStage(auth: emailAuthDict)
+    }
+}
+
 // Implements the Matrix UI Auth for the Matrix /register endpoint
 // https://spec.matrix.org/v1.2/client-server-api/#post_matrixclientv3register
-class SignupSession {
-    
+class UIAuthSession: UIASession {
+        
     enum State {
         case notInitialized
         case initialized(UIAA.SessionState)
         case inProgress(UIAA.SessionState,UIAA.Flow)
-        case finished
+        case finished(MatrixCredentials)
     }
     
     let url: URL
     var state: State
-    let username: String?
-    let deviceId: String?
-    let initialDeviceDisplayName: String?
-    let inhibitLogin = true
+    var realRequestDict: [String:AnyCodable] // The JSON fields for the "real" request behind the UIA protection
         
-    init(_ url: URL, username: String? = nil, deviceId: String? = nil, initialDeviceDisplayName: String? = nil) {
+    init(_ url: URL, requestDict: [String:AnyCodable]) {
         self.url = url
-        self.username = username
         self.state = .notInitialized
-        self.deviceId = deviceId
-        self.initialDeviceDisplayName = initialDeviceDisplayName
+        self.realRequestDict = requestDict
         
         let initTask = Task {
             try await self.initialize()
@@ -47,7 +162,7 @@ class SignupSession {
         }
     }
     
-    private func _checkBasicSanity(userInput: String) -> Bool {
+    func _checkBasicSanity(userInput: String) -> Bool {
         if userInput.contains(" ")
             || userInput.contains("\"")
             || userInput.isEmpty
@@ -57,7 +172,7 @@ class SignupSession {
         return true
     }
     
-    private func _looksLikeValidEmail(userInput: String) -> Bool {
+    func _looksLikeValidEmail(userInput: String) -> Bool {
         if !_checkBasicSanity(userInput: userInput) {
             return false
         }
@@ -96,14 +211,8 @@ class SignupSession {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = """
-        {
-            "x_show_msisdn": false
-        }
-        """
-            .replacingOccurrences(of: " ", with: "")
-            .replacingOccurrences(of: "\n", with: "")
-            .data(using: .ascii)
+        let encoder = JSONEncoder()
+        request.httpBody = try encoder.encode(self.realRequestDict)
         let (data, response) = try await URLSession.shared.data(for: request)
         
         print("SIGNUP(start)\tTrying to parse the response")
@@ -154,66 +263,20 @@ class SignupSession {
             "password": base64Password,
         ]
         
-        try await doGenericUIAuthStage(auth: passwordAuthDict)
+        try await doUIAuthStage(auth: passwordAuthDict)
     }
     
-    func doEmailRequestTokenStage(email: String) async throws -> String? {
 
-        guard _looksLikeValidEmail(userInput: email) == true
-        else {
-            // Throw some kind of error
-            print("Error: Invalid email")
-            return nil
-        }
-        
-        let clientSecretNumber = UInt64.random(in: 0 ..< UInt64.max)
-        let clientSecret = String(format: "%016x", clientSecretNumber)
-        
-        let emailAuthDict: [String: String] = [
-            "type": "m.enroll.email.request_token",
-            "email": email,
-            "client_secret": clientSecret,
-        ]
-        
-        // FIXME: We need to know if this succeeded or failed
-        try await doGenericUIAuthStage(auth: emailAuthDict)
-        
-        return clientSecret
-    }
-    
-    func doEmailSubmitTokenStage(token: String, secret: String) async throws {
-        let emailAuthDict: [String: String] = [
-            "type": "m.enroll.email.submit_token",
-            "token": token,
-            "client_secret": secret,
-        ]
-        try await doGenericUIAuthStage(auth: emailAuthDict)
-    }
-    
-    func doTokenRegistrationStage(token: String) async throws {
-        guard _checkBasicSanity(userInput: token) == true
-        else {
-            // Throw some kind of error
-            print("Error: Invalid token")
-            return
-        }
-        
-        let tokenAuthDict: [String: String] = [
-            "type": "m.login.registration_token",
-            "token": token,
-        ]
-        try await doGenericUIAuthStage(auth: tokenAuthDict)
-    }
     
     func doTermsStage() async throws {
         let auth: [String: String] = [
             "type": "m.login.terms",
         ]
-        try await doGenericUIAuthStage(auth: auth)
+        try await doUIAuthStage(auth: auth)
     }
     
     // FIXME: We need some way to know if this succeeded or failed
-    func doGenericUIAuthStage(auth: [String:String]) async throws {
+    func doUIAuthStage(auth: [String:String]) async throws {
         guard let AUTH_TYPE = auth["type"] else {
             print("No auth type")
             return
@@ -228,40 +291,11 @@ class SignupSession {
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        struct GenericRegisterUIAuthRequestBody: Codable {
-            var username: String?
-            var deviceId: String?
-            var initialDeviceDisplayName: String?
-            var inhibitLogin: Bool
-            var auth: [String: String]
-            init(username: String? = nil,
-                 deviceId: String? = nil,
-                 initialDeviceDisplayName: String? = nil,
-                 inhibitLogin: Bool,
-                 auth: [String:String],
-                 sessionId: String)
-            {
-                self.username = username
-                self.deviceId = deviceId
-                self.inhibitLogin = inhibitLogin
-                
-                self.auth = .init()
-                self.auth.merge(auth, uniquingKeysWith: { (a,b) -> String in
-                    a
-                })
-                self.auth["session"] = sessionId
-            }
-        }
-        let gruiarb = GenericRegisterUIAuthRequestBody(
-            username: self.username,
-            deviceId: self.deviceId,
-            initialDeviceDisplayName: self.initialDeviceDisplayName,
-            inhibitLogin: self.inhibitLogin,
-            auth: auth,
-            sessionId: uiaState.session)
+
+        var requestBodyDict: [String: AnyCodable] = self.realRequestDict
+        requestBodyDict["auth"] = AnyCodable(auth)
         let encoder = JSONEncoder()
-        encoder.keyEncodingStrategy = .convertToSnakeCase
-        request.httpBody = try encoder.encode(gruiarb)
+        request.httpBody = try encoder.encode(requestBodyDict)
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
@@ -275,7 +309,14 @@ class SignupSession {
         
         if httpResponse.statusCode == 200 {
             print("\(tag) All done!")
-            state = .finished
+            let decoder = JSONDecoder()
+            guard let newCreds = try? decoder.decode(MatrixCredentials.self, from: data)
+            else {
+                // Throw some error
+                print("\(tag) Error: Couldn't decode Matrix credentials")
+                return
+            }
+            state = .finished(newCreds)
             return
         }
         

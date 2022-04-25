@@ -60,7 +60,7 @@ struct SignupScreen: View {
             } else {
                 ProgressView()
                     .onAppear {
-                        self.session = SignupSession(SIGNUP_HOMESERVER_URL)
+                        self.session = SignupSession(homeserver: SIGNUP_HOMESERVER_URL)
                     }
             }
         }

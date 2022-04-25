@@ -153,8 +153,8 @@ struct LoginScreen: View {
                     print("LOGIN\tFailed to get country code from StoreKit")
                 }
 
-                let signupURL = URL(string: "/_matrix/client/v3/register", relativeTo: SIGNUP_HOMESERVER_URL)!
-                signupSession = SignupSession(signupURL)
+                //let signupURL = URL(string: "/_matrix/client/v3/register", relativeTo: SIGNUP_HOMESERVER_URL)!
+                signupSession = SignupSession(homeserver: SIGNUP_HOMESERVER_URL)
 
             }) {
                 Text("Sign Up")
