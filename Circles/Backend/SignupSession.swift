@@ -140,11 +140,13 @@ class UIAuthSession: UIASession {
     }
     
     let url: URL
+    let accessToken: String?
     var state: State
     var realRequestDict: [String:AnyCodable] // The JSON fields for the "real" request behind the UIA protection
         
-    init(_ url: URL, requestDict: [String:AnyCodable]) {
+    init(_ url: URL, accessToken: String? = nil, requestDict: [String:AnyCodable]) {
         self.url = url
+        self.accessToken = accessToken
         self.state = .notInitialized
         self.realRequestDict = requestDict
         
@@ -291,7 +293,11 @@ class UIAuthSession: UIASession {
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        // We want to be generic: Handle both kinds of use cases: (1) signup (no access token) and (2) re-auth (already have an access token, but need to re-verify identity)
+        if let myAccessToken = accessToken {
+            request.setValue("Bearer \(myAccessToken)", forHTTPHeaderField: "Authorization")
+        }
         var requestBodyDict: [String: AnyCodable] = self.realRequestDict
         requestBodyDict["auth"] = AnyCodable(auth)
         let encoder = JSONEncoder()
