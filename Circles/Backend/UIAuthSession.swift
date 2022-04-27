@@ -287,7 +287,7 @@ extension UIAuthSession {
             "blind": Data(blind).base64EncodedString(),
             "curve": "curve25519",
         ]
-        self.storage[AUTH_TYPE_BSSPEKE_ENROLL_OPRF+".state"] = bss
+        self.storage[stage+".state"] = bss
         try await doUIAuthStage(auth: args)
     }
     
@@ -322,10 +322,66 @@ extension UIAuthSession {
         }
         
         let args: [String: String] = [
-            "type": AUTH_TYPE_BSSPEKE_ENROLL_SAVE,
+            "type": stage,
             "P": Data(P).base64EncodedString(),
             "V": Data(V).base64EncodedString(),
         ]
         try await doUIAuthStage(auth: args)
     }
+    
+    func doBSSpekeLoginOprfStage(password: String) async throws {
+        let stage = AUTH_TYPE_BSSPEKE_LOGIN_OPRF
+        
+        guard let userId = self.creds?.userId else {
+            return
+        }
+        
+        let bss = try BlindSaltSpeke.ClientSession(clientId: userId, serverId: self.url.host!, password: password)
+        let blind = bss.generateBlind()
+        let args: [String: String] = [
+            "type": stage,
+            "blind": Data(blind).base64EncodedString(),
+            "curve": "curve25519",
+        ]
+        self.storage[stage+".state"] = bss
+        try await doUIAuthStage(auth: args)
+    }
+    
+    func doBSSpekeLoginVerifyStage() async throws {
+        // Need to send
+        // V, our long-term public key (from "verifier"?  Although here the actual verifiers are hashes.)
+        // P, our base point on the curve
+        let stage = AUTH_TYPE_BSSPEKE_LOGIN_VERIFY
+        
+        guard let bss = self.storage[AUTH_TYPE_BSSPEKE_LOGIN_OPRF+".state"] as? BlindSaltSpeke.ClientSession
+        else {
+            print("BS-SPEKE\tError: Couldn't find saved BS-SPEKE session")
+            return
+        }
+        guard let params = self.sessionState?.params?[stage] as? BSSpekeEnrollParams
+        else {
+            print("BS-SPEKE\tCouldn't find BS-SPEKE enroll params")
+            return
+        }
+        guard let blindSalt = b64decode(params.blindSalt)
+        else {
+            print("BS-SPEKE\tFailed to decode base64 blind salt")
+            return
+        }
+        let blocks = params.phfParams.blocks
+        let iterations = params.phfParams.iterations
+        guard let (P,V) = try? bss.generatePandV(blindSalt: blindSalt, phfBlocks: UInt32(blocks), phfIterations: UInt32(iterations))
+        else {
+            print("BS-SPEKE\tFailed to generate public key")
+            return
+        }
+        
+        let args: [String: String] = [
+            "type": stage,
+            "P": Data(P).base64EncodedString(),
+            "V": Data(V).base64EncodedString(),
+        ]
+        try await doUIAuthStage(auth: args)
+    }
+    
 }
