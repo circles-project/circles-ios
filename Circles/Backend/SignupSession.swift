@@ -125,7 +125,7 @@ class SignupSession: UIASession {
         return userId
     }
     
-    func doBSSpekeOprfStage(password: String) async throws {
+    func doBSSpekeEnrollOprfStage(password: String) async throws {
         let stage = AUTH_TYPE_BSSPEKE_ENROLL_OPRF
         
         guard let username = self.desiredUsername else {
@@ -143,17 +143,13 @@ class SignupSession: UIASession {
         try await doUIAuthStage(auth: args)
     }
     
-    func doBSSpekeSaveStage() async throws {
+    func doBSSpekeEnrollSaveStage() async throws {
         // Need to send
         // * A, our ephemeral public key
         // * verifier, to prove that we derived the correct secret key
         //   - To do this, we have to derive the secret key
         let stage = AUTH_TYPE_BSSPEKE_ENROLL_SAVE
         
-        guard let username = self.desiredUsername else {
-            return
-        }
-        let userId = _canonicalize(username)
         guard let bss = self.storage[AUTH_TYPE_BSSPEKE_ENROLL_OPRF+".state"] as? BlindSaltSpeke.ClientSession
         else {
             print("BS-SPEKE\tError: Couldn't find saved BS-SPEKE session")

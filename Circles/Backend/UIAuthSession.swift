@@ -7,6 +7,7 @@
 
 import Foundation
 import AnyCodable
+import BlindSaltSpeke
 
 protocol UIASession {
     var url: URL { get }
@@ -35,9 +36,11 @@ class UIAuthSession: UIASession {
     }
     
     let url: URL
-    let accessToken: String?
+    //let accessToken: String? // FIXME: Make this MatrixCredentials ???
+    let creds: MatrixCredentials?
     var state: State
     var realRequestDict: [String:AnyCodable] // The JSON fields for the "real" request behind the UIA protection
+    var storage = [String: Any]() // For holding onto data between requests, like we do on the server side
     
     // Shortcut to get around a bunch of `case let` nonsense everywhere
     var sessionState: UIAA.SessionState? {
@@ -51,9 +54,10 @@ class UIAuthSession: UIASession {
         }
     }
         
-    init(_ url: URL, accessToken: String? = nil, requestDict: [String:AnyCodable]) {
+    init(_ url: URL, credentials: MatrixCredentials? = nil, requestDict: [String:AnyCodable]) {
         self.url = url
-        self.accessToken = accessToken
+        //self.accessToken = accessToken
+        self.creds = credentials
         self.state = .notInitialized
         self.realRequestDict = requestDict
         
@@ -120,6 +124,9 @@ class UIAuthSession: UIASession {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        if let accessToken = self.creds?.accessToken {
+            request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        }
         let encoder = JSONEncoder()
         request.httpBody = try encoder.encode(self.realRequestDict)
         let (data, response) = try await URLSession.shared.data(for: request)
@@ -212,8 +219,8 @@ class UIAuthSession: UIASession {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         // We want to be generic: Handle both kinds of use cases: (1) signup (no access token) and (2) re-auth (already have an access token, but need to re-verify identity)
-        if let myAccessToken = accessToken {
-            request.setValue("Bearer \(myAccessToken)", forHTTPHeaderField: "Authorization")
+        if let accessToken = self.creds?.accessToken {
+            request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         }
         var requestBodyDict: [String: AnyCodable] = self.realRequestDict
         requestBodyDict["auth"] = AnyCodable(auth)
@@ -260,5 +267,65 @@ class UIAuthSession: UIASession {
         }
         
         state = .inProgress(newUiaaState,selectedFlow)
+    }
+}
+
+// BS-SPEKE protocol support
+extension UIAuthSession {
+    
+    // NOTE: The ..Enroll.. functions are *almost* but not exactly duplicates of those in the SignupSession implementation
+    func doBSSpekeEnrollOprfStage(password: String) async throws {
+        let stage = AUTH_TYPE_BSSPEKE_ENROLL_OPRF
+        
+        guard let userId = self.creds?.userId else {
+            return
+        }
+        
+        let bss = try BlindSaltSpeke.ClientSession(clientId: userId, serverId: self.url.host!, password: password)
+        let blind = bss.generateBlind()
+        let args: [String: String] = [
+            "blind": Data(blind).base64EncodedString(),
+            "curve": "curve25519",
+        ]
+        self.storage[AUTH_TYPE_BSSPEKE_ENROLL_OPRF+".state"] = bss
+        try await doUIAuthStage(auth: args)
+    }
+    
+    // OK this one *is* exactly the same as in SignupSession
+    func doBSSpekeEnrollSaveStage() async throws {
+        // Need to send
+        // V, our long-term public key (from "verifier"?  Although here the actual verifiers are hashes.)
+        // P, our base point on the curve
+        let stage = AUTH_TYPE_BSSPEKE_ENROLL_SAVE
+        
+        guard let bss = self.storage[AUTH_TYPE_BSSPEKE_ENROLL_OPRF+".state"] as? BlindSaltSpeke.ClientSession
+        else {
+            print("BS-SPEKE\tError: Couldn't find saved BS-SPEKE session")
+            return
+        }
+        guard let params = self.sessionState?.params?[stage] as? BSSpekeEnrollParams
+        else {
+            print("BS-SPEKE\tCouldn't find BS-SPEKE enroll params")
+            return
+        }
+        guard let blindSalt = b64decode(params.blindSalt)
+        else {
+            print("BS-SPEKE\tFailed to decode base64 blind salt")
+            return
+        }
+        let blocks = params.phfParams.blocks
+        let iterations = params.phfParams.iterations
+        guard let (P,V) = try? bss.generatePandV(blindSalt: blindSalt, phfBlocks: UInt32(blocks), phfIterations: UInt32(iterations))
+        else {
+            print("BS-SPEKE\tFailed to generate public key")
+            return
+        }
+        
+        let args: [String: String] = [
+            "type": AUTH_TYPE_BSSPEKE_ENROLL_SAVE,
+            "P": Data(P).base64EncodedString(),
+            "V": Data(V).base64EncodedString(),
+        ]
+        try await doUIAuthStage(auth: args)
     }
 }
