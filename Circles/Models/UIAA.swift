@@ -130,13 +130,28 @@ public struct EmailLoginParams: Codable {
 }
 
 public struct BSSpekeOprfParams: Codable {
+    var curve: String
+    var hashFunction: String
+}
+
+public struct BSSpekeEnrollParams: Codable {
     struct PHFParams: Codable {
         var name: String
         var iterations: UInt
         var blocks: UInt
     }
-    var curve: String
-    var hashFunction: String
+    var blindSalt: String
+    var phfParams: PHFParams
+}
+
+public struct BSSpekeVerifyParams: Codable {
+    struct PHFParams: Codable {
+        var name: String
+        var iterations: UInt
+        var blocks: UInt
+    }
+    var B: String  // Server's ephemeral public key
+    var blindSalt: String
     var phfParams: PHFParams
 }
 
@@ -197,6 +212,14 @@ extension UIAA.Params: Codable {
         if let bsspekeParams = try? container.decode(BSSpekeOprfParams.self, forKey: .mLoginBSSpekeOprf) {
             self.items[CodingKeys.mLoginBSSpekeOprf.rawValue] = bsspekeParams
         }
+        
+        if let bsspekeParams = try? container.decode(BSSpekeEnrollParams.self, forKey: .mEnrollBSSpekeSave) {
+            self.items[CodingKeys.mEnrollBSSpekeSave.rawValue] = bsspekeParams
+        }
+        
+        if let bsspekeParams = try? container.decode(BSSpekeVerifyParams.self, forKey: .mLoginBSSpekeVerify) {
+            self.items[CodingKeys.mLoginBSSpekeVerify.rawValue] = bsspekeParams
+        }
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -230,6 +253,14 @@ extension UIAA.Params: Codable {
         
         if let bsspekeParams = items[CodingKeys.mLoginBSSpekeOprf.rawValue] as? BSSpekeOprfParams {
             try container.encode(bsspekeParams, forKey: .mLoginBSSpekeOprf)
+        }
+        
+        if let bsspekeParams = items[CodingKeys.mEnrollBSSpekeSave.rawValue] as? BSSpekeEnrollParams {
+            try container.encode(bsspekeParams, forKey: .mEnrollBSSpekeSave)
+        }
+        
+        if let bsspekeParams = items[CodingKeys.mLoginBSSpekeVerify.rawValue] as? BSSpekeVerifyParams {
+            try container.encode(bsspekeParams, forKey: .mLoginBSSpekeVerify)
         }
     }
 }

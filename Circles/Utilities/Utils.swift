@@ -35,3 +35,11 @@ func downscale_image(from image: UIImage, to maxSize: CGSize) -> UIImage? {
     }
     return image
 }
+
+func b64decode(_ str: String) -> [UInt8]? {
+    guard let data = Data(base64Encoded: str) else {
+        return nil
+    }
+    let array = [UInt8](data)
+    return array
+}

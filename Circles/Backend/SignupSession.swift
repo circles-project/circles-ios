@@ -7,16 +7,21 @@
 
 import Foundation
 import AnyCodable
+import BlindSaltSpeke
+
+let AUTH_TYPE_BSSPEKE_ENROLL_OPRF = "m.enroll.bsspeke-ecc.oprf"
+let AUTH_TYPE_BSSPEKE_ENROLL_SAVE = "m.enroll.bsspeke-ecc.save"
 
 // Implements the Matrix UI Auth for the Matrix /register endpoint
 // https://spec.matrix.org/v1.2/client-server-api/#post_matrixclientv3register
 
 class SignupSession: UIASession {
     var uia: UIAuthSession
-    //var username: String?
+    var desiredUsername: String?
     //let deviceId: String?
     //let initialDeviceDisplayName: String?
     //let inhibitLogin = false
+    private var storage = [String: Any]()
     
     var url: URL {
         self.uia.url
@@ -47,6 +52,7 @@ class SignupSession: UIASession {
             "inhibit_login": AnyCodable(inhibitLogin),
         ]
         self.uia = UIAuthSession(signupURL, requestDict: requestDict)
+        self.desiredUsername = username
     }
     
     func initialize() async throws {
@@ -111,6 +117,72 @@ class SignupSession: UIASession {
             "client_secret": secret,
         ]
         try await doUIAuthStage(auth: emailAuthDict)
+    }
+    
+    private func _canonicalize(_ username: String) -> String {
+        let tmp = username.starts(with: "@") ? username : "@\(username)"
+        let userId = tmp.contains(":") ? tmp : "\(tmp):\(DEFAULT_DOMAIN)"
+        return userId
+    }
+    
+    func doBSSpekeOprfStage(password: String) async throws {
+        let stage = AUTH_TYPE_BSSPEKE_ENROLL_OPRF
+        
+        guard let username = self.desiredUsername else {
+            return
+        }
+        
+        let userId = _canonicalize(username)
+        let bss = try BlindSaltSpeke.ClientSession(clientId: userId, serverId: SIGNUP_HOMESERVER_URL.host!, password: password)
+        let blind = bss.generateBlind()
+        let args: [String: String] = [
+            "blind": Data(blind).base64EncodedString(),
+            "curve": "curve25519",
+        ]
+        self.storage[AUTH_TYPE_BSSPEKE_ENROLL_OPRF+".state"] = bss
+        try await doUIAuthStage(auth: args)
+    }
+    
+    func doBSSpekeSaveStage() async throws {
+        // Need to send
+        // * A, our ephemeral public key
+        // * verifier, to prove that we derived the correct secret key
+        //   - To do this, we have to derive the secret key
+        let stage = AUTH_TYPE_BSSPEKE_ENROLL_SAVE
+        
+        guard let username = self.desiredUsername else {
+            return
+        }
+        let userId = _canonicalize(username)
+        guard let bss = self.storage[AUTH_TYPE_BSSPEKE_ENROLL_OPRF+".state"] as? BlindSaltSpeke.ClientSession
+        else {
+            print("BS-SPEKE\tError: Couldn't find saved BS-SPEKE session")
+            return
+        }
+        guard let params = self.uia.sessionState?.params?[stage] as? BSSpekeEnrollParams
+        else {
+            print("BS-SPEKE\tCouldn't find BS-SPEKE enroll params")
+            return
+        }
+        guard let blindSalt = b64decode(params.blindSalt)
+        else {
+            print("BS-SPEKE\tFailed to decode base64 blind salt")
+            return
+        }
+        let blocks = params.phfParams.blocks
+        let iterations = params.phfParams.iterations
+        guard let (P,V) = try? bss.generatePandV(blindSalt: blindSalt, phfBlocks: UInt32(blocks), phfIterations: UInt32(iterations))
+        else {
+            print("BS-SPEKE\tFailed to generate public key")
+            return
+        }
+        
+        let args: [String: String] = [
+            "type": AUTH_TYPE_BSSPEKE_ENROLL_SAVE,
+            "P": Data(P).base64EncodedString(),
+            "V": Data(V).base64EncodedString(),
+        ]
+        try await doUIAuthStage(auth: args)
     }
 }
 

@@ -56,4 +56,5 @@ let LOGIN_STAGE_DUMMY = "m.login.dummy"
 
 let RECOVERY_MIN_INTERVAL = 60.0
 
-let SIGNUP_HOMESERVER_URL = URL(string: "https://matrix.circu.li/")!
+let DEFAULT_DOMAIN = "circu.li"
+let SIGNUP_HOMESERVER_URL = URL(string: "https://matrix.\(DEFAULT_DOMAIN)/")!

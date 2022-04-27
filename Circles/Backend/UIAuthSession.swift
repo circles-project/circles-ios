@@ -38,6 +38,18 @@ class UIAuthSession: UIASession {
     let accessToken: String?
     var state: State
     var realRequestDict: [String:AnyCodable] // The JSON fields for the "real" request behind the UIA protection
+    
+    // Shortcut to get around a bunch of `case let` nonsense everywhere
+    var sessionState: UIAA.SessionState? {
+        switch state {
+        case .initialized(let sessionState):
+            return sessionState
+        case .inProgress(let sessionState, _):
+            return sessionState
+        default:
+            return nil
+        }
+    }
         
     init(_ url: URL, accessToken: String? = nil, requestDict: [String:AnyCodable]) {
         self.url = url
