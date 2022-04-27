@@ -67,9 +67,9 @@ class SignupSession: UIASession {
     func doTokenRegistrationStage(token: String) async throws {
         guard self.uia._checkBasicSanity(userInput: token) == true
         else {
-            // Throw some kind of error
-            print("Error: Invalid token")
-            return
+            let msg = "Invalid token"
+            print("Token registration Error: \(msg)")
+            throw CirclesError(msg)
         }
         
         let tokenAuthDict: [String: String] = [
@@ -87,9 +87,9 @@ class SignupSession: UIASession {
 
         guard self.uia._looksLikeValidEmail(userInput: email) == true
         else {
-            // Throw some kind of error
-            print("Error: Invalid email")
-            return nil
+            let msg = "Invalid email address"
+            print("Email signup Error: \(msg)")
+            throw CirclesError(msg)
         }
         
         let clientSecretNumber = UInt64.random(in: 0 ..< UInt64.max)
@@ -126,7 +126,9 @@ class SignupSession: UIASession {
         let stage = AUTH_TYPE_BSSPEKE_ENROLL_OPRF
         
         guard let username = self.desiredUsername else {
-            return
+            let msg = "Desired username must be set before attempting BS-SPEKE stages"
+            print(msg)
+            throw CirclesError(msg)
         }
         
         let userId = _canonicalize(username)
@@ -150,25 +152,29 @@ class SignupSession: UIASession {
         
         guard let bss = self.storage[AUTH_TYPE_BSSPEKE_ENROLL_OPRF+".state"] as? BlindSaltSpeke.ClientSession
         else {
-            print("BS-SPEKE\tError: Couldn't find saved BS-SPEKE session")
-            return
+            let msg = "Couldn't find saved BS-SPEKE session"
+            print("BS-SPEKE\tError: \(msg)")
+            throw CirclesError(msg)
         }
         guard let params = self.uia.sessionState?.params?[stage] as? BSSpekeEnrollParams
         else {
-            print("BS-SPEKE\tCouldn't find BS-SPEKE enroll params")
-            return
+            let msg = "Couldn't find BS-SPEKE enroll params"
+            print("BS-SPEKE\t\(msg)")
+            throw CirclesError(msg)
         }
         guard let blindSalt = b64decode(params.blindSalt)
         else {
-            print("BS-SPEKE\tFailed to decode base64 blind salt")
-            return
+            let msg = "Failed to decode base64 blind salt"
+            print("BS-SPEKE\t\(msg)")
+            throw CirclesError(msg)
         }
         let blocks = params.phfParams.blocks
         let iterations = params.phfParams.iterations
         guard let (P,V) = try? bss.generatePandV(blindSalt: blindSalt, phfBlocks: UInt32(blocks), phfIterations: UInt32(iterations))
         else {
-            print("BS-SPEKE\tFailed to generate public key")
-            return
+            let msg = "Failed to generate public key"
+            print("BS-SPEKE\t\(msg)")
+            throw CirclesError(msg)
         }
         
         let args: [String: String] = [
