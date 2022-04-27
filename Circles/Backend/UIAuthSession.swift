@@ -135,13 +135,13 @@ class UIAuthSession: UIASession {
         guard let httpResponse = response as? HTTPURLResponse else {
             let msg = "Couldn't decode HTTP response"
             print("SIGNUP(start)\t\(msg)")
-            return
+            throw CirclesError(msg)
         }
         
         guard httpResponse.statusCode == 401 else {
             let msg = "Got unexpected HTTP response code (\(httpResponse.statusCode))"
             print("SIGNUP(start)\t\(msg)")
-            return
+            throw CirclesError(msg)
         }
         
         let decoder = JSONDecoder()
@@ -150,7 +150,7 @@ class UIAuthSession: UIASession {
         guard let sessionState = try? decoder.decode(UIAA.SessionState.self, from: data) else {
             let msg = "Couldn't decode response"
             print("SIGNUP(start)\t\(msg)")
-            return
+            throw CirclesError(msg)
         }
         
         //self.state = .inProgress(sessionState)
@@ -212,7 +212,7 @@ class UIAuthSession: UIASession {
         guard case .inProgress(let (uiaState,selectedFlow)) = state else {
             let msg = "Signup session must be started before attempting email stage"
             print("\(tag) \(msg)")
-            return
+            throw CirclesError(msg)
         }
         
         var request = URLRequest(url: url)
@@ -234,7 +234,7 @@ class UIAuthSession: UIASession {
         else {
             let msg = "UI auth stage failed"
             print("\(tag) Error: \(msg)")
-            return
+            throw CirclesError(msg)
         }
         
         if httpResponse.statusCode == 200 {
@@ -242,9 +242,9 @@ class UIAuthSession: UIASession {
             let decoder = JSONDecoder()
             guard let newCreds = try? decoder.decode(MatrixCredentials.self, from: data)
             else {
-                // Throw some error
-                print("\(tag) Error: Couldn't decode Matrix credentials")
-                return
+                let msg = "Couldn't decode Matrix credentials"
+                print("\(tag) Error: \(msg)")
+                throw CirclesError(msg)
             }
             state = .finished(newCreds)
             return
@@ -255,7 +255,7 @@ class UIAuthSession: UIASession {
         else {
             let msg = "Couldn't decode UIA response"
             print("\(tag) Error: \(msg)")
-            return
+            throw CirclesError(msg)
         }
         
         if let completed = newUiaaState.completed as? [String] {
@@ -278,7 +278,9 @@ extension UIAuthSession {
         let stage = AUTH_TYPE_BSSPEKE_ENROLL_OPRF
         
         guard let userId = self.creds?.userId else {
-            return
+            let msg = "Couldn't find user id for BS-SPEKE enrollment"
+            print(msg)
+            throw CirclesError(msg)
         }
         
         let bss = try BlindSaltSpeke.ClientSession(clientId: userId, serverId: self.url.host!, password: password)
@@ -300,25 +302,29 @@ extension UIAuthSession {
         
         guard let bss = self.storage[AUTH_TYPE_BSSPEKE_ENROLL_OPRF+".state"] as? BlindSaltSpeke.ClientSession
         else {
-            print("BS-SPEKE\tError: Couldn't find saved BS-SPEKE session")
-            return
+            let msg = "Couldn't find saved BS-SPEKE session"
+            print("BS-SPEKE\tError: \(msg)")
+            throw CirclesError(msg)
         }
         guard let params = self.sessionState?.params?[stage] as? BSSpekeEnrollParams
         else {
-            print("BS-SPEKE\tCouldn't find BS-SPEKE enroll params")
-            return
+            let msg = "Couldn't find BS-SPEKE enroll params"
+            print("BS-SPEKE\t\(msg)")
+            throw CirclesError(msg)
         }
         guard let blindSalt = b64decode(params.blindSalt)
         else {
-            print("BS-SPEKE\tFailed to decode base64 blind salt")
-            return
+            let msg = "Failed to decode base64 blind salt"
+            print("BS-SPEKE\t\(msg)")
+            throw CirclesError(msg)
         }
         let blocks = params.phfParams.blocks
         let iterations = params.phfParams.iterations
         guard let (P,V) = try? bss.generatePandV(blindSalt: blindSalt, phfBlocks: UInt32(blocks), phfIterations: UInt32(iterations))
         else {
-            print("BS-SPEKE\tFailed to generate public key")
-            return
+            let msg = "Failed to generate public key"
+            print("BS-SPEKE\t\(msg)")
+            throw CirclesError(msg)
         }
         
         let args: [String: String] = [
@@ -333,7 +339,9 @@ extension UIAuthSession {
         let stage = AUTH_TYPE_BSSPEKE_LOGIN_OPRF
         
         guard let userId = self.creds?.userId else {
-            return
+            let msg = "Couldn't find user id for BS-SPEKE login"
+            print(msg)
+            throw CirclesError(msg)
         }
         
         let bss = try BlindSaltSpeke.ClientSession(clientId: userId, serverId: self.url.host!, password: password)
@@ -355,25 +363,29 @@ extension UIAuthSession {
         
         guard let bss = self.storage[AUTH_TYPE_BSSPEKE_LOGIN_OPRF+".state"] as? BlindSaltSpeke.ClientSession
         else {
-            print("BS-SPEKE\tError: Couldn't find saved BS-SPEKE session")
-            return
+            let msg = "Couldn't find saved BS-SPEKE session"
+            print("BS-SPEKE\tError: \(msg)")
+            throw CirclesError(msg)
         }
         guard let params = self.sessionState?.params?[stage] as? BSSpekeEnrollParams
         else {
-            print("BS-SPEKE\tCouldn't find BS-SPEKE enroll params")
-            return
+            let msg = "Couldn't find BS-SPEKE enroll params"
+            print("BS-SPEKE\t\(msg)")
+            throw CirclesError(msg)
         }
         guard let blindSalt = b64decode(params.blindSalt)
         else {
-            print("BS-SPEKE\tFailed to decode base64 blind salt")
-            return
+            let msg = "Failed to decode base64 blind salt"
+            print("BS-SPEKE\t\(msg)")
+            throw CirclesError(msg)
         }
         let blocks = params.phfParams.blocks
         let iterations = params.phfParams.iterations
         guard let (P,V) = try? bss.generatePandV(blindSalt: blindSalt, phfBlocks: UInt32(blocks), phfIterations: UInt32(iterations))
         else {
-            print("BS-SPEKE\tFailed to generate public key")
-            return
+            let msg = "Failed to generate public key"
+            print("BS-SPEKE\t\(msg)")
+            throw CirclesError(msg)
         }
         
         let args: [String: String] = [
