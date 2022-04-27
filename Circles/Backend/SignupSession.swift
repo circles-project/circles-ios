@@ -9,9 +9,6 @@ import Foundation
 import AnyCodable
 import BlindSaltSpeke
 
-let AUTH_TYPE_BSSPEKE_ENROLL_OPRF = "m.enroll.bsspeke-ecc.oprf"
-let AUTH_TYPE_BSSPEKE_ENROLL_SAVE = "m.enroll.bsspeke-ecc.save"
-
 // Implements the Matrix UI Auth for the Matrix /register endpoint
 // https://spec.matrix.org/v1.2/client-server-api/#post_matrixclientv3register
 
@@ -136,10 +133,11 @@ class SignupSession: UIASession {
         let bss = try BlindSaltSpeke.ClientSession(clientId: userId, serverId: SIGNUP_HOMESERVER_URL.host!, password: password)
         let blind = bss.generateBlind()
         let args: [String: String] = [
+            "type": stage,
             "blind": Data(blind).base64EncodedString(),
             "curve": "curve25519",
         ]
-        self.storage[AUTH_TYPE_BSSPEKE_ENROLL_OPRF+".state"] = bss
+        self.storage[stage+".state"] = bss
         try await doUIAuthStage(auth: args)
     }
     
@@ -174,7 +172,7 @@ class SignupSession: UIASession {
         }
         
         let args: [String: String] = [
-            "type": AUTH_TYPE_BSSPEKE_ENROLL_SAVE,
+            "type": stage,
             "P": Data(P).base64EncodedString(),
             "V": Data(V).base64EncodedString(),
         ]

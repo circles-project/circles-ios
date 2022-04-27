@@ -58,3 +58,8 @@ let RECOVERY_MIN_INTERVAL = 60.0
 
 let DEFAULT_DOMAIN = "circu.li"
 let SIGNUP_HOMESERVER_URL = URL(string: "https://matrix.\(DEFAULT_DOMAIN)/")!
+
+let AUTH_TYPE_BSSPEKE_ENROLL_OPRF = "m.enroll.bsspeke-ecc.oprf"
+let AUTH_TYPE_BSSPEKE_ENROLL_SAVE = "m.enroll.bsspeke-ecc.save"
+let AUTH_TYPE_BSSPEKE_LOGIN_OPRF = "m.login.bsspeke-ecc.oprf"
+let AUTH_TYPE_BSSPEKE_LOGIN_VERIFY = "m.login.bsspeke-ecc.verify"
