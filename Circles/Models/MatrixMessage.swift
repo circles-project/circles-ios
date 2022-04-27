@@ -30,7 +30,7 @@ class MatrixMessage: ObservableObject, Identifiable {
         self.matrix = room.matrix
         self.queue = DispatchQueue(label: mxevent.eventId, qos: .background)
         
-        assert(self.mxevent.type == "m.room.message")
+        assert(self.mxevent.type == "m.room.message" || self.mxevent.type == "m.room.encrypted")
         
         let decoder = DictionaryDecoder()
         // swiftlint:disable:next force_try
@@ -56,7 +56,14 @@ class MatrixMessage: ObservableObject, Identifiable {
     }
     
     var type: String {
-        self.mxevent.content["msgtype"] as? String ?? "unknown"
+        if let contentType = self.mxevent.content["msgtype"] as? String {
+            return contentType
+        } else if self.mxevent.eventType == .roomEncrypted {
+            return "m.room.encrypted"
+        }
+        else {
+            return "unknown"
+        }
     }
     
     var avatarURL: String? {

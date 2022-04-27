@@ -54,8 +54,8 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
         print("TIMELINE --------")
         print("TIMELINE Handling new event with id [\(event.eventId ?? "???")]")
         if event.eventType == .roomEncrypted {
-            print("TIMELINE Event [\(event.eventId ?? "???")] is encrypted.  Hopefully we'll see it again.")
-            return
+            print("TIMELINE Event [\(event.eventId ?? "???")] in Room [\(self.displayName ?? self.id)] is encrypted.  Hopefully we'll see it again.")
+            //return
         } else if event.eventType == .roomMessage {
             print("TIMELINE Event [\(event.eventId ?? "???")] is a room message.  Processing...")
         } else if event.eventType == .reaction {
@@ -71,6 +71,12 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
 
 
         switch event.eventType {
+            
+        case .roomEncrypted:
+            // I want to see encrypted events too, when they never get decrypted
+            let msg = MatrixMessage(from: event, in: self)
+            self.objectWillChange.send()
+            self.messages[msg.id] = msg
 
         case .roomMessage:
             /* FIXME: Need to find a better way to handle ignored users
@@ -83,7 +89,8 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
 
             let msg = MatrixMessage(from: event, in: self)
             self.objectWillChange.send()
-            self.messages.insert(msg)
+            //self.messages.insert(msg)
+            self.messages[msg.id] = msg
 
             if self.first == nil || msg.timestamp < self.first!.timestamp {
                 self.first = msg
@@ -144,7 +151,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
         self.backwardTimeline?.resetPagination()
 
         //let eventTypes: [MXEventType] = [.roomMessage, .roomEncrypted]
-        let eventTypes: [MXEventType] = [.roomMessage, .roomMember]
+        let eventTypes: [MXEventType] = [.roomMessage, .roomMember, .roomEncrypted, .roomAvatar]
         _ = self.backwardTimeline?.listenToEvents(eventTypes, self._eventHandler)
 
         self.mxroom.liveTimeline() { maybeTimeline in
@@ -487,7 +494,12 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
     //            keeping the thing sorted internally, and it
     //            should be more efficient to test whether or not
     //            a given message is in our collection.
-    var messages: Set<MatrixMessage> = []
+    //var messages: Set<MatrixMessage> = []
+    // 2022-04-27 I want to be able to see when a message fails
+    //            to decrypt.  So it's easier if we have a single
+    //            way to uniquely identify each message in the
+    //            room.  This argues for making the messages a dict.
+    var messages: [String: MatrixMessage] = [:]
     
     func canPaginate() -> Bool {
         backwardTimeline?.canPaginate(.backwards) ?? false
@@ -529,7 +541,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
 
     func getMessages(since date: Date? = nil) -> [MatrixMessage] {
         if let cutoff = date {
-            let result = self.messages
+            let result = self.messages.values
                 .filter({ $0.timestamp > cutoff })
                 .filter({ !self.ignoredSenders.contains($0.sender) })
                 .sorted(by: {$0.timestamp > $1.timestamp})
@@ -537,7 +549,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
             return result
         } else {
             // return Array(self.messages)
-            return self.messages
+            return self.messages.values
                 .filter({ !self.ignoredSenders.contains($0.sender) })
                 .sorted(by: {$0.timestamp > $1.timestamp})
         }
@@ -671,7 +683,8 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
                 // Let's go ahead and put the message into the collection.
                 if let event = self.localEchoEvent {
                     let msg = MatrixMessage(from: event, in: self)
-                    self.messages.insert(msg)
+                    //self.messages.insert(msg)
+                    self.messages[event.eventId] = msg
                     // IMPORTANT: We also must remove the local echo,
                     // or any Views that try to use it will get double-vision
                     self.localEchoEvent = nil
@@ -784,7 +797,8 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
                 // Let's go ahead and put the message into the collection.
                 if let event = self.localEchoEvent {
                     let msg = MatrixMessage(from: event, in: self)
-                    self.messages.insert(msg)
+                    //self.messages.insert(msg)
+                    self.messages[event.eventId] = msg
                     // IMPORTANT: We also must remove the local echo,
                     // or any Views that try to use it will get double-vision
                     self.localEchoEvent = nil
@@ -883,7 +897,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
         mxroom.redactEvent(message.id, reason: reason) { response in
             if response.isSuccess {
                 self.objectWillChange.send()
-                self.messages.subtract([message])
+                self.messages[message.id] = nil
             }
             completion(response)
         }
@@ -896,7 +910,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
                            reason: reason) { response in
             if response.isSuccess {
                 self.objectWillChange.send()
-                self.messages.subtract([message])
+                self.messages[message.id] = nil
             }
             completion(response)
         }

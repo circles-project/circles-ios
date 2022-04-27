@@ -182,7 +182,35 @@ struct MessageCard: View {
                 }
                 .frame(minWidth: 200, maxWidth: 400, minHeight: 200, maxHeight: 500, alignment: .center)
             default:
-                Text("This version of Circles can't display this message yet")
+                if message.type == "m.room.encrypted" {
+                    ZStack {
+                        let bgColor = colorScheme == .dark ? Color.black : Color.white
+                        Image(systemName: "lock.rectangle")
+                            .resizable()
+                            .foregroundColor(Color.gray)
+                            .scaledToFit()
+                            .padding()
+                        VStack {
+                            Text("ERROR")
+                                .font(.title)
+                                .fontWeight(.bold)
+                            Text("Failed to decrypt message")
+                                .font(.title2)
+                                .fontWeight(.semibold)
+                            Text("Message id: \(message.id)")
+                                .font(.footnote)
+                        }
+                            .foregroundColor(.red)
+                            .multilineTextAlignment(.center)
+                            .background(
+                                bgColor
+                                    .opacity(0.5)
+                            )
+                    }
+                }
+                else {
+                    Text("This version of Circles can't display this message yet (\"\(message.type)\")")
+                }
             }
         }
     }

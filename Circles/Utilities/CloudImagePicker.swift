@@ -67,7 +67,7 @@ struct CloudImagePicker: View {
                 ScrollView {
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
                         ForEach(
-                            room.messages
+                            room.messages.values
                                 .filter { msg in
                                     switch(msg.content) {
                                     case .image( _):
