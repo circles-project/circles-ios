@@ -162,7 +162,7 @@ class UIAuthSession: UIASession {
         self.state = .inProgress(uiaState, flow)
     }
     
-    func doPasswordStage(password: String) async throws {
+    func doPasswordAuthStage(password: String) async throws {
 
         // Added base64 encoding here to prevent a possible injection attack on the password field
         let base64Password = Data(password.utf8).base64EncodedString()
@@ -175,6 +175,16 @@ class UIAuthSession: UIASession {
         try await doUIAuthStage(auth: passwordAuthDict)
     }
     
+    func doPasswordEnrollStage(newPassword: String) async throws {
+        let base64Password = Data(newPassword.utf8).base64EncodedString()
+
+        let passwordAuthDict: [String: String] = [
+            "type": "m.enroll.password",
+            "new_password": base64Password,
+        ]
+        
+        try await doUIAuthStage(auth: passwordAuthDict)
+    }
 
     
     func doTermsStage() async throws {
