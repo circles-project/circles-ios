@@ -18,6 +18,7 @@ import StoreKit
 //import BCryptSwift // BCryptSwift is super freaking slow
 //import BCrypt      // The version based on PerfectBCrypt worked great, until Xcode started refusing to compile it.  So I just imported its sources under Utilities/BCrypt, and it works.  :shrug:
 import CryptoKit
+import DictionaryCoding
 
 enum TermsOfServiceState {
     case checking
@@ -2708,19 +2709,22 @@ extension KSStore: MatrixInterface {
             completion(.failure(KSError(message: "Couldn't get mxcrypto")))
             return
         }
-        guard let decryptor = crypto.getRoomDecryptor(message.room.id, algorithm: "m.megolm.v1.aes-sha2") else {
-            completion(.failure(KSError(message: "Couldn't get decryptor")))
-            return
-        }
-        if decryptor.hasKeys(toDecryptEvent: message.mxevent) {
-            let decryptionResult = decryptor.decryptEvent(message.mxevent, inTimeline: nil)
-            if let content = decryptionResult?.clearEvent["content"] as? [String:Any] {
-                let decoder = DictionaryDecoder()
-                message.content = try? decoder.decode(MatrixMsgContent.self, from: content)
-            }
-        }
-        else {
 
+        crypto.hasKeys(toDecryptEvent: message.mxevent) { hasKeys in
+            if hasKeys {
+                let decryptionResult = crypto.decryptEvent(message.mxevent, inTimeline: nil)
+                if let content = decryptionResult?.clearEvent["content"] as? [String:Any] {
+                    let decoder = DictionaryDecoder()
+                    message.content = try? decoder.decode(MatrixMsgContent.self, from: content)
+                    if message.content != nil {
+                        print("Decryption success!")
+                        completion(.success(()))
+                    }
+                }
+            }
+            else {
+                completion(.failure(KSError(message: "Don't have keys to decrypt")))
+            }
         }
     }
 

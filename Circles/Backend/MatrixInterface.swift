@@ -128,6 +128,8 @@ protocol MatrixInterface {
     func getOutboundGroupSessions() -> [MXOlmOutboundGroupSession]
 
     func ensureEncryption(roomId: String, completion: @escaping (MXResponse<Void>) -> Void)
+    
+    func tryToDecrypt(message: MatrixMessage, completion: @escaping (MXResponse<Void>) -> Void)
 
     /*
     func startNewSignupSession(completion: @escaping (MXResponse<UIAA.SessionState>) -> Void)

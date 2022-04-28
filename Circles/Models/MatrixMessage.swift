@@ -12,7 +12,7 @@ import DictionaryCoding
 
 class MatrixMessage: ObservableObject, Identifiable {
     let id: String
-    private let mxevent: MXEvent
+    let mxevent: MXEvent
     let room: MatrixRoom
     let matrix: MatrixInterface
     var content: MatrixMsgContent? // Use the DictionaryCoding thing to decode event.content
