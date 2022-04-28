@@ -24,6 +24,10 @@ struct RoomMessageComposer: View {
     @State private var showPicker = false
     //@State private var imageSourceType: UIImagePickerController.SourceType = .photoLibrary
     @State private var inProgress = false
+    
+    @State private var alertTitle: String = ""
+    @State private var alertMessage: String = ""
+    @State private var showAlert = false
 
     enum ImageSourceType {
         case cloud
@@ -253,9 +257,27 @@ struct RoomMessageComposer: View {
             }
         })
         .onAppear() {
-            room.matrix.ensureEncryption(roomId: room.id) { _ in
+            room.matrix.ensureEncryption(roomId: room.id) { response in
                 // Nothing we can really do here anyway
+                switch response {
+                case .success:
+                    // Yay it worked
+                    //self.alertTitle = "Encryption Success"
+                    //self.alertMessage = "All systems go for a new encrypted post"
+                    //self.showAlert = true
+                    return
+                case .failure(let error):
+                    print("Error: Failed to ensure encryption in room [\(room.displayName ?? room.id)]")
+                    self.alertTitle = "Failed to ensure encryption"
+                    self.alertMessage = "Circles could not ensure that all recipients will be able to receive decryption keys for this post"
+                    self.showAlert = true
+                }
             }
+        }
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text(alertTitle),
+                  message: Text(alertMessage),
+                  dismissButton: .default(Text("OK")))
         }
 
     }
