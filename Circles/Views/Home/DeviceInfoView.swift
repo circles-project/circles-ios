@@ -104,11 +104,13 @@ struct DeviceInfoView: View {
                 
                 Button(action: { device.verify() }) {
                     Label("Verify ", systemImage: "checkmark.shield")
+                        .padding(3)
+                        .foregroundColor(Color.accentColor)
+                        .overlay(RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.accentColor))
                 }
-                .padding(3)
-                .foregroundColor(Color.accentColor)
-                .overlay(RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.accentColor))
+                .disabled(device.isVerified)
+
             //}
 
         }

@@ -41,13 +41,21 @@ struct DeviceRemovalSheet: View {
     var header: some View {
         VStack {
             Text("Removing Session")
-                .font(.title2)
+                .font(.title)
                 .fontWeight(.bold)
             HStack {
-                icon
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 60, height: 60, alignment: .center)
+                ZStack {
+                    icon
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 60, height: 60, alignment: .center)
+                    
+                    Image(systemName: "xmark")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 50, height: 50, alignment: .center)
+                        .foregroundColor(.red)
+                }
                 VStack(alignment: .leading) {
                     Text("\(device.displayName ?? "(unknown)")")
                         .font(.title2)
@@ -100,19 +108,31 @@ struct DeviceRemovalSheet: View {
     
     var passwordForm: some View {
         VStack {
-            Text("Removing a login session requires authentication.")
-            //Spacer()
-            Text("Please enter your password to proceed:")
+            Spacer()
+            HStack {
+                Image(systemName: "exclamationmark.triangle")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 50, height: 50, alignment: .center)
+                Text("Removing a login session requires authentication.")
+                    .padding()
+            }
+            Spacer()
+            Text("Enter your password to proceed:")
             SecureFieldWithEye(label: "Password", text: $password)
-                .frame(width: 250, height: 40)
+                .frame(width: 300, height: 40)
+                .padding()
+                .overlay(
+                    RoundedRectangle(cornerRadius: 4)
+                        .stroke(Color.gray, lineWidth: 2)
+                )
+            Spacer()
         }
     }
     
     var body: some View {
         VStack {
             header
-            
-            Spacer()
 
             passwordForm
             
