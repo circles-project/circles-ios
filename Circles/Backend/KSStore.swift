@@ -2586,6 +2586,8 @@ extension KSStore: MatrixInterface {
                         completion(.failure(KSError(message: msg)))
                     case .success:
                         print("DELETE\tSuccess deleting \(deviceId)")
+                        // Also notify any Views for our current user
+                        self.me().objectWillChange.send()
                         completion(.success(deviceId))
                     }
                 }

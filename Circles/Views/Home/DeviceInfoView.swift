@@ -47,22 +47,20 @@ struct DeviceInfoView: View {
     @State var showDetails = false
     @State var showRemoveDialog = false
     
-    var icon: some View {
-        HStack {
-            if let name = device.displayName {
-                if name.contains("iPhone") {
-                    Image(systemName: "iphone")
-                }
-                else if name.contains("iPad") {
-                    Image(systemName: "ipad")
-                }
-                else {
-                    Image(systemName: "desktopcomputer")
-                }
+    var icon: Image {
+        if let name = device.displayName {
+            if name.contains("iPhone") {
+                return Image(systemName: "iphone")
+            }
+            else if name.contains("iPad") {
+                return Image(systemName: "ipad")
             }
             else {
-                Image(systemName: "desktopcomputer")
+                return Image(systemName: "desktopcomputer")
             }
+        }
+        else {
+            return Image(systemName: "desktopcomputer")
         }
     }
     
@@ -87,7 +85,7 @@ struct DeviceInfoView: View {
     var verifyButtons: some View {
         HStack(alignment: .center, spacing: 20){
             
-            if !device.isVerified {
+            //if !device.isVerified {
                 // Only offer to remove the device if it's really ours
                 if device.userId == device.matrix.whoAmI() {
                     Button(action: { self.showRemoveDialog = true }) {
@@ -111,7 +109,7 @@ struct DeviceInfoView: View {
                 .foregroundColor(Color.accentColor)
                 .overlay(RoundedRectangle(cornerRadius: 8)
                             .stroke(Color.accentColor))
-            }
+            //}
 
         }
     }
@@ -166,6 +164,7 @@ struct DeviceInfoView: View {
                         }
                         Text("Local Verification")
                     }
+                    /*
                     VStack(alignment: .leading) {
                         Text("MXOlm Sessions")
                             .fontWeight(.bold)
@@ -175,6 +174,7 @@ struct DeviceInfoView: View {
                             Text("Session: \(olmSession.sessionIdentifier())")
                         }
                     }
+                    */
                 }
                 .padding(.leading)
             }
@@ -185,12 +185,18 @@ struct DeviceInfoView: View {
         VStack(alignment: .leading) {
             HStack {
                 icon
-                Text(device.displayName ?? "(Unnamed Session)")
-                Text(device.id)
-                    .fontWeight(.bold)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 40, height: 40, alignment: .center)
+                VStack(alignment: .leading) {
+                    Text(device.displayName ?? "(Unnamed Session)")
+                    Text(device.id)
+                        .fontWeight(.bold)
+                }
                 Spacer()
                 verificationStatus
             }
+            
             VStack(alignment: .leading) {
                 details
 

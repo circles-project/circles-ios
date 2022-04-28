@@ -28,11 +28,12 @@ struct DevicesScreen: View {
     }
     
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 15) {
-                Text("Active Login Sessions")
-                    .font(.title2)
-                    .padding()
+        VStack(alignment: .leading, spacing: 15) {
+            Text("Active Login Sessions")
+                .font(.title2)
+                //.padding(.top)
+            
+            ScrollView {
 
                 currentDeviceView
 
@@ -68,8 +69,8 @@ struct DevicesScreen: View {
                 Spacer()
             }
             //.navigationBarTitle(Text("Login Sessions"))
-            .padding()
         }
+        .padding()
     }
 }
 
