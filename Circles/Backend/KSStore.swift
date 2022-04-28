@@ -2703,6 +2703,28 @@ extension KSStore: MatrixInterface {
         )
     }
 
+    func tryToDecrypt(message: MatrixMessage, completion: @escaping (MXResponse<Void>) -> Void) {
+        guard let crypto = self.session.crypto else {
+            completion(.failure(KSError(message: "Couldn't get mxcrypto")))
+            return
+        }
+        guard let decryptor = crypto.getRoomDecryptor(message.room.id, algorithm: "m.megolm.v1.aes-sha2") else {
+            completion(.failure(KSError(message: "Couldn't get decryptor")))
+            return
+        }
+        if decryptor.hasKeys(toDecryptEvent: message.mxevent) {
+            let decryptionResult = decryptor.decryptEvent(message.mxevent, inTimeline: nil)
+            if let content = decryptionResult?.clearEvent["content"] as? [String:Any] {
+                let decoder = DictionaryDecoder()
+                message.content = try? decoder.decode(MatrixMsgContent.self, from: content)
+            }
+        }
+        else {
+
+        }
+    }
+
+
 #if false
     func startNewSignupSession(completion: @escaping (MXResponse<UIAA.SessionState>) -> Void) {
         self.signupState = .starting
