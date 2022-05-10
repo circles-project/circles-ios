@@ -15,7 +15,7 @@ struct LoggedOutScreen: View {
     
     var body: some View {
 
-        if let session = signupSession {
+        if signupSession != nil {
             SignupScreen(session: $signupSession)
         } else {
             LoginScreen(matrix: store, signupSession: $signupSession)
