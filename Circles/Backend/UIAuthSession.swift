@@ -119,7 +119,7 @@ class UIAuthSession: UIASession {
     }
     
     func initialize() async throws {
-        let tag = "SIGNUP(start)"
+        let tag = "UIA(init)"
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -131,16 +131,16 @@ class UIAuthSession: UIASession {
         request.httpBody = try encoder.encode(self.realRequestDict)
         let (data, response) = try await URLSession.shared.data(for: request)
         
-        print("SIGNUP(start)\tTrying to parse the response")
+        print("\(tag)\tTrying to parse the response")
         guard let httpResponse = response as? HTTPURLResponse else {
             let msg = "Couldn't decode HTTP response"
-            print("SIGNUP(start)\t\(msg)")
+            print("\(tag)\t\(msg)")
             throw CirclesError(msg)
         }
         
         guard httpResponse.statusCode == 401 else {
             let msg = "Got unexpected HTTP response code (\(httpResponse.statusCode))"
-            print("SIGNUP(start)\t\(msg)")
+            print("\(tag)\t\(msg)")
             throw CirclesError(msg)
         }
         
@@ -149,7 +149,7 @@ class UIAuthSession: UIASession {
         
         guard let sessionState = try? decoder.decode(UIAA.SessionState.self, from: data) else {
             let msg = "Couldn't decode response"
-            print("SIGNUP(start)\t\(msg)")
+            print("\(tag)\t\(msg)")
             throw CirclesError(msg)
         }
         
@@ -207,7 +207,7 @@ class UIAuthSession: UIASession {
             print("No auth type")
             return
         }
-        let tag = "SIGNUP(\(AUTH_TYPE))"
+        let tag = "UIA(\(AUTH_TYPE))"
         
         guard case .inProgress(let (uiaState,selectedFlow)) = state else {
             let msg = "Signup session must be started before attempting email stage"
