@@ -61,9 +61,11 @@ class UIAuthSession: UIASession {
         self.state = .notInitialized
         self.realRequestDict = requestDict
         
+        /*
         let initTask = Task {
             try await self.initialize()
         }
+        */
     }
     
     var sessionId: String? {
@@ -128,7 +130,15 @@ class UIAuthSession: UIASession {
             request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         }
         let encoder = JSONEncoder()
-        request.httpBody = try encoder.encode(self.realRequestDict)
+        if url.path.contains("/register") {
+            let emptyDict = [String:AnyCodable]()
+            request.httpBody = try encoder.encode(emptyDict)
+        }
+        else {
+            request.httpBody = try encoder.encode(self.realRequestDict)
+            let requestBody = String(decoding: request.httpBody!, as: UTF8.self)
+            print("\(tag)\t\(requestBody)")
+        }
         let (data, response) = try await URLSession.shared.data(for: request)
         
         print("\(tag)\tTrying to parse the response")
@@ -137,6 +147,7 @@ class UIAuthSession: UIASession {
             print("\(tag)\t\(msg)")
             throw CirclesError(msg)
         }
+        print("\(tag)\tParsed HTTP response")
         
         guard httpResponse.statusCode == 401 else {
             let msg = "Got unexpected HTTP response code (\(httpResponse.statusCode))"
@@ -152,6 +163,7 @@ class UIAuthSession: UIASession {
             print("\(tag)\t\(msg)")
             throw CirclesError(msg)
         }
+        print("\(tag)\tGot a new UIA session")
         
         //self.state = .inProgress(sessionState)
         self.state = .initialized(sessionState)

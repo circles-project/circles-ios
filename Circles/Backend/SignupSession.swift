@@ -12,7 +12,7 @@ import BlindSaltSpeke
 // Implements the Matrix UI Auth for the Matrix /register endpoint
 // https://spec.matrix.org/v1.2/client-server-api/#post_matrixclientv3register
 
-class SignupSession: UIASession {
+class SignupSession: UIASession, ObservableObject {
     var uia: UIAuthSession
     var desiredUsername: String?
     //let deviceId: String?
@@ -40,20 +40,28 @@ class SignupSession: UIASession {
          inhibitLogin: Bool = false
     ) {
         
-        let signupURL = URL(string: "/_matrix/client/v3/register", relativeTo: homeserver.baseURL)!
-        let requestDict: [String: AnyCodable] = [
-            "username": AnyCodable(username),
-            "device_id": AnyCodable(deviceId),
-            "initial_device_display_name": AnyCodable(initialDeviceDisplayName),
-            "x_show_msisdn": AnyCodable(showMSISDN),
-            "inhibit_login": AnyCodable(inhibitLogin),
-        ]
+        let signupURL = URL(string: "https://matrix.kombucha.social/_matrix/client/r0/register")!
+        print("SIGNUP\tURL is \(signupURL)")
+        var requestDict: [String: AnyCodable] = [:]
+        if let u = username {
+            requestDict["username"] = AnyCodable(u)
+        }
+        if let d = deviceId {
+            requestDict["device_id"] = AnyCodable(d)
+        }
+        if let iddn = initialDeviceDisplayName {
+            requestDict["initial_device_display_name"] = AnyCodable(iddn)
+        }
+        requestDict["x_show_msisdn"] = AnyCodable(showMSISDN)
+        requestDict["inhibit_login"] = AnyCodable(inhibitLogin)
         self.uia = UIAuthSession(signupURL, requestDict: requestDict)
         self.desiredUsername = username
     }
     
     func initialize() async throws {
         try await self.uia.initialize()
+        print("SignupSession:\tDone initializing UIA session")
+        self.objectWillChange.send()
     }
     
     func selectFlow(flow: UIAA.Flow) {
