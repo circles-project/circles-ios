@@ -8,7 +8,8 @@
 import Foundation
 
 public class LoginSession: ObservableObject {
-    var homeserverUrl: URL
+    let username: String
+    let homeserverUrl: URL
     var store: CirclesStore
     let version = "v3"
     
@@ -28,7 +29,8 @@ public class LoginSession: ObservableObject {
     }
     @Published var state: State
     
-    init(homeserverUrl: URL, store: CirclesStore) {
+    init(username: String, homeserverUrl: URL, store: CirclesStore) {
+        self.username = username
         self.homeserverUrl = homeserverUrl
         self.store = store
         self.state = .notInitialized
@@ -75,6 +77,57 @@ public class LoginSession: ObservableObject {
         
         // And update our state with the initialized list from the server
         self.state = .initialized(authTypes)
+    }
+    
+    func passwordLogin(password: String) async throws {
+        struct RequestBody: Encodable {
+            let type = "m.login.password"
+            struct Identifier: Encodable {
+                let type = "m.id.user"
+                var user: String
+            }
+            var identifier: Identifier
+            var password: String
+            
+            init(user: String, password: String) {
+                self.identifier = Identifier(user: user)
+                self.password = password
+            }
+        }
+        var requestBody = RequestBody(user: username, password: password)
+        
+        var url = URL(string: "_matrix/client/\(version)/login", relativeTo: homeserverUrl)!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        let encoder = JSONEncoder()
+        
+        request.httpBody = try encoder.encode(requestBody)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        struct ResponseBody: Codable {
+            var accessToken: String
+            var deviceId: String
+            var userId: String
+            var wellKnown: MatrixWellKnown
+        }
+        
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        guard let responseBody = try? decoder.decode(ResponseBody.self, from: data)
+        else {
+            self.state = .failed("Password login failed")
+            return
+        }
+        
+        let creds = MatrixCredentials(accessToken: responseBody.accessToken, deviceId: responseBody.deviceId, userId: responseBody.userId)
+        self.state = .succeeded(creds)
+        
+        // Anyway, we might as well try to connect now, right?
+        _ = Task {
+            try await self.store.connect(creds: creds)
+        }
     }
     
 }
