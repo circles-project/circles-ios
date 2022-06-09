@@ -108,7 +108,7 @@ service.
 
 If you have a recent Mac with Xcode, you can also build the app yourself:
 ```console
-[user@host ~]$ git clone https://github.com/KombuchaPrivacy/circles-ios.git
+[user@host ~]$ git clone https://gitlab.futo.org/circles/circles-ios.git
 [user@host ~]$ cd circles-ios
 [user@host circles-ios]$ pod install
 [user@host circles-ios]$ open Circles.xcworkspace
