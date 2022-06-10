@@ -19,8 +19,8 @@ struct SecureFieldWithEye: View {
                     .disableAutocorrection(true)
                     .autocapitalization(.none)
                 Button(action: {self.showText.toggle()}) {
-                    Image(systemName: "eye.slash")
-                        .foregroundColor(.gray)
+                    Image(systemName: "eye")
+                        .foregroundColor(Color.accentColor)
                 }
             } else {
                 SecureField(label, text: $text)
