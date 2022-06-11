@@ -18,7 +18,7 @@ protocol UIASession {
     
     func connect() async throws
     
-    func selectFlow(flow: UIAA.Flow)
+    func selectFlow(flow: UIAA.Flow) async
     
     func doUIAuthStage(auth: [String:String]) async throws
     
@@ -31,7 +31,7 @@ class UIAuthSession: UIASession, ObservableObject {
     enum State {
         case notConnected
         case connected(UIAA.SessionState)
-        case inProgress(UIAA.SessionState,UIAA.Flow)
+        case inProgress(UIAA.SessionState,[String])
         case finished(MatrixCredentials)
     }
     
@@ -166,10 +166,12 @@ class UIAuthSession: UIASession, ObservableObject {
         print("\(tag)\tGot a new UIA session")
         
         //self.state = .inProgress(sessionState)
-        self.state = .connected(sessionState)
+        await MainActor.run {
+            self.state = .connected(sessionState)
+        }
     }
     
-    func selectFlow(flow: UIAA.Flow) {
+    func selectFlow(flow: UIAA.Flow) async {
         guard case .connected(let uiaState) = state else {
             // throw some error
             return
@@ -178,7 +180,9 @@ class UIAuthSession: UIASession, ObservableObject {
             // throw some error
             return
         }
-        self.state = .inProgress(uiaState, flow)
+        await MainActor.run {
+            self.state = .inProgress(uiaState, flow.stages)
+        }
     }
     
     func doPasswordAuthStage(password: String) async throws {
@@ -221,7 +225,7 @@ class UIAuthSession: UIASession, ObservableObject {
         }
         let tag = "UIA(\(AUTH_TYPE))"
         
-        guard case .inProgress(let (uiaState,selectedFlow)) = state else {
+        guard case .inProgress(let uiaState, let stages) = state else {
             let msg = "Signup session must be started before attempting email stage"
             print("\(tag) \(msg)")
             throw CirclesError(msg)
@@ -270,15 +274,16 @@ class UIAuthSession: UIASession, ObservableObject {
             throw CirclesError(msg)
         }
         
-        if let completed = newUiaaState.completed as? [String] {
+        if let completed = newUiaaState.completed {
             if completed.contains(AUTH_TYPE) {
-                // Swift: You can't have a .dropFirst() method on your String array
-                // Me: Fuck you, I do what I want.
-                let newFlow = UIAA.Flow(stages: selectedFlow.stages.reversed().dropLast().reversed())
+                let newStages: [String] = Array(stages.suffix(from: 1))
+                await MainActor.run {
+                    state = .inProgress(newUiaaState,newStages)
+                }
             }
         }
         
-        state = .inProgress(newUiaaState,selectedFlow)
+
     }
 
     // MARK: BS-SPEKE protocol support
