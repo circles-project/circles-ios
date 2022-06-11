@@ -10,7 +10,7 @@ import SwiftUI
 
 
 struct InvitationsView: View {
-    var store: KSStore
+    var store: LegacyStore
     @State var invitedRooms: [InvitedRoom] = []
     @State var selectedRoom: MatrixRoom?
     @State var showAcceptSheet = false
@@ -64,7 +64,7 @@ struct InvitationsView: View {
 }
 
 struct InvitationsScreen: View {
-    var store: KSStore
+    var store: LegacyStore
     
     var body: some View {
         ScrollView {

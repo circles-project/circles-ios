@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct LoggedinScreen: View {
-    @ObservedObject var store: KSStore
+    @ObservedObject var store: LegacyStore
     
     enum Tab: String {
         case home
@@ -89,6 +89,6 @@ struct LoggedinScreen: View {
 
 struct LoggedinScreen_Previews: PreviewProvider {
     static var previews: some View {
-        LoggedinScreen(store: KSStore())
+        LoggedinScreen(store: LegacyStore())
     }
 }

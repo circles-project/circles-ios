@@ -10,18 +10,27 @@ import SwiftUI
 import MatrixSDK
 
 struct ContentView: View {
-    @ObservedObject var store: KSStore
+    @ObservedObject var store: CirclesStore
 
     var body: some View {
 
         switch(store.state) {
+            
+        case .nothing:
+            WelcomeScreen(store: store)
+            
+        case .signingUp(let signupSession):
+            SignupScreen(session: signupSession, store: store)
+        
+        case .settingUp(let creds):
+            SetupScreen(creds: creds, store: store)
+            
+        case .loggingIn(let loginSession):
+            LoginScreen(session: loginSession)
 
-        case .blockedOnTerms(let terms):
-            TermsScreen(store: store, terms: terms)
+        case .online(let legacyStore):
 
-        case .normal(let sessionState):
-
-            switch(sessionState) {
+            switch(legacyStore.sessionState) {
 
             case MXSessionState.initialised,
                  MXSessionState.syncInProgress:
@@ -31,27 +40,30 @@ struct ContentView: View {
 
             case MXSessionState.running,
                  MXSessionState.backgroundSyncInProgress:
-                LoggedinScreen(store: self.store)
+                LoggedinScreen(store: legacyStore)
 
-            case MXSessionState.closed:
-                LoggedOutScreen(store: self.store)
 
             case MXSessionState.homeserverNotReachable:
                 // FIXME This should be some sort of pop-up that then sends you back to the login screen
                 // FIXME Alternatively, if we have a (seemingly) valid access token, we could allow the user to browse the data that we already have locally, in some sort of "offline" mode
                 VStack {
-                    ProgressView("Reconnecting to server \(store.homeserver?.host ?? "")")
+                    ProgressView("Reconnecting to server \(legacyStore.homeserver?.host ?? "")")
                 }
             case MXSessionState.pauseRequested:
                 VStack {
                     ProgressView("Logging out...")
                 }
-            case MXSessionState.paused:
+                
+            case MXSessionState.paused, MXSessionState.closed:
                 VStack {
                     Text("Logout successful")
 
-                    Button(action: {
-                        self.store.close()
+                    AsyncButton(action: {
+                        do {
+                            try await self.store.disconnect()
+                        } catch {
+                            
+                        }
                     }) {
                         Text("Return to login screen")
                             .padding()
@@ -65,9 +77,12 @@ struct ContentView: View {
             default:
                 VStack {
                     Text("Something went wrong")
-                    Button(action: {
-                        self.store.pause()
-                        self.store.close()
+                    AsyncButton(action: {
+                        do {
+                            try await self.store.disconnect()
+                        } catch {
+                            
+                        }
                     }) {
                         Text("Logout and try again...")
                     }
@@ -80,8 +95,10 @@ struct ContentView: View {
     }
 }
 
+/*
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(store: KSStore())
+        ContentView(store: CirclesStore())
     }
 }
+*/

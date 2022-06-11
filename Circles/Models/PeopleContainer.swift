@@ -10,12 +10,12 @@ import Foundation
 import MatrixSDK
 
 class PeopleContainer: ObservableObject {
-    var store: KSStore
+    var store: LegacyStore
     var queue: DispatchQueue
     @Published var people: [MatrixUser] = []
 
     
-    init(_ store: KSStore) {
+    init(_ store: LegacyStore) {
         self.store = store
         self.queue = DispatchQueue(label: "PeopleContainer", qos: .background)
         

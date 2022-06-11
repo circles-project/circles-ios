@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct CirclePicker: View {
-    @ObservedObject var store: KSStore
+    @ObservedObject var store: LegacyStore
     @Binding var selected: Set<SocialCircle>
     
     var body: some View {

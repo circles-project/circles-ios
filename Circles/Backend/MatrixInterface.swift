@@ -12,13 +12,15 @@ import MatrixSDK
 
 protocol MatrixInterface {
 
-    func getStore() -> KSStore
+    var sessionState: MXSessionState { get }
+    
+    func getStore() -> LegacyStore
 
     func getDomainFromUserId(_ userId: String) -> String?
 
     func generateSecretsFromSinglePassword(userId: String, password: String) -> MatrixSecrets?
 
-    func login(username: String, rawPassword: String, s4Password: String?, completion: @escaping (MXResponse<Void>) -> Void)
+    //func login(username: String, rawPassword: String, s4Password: String?, completion: @escaping (MXResponse<Void>) -> Void)
     
     //func logout()
     func pause()

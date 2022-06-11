@@ -16,7 +16,7 @@ extension CirclesOverviewSheetType: Identifiable {
 }
 
 struct CirclesOverviewScreen: View {
-    @ObservedObject var store: KSStore
+    @ObservedObject var store: LegacyStore
     @State var selection: String = ""
     
     @State private var sheetType: CirclesOverviewSheetType? = nil
@@ -70,6 +70,6 @@ struct CirclesOverviewScreen: View {
 
 struct CirclesOverviewScreen_Previews: PreviewProvider {
     static var previews: some View {
-        CirclesOverviewScreen(store: KSStore())
+        CirclesOverviewScreen(store: LegacyStore())
     }
 }

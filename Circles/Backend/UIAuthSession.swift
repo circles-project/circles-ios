@@ -16,7 +16,7 @@ protocol UIASession {
     
     var sessionId: String? { get }
     
-    func initialize() async throws
+    func connect() async throws
     
     func selectFlow(flow: UIAA.Flow)
     
@@ -29,8 +29,8 @@ protocol UIASession {
 class UIAuthSession: UIASession, ObservableObject {
         
     enum State {
-        case notInitialized
-        case initialized(UIAA.SessionState)
+        case notConnected
+        case connected(UIAA.SessionState)
         case inProgress(UIAA.SessionState,UIAA.Flow)
         case finished(MatrixCredentials)
     }
@@ -45,7 +45,7 @@ class UIAuthSession: UIASession, ObservableObject {
     // Shortcut to get around a bunch of `case let` nonsense everywhere
     var sessionState: UIAA.SessionState? {
         switch state {
-        case .initialized(let sessionState):
+        case .connected(let sessionState):
             return sessionState
         case .inProgress(let sessionState, _):
             return sessionState
@@ -58,7 +58,7 @@ class UIAuthSession: UIASession, ObservableObject {
         self.url = url
         //self.accessToken = accessToken
         self.creds = credentials
-        self.state = .notInitialized
+        self.state = .notConnected
         self.realRequestDict = requestDict
         
         /*
@@ -120,7 +120,7 @@ class UIAuthSession: UIASession, ObservableObject {
         return false
     }
     
-    func initialize() async throws {
+    func connect() async throws {
         let tag = "UIA(init)"
         
         var request = URLRequest(url: url)
@@ -166,11 +166,11 @@ class UIAuthSession: UIASession, ObservableObject {
         print("\(tag)\tGot a new UIA session")
         
         //self.state = .inProgress(sessionState)
-        self.state = .initialized(sessionState)
+        self.state = .connected(sessionState)
     }
     
     func selectFlow(flow: UIAA.Flow) {
-        guard case .initialized(let uiaState) = state else {
+        guard case .connected(let uiaState) = state else {
             // throw some error
             return
         }

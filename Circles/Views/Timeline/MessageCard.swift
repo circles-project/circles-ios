@@ -207,13 +207,16 @@ struct MessageCard: View {
                                     .opacity(0.5)
                             )
                     }
+                    /*
                     .onAppear {
+                        print("Trying to decrypt...")
                         message.matrix.tryToDecrypt(message: message) { response in
                             if response.isSuccess {
                                 message.objectWillChange.send()
                             }
                         }
                     }
+                    */
                 }
                 else {
                     Text("This version of Circles can't display this message yet (\"\(message.type)\")")

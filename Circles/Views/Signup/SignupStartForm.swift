@@ -10,31 +10,35 @@ import StoreKit
 
 struct SignupStartForm: View {
     //var matrix: MatrixInterface
-    @Binding var session: SignupSession?
+    @ObservedObject var session: SignupSession
+    var store: CirclesStore
     //@Binding var selectedScreen: LoggedOutScreen.Screen
     var state: UIAA.SessionState
 
-    @Binding var selectedFlow: UIAA.Flow?
+    //@Binding var selectedFlow: UIAA.Flow?
 
     var cancel: some View {
         HStack {
-            Button(action: {
+            AsyncButton(action: {
                 //self.selectedScreen = .login
-                self.session = nil
+                do {
+                    try await self.store.disconnect()
+                } catch {
+                    
+                }
             }) {
                 Text("Cancel")
-                    .font(.footnote)
-                    .padding(.top, 5)
-                    .padding(.leading, 10)
+                    .padding()
+                    .frame(width: 300.0, height: 40.0)
+                    .foregroundColor(.red)
+                    .cornerRadius(10)
             }
-            Spacer()
+            //Spacer()
         }
     }
 
     var body: some View {
         VStack {
-            cancel
-
             Text("Sign up for Circles")
                 .font(.title)
                 .fontWeight(.bold)
@@ -56,7 +60,7 @@ struct SignupStartForm: View {
             }
             Button(action: {
                 //selectedFlow = tokenFlow
-                session?.selectFlow(flow: tokenFlow!)
+                session.selectFlow(flow: tokenFlow!)
             }) {
                 Text("Sign up with token")
                     .padding()
@@ -82,7 +86,7 @@ struct SignupStartForm: View {
             }
             Button(action: {
                 //selectedFlow = appleFlow
-                session?.selectFlow(flow: appleFlow!)
+                session.selectFlow(flow: appleFlow!)
             }) {
                 Text("New Circles subscription")
                     .padding()
@@ -94,6 +98,8 @@ struct SignupStartForm: View {
             .disabled( nil == appleFlow || !SKPaymentQueue.canMakePayments() )
 
             Spacer()
+            
+            cancel
 
             if KOMBUCHA_DEBUG {
                 VStack {

@@ -80,7 +80,25 @@ public enum UIAA {
     }
 }
 
+extension UIAA.Flow: Identifiable {
+    var id: String {
+        stages.joined(separator: " ")
+    }
+}
 
+extension UIAA.Flow: Equatable {
+    static func != (lhs: UIAA.Flow, rhs: UIAA.Flow) -> Bool {
+        if lhs.stages.count != rhs.stages.count {
+            return true
+        }
+        for (l,r) in zip(lhs.stages, rhs.stages) {
+            if l != r {
+                return true
+            }
+        }
+        return false
+    }
+}
 
 extension UIAA.Flow: Hashable {
     public func hash(into hasher: inout Hasher) {

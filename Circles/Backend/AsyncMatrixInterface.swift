@@ -8,27 +8,25 @@
 import Foundation
 import UIKit
 
+/*
 protocol AsyncMatrixInterface {
 
     func getDomainFromUserId(_ userId: String) -> String?
-
-    // FIXME: Now with UIA on /login, we support more than just password
-    func login(username: String, password: String) async throws
     
     //func logout()
     func pause() async throws
     func close() async throws
-    func deleteMyAccount(password: String) async throws
+    //func deleteMyAccount(password: String) async throws
     
     // FIXME: Now with UIA on /login, we support more than just password
-    func changeMyPassword(oldPassword: String, newPassword: String) async throws
+    //func changeMyPassword(oldPassword: String, newPassword: String) async throws
     
     func createRecovery(privateKey: Data) async throws
     func deleteRecovery() async throws
         
     func whoAmI() async throws -> String
     
-    func me() -> MatrixUser
+    func me() async throws -> MatrixUser
 
     func get3Pids() async throws -> [String] // FIXME: Return an array of 3pid type thingies that say whether they're email or sms or ...
 
@@ -134,4 +132,9 @@ protocol AsyncMatrixInterface {
     // func setRoomType(roomId: String, roomType: String, completion: @escaping (MXResponse<String>) -> Void)
 
     func setAccountData(_ data: [String:String], for: String) async throws
+    
+    // MARK: To-Device
+    // https://spec.matrix.org/v1.2/client-server-api/#put_matrixclientv3sendtodeviceeventtypetxnid
+    func sendToDeviceMessages(_ messages: [String: [String: MatrixEvent]])
 }
+*/

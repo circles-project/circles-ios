@@ -6,12 +6,13 @@
 //  Created by Charles Wright on 2/19/21.
 //
 
+/*
 import SwiftUI
 import WebKit
 import MatrixSDK
 
 struct TermsScreen: View {
-    @ObservedObject var store: KSStore
+    @ObservedObject var store: LegacyStore
     var terms: MXServiceTerms
     @StateObject var webViewStore = WebViewStore()
     @State var toReview: [MXLoginPolicyData] = []
@@ -123,6 +124,7 @@ struct TermsScreen: View {
         }
     }
 }
+*/
 
 /*
 struct AcceptTermsScreen_Previews: PreviewProvider {

@@ -111,6 +111,16 @@ struct GroupTimelineScreen: View {
             }) {
                 Label("Post a new message", systemImage: "rectangle.badge.plus")
             }
+            
+            /*
+            Button(action: {
+                group.room.matrix.discardCryptoSession(roomId: group.room.id) {
+                    print("Deleted outgoing crypto session for room \(group.room.displayName ?? "???") [\(group.room.id))] ")
+                }
+            }) {
+                Label("Reset encryption", systemImage: "clear")
+            }
+            */
 
         }
         label: {

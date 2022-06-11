@@ -11,7 +11,7 @@ public class LoginSession: ObservableObject {
     let username: String
     let homeserverUrl: URL
     var store: CirclesStore
-    let version = "v3"
+    let version = "r0"
     
     struct Error: Swift.Error {
         var msg: String
@@ -53,7 +53,10 @@ public class LoginSession: ObservableObject {
           200 == httpResponse.statusCode
         else {
             let msg = "Could not get the list of allowable login types from server \(homeserverUrl.host!)"
-            self.state = .failed(msg)
+            await MainActor.run {
+                self.state = .failed(msg)
+            }
+            return
         }
         
         struct ResponseBody: Codable {
@@ -67,7 +70,10 @@ public class LoginSession: ObservableObject {
         guard let responseBody = try? decoder.decode(ResponseBody.self, from: data)
         else {
             let msg = "Could not parse the list of allowable login types from server \(homeserverUrl.host!)"
-            self.state = .failed(msg)
+            await MainActor.run {
+                self.state = .failed(msg)
+            }
+            return
         }
         
         // Extract the list of all the different auth types that we have been offered
@@ -76,10 +82,13 @@ public class LoginSession: ObservableObject {
         }
         
         // And update our state with the initialized list from the server
-        self.state = .initialized(authTypes)
+        await MainActor.run {
+            self.state = .initialized(authTypes)
+        }
     }
     
-    func passwordLogin(password: String) async throws {
+    func passwordLogin(_ password: String) async throws {
+                
         struct RequestBody: Encodable {
             let type = "m.login.password"
             struct Identifier: Encodable {
@@ -124,10 +133,22 @@ public class LoginSession: ObservableObject {
         let creds = MatrixCredentials(accessToken: responseBody.accessToken, deviceId: responseBody.deviceId, userId: responseBody.userId)
         self.state = .succeeded(creds)
         
+        saveCredentials(username: username, creds: creds)
+        
         // Anyway, we might as well try to connect now, right?
         _ = Task {
             try await self.store.connect(creds: creds)
         }
     }
     
+    private func saveCredentials(username: String, creds: MatrixCredentials) {
+        // Save credentials in case the app is closed and re-started
+        let defaults = UserDefaults.standard
+        defaults.set(creds.userId, forKey: "user_id")
+        defaults.set(creds.deviceId, forKey: "device_id[\(creds.userId)]")
+        defaults.set(creds.accessToken, forKey: "access_token[\(creds.userId)]")
+ 
+        print("Saved credentials to UserDefaults")
+
+    }
 }

@@ -10,7 +10,7 @@ import SwiftUI
 
 struct RecentActivityView: View {
     //@State var showReplyComposer = false
-    var store: KSStore
+    var store: LegacyStore
 
     @State var recentCircles: [SocialCircle] = []
     @State var recentGroups: [SocialGroup] = []
@@ -114,7 +114,7 @@ struct RecentActivityView: View {
 }
 
 struct RecentActivityScreen: View {
-    var store: KSStore
+    var store: LegacyStore
     var body: some View {
         ScrollView {
             RecentActivityView(store: store)

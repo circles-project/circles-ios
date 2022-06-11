@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct SystemNoticesView: View {
-    var store: KSStore
+    var store: LegacyStore
     @State var selectedMessage: MatrixMessage?
     
     var body: some View {
@@ -26,7 +26,7 @@ struct SystemNoticesView: View {
 }
 
 struct SystemNoticesScreen: View {
-    var store: KSStore
+    var store: LegacyStore
     
     var body: some View {
         VStack {

@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct CircleCreationSheet: View {
-    @ObservedObject var store: KSStore
+    @ObservedObject var store: LegacyStore
     @Environment(\.presentationMode) var presentation
     
     @State private var circleName: String = ""
@@ -155,6 +155,6 @@ struct CircleCreationSheet: View {
 
 struct StreamCreationSheet_Previews: PreviewProvider {
     static var previews: some View {
-        CircleCreationSheet(store: KSStore())
+        CircleCreationSheet(store: LegacyStore())
     }
 }

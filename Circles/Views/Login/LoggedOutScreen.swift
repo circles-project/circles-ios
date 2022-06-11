@@ -6,6 +6,7 @@
 //  Created by Charles Wright on 3/4/21.
 //
 
+/*
 import SwiftUI
 
 struct LoggedOutScreen: View {
@@ -15,10 +16,11 @@ struct LoggedOutScreen: View {
     
     var body: some View {
 
-        if signupSession != nil {
-            SignupScreen(session: $signupSession)
+        if let session = signupSession {
+            SignupScreen(session: session)
         } else {
-            LoginScreen(matrix: store, signupSession: $signupSession)
+            LoginScreen(matrix: store,
+                        signupSession: $signupSession)
         }
 
     }
@@ -29,3 +31,4 @@ struct LoggedOutScreen_Previews: PreviewProvider {
         LoggedOutScreen(store: KSStore())
     }
 }
+*/

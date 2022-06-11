@@ -20,34 +20,6 @@ import StoreKit
 import CryptoKit
 import DictionaryCoding
 
-enum TermsOfServiceState {
-    case checking
-    case needToAccept(MXServiceTerms)
-    case alreadyAccepted
-    case checkFailed
-}
-
-enum KombuchaStoreState  {
-    case none
-    case loggedOut
-    //case offline
-    case signingUp
-    case settingUp
-    //case newAccount
-    case checkingToS
-    case blockedOnTerms(MXServiceTerms)
-    case normal(MXSessionState)
-}
-
-enum SignupState {
-    case notStarted
-    case starting
-    case inProgress(UIAA.SessionState)
-    case waitingForEmail(UIAA.SessionState)
-    case validatedEmail(UIAA.SessionState)
-    case waitingForSMS(UIAA.SessionState)
-    case finished(MXCredentials)
-}
 
 struct MatrixSecrets {
     var loginPassword: String
@@ -60,7 +32,7 @@ struct MatrixSecrets {
     var keygenMethod: KeygenMethod
 }
 
-class KSStore: ObservableObject {
+class LegacyStore: ObservableObject {
     // New approach (Oct 2020) -- Let the MXSession hold the one
     // authoritative copy of all of its state.  Why duplicate extra work?
     var session: MXSession
@@ -78,113 +50,6 @@ class KSStore: ObservableObject {
     // For deriving a new login password and SSSS key from a regular password
     var rootSecret: String?
 
-    /*
-    static private let release = "beta"
-    static private let server = release == "beta" ? "beta" : "matrix"
-    var homeserver: URL = URL(string: "https://\(server).kombucha.social")!
-    private let homeserverDomainPart = "\(server).kombucha.social"
-    var identityServer: URL = URL(string: "https://\(server).kombucha.social")!
-    */
-
-    private var kombuchaServer: URL? {
-        // FIXME At some point this should use .well-known instead of hardcoding
-        guard let domain = kombuchaDomain else {
-            return nil
-        }
-        return URL(string: "https://matrix.\(domain)/")
-        //return URL(string: "https://beta.kombucha.social/")!
-    }
-
-    private var kombuchaDomain: String? {
-
-        guard let countryCode = SKPaymentQueue.default().storefront?.countryCode else {
-            print("DOMAIN\tCouldn't get country code from SKPaymentQueue")
-            return nil
-        }
-
-        let usDomain = "kombucha.social"
-        let euDomain = "eu.kombucha.social"
-
-        switch countryCode {
-        case "USA":
-            return usDomain
-
-        // EU Countries
-        case "AUT", // Austria
-             "BEL", // Belgium
-             "BGR", // Bulgaria
-             "HRV", // Croatia
-             "CYP", // Cyprus
-             "CZE", // Czech
-             "DNK", // Denmark
-             "EST", // Estonia
-             "FIN", // Finland
-             "FRA", // France
-             "DEU", // Germany
-             "GRC", // Greece
-             "HUN", // Hungary
-             "IRL", // Ireland
-             "ITA", // Italy
-             "LVA", // Latvia
-             "LTU", // Lithuania
-             "LUX", // Luxembourg
-             "MLT", // Malta
-             "NLD", // Netherlands
-             "POL", // Poland
-             "PRT", // Portugal
-             "ROU", // Romania
-             "SVK", // Slovakia
-             "ESP", // Spain
-             "SWE"  // Sweden
-            :
-            return euDomain
-
-        // EEA Countries
-        case "ISL", // Iceland
-             "LIE", // Liechtenstein
-             "NOR"  // Norway
-            :
-            return euDomain
-
-        // Other European-region countries
-        case "ALB", // Albania
-             "AND", // Andorra
-             "ARM", // Armenia
-             "BLR", // Belarus
-             "BIH", // Bosnia and Herzegovina
-             "GEO", // Georgia
-             "MDA", // Moldova
-             "MCO", // Monaco
-             "MNE", // Montenegro
-             "MKD", // North Macedonia
-             "SMR", // San Marino
-             "SRB", // Serbia
-             "SVN", // Slovenia
-             "CHE", // Switzerland
-             "TUR", // Turkey
-             "UKR", // Ukraine
-             "GBR", // UK
-             "VAT"  // Holy See
-            :
-            return euDomain
-
-        // Everybody else uses the US server
-        default:
-            return usDomain
-        }
-    }
-
-    /*
-    var homeserver: URL {
-        URL(string: "https://\(self.server).kombucha.social/")!
-    }
-    */
-
-    /*
-    var identityServer: URL {
-        self.homeserver
-    }
-    */
 
     var homeserver: URL? {
         URL(string: self.session.matrixRestClient.homeserver)
@@ -194,12 +59,7 @@ class KSStore: ObservableObject {
         URL(string: self.session.matrixRestClient.identityServer)
     }
     
-    // Update Feb 2021 -- Need to track a few things that are outside the scope of the MXSessionState
-    //  * Has the user accepted terms of service?
-    //  * Does the user need to re-set their password?
-    //  * Is the user brand new, and needs help setting up their account?
-    var tosState: TermsOfServiceState = .checking
-    var signupState: SignupState = .notStarted
+
 
     // Model data for the Matrix layer
     var userId: String?
@@ -301,27 +161,7 @@ class KSStore: ObservableObject {
             self.loginMxRc = self.sessionMxRc
 
             self.connect(restclient: self.sessionMxRc!) {
-                //_ = self.getCircles()
-                //self.state = .normal(<#T##MXSessionState#>)
                 print("STORE\tBack from connect()")
-                //dgroup.leave()
-
-                /*
-                 // Moving the recovery key stuff into the MXSession state handler
-                 // That way, it gets called every time we come back online, regardless of whether we just launched the app or no
-
-                // Set up the recovery service for keys / secrets / etc
-                // login() does this in its own callback.  So we should do it too.
-                // This prevents calling it multiple times from inside connect() when it doesn't know what its caller is/isn't handling.
-                let defaults = UserDefaults.standard
-                if let privateKey = defaults.data(forKey: "privateKey[\(self.whoAmI())]") {
-                    print("STORE\tConnecting to recovery")
-                    self.connectRecovery(privateKey: privateKey)
-                } else {
-                    print("STORE\tNo private key for recovery for user \(self.whoAmI())")
-                }
-                */
-
             }
         }
 
@@ -531,137 +371,10 @@ class KSStore: ObservableObject {
         }
     }
     
-    func checkTermsOfService() {
-        var idAccessToken: String?
-        var dgroup = DispatchGroup()
-        
-        if let idService = self.session.identityService {
-            dgroup.enter()
-            idService.accessToken() { response in
-                switch response {
-                case .failure(let err):
-                    if let mxe = MXError(nsError: err) {
-                        if mxe.error == kMXErrCodeStringTermsNotSigned {
-                            print("IDENTITY\tTERMS NOT SIGNED")
-                        }
-                    }
-                case .success(let maybeToken):
-                    if let token = maybeToken {
-                        print("IDENTITY\tGot access token = \(token).  No Error!")
-                        idAccessToken = token
-                    }
-                }
-                dgroup.leave()
-            }
-        }
-        dgroup.notify(queue: .main) {
-            if let token = idAccessToken {
-                print("IDENTITY\tWe got a token!  \(token)")
-                
-                let serviceTerms = MXServiceTerms(baseUrl: self.session.identityService.identityServer,
-                                              serviceType: MXServiceTypeIdentityService,
-                                              matrixSession: self.session,
-                                              accessToken: token)
-                print("IDENTITY\tGot MXServiceTerms object...")
 
-                
-                /*
-                serviceTerms.terms({maybeTerms, maybeAccepted in
-                    print("IDENTITY\tGot terms!")
-                    guard let terms = maybeTerms else {
-                        print("IDENTITY\tGot NULL for terms and shit for brains :(")
-                        return
-                    }
-                    let acceptedTerms = maybeAccepted ?? []
-                    print("IDENTITY\tGot \(acceptedTerms.count) accepted terms")
-                    for accepted in acceptedTerms {
-                        print("IDENTITY\tAlready accepted \(accepted)")
-                    }
 
-                    let policies = terms.policies
-                    var urls: [String] = []
-                    print("IDENTITY\tGot \(policies.count) terms to be accepted")
-                    for (id, policy) in policies {
-                        print("IDENTITY\tPolicy id = \(id) version = \(policy.version)")
-                        let lang = "en"
-                        if let data = policy.data[lang] {
-                            print("IDENTITY\t\tname = \(data.name)")
-                            print("IDENTITY\t\turl = \(data.url)")
-                            urls.append(data.url)
-                        }
-                    }
-                    
-                    // Just for giggles...  Agree to the first one
-                    // Doh..  Accepting just one doesn't work.
-                    // Can we accept them all?
-                    if let (_, firstPolicy) = policies.first {
-                        if let data = firstPolicy.data["en"] {
-                            print("IDENTITY\tAccepting policy \(data.name)")
-                            serviceTerms.agree(toTerms: urls,
-                                               success: {
-                                                print("IDENTITY\tSuccessfully agreed!")
-                                               },
-                                               failure: {err in
-                                                print("IDENTITY\tFailed to agree")
-                                               })
-                        }
-                    }
-                }, failure: {err in
-                    print("IDENTITY\tFailed to get service terms")
-                })
-                */
-                
-                serviceTerms.areAllTermsAgreed({progress in
-                    let done = progress.completedUnitCount
-                    let total = progress.totalUnitCount
-                    print("IDENTITY\tProgress = \(progress.fractionCompleted)")
-                    print("IDENTITY\t\(done) out of \(total)")
-                    
-                    if done < total {
-                        // FIXME Testing...
-                        self.objectWillChange.send()
-                        self.tosState = .needToAccept(serviceTerms)
-                    }
-                },
-                failure: {err in
-                    print("IDENTITY\tFailed to find whether terms are agreed")
-                })
-            }
-        }
-    }
-    
-    func acceptTerms(urls: [String], completion: @escaping (MXResponse<Int>) -> Void) {
-        switch(state) {
-        case .blockedOnTerms(let terms):
-            print("TERMS\tAccepting \(urls.count) terms")
-            terms.agree(toTerms: urls,
-                        success: {
-                            self.objectWillChange.send()
-                            self.tosState = .alreadyAccepted
-                            completion(.success(urls.count))
-                        },
-                        failure: {err in
-                            let msg = "TERMS\tFailed to accept terms: \(err)"
-                            print(msg)
-                            completion(.failure(KSError(message: msg)))
-                        })
-        default:
-            // We're not blocked waiting on service terms, so wtf?
-            break
-        }
-    }
 
-    var state: KombuchaStoreState {
-        // Our externally-visible state is a function of a bunch of smaller pieces of state that we track internally
-        // FIXME This approach is kind of a mess.  Why not create an actual state variable, and mutate it at the proper times?
-        
-        
-        if case let .needToAccept(terms) = self.tosState {
-            return .blockedOnTerms(terms)
-        }
-        
-        return .normal(self.session.state)
-    }
+
 
     func getDomainFromUserId(_ userId: String) -> String? {
         let toks = userId.split(separator: ":")
@@ -675,7 +388,7 @@ class KSStore: ObservableObject {
     
 }
 
-extension KSStore: SocialGraph {
+extension LegacyStore: SocialGraph {
 
     func getPeopleContainer() -> PeopleContainer {
         if self.people == nil {
@@ -897,8 +610,12 @@ extension KSStore: SocialGraph {
 }
 
 
-extension KSStore: MatrixInterface {
+extension LegacyStore: MatrixInterface {
 
+    var sessionState: MXSessionState {
+        self.session.state
+    }
+    
     func changeMyPassword(oldPassword: String, newPassword: String, completion: @escaping (MXResponse<Void>) -> Void) {
         guard let restClient = self.session.matrixRestClient else {
             let msg = "Failed to get Matrix rest client"
@@ -1022,7 +739,7 @@ extension KSStore: MatrixInterface {
         )
     }
 
-    func getStore() -> KSStore {
+    func getStore() -> LegacyStore {
         self
     }
 
@@ -1090,16 +807,6 @@ extension KSStore: MatrixInterface {
     */
 
     func generateSecretsFromTwoPasswords(userId: String, loginPassword: String, s4Password: String, completion: @escaping (MXResponse<MatrixSecrets>)->Void) {
-
-        /* // This doesn't seem to work with what Element generates...
-        var nsSalt: NSString?
-
-        var pbkdf2iterations: UInt = 0
-        guard let key = try? MXKeyBackupPassword.generatePrivateKey(withPassword: s4Password, salt: &nsSalt, iterations: &pbkdf2iterations) else {
-            print("SECRETS\tPassword-based keygen failed")
-            return nil
-        }
-        */
 
         guard let crypto = self.session.crypto,
               let recovery = crypto.recoveryService else {
@@ -1187,6 +894,7 @@ extension KSStore: MatrixInterface {
         )
     }
     
+    /*
     func login(username: String, rawPassword: String, s4Password: String? = nil, completion: @escaping (MXResponse<Void>) -> Void) {
         print("in login()")
 
@@ -1345,7 +1053,29 @@ extension KSStore: MatrixInterface {
         }
         print("Leaving login()")
     }
+    */
+    
+    func setupRecovery(key: Data) {
+        guard let crypto = self.session.crypto,
+              let recovery = crypto.recoveryService else {
+            print("RECOVERY\tCouldn't get recoveryService")
+            return
+        }
+        print("RECOVERY\tSetting up")
 
+        if !recovery.hasRecovery() {
+            print("RECOVERY\tDidn't find an existing recovery.  Creating one now...")
+            createRecovery(privateKey: key)
+        } else {
+            // We have a recovery already existing
+            print("RECOVERY\tWe have an existing recovery")
+ 
+            print("RECOVERY\tConnecting with our current secret key")
+            self.connectRecovery(privateKey: key)
+        }
+    }
+
+    /*
     func setupRecovery(secrets: MatrixSecrets) {
         guard let crypto = self.session.crypto,
               let recovery = crypto.recoveryService else {
@@ -1373,10 +1103,12 @@ extension KSStore: MatrixInterface {
             }
         }
     }
+    */
 
+    
     func createRecovery(privateKey: Data) {
 
-        let userId = self.whoAmI()
+        //let userId = self.whoAmI()
 
         guard let crypto = self.session.crypto,
               let recovery = crypto.recoveryService else {
@@ -1385,12 +1117,12 @@ extension KSStore: MatrixInterface {
         }
 
         func handleCreateSuccess(info: MXSecretStorageKeyCreationInfo) {
-            //let recoveryKey = info.recoveryKey
-            //let privateKey = info.privateKey
+            /*
             let defaults = UserDefaults.standard
 
             defaults.set(info.recoveryKey, forKey: "recoveryKey[\(userId)]")
             defaults.set(info.privateKey, forKey: "privateKey[\(userId)]")
+            */
             print("RECOVERY\tSetup success")
         }
 
@@ -1560,60 +1292,15 @@ extension KSStore: MatrixInterface {
 
                                 print("CONNECT\tSuccessfully started MXSession")
                                 self.invitedRooms = self.getInvitedRooms()
-
-                                /* // Moving this into the callback..  Caller will need to take care of it.  This should be OK, as we only ever have two callers.
-                                let defaults = UserDefaults.standard
-                                if let privateKey = defaults.data(forKey: "privateKey[\(self.whoAmI())]") {
-                                    self.connectRecovery(privateKey: privateKey)
-                                } else {
-                                    print("CONNECT\tNo private key for recovery")
-                                }
-                                */
-
-                                /*
-                                for room in self.getAllRooms() {
-                                    print("ROOM\t[\(room.id)] \"\(room.displayName ?? "???")\"")
-                                    for tag in room.tags {
-                                        print("ROOM\t\t\(tag)")
-                                    }
-                                }
-                                */
                                 
-                                self.checkTermsOfService()
+                                // 2022-05-05 We're having lots of encryption errors lately.  Might as well try getting private keys from our other devices.
+                                crypto.requestAllPrivateKeys()
+                                
 
                                 // We're trying to be more careful about enumerating our circles now
                                 // So we have to initialize the local copy at some point
                                 self.loadCircles() { _ in }
 
-                                // cvw: Freaking kludge to fix my freaking bug where Circle rooms weren't getting a room type
-                                for room in self.getRooms(for: ROOM_TAG_OUTBOUND) {
-                                    room.getRoomType() { response in
-                                        if response.isFailure {
-                                            // Single shot fire-and-forget attempt at adding the missing room type
-                                            // If it doesn't work, then what recourse do we have???
-                                            room.setRoomType(type: ROOM_TYPE_CIRCLE, completion: { _ in })
-                                        }
-                                    }
-                                    // Fixed this via better room-creation parameters in createRoom -- But you know what?  I'm going to keep it here, just in case.  We want to make sure we're all encrypted, all the time.
-                                    // Freaking kludge upon kludge
-                                    // For some reason our Circles are not getting encryption enabled at creation time
-                                    // even though the completion handler comes back with .success
-                                    // So we'll try it again...
-                                    // Using the MXRoom method seems to work.
-                                    if !room.isEncrypted {
-                                        room.enableEncryption() { response2 in
-                                            switch response2 {
-                                            case .failure:
-                                                print("CRYPTO\tFailed to enable crypto on unencrypted room [\(room.displayName ?? room.id)]")
-                                            case .success:
-                                                print("CRYPTO\tEnabled crypto on previously unencrypted room [\(room.displayName ?? room.id)]")
-                                            }
-                                        }
-                                    }
-
-                                    // Finally call the completion handler
-                                    completion()
-                                }
                             }
                         }
                     }
@@ -2416,8 +2103,9 @@ extension KSStore: MatrixInterface {
             )
     }
 
+    
     func _getDefaultDomain() -> String? {
-        guard let server = self.kombuchaServer?.host else {
+        guard let server = self.homeserver?.host else {
             return nil
         }
         if server.starts(with: "matrix.") {
@@ -2705,11 +2393,15 @@ extension KSStore: MatrixInterface {
     }
 
     func tryToDecrypt(message: MatrixMessage, completion: @escaping (MXResponse<Void>) -> Void) {
+        let tag = "TRYTODECRYPT"
+        
+        print("\(tag) Trying to decrypt message [\(message.id)]")
+        
         guard let crypto = self.session.crypto else {
-            completion(.failure(KSError(message: "Couldn't get mxcrypto")))
+            completion(.failure(KSError(message: "\(tag) Couldn't get mxcrypto")))
             return
         }
-
+        
         crypto.hasKeys(toDecryptEvent: message.mxevent) { hasKeys in
             if hasKeys {
                 let decryptionResult = crypto.decryptEvent(message.mxevent, inTimeline: nil)
@@ -2717,13 +2409,20 @@ extension KSStore: MatrixInterface {
                     let decoder = DictionaryDecoder()
                     message.content = try? decoder.decode(MatrixMsgContent.self, from: content)
                     if message.content != nil {
-                        print("Decryption success!")
+                        print("\(tag) Decryption success!")
                         completion(.success(()))
+                    } else {
+                        let msg = "\(tag) Failed to decrypt message \(message.id)"
+                        print(msg)
+                        completion(.failure(KSError(message: msg)))
                     }
                 }
             }
             else {
-                completion(.failure(KSError(message: "Don't have keys to decrypt")))
+                crypto.reRequestRoomKey(for: message.mxevent)
+                let msg = "\(tag) Don't have keys to decrypt"
+                print(msg)
+                completion(.failure(KSError(message: msg)))
             }
         }
     }

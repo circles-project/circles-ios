@@ -11,4 +11,5 @@ struct MatrixCredentials: Codable {
     var accessToken: String
     var deviceId: String
     var userId: String
+    var wellKnown: MatrixWellKnown?
 }

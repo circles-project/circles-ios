@@ -22,46 +22,36 @@ struct SignupScreen: View {
 
     //var matrix: MatrixInterface
     //@Binding var uiaaState: UiaaSessionState?
-    @Binding var session: SignupSession?
+    @ObservedObject var session: SignupSession
+    var store: CirclesStore
 
-    @State var selectedFlow: UIAA.Flow?
+    //@State var selectedFlow: UIAA.Flow?
     @State var creds: MXCredentials?
     @State var emailSessionId: String?
 
     @State var accountInfo = SignupAccountInfo()
 
-    // And this one is a fake "flow" for the post-signup account setup process
-    @State var postSignupFlow = UIAA.Flow(stages: ["avatar", "circles"])
     
     var body: some View {
         VStack {
-            if let currentSession = session {
-                switch currentSession.state {
-                case .notInitialized:
-                    ProgressView()
-                        .onAppear() {
-                            let task = Task {
-                                try await currentSession.initialize()
-                            }
-                        }
-                case .initialized(let state):
-                    Text("Start screen goes here")
-                    SignupStartForm(session: $session, state: state, selectedFlow: $selectedFlow)
-                case .inProgress(let state, let flow):
-                    // Text("Forms for the various stages go here")
-                    if let stage = flow.stages.first {
-                        Text("Current stage is \(stage)")
-                    } else {
-                        // FIXME: Uh oh, looks like we ran out of stages...
-                    }
-                case .finished:
-                    Text("All done!")
-                }
-            } else {
+            switch session.state {
+            case .notConnected:
                 ProgressView()
                     .onAppear {
-                        self.session = SignupSession(homeserver: SIGNUP_HOMESERVER_URL)
+                        let _ = Task {
+                            try await session.connect()
+                        }
                     }
+                Text("Connecting to server")
+            case .connected(let uiaaState):
+                SignupStartForm(session: session, store: store, state: uiaaState)
+            case .inProgress(let uiaaState, let selectedFlow):
+                Text("In Progress")
+                    .font(.headline)
+                Text(selectedFlow.stages.joined(separator: " "))
+            case .finished(let creds):
+                Text("Finished!")
+                    .font(.headline)
             }
         }
     }

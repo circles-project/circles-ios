@@ -10,7 +10,7 @@ import SwiftUI
 
 struct InvitationAcceptSheet: View {
     //@EnvironmentObject var store: KSStore
-    @ObservedObject var store: KSStore
+    @ObservedObject var store: LegacyStore
     @ObservedObject var room: MatrixRoom
     @Environment(\.presentationMode) var presentation
     @State var circles: Set<SocialCircle> = []

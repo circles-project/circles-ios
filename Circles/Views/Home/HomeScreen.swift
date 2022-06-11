@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct HomeScreen: View {
-    @ObservedObject var store: KSStore
+    @ObservedObject var store: LegacyStore
     @ObservedObject var user: MatrixUser
     //@Binding var screen: HomeTabMasterView.Screen?
     @Binding var tab: LoggedinScreen.Tab
