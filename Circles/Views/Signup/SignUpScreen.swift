@@ -30,7 +30,23 @@ struct SignupScreen: View {
     @State var emailSessionId: String?
 
     @State var accountInfo = SignupAccountInfo()
-
+    
+    var cancelButton: some View {
+        AsyncButton(action: {
+            //self.selectedScreen = .login
+            do {
+                try await self.store.disconnect()
+            } catch {
+                
+            }
+        }) {
+            Text("Cancel")
+                .padding()
+                .frame(width: 300.0, height: 40.0)
+                .foregroundColor(.red)
+                .cornerRadius(10)
+        }
+    }
     
     var body: some View {
         VStack {
@@ -45,15 +61,42 @@ struct SignupScreen: View {
                 Text("Connecting to server")
             case .connected(let uiaaState):
                 SignupStartForm(session: session, store: store, state: uiaaState)
-            case .inProgress(let uiaaState, let selectedFlow):
-                Text("In Progress")
-                    .font(.headline)
-                Text(selectedFlow.stages.joined(separator: " "))
+            case .inProgress(let uiaaState, let stages):
+
+                if let stage = stages.first {
+                    switch stage {
+                    case LOGIN_STAGE_TOKEN_KOMBUCHA,
+                         LOGIN_STAGE_TOKEN_MATRIX,
+                         LOGIN_STAGE_TOKEN_MSC3231:
+                        TokenForm(tokenType: stage, session: session)
+                    case LOGIN_STAGE_TERMS_OF_SERVICE:
+                        TermsOfServiceForm(session: session)
+                    case LOGIN_STAGE_VERIFY_EMAIL:
+                        Text("Email Stage")
+                        /*
+                        if emailSessionId != nil {
+                            ValidateEmailForm(matrix: matrix, emailSid: $emailSessionId, accountInfo: $accountInfo, creds: $creds)
+                        } else {
+                            AccountInfoForm(matrix: matrix, authFlow: $selectedFlow, stage: stage, accountInfo: $accountInfo, emailSid: $emailSessionId)
+                        }
+                        */
+                    case LOGIN_STAGE_APPLE_SUBSCRIPTION:
+                        Text("Apple Subscription Stage")
+                        /*
+                        AppStoreSubscriptionForm(matrix: matrix, uiaaState: $uiaaState, authFlow: $selectedFlow)
+                        */
+                    default:
+                        Text("Stage is [\(stage)]")
+                    }
+                }
+                
             case .finished(let creds):
                 Text("Finished!")
                     .font(.headline)
             }
         }
+        Spacer()
+        cancelButton
     }
 
     /*

@@ -17,26 +17,6 @@ struct SignupStartForm: View {
 
     //@Binding var selectedFlow: UIAA.Flow?
 
-    var cancel: some View {
-        HStack {
-            AsyncButton(action: {
-                //self.selectedScreen = .login
-                do {
-                    try await self.store.disconnect()
-                } catch {
-                    
-                }
-            }) {
-                Text("Cancel")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.red)
-                    .cornerRadius(10)
-            }
-            //Spacer()
-        }
-    }
-
     var body: some View {
         VStack {
             Text("Sign up for Circles")
@@ -58,9 +38,9 @@ struct SignupStartForm: View {
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 20)
             }
-            Button(action: {
+            AsyncButton(action: {
                 //selectedFlow = tokenFlow
-                session.selectFlow(flow: tokenFlow!)
+                await session.selectFlow(flow: tokenFlow!)
             }) {
                 Text("Sign up with token")
                     .padding()
@@ -84,9 +64,9 @@ struct SignupStartForm: View {
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 20)
             }
-            Button(action: {
+            AsyncButton(action: {
                 //selectedFlow = appleFlow
-                session.selectFlow(flow: appleFlow!)
+                await session.selectFlow(flow: appleFlow!)
             }) {
                 Text("New Circles subscription")
                     .padding()
@@ -99,8 +79,6 @@ struct SignupStartForm: View {
 
             Spacer()
             
-            cancel
-
             if CIRCLES_DEBUG {
                 VStack {
                     if let flows = state.flows {
