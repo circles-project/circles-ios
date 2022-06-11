@@ -33,7 +33,7 @@ let ROOM_TYPE_PHOTOS = APP_PREFIX + ".photos"
 // that we're following.
 let CIRCLE_TAG_FOLLOWING = APP_PREFIX + ".following"
 
-let KOMBUCHA_DEBUG = false
+let CIRCLES_DEBUG = false
 
 let PLAINTEXT_CACHE_FOLDER: String? = nil
 let DECRYPTED_CACHE_FOLDER: String = "decrypted"

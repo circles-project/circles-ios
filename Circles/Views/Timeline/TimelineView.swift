@@ -54,7 +54,7 @@ struct TimelineView: View {
                 Spacer()
             }
             
-            if KOMBUCHA_DEBUG {
+            if CIRCLES_DEBUG {
                 VStack(alignment: .leading) {
                     if self.debug {
                         Text("Room has \(room.messages.count) total messages")
@@ -96,7 +96,7 @@ struct TimelineView: View {
                     ForEach(messages) { msg in
                         VStack(alignment: .leading) {
                             HStack {
-                                if KOMBUCHA_DEBUG && self.debug {
+                                if CIRCLES_DEBUG && self.debug {
                                     Text("\(messages.firstIndex(of: msg) ?? -1)")
                                 }
                                 MessageCard(message: msg, displayStyle: displayStyle)

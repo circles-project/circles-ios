@@ -101,7 +101,7 @@ struct SignupStartForm: View {
             
             cancel
 
-            if KOMBUCHA_DEBUG {
+            if CIRCLES_DEBUG {
                 VStack {
                     if let flows = state.flows {
                         ForEach(flows, id: \.self) { flow in

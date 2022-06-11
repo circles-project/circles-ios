@@ -62,7 +62,7 @@ struct StreamTimeline: View {
                         VStack(alignment: .leading) {
                             HStack {
                                 let index: Int = messages.firstIndex(of: msg)!
-                                if KOMBUCHA_DEBUG && showDebug {
+                                if CIRCLES_DEBUG && showDebug {
                                     Text("\(index)")
                                 }
                                 MessageCard(message: msg, displayStyle: .timeline)
@@ -103,7 +103,7 @@ struct StreamTimeline: View {
 
 
 
-            if KOMBUCHA_DEBUG {
+            if CIRCLES_DEBUG {
                 if showDebug {
                     debugFooter
                 } else {

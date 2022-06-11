@@ -216,7 +216,7 @@ struct TokenSignUpScreen: View {
             Spacer()
 
             
-            if KOMBUCHA_DEBUG {
+            if CIRCLES_DEBUG {
                 Text(matrix.signupGetSessionId() ?? "Error: No signup session")
                     .font(.footnote)
             }

@@ -349,14 +349,14 @@ struct MessageCard: View {
                 MessageAuthorHeader(user: message.matrix.getUser(userId: message.sender)!)
             }
 
-            if KOMBUCHA_DEBUG && self.debug {
+            if CIRCLES_DEBUG && self.debug {
                 Text(message.id)
                     .font(.caption)
             }
 
             content
 
-            if KOMBUCHA_DEBUG {
+            if CIRCLES_DEBUG {
                 details
                     .font(.caption)
             }
