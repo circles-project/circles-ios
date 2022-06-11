@@ -16,10 +16,10 @@ struct LoginScreen: View {
     var body: some View {
         VStack {
             switch session.state {
-            case .notInitialized:
+            case .notConnected:
                 ProgressView()
                 Text("Connecting to server")
-            case .initialized(let authTypes):
+            case .connected(let authTypes, let errorMessage):
                 if authTypes.contains("m.login.password") {
                     RandomizedCircles()
                         .clipped()
@@ -32,6 +32,7 @@ struct LoginScreen: View {
                                alignment: .center)
                     
                     Text("Logging in as \(session.username)")
+
                     SecureFieldWithEye(label: "Password", text: $password)
                         .disableAutocorrection(true)
                         .frame(width: 300.0, height: 40.0)
@@ -52,6 +53,12 @@ struct LoginScreen: View {
                             .foregroundColor(.white)
                             .background(Color.accentColor)
                             .cornerRadius(10)
+                    }
+                    
+                    if let errMsg = errorMessage {
+                        Text("Error: \(errMsg)")
+                            .foregroundColor(Color.red)
+                            .padding()
                     }
                     
                     Spacer()

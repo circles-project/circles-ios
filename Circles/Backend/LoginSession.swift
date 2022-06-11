@@ -21,8 +21,8 @@ public class LoginSession: ObservableObject {
     }
     
     enum State {
-        case notInitialized
-        case initialized([String])
+        case notConnected
+        case connected([String],String?)
         case inProgress(String)
         case failed(String)
         case succeeded(MatrixCredentials)
@@ -33,17 +33,17 @@ public class LoginSession: ObservableObject {
         self.username = username
         self.homeserverUrl = homeserverUrl
         self.store = store
-        self.state = .notInitialized
+        self.state = .notConnected
         
         // Launch an async task to initialize ourselves
         let _ = Task {
-            try await self.initialize()
+            try await self.connect()
         }
     }
     
     // Make a call to GET /_matrix/client/v3/login to find out which login types are supported
     // https://spec.matrix.org/v1.2/client-server-api/#get_matrixclientv3login
-    func initialize() async throws {
+    func connect() async throws {
         let url = URL(string: "_matrix/client/\(version)/login", relativeTo: homeserverUrl)!
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -83,11 +83,17 @@ public class LoginSession: ObservableObject {
         
         // And update our state with the initialized list from the server
         await MainActor.run {
-            self.state = .initialized(authTypes)
+            self.state = .connected(authTypes, nil)
         }
     }
     
     func passwordLogin(_ password: String) async throws {
+        
+        guard case .connected(let flows, let error) = state
+        else {
+            print("LOGIN\tCan't log in until we're connected!")
+            return
+        }
                 
         struct RequestBody: Encodable {
             let type = "m.login.password"
@@ -126,12 +132,17 @@ public class LoginSession: ObservableObject {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         guard let responseBody = try? decoder.decode(ResponseBody.self, from: data)
         else {
-            self.state = .failed("Password login failed")
+            let errorMessage = "Password login failed"
+            await MainActor.run {
+                self.state = .connected(flows, errorMessage)
+            }
             return
         }
         
         let creds = MatrixCredentials(accessToken: responseBody.accessToken, deviceId: responseBody.deviceId, userId: responseBody.userId)
-        self.state = .succeeded(creds)
+        await MainActor.run {
+            self.state = .succeeded(creds)
+        }
         
         saveCredentials(username: username, creds: creds)
         
