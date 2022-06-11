@@ -9,8 +9,6 @@
 import SwiftUI
 import StoreKit
 
-#if false
-
 struct MembershipProductCard: View {
     @EnvironmentObject var appStore: AppStoreInterface
     var product: SKProduct
@@ -83,9 +81,10 @@ func getColor(_ maybeProduct: SKProduct?) -> Color {
 struct AppStoreSubscriptionForm: View {
     @EnvironmentObject var appStore: AppStoreInterface
 
-    var matrix: MatrixInterface
-    @Binding var uiaaState: UIAA.SessionState?
-    @Binding var authFlow: UIAA.Flow?
+    //var matrix: MatrixInterface
+    @ObservedObject var session: SignupSession
+    var uiaaState: UIAA.SessionState
+    //@Binding var authFlow: UIAA.Flow?
 
     @State var selectedProduct: SKProduct?
 
@@ -93,15 +92,6 @@ struct AppStoreSubscriptionForm: View {
 
     var buttonBar: some View {
         HStack {
-            Button(action: {
-                //self.selectedScreen = .signupMain
-                uiaaState = nil
-            }) {
-                Text("Cancel")
-                    .font(.footnote)
-                    //.padding(.top, 5)
-                    .padding(.leading, 10)
-            }
             Spacer()
             Button(action: {
                 appStore.restoreProducts()
@@ -260,17 +250,23 @@ struct AppStoreSubscriptionForm: View {
 
                 Spacer()
 
-                Button(action: {
+                AsyncButton(action: {
                     // Send the receipt
                     print("SIGNUP-APPSTORE\tAuthenticating with purchase receipt \(receipt.prefix(20))...")
+                    /*
                     matrix.signupDoAppStoreStage(receipt: receipt) { response in
                         print("SIGNUP-APPSTORE\tGot response from homeserver")
                         if response.isSuccess {
                             print("SIGNUP-APPSTORE\tSuccess!  Moving on to the next UIAA stage...")
-                            authFlow?.pop(stage: self.stage)
                         } else {
                             print("SIGNUP-APPSTORE\tRequest failed.")
                         }
+                    }
+                    */
+                    do {
+                        try await session.doAppleSubscriptionStage(receipt: receipt)
+                    } catch {
+                        // Pop up an error: "Failed to validate your App Store receipt"
                     }
                 }) {
 
@@ -292,7 +288,6 @@ struct AppStoreSubscriptionForm: View {
         .padding(5)
     }
 }
-#endif
 
 /*
 struct AppStoreSignUpScreen_Previews: PreviewProvider {

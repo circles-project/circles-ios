@@ -161,5 +161,14 @@ class SignupSession: UIAuthSession {
         ]
         try await doUIAuthStage(auth: args)
     }
+    
+    func doAppleSubscriptionStage(receipt: String) async throws {
+        let stage = LOGIN_STAGE_APPLE_SUBSCRIPTION
+        var args = [
+            "type": stage,
+            "receipt": receipt,
+        ]
+        try await doUIAuthStage(auth: args)
+    }
 }
 

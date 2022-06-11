@@ -81,10 +81,9 @@ struct SignupScreen: View {
                         }
                         */
                     case LOGIN_STAGE_APPLE_SUBSCRIPTION:
-                        Text("Apple Subscription Stage")
-                        /*
-                        AppStoreSubscriptionForm(matrix: matrix, uiaaState: $uiaaState, authFlow: $selectedFlow)
-                        */
+                        //Text("Apple Subscription Stage")
+                        AppStoreSubscriptionForm(session: session, uiaaState: uiaaState)
+                        
                     default:
                         Text("Stage is [\(stage)]")
                     }
