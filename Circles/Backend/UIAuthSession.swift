@@ -227,8 +227,16 @@ class UIAuthSession: UIASession, ObservableObject {
         
         guard case .inProgress(let uiaState, let stages) = state else {
             let msg = "Signup session must be started before attempting email stage"
-            print("\(tag) \(msg)")
+            print("\(tag)\t\(msg)")
             throw CirclesError(msg)
+        }
+        
+        // Check to make sure that AUTH_TYPE is the next one in our list of stages???
+        guard stages.first == AUTH_TYPE
+        else {
+            let msg = "Attempted stage \(AUTH_TYPE) but next required stage is [\(stages.first ?? "none")]"
+            print("\(tag)\t\(msg)")
+            throw CirclesError("Incorrect next stage: \(AUTH_TYPE)")
         }
         
         var request = URLRequest(url: url)
