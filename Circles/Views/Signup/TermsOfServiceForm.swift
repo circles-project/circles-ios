@@ -11,7 +11,7 @@ struct TermsOfServiceForm: View {
     //var matrix: MatrixInterface
     var session: SignupSession
     //@Binding var selectedScreen: LoggedOutScreen.Screen
-    @Binding var authFlow: UIAA.Flow?
+    //@Binding var authFlow: UIAA.Flow?
 
     @State var webViewStore = WebViewStore()
 
@@ -56,7 +56,6 @@ struct TermsOfServiceForm: View {
                 
                 do {
                     try await session.doTermsStage()
-                    self.authFlow?.pop(stage: self.stage)
                 } catch {
                     // Tell the user that we hit an error
                     self.alertTitle = "Something went wrong"

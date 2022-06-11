@@ -11,7 +11,6 @@ struct TokenForm: View {
     let tokenType: String
     //var matrix: MatrixInterface
     var session: SignupSession
-    @Binding var authFlow: UIAA.Flow?
 
     @State var signupToken: String = ""
 
@@ -63,7 +62,6 @@ struct TokenForm: View {
                 
                 do {
                     try await session.doTokenRegistrationStage(token: self.signupToken)
-                    self.authFlow?.pop(stage: tokenType)
                 } catch {
                     // Well crap, I guess it didn't work
                     self.alertTitle = "Token validation failed"
