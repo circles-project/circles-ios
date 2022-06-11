@@ -26,7 +26,7 @@ protocol UIASession {
     
 }
 
-class UIAuthSession: UIASession {
+class UIAuthSession: UIASession, ObservableObject {
         
     enum State {
         case notInitialized
@@ -38,7 +38,7 @@ class UIAuthSession: UIASession {
     let url: URL
     //let accessToken: String? // FIXME: Make this MatrixCredentials ???
     let creds: MatrixCredentials?
-    var state: State
+    @Published var state: State
     var realRequestDict: [String:AnyCodable] // The JSON fields for the "real" request behind the UIA protection
     var storage = [String: Any]() // For holding onto data between requests, like we do on the server side
     
@@ -280,10 +280,8 @@ class UIAuthSession: UIASession {
         
         state = .inProgress(newUiaaState,selectedFlow)
     }
-}
 
-// BS-SPEKE protocol support
-extension UIAuthSession {
+    // MARK: BS-SPEKE protocol support
     
     // NOTE: The ..Enroll.. functions are *almost* but not exactly duplicates of those in the SignupSession implementation
     func doBSSpekeEnrollOprfStage(password: String) async throws {

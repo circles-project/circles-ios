@@ -12,25 +12,11 @@ import BlindSaltSpeke
 // Implements the Matrix UI Auth for the Matrix /register endpoint
 // https://spec.matrix.org/v1.2/client-server-api/#post_matrixclientv3register
 
-class SignupSession: UIASession, ObservableObject {
-    var uia: UIAuthSession
+class SignupSession: UIAuthSession {
     var desiredUsername: String?
     //let deviceId: String?
     //let initialDeviceDisplayName: String?
     //let inhibitLogin = false
-    private var storage = [String: Any]()
-    
-    var url: URL {
-        self.uia.url
-    }
-    
-    var state: UIAuthSession.State {
-        self.uia.state
-    }
-    
-    var sessionId: String? {
-        self.uia.sessionId
-    }
 
     init(homeserver: URL,
          username: String? = nil,
@@ -54,26 +40,13 @@ class SignupSession: UIASession, ObservableObject {
         }
         requestDict["x_show_msisdn"] = AnyCodable(showMSISDN)
         requestDict["inhibit_login"] = AnyCodable(inhibitLogin)
-        self.uia = UIAuthSession(signupURL, requestDict: requestDict)
+        super.init(signupURL, requestDict: requestDict)
         self.desiredUsername = username
     }
     
-    func initialize() async throws {
-        try await self.uia.initialize()
-        print("SignupSession:\tDone initializing UIA session")
-        self.objectWillChange.send()
-    }
-    
-    func selectFlow(flow: UIAA.Flow) {
-        self.uia.selectFlow(flow: flow)
-    }
-
-    func doUIAuthStage(auth: [String : String]) async throws {
-        try await self.uia.doUIAuthStage(auth: auth)
-    }
     
     func doTokenRegistrationStage(token: String) async throws {
-        guard self.uia._checkBasicSanity(userInput: token) == true
+        guard _checkBasicSanity(userInput: token) == true
         else {
             let msg = "Invalid token"
             print("Token registration Error: \(msg)")
@@ -87,13 +60,9 @@ class SignupSession: UIASession, ObservableObject {
         try await doUIAuthStage(auth: tokenAuthDict)
     }
     
-    func doTermsStage() async throws {
-        try await self.uia.doTermsStage()
-    }
-    
     func doEmailRequestTokenStage(email: String) async throws -> String? {
 
-        guard self.uia._looksLikeValidEmail(userInput: email) == true
+        guard _looksLikeValidEmail(userInput: email) == true
         else {
             let msg = "Invalid email address"
             print("Email signup Error: \(msg)")
@@ -130,7 +99,7 @@ class SignupSession: UIASession, ObservableObject {
         return userId
     }
     
-    func doBSSpekeEnrollOprfStage(password: String) async throws {
+    override func doBSSpekeEnrollOprfStage(password: String) async throws {
         let stage = AUTH_TYPE_BSSPEKE_ENROLL_OPRF
         
         guard let username = self.desiredUsername else {
@@ -151,7 +120,7 @@ class SignupSession: UIASession, ObservableObject {
         try await doUIAuthStage(auth: args)
     }
     
-    func doBSSpekeEnrollSaveStage() async throws {
+    override func doBSSpekeEnrollSaveStage() async throws {
         // Need to send
         // * A, our ephemeral public key
         // * verifier, to prove that we derived the correct secret key
@@ -164,7 +133,7 @@ class SignupSession: UIASession, ObservableObject {
             print("BS-SPEKE\tError: \(msg)")
             throw CirclesError(msg)
         }
-        guard let params = self.uia.sessionState?.params?[stage] as? BSSpekeEnrollParams
+        guard let params = sessionState?.params?[stage] as? BSSpekeEnrollParams
         else {
             let msg = "Couldn't find BS-SPEKE enroll params"
             print("BS-SPEKE\t\(msg)")
