@@ -27,7 +27,8 @@ struct SignupScreen: View {
 
     //@State var selectedFlow: UIAA.Flow?
     @State var creds: MXCredentials?
-    @State var emailSessionId: String?
+    //@State var emailSessionId: String?
+    @State var emailSessionInfo: SignupSession.LegacyEmailRequestTokenResponse?
 
     @State var accountInfo = SignupAccountInfo()
     
@@ -69,17 +70,17 @@ struct SignupScreen: View {
                          LOGIN_STAGE_TOKEN_MATRIX,
                          LOGIN_STAGE_TOKEN_MSC3231:
                         TokenForm(tokenType: stage, session: session)
+
                     case LOGIN_STAGE_TERMS_OF_SERVICE:
                         TermsOfServiceForm(session: session)
+
                     case LOGIN_STAGE_VERIFY_EMAIL:
-                        Text("Email Stage")
-                        /*
-                        if emailSessionId != nil {
-                            ValidateEmailForm(matrix: matrix, emailSid: $emailSessionId, accountInfo: $accountInfo, creds: $creds)
+                        if emailSessionInfo != nil {
+                            ValidateEmailForm(session: session, emailSessionInfo: $emailSessionInfo, creds: $creds)
                         } else {
-                            AccountInfoForm(matrix: matrix, authFlow: $selectedFlow, stage: stage, accountInfo: $accountInfo, emailSid: $emailSessionId)
+                            AccountInfoForm(session: session, accountInfo: $accountInfo, emailSessionInfo: $emailSessionInfo)
                         }
-                        */
+                        
                     case LOGIN_STAGE_APPLE_SUBSCRIPTION:
                         //Text("Apple Subscription Stage")
                         AppStoreSubscriptionForm(session: session, uiaaState: uiaaState)
@@ -90,8 +91,22 @@ struct SignupScreen: View {
                 }
                 
             case .finished(let creds):
-                Text("Finished!")
+                Text("Successfully signed up!")
                     .font(.headline)
+                AsyncButton(action: {
+                    do {
+                        try await store.beginSetup(creds: creds)
+                    } catch {
+                        
+                    }
+                }) {
+                    Text("Next: Set Up")
+                        .padding()
+                        .frame(width: 300.0, height: 40.0)
+                        .foregroundColor(.white)
+                        .background(Color.accentColor)
+                        .cornerRadius(10)
+                }
             }
         }
         Spacer()

@@ -44,11 +44,6 @@ public class CirclesStore: ObservableObject {
         }
 
         self.state = .haveCreds(creds)
-        
-        // Might as well try to connect while we're here, right?
-        _ = Task  {
-            try await connect(creds: creds)
-        }
     }
     
     private func loadCredentials(_ user: String? = nil) -> MatrixCredentials? {
@@ -72,6 +67,21 @@ public class CirclesStore: ObservableObject {
         // If the creds don't already include well-known, then fetch homeserver info using well-known URL from the given domain
         // Init a new MatrixSession with that homeserver and these creds
         // Set our state to be online with that session
+        
+        var fullCreds = creds
+        if fullCreds.wellKnown == nil {
+            guard let domain = getDomainFromUserId(creds.userId) else {
+                let msg = "Could not determine domain for user id"
+                print("CONNECT\t\(msg)")
+                throw CirclesError(msg)
+            }
+            fullCreds.wellKnown = try await fetchWellKnown(for: domain)
+        }
+        
+        let ls = LegacyStore(creds: fullCreds)
+        await MainActor.run {
+            self.state = .online(ls)
+        }
     }
     
     func connectNewDevice(creds: MatrixCredentials, password: String) async throws {
@@ -146,7 +156,7 @@ public class CirclesStore: ObservableObject {
         }
         
         let wellKnown = try await fetchWellKnown(for: domain)
-        let homeserverUrl = URL(string: wellKnown.homeserver.base_url)!
+        let homeserverUrl = URL(string: wellKnown.homeserver.baseUrl)!
         let loginSession = LoginSession(username: username,
                                         homeserverUrl: homeserverUrl,
                                         store: self)
@@ -165,23 +175,30 @@ public class CirclesStore: ObservableObject {
             return
         }
         let wellKnown = try await fetchWellKnown(for: domain)
-        if let hsUrl = URL(string: wellKnown.homeserver.base_url) {
-            let signupSession = SignupSession(homeserver: hsUrl)
+        if let hsUrl = URL(string: wellKnown.homeserver.baseUrl) {
+            let deviceModel = await UIDevice.current.model
+            let signupSession = SignupSession(homeserver: hsUrl, initialDeviceDisplayName: "Circles (\(deviceModel))")
             await MainActor.run {
                 self.state = .signingUp(signupSession)
             }
         }
     }
     
-    func setup(creds: MatrixCredentials) async throws {
-        self.state = .settingUp(creds)
+    func beginSetup(creds: MatrixCredentials) async throws {
+        await MainActor.run {
+            self.state = .settingUp(creds)
+        }
     }
     
     func disconnect() async throws {
         // First disconnect any connected session
         // Then set our state to .nothing
-        self.state = .nothing(nil)
+        await MainActor.run {
+            self.state = .nothing(nil)
+        }
     }
+    
+    // MARK: Domain handling
     
     func getDomainFromUserId(_ userId: String) -> String? {
         let toks = userId.split(separator: ":")
@@ -272,6 +289,8 @@ public class CirclesStore: ObservableObject {
         }
     }
     
+    // MARK: Well known
+    
     private func fetchWellKnown(for domain: String) async throws -> MatrixWellKnown {
         
         guard let url = URL(string: "https://\(domain)/.well-known/matrix/client") else {
@@ -301,7 +320,7 @@ public class CirclesStore: ObservableObject {
         }
         
         let decoder = JSONDecoder()
-        //decoder.keyDecodingStrategy = .convertFromSnakeCase
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
         let stuff = String(data: data, encoding: .utf8)!
         print("WELLKNOWN\tGot response data:\n\(stuff)")
         guard let wellKnown = try? decoder.decode(MatrixWellKnown.self, from: data) else {

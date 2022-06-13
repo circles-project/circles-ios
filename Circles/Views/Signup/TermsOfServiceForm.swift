@@ -31,8 +31,8 @@ struct TermsOfServiceForm: View {
         let url = privacyPolicy?.en?.url ?? URL(string: fallbackUrlString)!
         return url
         */
-        let hsURL = session.url.baseURL!
-        let fallbackURL = URL(string: "\(hsURL.scheme)://\(hsURL.host):\(hsURL.port)/_matrix/consent")!
+        let hsURL = session.url
+        let fallbackURL = URL(string: "https://\(hsURL.host!)/_matrix/consent")!
 
         return fallbackURL
     }
@@ -58,6 +58,7 @@ struct TermsOfServiceForm: View {
                     try await session.doTermsStage()
                 } catch {
                     // Tell the user that we hit an error
+                    print("SIGNUP/TERMS\tTerms stage failed")
                     self.alertTitle = "Something went wrong"
                     self.alertMessage = "Failed to complete Terms of Service stage"
                     self.showAlert = true

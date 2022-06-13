@@ -31,6 +31,10 @@ class SignupSession: UIAuthSession {
         var requestDict: [String: AnyCodable] = [:]
         if let u = username {
             requestDict["username"] = AnyCodable(u)
+        } else {
+            // doh..  Matrix wants us to have a username when we start trying to sign up
+            let u = UInt32.random(in: UInt32.min ... UInt32.max)
+            requestDict["username"] = AnyCodable("signup\(u)")
         }
         if let d = deviceId {
             requestDict["device_id"] = AnyCodable(d)
@@ -44,6 +48,17 @@ class SignupSession: UIAuthSession {
         self.desiredUsername = username
     }
     
+    // MARK: Set username and password
+    
+    func setUsername(_ username: String) {
+        self.realRequestDict["username"] = AnyCodable(username)
+    }
+    
+    func setPassword(_ password: String) {
+        self.realRequestDict["password"] = AnyCodable(password)
+    }
+    
+    // MARK: Token registration
     
     func doTokenRegistrationStage(token: String) async throws {
         guard _checkBasicSanity(userInput: token) == true
@@ -53,12 +68,45 @@ class SignupSession: UIAuthSession {
             throw CirclesError(msg)
         }
         
+        // There are several different names for this thing.
+        // Fortunately they all work the same way.
+        // So we should just call it whatever the server calls it, and it should work.
+        let authTypes = [
+            LOGIN_STAGE_TOKEN_MATRIX,
+            LOGIN_STAGE_TOKEN_MSC3231,
+            LOGIN_STAGE_TOKEN_KOMBUCHA
+        ]
+
+        guard let uiaa = self.sessionState
+        else {
+            let msg = "No active auth session"
+            print("Token registration error: \(msg)")
+            throw CirclesError(msg)
+        }
+        
+        guard let authType = authTypes.first(where: {
+            for flow in uiaa.flows {
+                if flow.stages.contains($0) {
+                    return true
+                }
+            }
+            return false
+        })
+        else {
+            let msg = "Token registration not supported by server"
+            print("Token registration error: \(msg)")
+            throw CirclesError(msg)
+        }
+        print("TOKEN\tFound auth type = \(authType)")
+        
         let tokenAuthDict: [String: String] = [
-            "type": "m.login.registration_token",
+            "type": authType,
             "token": token,
         ]
         try await doUIAuthStage(auth: tokenAuthDict)
     }
+    
+    // MARK: (New) Email stages
     
     func doEmailRequestTokenStage(email: String) async throws -> String? {
 
@@ -98,6 +146,8 @@ class SignupSession: UIAuthSession {
         let userId = tmp.contains(":") ? tmp : "\(tmp):\(DEFAULT_DOMAIN)"
         return userId
     }
+    
+    // MARK: BS-SPEKE
     
     override func doBSSpekeEnrollOprfStage(password: String) async throws {
         let stage = AUTH_TYPE_BSSPEKE_ENROLL_OPRF
@@ -162,13 +212,131 @@ class SignupSession: UIAuthSession {
         try await doUIAuthStage(auth: args)
     }
     
+    // MARK: Apple Subscriptions
+    
     func doAppleSubscriptionStage(receipt: String) async throws {
         let stage = LOGIN_STAGE_APPLE_SUBSCRIPTION
-        var args = [
+        let args = [
             "type": stage,
             "receipt": receipt,
         ]
         try await doUIAuthStage(auth: args)
+    }
+    
+    // MARK: Legacy email handling
+    
+    struct LegacyEmailRequestTokenResponse: Codable {
+        var sid: String
+        var submitUrl: URL?
+    }
+    
+    func doLegacyEmailRequestToken(address: String) async throws -> LegacyEmailRequestTokenResponse {
+        let version = "r0"
+        let url = URL(string: "https://\(url.host!)/_matrix/client/\(version)/register/email/requestToken")!
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        struct RequestBody: Codable {
+            var clientSecret: String
+            var email: String
+            var sendAttempt: Int
+        }
+        guard let sessionId = self.sessionState?.session else {
+            let msg = "Must have an active session before attempting email stage"
+            print("LEGACY-EMAIL\t\(msg)")
+            throw CirclesError(msg)
+        }
+        
+        let requestBody = RequestBody(clientSecret: sessionId, email: address, sendAttempt: 1)
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        request.httpBody = try encoder.encode(requestBody)
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse,
+          [200,401].contains(httpResponse.statusCode)
+        else {
+            let msg = "Email token request failed"
+            print("LEGACY-EMAIL\tError: \(msg)")
+            throw CirclesError(msg)
+        }
+        
+
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        guard let responseBody = try? decoder.decode(LegacyEmailRequestTokenResponse.self, from: data)
+        else {
+            let msg = "Could not decode response from server"
+            print("LEGACY-EMAIL\tError: \(msg)")
+            throw CirclesError(msg)
+        }
+        
+        // FIXME Why not just return the whole thing?
+        // Don't we need both the sid and the url???
+        // Or we could save them in our local storage in the session!
+        return responseBody
+    }
+    
+    func doLegacyEmailValidateAddress(token: String, sid: String, url: URL) async throws -> Bool {
+        
+        guard let sessionId = self.sessionId else {
+            let msg = "No active signup session"
+            print("LEGACY-EMAIL\t\(msg)")
+            throw CirclesError(msg)
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let args = [
+            "sid": sid,
+            "client_secret": sessionId,
+            "token": token,
+        ]
+        let encoder = JSONEncoder()
+        request.httpBody = try encoder.encode(args)
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse,
+          [200,401].contains(httpResponse.statusCode)
+        else {
+            let msg = "Email token validation request failed"
+            print("LEGACY-EMAIL\tError: \(msg)")
+            throw CirclesError(msg)
+        }
+        
+        struct SubmitTokenResponse: Codable {
+            var success: Bool
+        }
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        guard let contents = try? decoder.decode(SubmitTokenResponse.self, from: data) else {
+            let msg = "Failed to decode response from server"
+            print("LEGACY-EMAIL\t\(msg)")
+            throw CirclesError(msg)
+        }
+        
+        return contents.success
+    }
+    
+    func doLegacyEmailStage(emailSessionId: String) async throws {
+        guard let sessionId = self.sessionId else {
+            let msg = "No active signup session"
+            print("LEGACY-EMAIL\t\(msg)")
+            throw CirclesError(msg)
+        }
+        let auth: [String: Codable] = [
+            "type": "m.login.email.identity",
+            "threepid_creds": [
+                "sid": emailSessionId,
+                "client_secret": sessionId,
+            ],
+        ]
+        
+        try await doUIAuthStage(auth: auth)
     }
 }
 

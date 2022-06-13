@@ -20,7 +20,7 @@ protocol UIASession {
     
     func selectFlow(flow: UIAA.Flow) async
     
-    func doUIAuthStage(auth: [String:String]) async throws
+    func doUIAuthStage(auth: [String:Codable]) async throws
     
     func doTermsStage() async throws
     
@@ -218,12 +218,14 @@ class UIAuthSession: UIASession, ObservableObject {
     }
     
     // FIXME: We need some way to know if this succeeded or failed
-    func doUIAuthStage(auth: [String:String]) async throws {
-        guard let AUTH_TYPE = auth["type"] else {
+    func doUIAuthStage(auth: [String:Codable]) async throws {
+        guard let AUTH_TYPE = auth["type"] as? String else {
             print("No auth type")
             return
         }
         let tag = "UIA(\(AUTH_TYPE))"
+        
+        print("\(tag)\tValidating")
         
         guard case .inProgress(let uiaState, let stages) = state else {
             let msg = "Signup session must be started before attempting email stage"
@@ -239,6 +241,8 @@ class UIAuthSession: UIASession, ObservableObject {
             throw CirclesError("Incorrect next stage: \(AUTH_TYPE)")
         }
         
+        print("\(tag)\tStarting")
+        
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -247,30 +251,40 @@ class UIAuthSession: UIASession, ObservableObject {
             request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         }
         var requestBodyDict: [String: AnyCodable] = self.realRequestDict
-        requestBodyDict["auth"] = AnyCodable(auth)
+        // Doh!  The caller doesn't need to care about the session id,
+        // so it does not include "session" in its auth dict.
+        // Therefore we have to include it before we send the request.
+        var authWithSessionId = auth
+        authWithSessionId["session"] = uiaState.session
+        requestBodyDict["auth"] = AnyCodable(authWithSessionId)
         let encoder = JSONEncoder()
         request.httpBody = try encoder.encode(requestBodyDict)
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
+        print("\(tag)\tGot response")
+        
         guard let httpResponse = response as? HTTPURLResponse,
           [200,401].contains(httpResponse.statusCode)
         else {
             let msg = "UI auth stage failed"
-            print("\(tag) Error: \(msg)")
+            print("\(tag)\tError: \(msg)")
             throw CirclesError(msg)
         }
         
         if httpResponse.statusCode == 200 {
-            print("\(tag) All done!")
+            print("\(tag)\tAll done!")
             let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
             guard let newCreds = try? decoder.decode(MatrixCredentials.self, from: data)
             else {
                 let msg = "Couldn't decode Matrix credentials"
-                print("\(tag) Error: \(msg)")
+                print("\(tag)\tError: \(msg)")
                 throw CirclesError(msg)
             }
-            state = .finished(newCreds)
+            await MainActor.run {
+                state = .finished(newCreds)
+            }
             return
         }
         
@@ -278,20 +292,24 @@ class UIAuthSession: UIASession, ObservableObject {
         guard let newUiaaState = try? decoder.decode(UIAA.SessionState.self, from: data)
         else {
             let msg = "Couldn't decode UIA response"
-            print("\(tag) Error: \(msg)")
+            print("\(tag)\tError: \(msg)")
             throw CirclesError(msg)
         }
         
         if let completed = newUiaaState.completed {
             if completed.contains(AUTH_TYPE) {
+                print("\(tag)\tComplete")
                 let newStages: [String] = Array(stages.suffix(from: 1))
                 await MainActor.run {
                     state = .inProgress(newUiaaState,newStages)
                 }
+            } else {
+                print("\(tag)\tStage isn't complete???  Completed = \(completed)")
             }
+        } else {
+            print("\(tag)\tNo completed stages :(")
         }
         
-
     }
 
     // MARK: BS-SPEKE protocol support

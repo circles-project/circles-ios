@@ -59,7 +59,7 @@ class LegacyStore: ObservableObject {
         URL(string: self.session.matrixRestClient.identityServer)
     }
     
-
+    @Published var sessionState: MXSessionState
 
     // Model data for the Matrix layer
     var userId: String?
@@ -82,7 +82,7 @@ class LegacyStore: ObservableObject {
     private var recoverySecretKey: Data?
     private var recoveryTimestamp: Date?
         
-    init() {
+    init(creds: MatrixCredentials) {
         // OK, let's see what we have to work with here.
         // If we have saved credentials, then we can go ahead and connect
         // to Matrix, and we'll be up and running.
@@ -99,73 +99,27 @@ class LegacyStore: ObservableObject {
         self.loginMxRc = nil
         self.sessionMxRc = nil
         self.session = MXSession()
+        self.sessionState = .closed
 
         // Set up our Combine listeners regardless of whether we're online or offline or whatever
         setupListeners()
 
-        // Now let's see if we can connect to the server
-        // First thing to check: Do we have credentials?
-        guard let user_id = UserDefaults.standard.string(forKey: "user_id"),
-              !user_id.isEmpty,
-              let device_id = UserDefaults.standard.string(forKey: "device_id[\(user_id)]"),
-              let access_token = UserDefaults.standard.string(forKey: "access_token[\(user_id)]"),
-              !access_token.isEmpty,
-              let userDomain = getDomainFromUserId(user_id)
-              //let autoDiscovery = MXAutoDiscovery(domain: "matrix.org")
-              //let autoDiscovery = MXAutoDiscovery(domain: "matrix.kombucha.social")
-        else {
-            // Apparently we're offline, waiting for (valid) credentials to log in
-            print("STORE\tDidn't find valid login credentials - Staying offline for now")
-            return
-        }
-
-        print("STORE\tUser Id = \(user_id)")
-        print("STORE\tAccess token = \(access_token)")
-
         // OK so far so good.  Now do we have a recovery key?
-        self.recoverySecretKey = UserDefaults.standard.data(forKey: "recoverySecretKey[\(user_id)]") ?? UserDefaults.standard.data(forKey: "privateKey[\(user_id)]")
+        self.recoverySecretKey = UserDefaults.standard.data(forKey: "recoverySecretKey[\(creds.userId)]") ?? UserDefaults.standard.data(forKey: "privateKey[\(creds.userId)]")
 
-        // Next: Where is the server for this user id?
-        // It might be something like matrix.domain.tld, or it might be something random
-        // We don't know -- Have to look it up via .well-known
-        //let dgroup = DispatchGroup()
-        //dgroup.enter()
-        //autoDiscovery.findClientConfig({ discoveredConfig in
-        _fetchWellKnown(for: userDomain) { wellKnownResponse in
+        self.userId = creds.userId
+        self.deviceId = creds.deviceId
+        self.accessToken = creds.accessToken
+        
+        let mxCreds = MXCredentials(homeServer: creds.wellKnown!.homeserver.baseUrl, userId: creds.userId, accessToken: creds.accessToken)
+        mxCreds.deviceId = creds.deviceId
 
-            guard case let .success(wellKnownInfo) = wellKnownResponse else {
-                print("STORE\tFailed to look up well-known server info for domain \(userDomain)")
-                //dgroup.leave()
-                return
-            }
+        self.sessionMxRc = MXRestClient(credentials: mxCreds, unrecognizedCertificateHandler: nil)
+        self.loginMxRc = self.sessionMxRc
 
-            // Yay we found it
-            print("STORE\tGot well-known server info")
-            /*
-            guard let wellknown = discoveredConfig.wellKnown else {
-                print("STORE\tDiscovered config doesn't include well-known!!!")
-                return
-            }
-            */
-            let creds = MXCredentials(homeServer: wellKnownInfo.homeserver.base_url,
-                                      userId: user_id,
-                                      accessToken: access_token)
-            creds.deviceId = device_id // ARGH Why could they not have included this in the constructor???
-            creds.identityServer = wellKnownInfo.identityserver.base_url
-
-            self.userId = user_id
-            self.deviceId = device_id
-            self.accessToken = access_token
-
-            self.sessionMxRc = MXRestClient(credentials: creds, unrecognizedCertificateHandler: nil)
-            self.loginMxRc = self.sessionMxRc
-
-            self.connect(restclient: self.sessionMxRc!) {
-                print("STORE\tBack from connect()")
-            }
+        self.connect(restclient: self.sessionMxRc!) {
+            print("STORE\tBack from connect()")
         }
-
-        print("STORE\tAfter looking for well known")
 
         /*
         dgroup.notify(queue: .main) {
@@ -177,6 +131,7 @@ class LegacyStore: ObservableObject {
 
     }
 
+    /*
     private func _fetchWellKnown(for domain: String, completion: @escaping (MXResponse<MatrixWellKnown>) -> Void) {
         print("WELLKNOWN\tFetching well-known server info for domain [\(domain)]")
         guard let url = URL(string: "https://\(domain)/.well-known/matrix/client") else {
@@ -225,6 +180,7 @@ class LegacyStore: ObservableObject {
         }
         task.resume()
     }
+    */
 
     func setupListeners() {
         // Update 10/26/2020 -- HOWEVER, we need to be careful how we do this.
@@ -278,6 +234,10 @@ class LegacyStore: ObservableObject {
                         default:
                             print("Session is... doing something else")
                         }
+                        
+                        // SwiftUI doesn't get the updates when we try using the .objectWillChange.send() above
+                        // Let's see if keeping our own @Published copy of the state will do the trick...
+                        self.sessionState = mxs.state
                     }
                 }
             )
@@ -611,10 +571,6 @@ extension LegacyStore: SocialGraph {
 
 
 extension LegacyStore: MatrixInterface {
-
-    var sessionState: MXSessionState {
-        self.session.state
-    }
     
     func changeMyPassword(oldPassword: String, newPassword: String, completion: @escaping (MXResponse<Void>) -> Void) {
         guard let restClient = self.session.matrixRestClient else {

@@ -9,14 +9,14 @@ import Foundation
 
 struct MatrixWellKnown: Codable {
     struct ServerConfig: Codable {
-        var base_url: String
+        var baseUrl: String
     }
     var homeserver: ServerConfig
     var identityserver: ServerConfig
 
     enum CodingKeys: String, CodingKey {
         case homeserver = "m.homeserver"
-        case identityserver = "m.identity_server"
+        case identityserver = "m.identityServer"
     }
 }
 

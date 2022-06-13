@@ -68,8 +68,10 @@ struct CirclesOverviewScreen: View {
     }
 }
 
+/*
 struct CirclesOverviewScreen_Previews: PreviewProvider {
     static var previews: some View {
         CirclesOverviewScreen(store: LegacyStore())
     }
 }
+*/

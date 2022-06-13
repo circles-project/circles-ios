@@ -25,7 +25,7 @@ public class LoginSession: ObservableObject {
         case connected([String],String?)
         case inProgress(String)
         case failed(String)
-        case succeeded(MatrixCredentials)
+        case succeeded(MatrixCredentials,String)
     }
     @Published var state: State
     
@@ -121,27 +121,35 @@ public class LoginSession: ObservableObject {
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
-        struct ResponseBody: Codable {
-            var accessToken: String
-            var deviceId: String
-            var userId: String
-            var wellKnown: MatrixWellKnown
+        guard let httpResponse = response as? HTTPURLResponse,
+          [200].contains(httpResponse.statusCode)
+        else {
+            let msg = "Login request failed"
+            print("LOGIN\t\(msg)")
+            await MainActor.run {
+                self.state = .connected(flows, msg)
+            }
+            return
         }
-        
+        print("LOGIN\tLogin request success!")
+        let raw = String(decoding: data, as: UTF8.self)
+        print("LOGIN\tRaw response data = \(raw)")
+            
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        guard let responseBody = try? decoder.decode(ResponseBody.self, from: data)
+        guard let creds = try? decoder.decode(MatrixCredentials.self, from: data)
         else {
-            let errorMessage = "Password login failed"
+            let msg = "Could not decode credentials"
             await MainActor.run {
-                self.state = .connected(flows, errorMessage)
+                self.state = .connected(flows, msg)
             }
             return
         }
         
-        let creds = MatrixCredentials(accessToken: responseBody.accessToken, deviceId: responseBody.deviceId, userId: responseBody.userId)
+        //let creds = MatrixCredentials(accessToken: creds1.accessToken, deviceId: creds1.deviceId, userId: creds1.userId)
+        
         await MainActor.run {
-            self.state = .succeeded(creds)
+            self.state = .succeeded(creds, password)
         }
         
         saveCredentials(username: username, creds: creds)
@@ -159,7 +167,7 @@ public class LoginSession: ObservableObject {
         defaults.set(creds.deviceId, forKey: "device_id[\(creds.userId)]")
         defaults.set(creds.accessToken, forKey: "access_token[\(creds.userId)]")
  
-        print("Saved credentials to UserDefaults")
+        print("LOGIN\tSaved credentials to UserDefaults")
 
     }
 }

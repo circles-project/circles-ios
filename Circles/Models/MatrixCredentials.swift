@@ -12,4 +12,13 @@ struct MatrixCredentials: Codable {
     var deviceId: String
     var userId: String
     var wellKnown: MatrixWellKnown?
+    //var homeServer: String? // Warning: Deprecated; Do not use
 }
+
+/*
+struct MatrixCredentialsWithoutWellKnown: Codable {
+    var accessToken: String
+    var deviceId: String
+    var userId: String
+}
+*/

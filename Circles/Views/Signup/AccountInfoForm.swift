@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-#if false
-
 struct AccountInfoForm: View {
-    var matrix: MatrixInterface
-    @Binding var authFlow: UIAA.Flow?
-    let stage: String
+    //var matrix: MatrixInterface
+    //@Binding var authFlow: UIAA.Flow?
+    var session: SignupSession
+    
+    //let stage: String
     @Binding var accountInfo: SignupAccountInfo
 
     //@Binding var displayName: String
@@ -22,7 +22,8 @@ struct AccountInfoForm: View {
     //@Binding var emailAddress: String
     //@Binding var userId: String?
 
-    @Binding var emailSid: String?
+    //@Binding var emailSid: String?
+    @Binding var emailSessionInfo: SignupSession.LegacyEmailRequestTokenResponse?
 
     @State var pending = false
 
@@ -148,23 +149,13 @@ struct AccountInfoForm: View {
 
             Spacer()
 
-            Button(action: {
-                guard !accountInfo.password.isEmpty,
-                      accountInfo.password == repeatPassword,
-                      !accountInfo.username.isEmpty else {
-                    return
-                }
-                // Call out to the server to send the verification mail
-                self.pending = true
-                matrix.signupRequestEmailToken(email: accountInfo.emailAddress) { response in
-                    if case let .success(sid) = response {
-                        // Setting the email session ID will send us to the next screen in the UI, since that's the next piece that we're missing.
-                        self.emailSid = sid
-                    } else {
-                        // :( Couldn't validate email
-                        print(":( Couldn't send validation email")
-                    }
-                    self.pending = false
+            AsyncButton(action: {
+                do {
+                    session.setUsername(accountInfo.username)
+                    session.setPassword(accountInfo.password)
+                    self.emailSessionInfo = try await session.doLegacyEmailRequestToken(address: accountInfo.emailAddress)
+                } catch {
+                    print("SIGNUP-AccountInfoForm\t:( Couldn't send validation email")
                 }
             }) {
                 Text("Submit")
@@ -174,7 +165,7 @@ struct AccountInfoForm: View {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
-            .disabled(accountInfo.password.isEmpty || accountInfo.password != repeatPassword || pending)
+            .disabled(accountInfo.username.isEmpty || accountInfo.password.isEmpty || accountInfo.password != repeatPassword)
         }
         .alert(isPresented: $showAlert) {
             Alert(title: Text(alertTitle),
@@ -184,7 +175,6 @@ struct AccountInfoForm: View {
         }
     }
 }
-#endif
 
 /*
 struct AccountInfoForm_Previews: PreviewProvider {

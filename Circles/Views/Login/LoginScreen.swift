@@ -81,12 +81,25 @@ struct LoginScreen: View {
                 } else {
                     Text("Password login is not supported")
                 }
+                
             case .inProgress(let authType):
                 Text("Login in progress: [\(authType)]")
+            
             case .failed(let errorMsg):
                 Text("Login failed: \(errorMsg)")
+            
+            case .succeeded(let creds, let password):
+                Text("Login success!")
+                ProgressView()
+                    .onAppear {
+                        let _ = Task {
+                            try await session.store.connectNewDevice(creds: creds, password: password)
+                        }
+                    }
+            /*
             default:
                 Text("Something else")
+            */
             }
         }
     }

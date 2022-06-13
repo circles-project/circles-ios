@@ -8,13 +8,14 @@
 import SwiftUI
 import MatrixSDK
 
-#if false
-
 struct ValidateEmailForm: View {
-    var matrix: MatrixInterface
-    @Binding var authFlow: UIAA.Flow?
-    @Binding var emailSid: String?
-    @Binding var accountInfo: SignupAccountInfo
+    //var matrix: MatrixInterface
+    //@Binding var authFlow: UIAA.Flow?
+    var session: SignupSession
+    
+    //@Binding var emailSid: String?
+    @Binding var emailSessionInfo: SignupSession.LegacyEmailRequestTokenResponse?
+    //@Binding var accountInfo: SignupAccountInfo
     @Binding var creds: MXCredentials?
 
     @State var emailToken = ""
@@ -25,8 +26,6 @@ struct ValidateEmailForm: View {
     @Binding var userId: String?
     @Binding var displayName: String
     */
-
-    @State var pending = false
 
     @State var showAlert = false
     @State var alertTitle = ""
@@ -65,13 +64,32 @@ struct ValidateEmailForm: View {
             }
             .frame(width: 300.0, height: 40.0)
 
-            Button(action: {
+            AsyncButton(action: {
                 guard !emailToken.isEmpty,
-                      let sid = emailSid
+                      let info = emailSessionInfo
                 else {
                     return
                 }
-                self.pending = true
+                
+                var tokenSuccess = false
+                do {
+                    let url = info.submitUrl ?? URL(string: "https://\(session.url.host!)/_matrix/identity/api/v1/validate/email/submitToken")!
+                    tokenSuccess = try await session.doLegacyEmailValidateAddress(token: emailToken, sid: info.sid, url: url)
+                } catch {
+                    print("Failed to validate email token")
+                }
+                
+                if tokenSuccess {
+                    do {
+                        try await session.doLegacyEmailStage(emailSessionId: info.sid)
+                    } catch {
+                        print("Email UIAA stage failed")
+                    }
+                } else {
+                    print("Invalid email token")
+                }
+
+                /*
                 // Call out to the server to validate our email address
                 matrix.signupValidateEmailAddress(sid: sid, token: self.emailToken) { response1 in
                     if response1.isSuccess {
@@ -117,10 +135,11 @@ struct ValidateEmailForm: View {
                         print("Email code validation failed")
                     }
                 }
+                */
             }) {
                 Text("Verify Code from Email")
             }
-            .disabled(pending)
+            .disabled(emailToken.isEmpty)
             .padding()
             .frame(width: 300.0, height: 40.0)
             .foregroundColor(.white)
@@ -149,7 +168,6 @@ struct ValidateEmailForm: View {
         }
     }
 }
-#endif
 
 /*
 struct ValidateEmailView_Previews: PreviewProvider {
