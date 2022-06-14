@@ -129,6 +129,8 @@
 		A54BA3A42850FECD00453D5E /* LoginSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3A32850FECD00453D5E /* LoginSession.swift */; };
 		A54BA3A62851222200453D5E /* WelcomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3A52851222200453D5E /* WelcomeScreen.swift */; };
 		A54BA3A928529BE500453D5E /* SetupScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3A828529BE500453D5E /* SetupScreen.swift */; };
+		A54BA3AB28592D2000453D5E /* SetupSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3AA28592D2000453D5E /* SetupSession.swift */; };
+		A54BA3AD28592FF800453D5E /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3AC28592FF800453D5E /* Matrix.swift */; };
 		A56DAA65282D58A600554275 /* MatrixEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56DAA64282D58A600554275 /* MatrixEvent.swift */; };
 		A5A7E228282B06FD001A528D /* ApplicationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A7E227282B06FD001A528D /* ApplicationState.swift */; };
 		A5A7E22A282B0E19001A528D /* MatrixSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A7E229282B0E19001A528D /* MatrixSession.swift */; };
@@ -269,6 +271,8 @@
 		A54BA3A32850FECD00453D5E /* LoginSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSession.swift; sourceTree = "<group>"; };
 		A54BA3A52851222200453D5E /* WelcomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreen.swift; sourceTree = "<group>"; };
 		A54BA3A828529BE500453D5E /* SetupScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupScreen.swift; sourceTree = "<group>"; };
+		A54BA3AA28592D2000453D5E /* SetupSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupSession.swift; sourceTree = "<group>"; };
+		A54BA3AC28592FF800453D5E /* Matrix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
 		A56DAA64282D58A600554275 /* MatrixEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixEvent.swift; sourceTree = "<group>"; };
 		A5A7E227282B06FD001A528D /* ApplicationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationState.swift; sourceTree = "<group>"; };
 		A5A7E229282B0E19001A528D /* MatrixSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixSession.swift; sourceTree = "<group>"; };
@@ -500,11 +504,7 @@
 			isa = PBXGroup;
 			children = (
 				403CEA9826E868F30054DBF4 /* AccountInfoForm.swift */,
-				403CEA9A26E86AA90054DBF4 /* AllDoneForm.swift */,
 				40E4D886268A76070055968A /* AppStoreSubscriptionForm.swift */,
-				403CEA9C26E86B920054DBF4 /* AvatarForm.swift */,
-				403CEA9E26E86C7F0054DBF4 /* CirclesForm.swift */,
-				409F4381265DE29600690A61 /* SetupCircleCard.swift */,
 				40E4D889268A76CF0055968A /* SignupScreen.swift */,
 				403CEAA026E90DE10054DBF4 /* SignupStartForm.swift */,
 				403CEA9226E864160054DBF4 /* TermsOfServiceForm.swift */,
@@ -570,6 +570,10 @@
 			isa = PBXGroup;
 			children = (
 				A54BA3A828529BE500453D5E /* SetupScreen.swift */,
+				409F4381265DE29600690A61 /* SetupCircleCard.swift */,
+				403CEA9E26E86C7F0054DBF4 /* CirclesForm.swift */,
+				403CEA9C26E86B920054DBF4 /* AvatarForm.swift */,
+				403CEA9A26E86AA90054DBF4 /* AllDoneForm.swift */,
 			);
 			path = Setup;
 			sourceTree = "<group>";
@@ -577,14 +581,16 @@
 		A5B32ACA2810E9EF001BB952 /* Backend */ = {
 			isa = PBXGroup;
 			children = (
-				A5481C2128108580006F782F /* SignupSession.swift */,
-				409F4351265DE1BA00690A61 /* LegacyStore.swift */,
-				409F4354265DE1C800690A61 /* MatrixInterface.swift */,
 				A5F111802810EAF400367DC0 /* AsyncMatrixInterface.swift */,
-				A509B896281884E00053E5BC /* UIAuthSession.swift */,
-				A5A7E229282B0E19001A528D /* MatrixSession.swift */,
 				A54BA3A12850108300453D5E /* CirclesStore.swift */,
+				409F4351265DE1BA00690A61 /* LegacyStore.swift */,
 				A54BA3A32850FECD00453D5E /* LoginSession.swift */,
+				A54BA3AC28592FF800453D5E /* Matrix.swift */,
+				409F4354265DE1C800690A61 /* MatrixInterface.swift */,
+				A5A7E229282B0E19001A528D /* MatrixSession.swift */,
+				A54BA3AA28592D2000453D5E /* SetupSession.swift */,
+				A5481C2128108580006F782F /* SignupSession.swift */,
+				A509B896281884E00053E5BC /* UIAuthSession.swift */,
 			);
 			path = Backend;
 			sourceTree = "<group>";
@@ -764,6 +770,7 @@
 				409F43A7265DE43B00690A61 /* RoomMembersSheet.swift in Sources */,
 				A54BA3A928529BE500453D5E /* SetupScreen.swift in Sources */,
 				409F4310265DE0E700690A61 /* HomeScreen.swift in Sources */,
+				A54BA3AB28592D2000453D5E /* SetupSession.swift in Sources */,
 				409F43A8265DE43B00690A61 /* RoomSecurityInfoSheet.swift in Sources */,
 				409F437F265DE28600690A61 /* RandomizedCircles.swift in Sources */,
 				409F434A265DE18A00690A61 /* InvitationsView.swift in Sources */,
@@ -784,6 +791,7 @@
 				409F42FF265DE0A200690A61 /* SocialCircle.swift in Sources */,
 				409F4334265DE15F00690A61 /* CircleOverviewCard.swift in Sources */,
 				403CEA9926E868F30054DBF4 /* AccountInfoForm.swift in Sources */,
+				A54BA3AD28592FF800453D5E /* Matrix.swift in Sources */,
 				409F4342265DE17500690A61 /* GroupHeader.swift in Sources */,
 				4012C54726A736D700BB15E6 /* MatrixReaction.swift in Sources */,
 				409F437C265DE27F00690A61 /* RecentActivityView.swift in Sources */,

@@ -291,7 +291,7 @@ public class CirclesStore: ObservableObject {
     
     // MARK: Well known
     
-    private func fetchWellKnown(for domain: String) async throws -> MatrixWellKnown {
+    func fetchWellKnown(for domain: String) async throws -> MatrixWellKnown {
         
         guard let url = URL(string: "https://\(domain)/.well-known/matrix/client") else {
             let msg = "Couldn't construct well-known URL"
