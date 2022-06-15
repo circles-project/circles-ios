@@ -26,3 +26,5 @@ enum MatrixEventType: String, Codable {
     
     // Add types for extensible events here
 }
+
+

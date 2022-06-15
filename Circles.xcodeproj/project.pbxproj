@@ -122,6 +122,8 @@
 		A509B89A28189E950053E5BC /* BlindSaltSpeke in Frameworks */ = {isa = PBXBuildFile; productRef = A509B89928189E950053E5BC /* BlindSaltSpeke */; };
 		A509B89C2818A1F80053E5BC /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A509B89B2818A1F80053E5BC /* Array+Extension.swift */; };
 		A509B89E2819B6C90053E5BC /* CirclesError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A509B89D2819B6C90053E5BC /* CirclesError.swift */; };
+		A52607C7285A78E5008512A5 /* RoomId.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52607C6285A78E5008512A5 /* RoomId.swift */; };
+		A52607C9285A78F6008512A5 /* UserId.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52607C8285A78F6008512A5 /* UserId.swift */; };
 		A542C8252816EB5B006DD8F8 /* MatrixCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = A542C8242816EB5B006DD8F8 /* MatrixCredentials.swift */; };
 		A5481C2228108580006F782F /* SignupSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5481C2128108580006F782F /* SignupSession.swift */; };
 		A5481C2528108DC7006F782F /* AnyCodable in Frameworks */ = {isa = PBXBuildFile; productRef = A5481C2428108DC7006F782F /* AnyCodable */; };
@@ -131,9 +133,7 @@
 		A54BA3A928529BE500453D5E /* SetupScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3A828529BE500453D5E /* SetupScreen.swift */; };
 		A54BA3AB28592D2000453D5E /* SetupSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3AA28592D2000453D5E /* SetupSession.swift */; };
 		A54BA3AD28592FF800453D5E /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3AC28592FF800453D5E /* Matrix.swift */; };
-		A54BA3B2285A3F7600453D5E /* Matrix+API.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3B1285A3F7600453D5E /* Matrix+API.swift */; };
-		A54BA3BE285A41B800453D5E /* UserId.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3BD285A41B800453D5E /* UserId.swift */; };
-		A54BA3C0285A41EE00453D5E /* RoomId.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3BF285A41EE00453D5E /* RoomId.swift */; };
+		A54BA3B2285A3F7600453D5E /* MatrixAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3B1285A3F7600453D5E /* MatrixAPI.swift */; };
 		A54BA3D6285A433500453D5E /* CanonicalAliasContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3C9285A433500453D5E /* CanonicalAliasContent.swift */; };
 		A54BA3D7285A433500453D5E /* MatrixMessageContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3CA285A433500453D5E /* MatrixMessageContent.swift */; };
 		A54BA3D8285A433500453D5E /* JoinRuleContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3CB285A433500453D5E /* JoinRuleContent.swift */; };
@@ -147,8 +147,7 @@
 		A54BA3E0285A433500453D5E /* RoomPowerLevelsContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3D3285A433500453D5E /* RoomPowerLevelsContent.swift */; };
 		A54BA3E1285A433500453D5E /* CreateContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3D4285A433500453D5E /* CreateContent.swift */; };
 		A54BA3E2285A433500453D5E /* RoomMemberContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3D5285A433500453D5E /* RoomMemberContent.swift */; };
-		A54BA3E4285A4C7400453D5E /* Matrix+decodeEventContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3E3285A4C7400453D5E /* Matrix+decodeEventContent.swift */; };
-		A56DAA65282D58A600554275 /* MatrixEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56DAA64282D58A600554275 /* MatrixEvent.swift */; };
+		A54BA3E6285A597E00453D5E /* decodeEventContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3E5285A597E00453D5E /* decodeEventContent.swift */; };
 		A5A7E228282B06FD001A528D /* ApplicationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A7E227282B06FD001A528D /* ApplicationState.swift */; };
 		A5A7E22A282B0E19001A528D /* MatrixSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A7E229282B0E19001A528D /* MatrixSession.swift */; };
 		A5BECC35280F7A1100B1FCC6 /* TPInAppReceipt in Frameworks */ = {isa = PBXBuildFile; productRef = A5BECC34280F7A1100B1FCC6 /* TPInAppReceipt */; };
@@ -282,6 +281,8 @@
 		A509B896281884E00053E5BC /* UIAuthSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAuthSession.swift; sourceTree = "<group>"; };
 		A509B89B2818A1F80053E5BC /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
 		A509B89D2819B6C90053E5BC /* CirclesError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesError.swift; sourceTree = "<group>"; };
+		A52607C6285A78E5008512A5 /* RoomId.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomId.swift; sourceTree = "<group>"; };
+		A52607C8285A78F6008512A5 /* UserId.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserId.swift; sourceTree = "<group>"; };
 		A542C8242816EB5B006DD8F8 /* MatrixCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixCredentials.swift; sourceTree = "<group>"; };
 		A5481C2128108580006F782F /* SignupSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupSession.swift; sourceTree = "<group>"; };
 		A54BA3A12850108300453D5E /* CirclesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesStore.swift; sourceTree = "<group>"; };
@@ -290,9 +291,7 @@
 		A54BA3A828529BE500453D5E /* SetupScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupScreen.swift; sourceTree = "<group>"; };
 		A54BA3AA28592D2000453D5E /* SetupSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupSession.swift; sourceTree = "<group>"; };
 		A54BA3AC28592FF800453D5E /* Matrix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
-		A54BA3B1285A3F7600453D5E /* Matrix+API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Matrix+API.swift"; sourceTree = "<group>"; };
-		A54BA3BD285A41B800453D5E /* UserId.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserId.swift; path = ../../../../Matrix.swift/Sources/Matrix.swift/UserId.swift; sourceTree = "<group>"; };
-		A54BA3BF285A41EE00453D5E /* RoomId.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RoomId.swift; path = ../../../../Matrix.swift/Sources/Matrix.swift/RoomId.swift; sourceTree = "<group>"; };
+		A54BA3B1285A3F7600453D5E /* MatrixAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixAPI.swift; sourceTree = "<group>"; };
 		A54BA3C2285A430300453D5E /* ToDeviceEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDeviceEvent.swift; sourceTree = "<group>"; };
 		A54BA3C3285A431300453D5E /* ClientEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEvent.swift; sourceTree = "<group>"; };
 		A54BA3C4285A431600453D5E /* StrippedStateEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrippedStateEvent.swift; sourceTree = "<group>"; };
@@ -312,8 +311,7 @@
 		A54BA3D3285A433500453D5E /* RoomPowerLevelsContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomPowerLevelsContent.swift; sourceTree = "<group>"; };
 		A54BA3D4285A433500453D5E /* CreateContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateContent.swift; sourceTree = "<group>"; };
 		A54BA3D5285A433500453D5E /* RoomMemberContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomMemberContent.swift; sourceTree = "<group>"; };
-		A54BA3E3285A4C7400453D5E /* Matrix+decodeEventContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Matrix+decodeEventContent.swift"; sourceTree = "<group>"; };
-		A56DAA64282D58A600554275 /* MatrixEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixEvent.swift; sourceTree = "<group>"; };
+		A54BA3E5285A597E00453D5E /* decodeEventContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = decodeEventContent.swift; sourceTree = "<group>"; };
 		A5A7E227282B06FD001A528D /* ApplicationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationState.swift; sourceTree = "<group>"; };
 		A5A7E229282B0E19001A528D /* MatrixSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixSession.swift; sourceTree = "<group>"; };
 		A5E101F62814FAFD000B2C42 /* Circles-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Circles-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -447,7 +445,6 @@
 				409F42F9265DE0A100690A61 /* SocialGroup.swift */,
 				409F42F0265DE09D00690A61 /* SocialStream.swift */,
 				409F42ED265DE09C00690A61 /* UIAA.swift */,
-				A56DAA64282D58A600554275 /* MatrixEvent.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -621,12 +618,12 @@
 		A54BA3AE285A3EEB00453D5E /* Matrix */ = {
 			isa = PBXGroup;
 			children = (
-				A54BA3C1285A42FE00453D5E /* Events */,
-				A54BA3BF285A41EE00453D5E /* RoomId.swift */,
-				A54BA3BD285A41B800453D5E /* UserId.swift */,
+				A54BA3E5285A597E00453D5E /* decodeEventContent.swift */,
 				A54BA3AC28592FF800453D5E /* Matrix.swift */,
-				A54BA3B1285A3F7600453D5E /* Matrix+API.swift */,
-				A54BA3E3285A4C7400453D5E /* Matrix+decodeEventContent.swift */,
+				A54BA3B1285A3F7600453D5E /* MatrixAPI.swift */,
+				A52607C6285A78E5008512A5 /* RoomId.swift */,
+				A52607C8285A78F6008512A5 /* UserId.swift */,
+				A54BA3C1285A42FE00453D5E /* Events */,
 			);
 			path = Matrix;
 			sourceTree = "<group>";
@@ -844,7 +841,6 @@
 				A54BA3D6285A433500453D5E /* CanonicalAliasContent.swift in Sources */,
 				A5E101F82814FAFD000B2C42 /* bcrypt.c in Sources */,
 				403CEA9326E864160054DBF4 /* TermsOfServiceForm.swift in Sources */,
-				A56DAA65282D58A600554275 /* MatrixEvent.swift in Sources */,
 				A509B897281884E00053E5BC /* UIAuthSession.swift in Sources */,
 				40878FCA2694DBC400A66EF0 /* MessageComposerSheet.swift in Sources */,
 				A54BA3E2285A433500453D5E /* RoomMemberContent.swift in Sources */,
@@ -873,10 +869,10 @@
 				409F435C265DE1EE00690A61 /* LoginScreen.swift in Sources */,
 				409F431E265DE11000690A61 /* DevicesScreen.swift in Sources */,
 				409F4335265DE15F00690A61 /* CirclePicker.swift in Sources */,
-				A54BA3BE285A41B800453D5E /* UserId.swift in Sources */,
 				409F42E9265DE06C00690A61 /* WebView.swift in Sources */,
 				409F434F265DE19C00690A61 /* KSError.swift in Sources */,
 				40878FC72694C00000A66EF0 /* MessageContextMenu.swift in Sources */,
+				A52607C9285A78F6008512A5 /* UserId.swift in Sources */,
 				409F4303265DE0A200690A61 /* InvitedRoom.swift in Sources */,
 				409F4377265DE25000690A61 /* PhotoGalleryView.swift in Sources */,
 				409F436F265DE24000690A61 /* PersonDetailView.swift in Sources */,
@@ -890,7 +886,6 @@
 				409F437C265DE27F00690A61 /* RecentActivityView.swift in Sources */,
 				409F4362265DE21A00690A61 /* MessageCard.swift in Sources */,
 				409F42E3265DE00700690A61 /* Array+Sample.swift in Sources */,
-				A54BA3C0285A41EE00453D5E /* RoomId.swift in Sources */,
 				40878FCD2696198500A66EF0 /* TimelineSheetType.swift in Sources */,
 				409F4309265DE0A200690A61 /* SocialGroup.swift in Sources */,
 				409F436D265DE24000690A61 /* PeopleOverviewScreen.swift in Sources */,
@@ -920,8 +915,8 @@
 				40CD7F6F2667E16100DE315F /* VideoPicker.swift in Sources */,
 				409F4319265DE0FF00690A61 /* EmbeddedImagePicker.swift in Sources */,
 				409F43B4265DE4C800690A61 /* ProfileView.swift in Sources */,
+				A54BA3E6285A597E00453D5E /* decodeEventContent.swift in Sources */,
 				A5F111812810EAF400367DC0 /* AsyncMatrixInterface.swift in Sources */,
-				A54BA3E4285A4C7400453D5E /* Matrix+decodeEventContent.swift in Sources */,
 				409F4355265DE1C800690A61 /* MatrixInterface.swift in Sources */,
 				409F435B265DE1EE00690A61 /* LoggedOutScreen.swift in Sources */,
 				A54BA3A22850108300453D5E /* CirclesStore.swift in Sources */,
@@ -935,8 +930,9 @@
 				409F4300265DE0A200690A61 /* SocialStream.swift in Sources */,
 				A54BA3E0285A433500453D5E /* RoomPowerLevelsContent.swift in Sources */,
 				404C72D1265DDF35000473DF /* CirclesApp.swift in Sources */,
-				A54BA3B2285A3F7600453D5E /* Matrix+API.swift in Sources */,
+				A54BA3B2285A3F7600453D5E /* MatrixAPI.swift in Sources */,
 				A54BA3DE285A433500453D5E /* TagContent.swift in Sources */,
+				A52607C7285A78E5008512A5 /* RoomId.swift in Sources */,
 				409F4341265DE17500690A61 /* GroupTimelineScreen.swift in Sources */,
 				A54BA3D7285A433500453D5E /* MatrixMessageContent.swift in Sources */,
 				409F4307265DE0A200690A61 /* PhotoGalleriesContainer.swift in Sources */,

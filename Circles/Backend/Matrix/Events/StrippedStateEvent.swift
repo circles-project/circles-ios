@@ -12,7 +12,7 @@ import Foundation
 struct StrippedStateEvent: MatrixEvent {
     let sender: UserId
     let stateKey: String
-    let type: EventType
+    let type: MatrixEventType
     let content: Codable
 
     enum CodingKeys: String, CodingKey {
@@ -27,7 +27,7 @@ struct StrippedStateEvent: MatrixEvent {
         
         self.sender = try container.decode(UserId.self, forKey: .sender)
         self.stateKey = try container.decode(String.self, forKey: .stateKey)
-        self.type = try container.decode(EventType.self, forKey: .type)
+        self.type = try container.decode(MatrixEventType.self, forKey: .type)
         
         self.content = try decodeEventContent(of: self.type, from: decoder)
     }

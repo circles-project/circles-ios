@@ -72,6 +72,7 @@ enum Matrix {
         return wellKnown
     }
     
+    /*
     static func decodeEventContent(of type: MatrixEventType, from decoder: Decoder) throws -> Codable {
         
         let container = try decoder.container(keyedBy: MinimalEvent.CodingKeys.self)
@@ -147,5 +148,6 @@ enum Matrix {
             }
         }
     }
+    */
     
 }

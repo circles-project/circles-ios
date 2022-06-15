@@ -18,7 +18,7 @@ class SetupSession: ObservableObject {
     init(creds: MatrixCredentials, store: CirclesStore) throws {
         self.creds = creds
         self.store = store
-        self.api = try Matrix.API(creds: creds)
+        self.api = try MatrixAPI(creds: creds)
     }
     
     func setAvatar(_ image: UIImage) async throws {

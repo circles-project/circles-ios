@@ -14,7 +14,7 @@ struct ClientEvent: MatrixEvent {
     let roomId: RoomId
     let sender: UserId
     let stateKey: String?
-    let type: EventType
+    let type: MatrixEventType
     
     struct UnsignedData: Codable {
         let age: Int
@@ -43,7 +43,7 @@ struct ClientEvent: MatrixEvent {
         self.roomId = try container.decode(RoomId.self, forKey: .roomId)
         self.sender = try container.decode(UserId.self, forKey: .sender)
         self.stateKey = try? container.decode(String.self, forKey: .stateKey)
-        self.type = try container.decode(EventType.self, forKey: .type)
+        self.type = try container.decode(MatrixEventType.self, forKey: .type)
         self.unsigned = try? container.decode(UnsignedData.self, forKey: .unsigned)
         
         self.content = try decodeEventContent(of: self.type, from: decoder)

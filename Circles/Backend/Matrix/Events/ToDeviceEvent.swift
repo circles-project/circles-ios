@@ -23,7 +23,7 @@ struct ToDeviceEvent: MatrixEvent {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.sender = try container.decode(UserId.self, forKey: .sender)
-        self.type = try container.decode(EventType.self, forKey: .type)
+        self.type = try container.decode(MatrixEventType.self, forKey: .type)
         self.content = try decodeEventContent(of: self.type, from: decoder)
     }
 }

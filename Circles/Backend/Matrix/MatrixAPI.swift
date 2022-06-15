@@ -167,8 +167,10 @@ class MatrixAPI {
                 init(from decoder: Decoder) throws {
                     let container = try decoder.container(keyedBy: CodingKeys.self)
                     self.stateKey = try container.decode(String.self, forKey: .stateKey)
-                    self.type = try container.decode(EventType.self, forKey: .type)
-                    self.content = Matrix.decodeEventContent(of: type, from: decoder)
+                    self.type = try container.decode(MatrixEventType.self, forKey: .type)
+                    let minimal = try MinimalEvent(from: decoder)
+                    //self.content = decodeEventContent(of: type, from: decoder)
+                    self.content = minimal.content
                 }
             }
             var initial_state: [StateEvent] = []
