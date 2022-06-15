@@ -8,6 +8,6 @@
 import Foundation
 
 protocol MatrixEvent: Codable {
-    var type: Matrix.EventType {get}
+    var type: MatrixEventType {get}
     var content: Codable {get}
 }

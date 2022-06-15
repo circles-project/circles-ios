@@ -11,7 +11,7 @@ import UIKit
 class SetupSession: ObservableObject {
     var creds: MatrixCredentials
     var store: CirclesStore
-    var api: Matrix.API
+    var api: MatrixAPI
     
     @Published var stages = ["avatar", "circles"]
     

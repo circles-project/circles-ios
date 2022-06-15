@@ -72,7 +72,7 @@ enum Matrix {
         return wellKnown
     }
     
-    static func decodeEventContent(of type: EventType, from decoder: Decoder) throws -> Codable {
+    static func decodeEventContent(of type: MatrixEventType, from decoder: Decoder) throws -> Codable {
         
         let container = try decoder.container(keyedBy: MinimalEvent.CodingKeys.self)
             
@@ -110,13 +110,15 @@ enum Matrix {
         case .mRoomEncryption:
             let content = try container.decode(RoomEncryptionContent.self, forKey: .content)
             return content
+        /*
         case .mEncrypted:
             let content = try container.decode(EncryptedContent.self, forKey: .content)
             return content
+        */
         case .mRoomMessage:
             // Peek into the content struct to examine the `msgtype`
             struct MinimalMessageContent: Codable {
-                var msgtype: MsgType
+                var msgtype: MatrixMessageType
             }
             let mmc = try container.decode(MinimalMessageContent.self, forKey: .content)
             // Now use the msgtype to determine how we decode the content
@@ -145,4 +147,5 @@ enum Matrix {
             }
         }
     }
+    
 }

@@ -7,7 +7,11 @@
 
 import Foundation
 
-struct CanonicalAliasContent: Codable {
-    let alias: String
-    let altAliases: [String]
+extension Matrix {
+
+    struct CanonicalAliasContent: Codable {
+        let alias: String
+        let altAliases: [String]
+    }
+
 }

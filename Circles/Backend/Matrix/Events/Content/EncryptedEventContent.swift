@@ -37,8 +37,8 @@ struct OlmCiphertext: MatrixCiphertext {
     }
 }
 
-struct EncryptedEventContent: MatrixMessageContent {
-    enum Algorithm: String {
+struct EncryptedEventContent: Codable {
+    enum Algorithm: String, Codable {
         case olmV1 = "m.olm.v1.curve25519-aes-sha2"
         case megolmV1 = "m.megolm.v1.aes-sha2"
     }
@@ -72,8 +72,16 @@ struct EncryptedEventContent: MatrixMessageContent {
             self.ciphertext = try container.decode(MegolmCiphertext.self, forKey: .ciphertext)
         }
     }
+    
+    func encode(to encoder: Encoder) throws {
+        let container = encoder.container(keyedBy: CodingKeys.self)
+        // FIXME
+        // TODO
+        throw Matrix.Error("Not implemented")
+    }
 }
 
+/*
 struct EventPlaintextPayload: Codable {
     let type: String
     let content: MatrixMessageContent
@@ -86,3 +94,4 @@ struct EventPlaintextPayload: Codable {
     // As with MatrixClientEvent, support for .encode() and Encodable should be automatic, since the only ambiguity is on the input side.
     // Once we have a Codable MatrixMessageContent, whatever it is, it knows how to encode itself.
 }
+*/
