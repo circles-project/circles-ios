@@ -165,6 +165,12 @@ class MatrixAPI {
                     case type
                 }
                 
+                init(type: MatrixEventType, stateKey: String = "", content: Codable) {
+                    self.type = type
+                    self.stateKey = stateKey
+                    self.content = content
+                }
+                
                 init(from decoder: Decoder) throws {
                     let container = try decoder.container(keyedBy: CodingKeys.self)
                     self.stateKey = try container.decode(String.self, forKey: .stateKey)
@@ -175,18 +181,12 @@ class MatrixAPI {
                 }
                 
                 func encode(to encoder: Encoder) throws {
-                    let container = try encoder.container(keyedBy: CodingKeys.self)
-                    
+                    var container = encoder.container(keyedBy: CodingKeys.self)
+                    try container.encode(stateKey, forKey: .stateKey)
+                    try container.encode(type, forKey: .type)
+                    try Matrix.encodeEventContent(content: content, of: type, to: encoder)
                 }
             }
-            
-            /*
-            struct StateEvent: Codable {
-                var content: String
-                var stateKey: String
-                var type: MatrixMessageType
-            }
-            */
             var initial_state: [StateEvent] = []
             var invite: [String] = []
             var invite_3pid: [String] = []
@@ -206,17 +206,23 @@ class MatrixAPI {
                 case priv = "private"
             }
             var visibility: Visibility = .priv
+            
+            init(name: String, type: String? = nil, encrypted: Bool) {
+                self.name = name
+                if encrypted {
+                    let encryptionEvent = StateEvent(
+                        type: MatrixEventType.mRoomEncryption,
+                        stateKey: "",
+                        content: RoomEncryptionContent()
+                    )
+                    self.initial_state = [encryptionEvent]
+                }
+                if let roomType = type {
+                    self.creation_content = ["type": roomType]
+                }
+            }
         }
-        var requestBody = CreateRoomRequestBody(name: name)
-        /*
-        var requestBody = [
-            "name": name
-        ]
-        */
-        if encrypted {
-            // Add encryption event to the initial state
-        }
-        
+        let requestBody = CreateRoomRequestBody(name: name, type: type, encrypted: encrypted)
         
         let (data, response) = try await call(method: "POST",
                                     path: "/_matrix/client/\(version)/createRoom",
