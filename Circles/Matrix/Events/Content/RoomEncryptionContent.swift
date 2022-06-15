@@ -14,4 +14,10 @@ struct RoomEncryptionContent: Codable {
     let algorithm: Algorithm
     let rotationPeriodMs: Int
     let rotationPeriodMsgs: Int
+    
+    init() {
+        algorithm = .megolmV1AesSha2
+        rotationPeriodMs = 604800000
+        rotationPeriodMsgs = 100
+    }
 }
