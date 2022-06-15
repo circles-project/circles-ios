@@ -1,15 +1,13 @@
 //
-//  Matrix.swift
+//  Matrix+API.swift
 //  Circles
 //
-//  Created by Charles Wright on 6/14/22.
+//  Created by Charles Wright on 6/15/22.
 //
 
 import Foundation
-import UIKit
-import AnyCodable
 
-enum Matrix {
+extension Matrix {
     
     class API {
         var creds: MatrixCredentials
@@ -48,7 +46,7 @@ enum Matrix {
             self.baseUrl = URL(string: wk.homeserver.baseUrl)!
         }
         
-        func call(method: String, path: String, body: AnyCodable? = nil, expectedStatuses: [Int] = [200]) async throws -> (Data, HTTPURLResponse) {
+        func call(method: String, path: String, body: Codable? = nil, expectedStatuses: [Int] = [200]) async throws -> (Data, HTTPURLResponse) {
             let url = URL(string: path, relativeTo: baseUrl)!
             var request = URLRequest(url: url)
             request.httpMethod = method
@@ -56,7 +54,7 @@ enum Matrix {
             if let codableBody = body {
                 let encoder = JSONEncoder()
                 encoder.keyEncodingStrategy = .convertToSnakeCase
-                request.httpBody = try encoder.encode(codableBody)
+                request.httpBody = try encoder.encode(AnyCodable(codableBody))
             }
             
             let (data, response) = try await apiUrlSession.data(for: request)
@@ -142,64 +140,65 @@ enum Matrix {
             
             return responseBody.contentUri
         }
-    }
-    
-    struct Error: Swift.Error {
-        var msg: String
         
-        init(_ msg: String) {
-            self.msg = msg
+        // https://spec.matrix.org/v1.2/client-server-api/#post_matrixclientv3createroom
+        func createRoom(name: String,
+                        type: String? = nil,
+                        encrypted: Bool = true,
+                        invite userIds: [String] = [],
+                        direct: Bool = false
+        ) async throws -> String {
+            
+            struct CreateRoomRequestBody: Codable {
+                var creation_content: [String: String] = [:]
+                struct StateEvent: Codable {
+                    var content: Codable
+                    var stateKey: String = ""
+                    var type: Matrix.EventType
+                }
+                var initial_state: [StateEvent] = []
+                var invite: [String] = []
+                var invite_3pid: [String] = []
+                var is_direct: Bool = false
+                var name: String
+                enum Preset: String, Codable {
+                    case private_chat
+                    case public_chat
+                    case trusted_private_chat
+                }
+                var preset: Preset = .private_chat
+                var room_alias_name: String?
+                var room_version: Int = 7
+                var topic: String?
+                enum Visibility: String, Codable {
+                    case pub = "public"
+                    case priv = "private"
+                }
+                var visibility: Visibility = .priv
+            }
+            var requestBody = CreateRoomRequestBody(name: name)
+            if encrypted {
+                // Add encryption event to the initial state
+            }
+            
+            
+            let (data, response) = try await call(method: "POST",
+                                        path: "/_matrix/client/\(version)/createRoom",
+                                        body: requestBody)
+            
+            struct CreateRoomResponseBody: Codable {
+                var roomId: String
+            }
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            guard let responseBody = try? decoder.decode(CreateRoomResponseBody.self, from: data)
+            else {
+                let msg = "Failed to decode response from server"
+                print(msg)
+                throw Matrix.Error(msg)
+            }
+            
+            return responseBody.roomId
         }
-    }
-    
-    static func getDomainFromUserId(_ userId: String) -> String? {
-        let toks = userId.split(separator: ":")
-        if toks.count != 2 {
-            return nil
-        }
-
-        let domain = String(toks[1])
-        return domain
-    }
-    
-    static func fetchWellKnown(for domain: String) async throws -> MatrixWellKnown {
-        
-        guard let url = URL(string: "https://\(domain)/.well-known/matrix/client") else {
-            let msg = "Couldn't construct well-known URL"
-            print("WELLKNOWN\t\(msg)")
-            throw CirclesError(msg)
-        }
-        print("WELLKNOWN\tURL is \(url)")
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        //request.cachePolicy = .reloadIgnoringLocalCacheData
-        request.cachePolicy = .returnCacheDataElseLoad
-
-        
-        let (data, response) = try await URLSession.shared.data(for: request)
-
-        guard let httpResponse = response as? HTTPURLResponse else {
-            let msg = "Couldn't decode HTTP response"
-            print("WELLKNOWN\t\(msg)")
-            throw CirclesError(msg)
-        }
-        guard httpResponse.statusCode == 200 else {
-            let msg = "HTTP request failed"
-            print("WELLKNOWN\t\(msg)")
-            throw CirclesError(msg)
-        }
-        
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let stuff = String(data: data, encoding: .utf8)!
-        print("WELLKNOWN\tGot response data:\n\(stuff)")
-        guard let wellKnown = try? decoder.decode(MatrixWellKnown.self, from: data) else {
-            let msg = "Couldn't decode response data"
-            print("WELLKNOWN\t\(msg)")
-            throw CirclesError(msg)
-        }
-        print("WELLKNOWN\tSuccess!")
-        return wellKnown
     }
 }

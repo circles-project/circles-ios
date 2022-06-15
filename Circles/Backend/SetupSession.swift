@@ -21,7 +21,7 @@ class SetupSession: ObservableObject {
         self.api = try Matrix.API(creds: creds)
     }
     
-    func setAvatar(image: UIImage) async throws {
+    func setAvatar(_ image: UIImage) async throws {
         try await api.setAvatarImage(image)
         await MainActor.run {
             self.stages.removeAll(where: {
@@ -30,5 +30,7 @@ class SetupSession: ObservableObject {
         }
     }
     
-    
+    func setDisplayName(_ name: String) async throws {
+        try await api.setDisplayName(name)
+    }
 }

@@ -131,6 +131,28 @@
 		A54BA3A928529BE500453D5E /* SetupScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3A828529BE500453D5E /* SetupScreen.swift */; };
 		A54BA3AB28592D2000453D5E /* SetupSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3AA28592D2000453D5E /* SetupSession.swift */; };
 		A54BA3AD28592FF800453D5E /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3AC28592FF800453D5E /* Matrix.swift */; };
+		A54BA3B0285A3F4E00453D5E /* Matrix+EventType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3AF285A3F4E00453D5E /* Matrix+EventType.swift */; };
+		A54BA3B2285A3F7600453D5E /* Matrix+API.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3B1285A3F7600453D5E /* Matrix+API.swift */; };
+		A54BA3B4285A404700453D5E /* MatrixEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3B3285A404700453D5E /* MatrixEvent.swift */; };
+		A54BA3B6285A407300453D5E /* Matrix+MinimalEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3B5285A407300453D5E /* Matrix+MinimalEvent.swift */; };
+		A54BA3B8285A40AF00453D5E /* Matrix+StrippedStateEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3B7285A40AF00453D5E /* Matrix+StrippedStateEvent.swift */; };
+		A54BA3BA285A412800453D5E /* Matrix+ClientEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3B9285A412800453D5E /* Matrix+ClientEvent.swift */; };
+		A54BA3BC285A418B00453D5E /* Matrix+ToDeviceEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3BB285A418B00453D5E /* Matrix+ToDeviceEvent.swift */; };
+		A54BA3BE285A41B800453D5E /* UserId.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3BD285A41B800453D5E /* UserId.swift */; };
+		A54BA3C0285A41EE00453D5E /* RoomId.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3BF285A41EE00453D5E /* RoomId.swift */; };
+		A54BA3D6285A433500453D5E /* CanonicalAliasContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3C9285A433500453D5E /* CanonicalAliasContent.swift */; };
+		A54BA3D7285A433500453D5E /* MatrixMessageContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3CA285A433500453D5E /* MatrixMessageContent.swift */; };
+		A54BA3D8285A433500453D5E /* JoinRuleContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3CB285A433500453D5E /* JoinRuleContent.swift */; };
+		A54BA3D9285A433500453D5E /* RoomTagContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3CC285A433500453D5E /* RoomTagContent.swift */; };
+		A54BA3DA285A433500453D5E /* RoomEncryptionContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3CD285A433500453D5E /* RoomEncryptionContent.swift */; };
+		A54BA3DB285A433500453D5E /* RoomTopicContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3CE285A433500453D5E /* RoomTopicContent.swift */; };
+		A54BA3DC285A433500453D5E /* EncryptedEventContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3CF285A433500453D5E /* EncryptedEventContent.swift */; };
+		A54BA3DD285A433500453D5E /* RoomNameContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3D0285A433500453D5E /* RoomNameContent.swift */; };
+		A54BA3DE285A433500453D5E /* TagContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3D1285A433500453D5E /* TagContent.swift */; };
+		A54BA3DF285A433500453D5E /* RoomAvatarContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3D2285A433500453D5E /* RoomAvatarContent.swift */; };
+		A54BA3E0285A433500453D5E /* RoomPowerLevelsContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3D3285A433500453D5E /* RoomPowerLevelsContent.swift */; };
+		A54BA3E1285A433500453D5E /* CreateContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3D4285A433500453D5E /* CreateContent.swift */; };
+		A54BA3E2285A433500453D5E /* RoomMemberContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3D5285A433500453D5E /* RoomMemberContent.swift */; };
 		A56DAA65282D58A600554275 /* MatrixEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56DAA64282D58A600554275 /* MatrixEvent.swift */; };
 		A5A7E228282B06FD001A528D /* ApplicationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A7E227282B06FD001A528D /* ApplicationState.swift */; };
 		A5A7E22A282B0E19001A528D /* MatrixSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A7E229282B0E19001A528D /* MatrixSession.swift */; };
@@ -273,6 +295,34 @@
 		A54BA3A828529BE500453D5E /* SetupScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupScreen.swift; sourceTree = "<group>"; };
 		A54BA3AA28592D2000453D5E /* SetupSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupSession.swift; sourceTree = "<group>"; };
 		A54BA3AC28592FF800453D5E /* Matrix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
+		A54BA3AF285A3F4E00453D5E /* Matrix+EventType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Matrix+EventType.swift"; path = "../../../../Matrix.swift/Sources/Matrix.swift/Events/Matrix+EventType.swift"; sourceTree = "<group>"; };
+		A54BA3B1285A3F7600453D5E /* Matrix+API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Matrix+API.swift"; sourceTree = "<group>"; };
+		A54BA3B3285A404700453D5E /* MatrixEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MatrixEvent.swift; path = ../../../../Matrix.swift/Sources/Matrix.swift/Events/MatrixEvent.swift; sourceTree = "<group>"; };
+		A54BA3B5285A407300453D5E /* Matrix+MinimalEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Matrix+MinimalEvent.swift"; path = "../../../../Matrix.swift/Sources/Matrix.swift/Events/Matrix+MinimalEvent.swift"; sourceTree = "<group>"; };
+		A54BA3B7285A40AF00453D5E /* Matrix+StrippedStateEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Matrix+StrippedStateEvent.swift"; path = "../../../../Matrix.swift/Sources/Matrix.swift/Events/Matrix+StrippedStateEvent.swift"; sourceTree = "<group>"; };
+		A54BA3B9285A412800453D5E /* Matrix+ClientEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Matrix+ClientEvent.swift"; path = "../../../../Matrix.swift/Sources/Matrix.swift/Events/Matrix+ClientEvent.swift"; sourceTree = "<group>"; };
+		A54BA3BB285A418B00453D5E /* Matrix+ToDeviceEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Matrix+ToDeviceEvent.swift"; path = "../../../../Matrix.swift/Sources/Matrix.swift/Events/Matrix+ToDeviceEvent.swift"; sourceTree = "<group>"; };
+		A54BA3BD285A41B800453D5E /* UserId.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserId.swift; path = ../../../../Matrix.swift/Sources/Matrix.swift/UserId.swift; sourceTree = "<group>"; };
+		A54BA3BF285A41EE00453D5E /* RoomId.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RoomId.swift; path = ../../../../Matrix.swift/Sources/Matrix.swift/RoomId.swift; sourceTree = "<group>"; };
+		A54BA3C2285A430300453D5E /* Matrix+ToDeviceEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Matrix+ToDeviceEvent.swift"; sourceTree = "<group>"; };
+		A54BA3C3285A431300453D5E /* Matrix+ClientEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Matrix+ClientEvent.swift"; sourceTree = "<group>"; };
+		A54BA3C4285A431600453D5E /* Matrix+StrippedStateEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Matrix+StrippedStateEvent.swift"; sourceTree = "<group>"; };
+		A54BA3C5285A431900453D5E /* Matrix+MinimalEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Matrix+MinimalEvent.swift"; sourceTree = "<group>"; };
+		A54BA3C6285A431C00453D5E /* MatrixEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixEvent.swift; sourceTree = "<group>"; };
+		A54BA3C7285A432000453D5E /* Matrix+EventType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Matrix+EventType.swift"; sourceTree = "<group>"; };
+		A54BA3C9285A433500453D5E /* CanonicalAliasContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CanonicalAliasContent.swift; sourceTree = "<group>"; };
+		A54BA3CA285A433500453D5E /* MatrixMessageContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatrixMessageContent.swift; sourceTree = "<group>"; };
+		A54BA3CB285A433500453D5E /* JoinRuleContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JoinRuleContent.swift; sourceTree = "<group>"; };
+		A54BA3CC285A433500453D5E /* RoomTagContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomTagContent.swift; sourceTree = "<group>"; };
+		A54BA3CD285A433500453D5E /* RoomEncryptionContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomEncryptionContent.swift; sourceTree = "<group>"; };
+		A54BA3CE285A433500453D5E /* RoomTopicContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomTopicContent.swift; sourceTree = "<group>"; };
+		A54BA3CF285A433500453D5E /* EncryptedEventContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EncryptedEventContent.swift; sourceTree = "<group>"; };
+		A54BA3D0285A433500453D5E /* RoomNameContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomNameContent.swift; sourceTree = "<group>"; };
+		A54BA3D1285A433500453D5E /* TagContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagContent.swift; sourceTree = "<group>"; };
+		A54BA3D2285A433500453D5E /* RoomAvatarContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomAvatarContent.swift; sourceTree = "<group>"; };
+		A54BA3D3285A433500453D5E /* RoomPowerLevelsContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomPowerLevelsContent.swift; sourceTree = "<group>"; };
+		A54BA3D4285A433500453D5E /* CreateContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateContent.swift; sourceTree = "<group>"; };
+		A54BA3D5285A433500453D5E /* RoomMemberContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomMemberContent.swift; sourceTree = "<group>"; };
 		A56DAA64282D58A600554275 /* MatrixEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixEvent.swift; sourceTree = "<group>"; };
 		A5A7E227282B06FD001A528D /* ApplicationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationState.swift; sourceTree = "<group>"; };
 		A5A7E229282B0E19001A528D /* MatrixSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixSession.swift; sourceTree = "<group>"; };
@@ -578,14 +628,66 @@
 			path = Setup;
 			sourceTree = "<group>";
 		};
+		A54BA3AE285A3EEB00453D5E /* Matrix */ = {
+			isa = PBXGroup;
+			children = (
+				A54BA3C1285A42FE00453D5E /* Events */,
+				A54BA3BF285A41EE00453D5E /* RoomId.swift */,
+				A54BA3BD285A41B800453D5E /* UserId.swift */,
+				A54BA3BB285A418B00453D5E /* Matrix+ToDeviceEvent.swift */,
+				A54BA3B9285A412800453D5E /* Matrix+ClientEvent.swift */,
+				A54BA3B7285A40AF00453D5E /* Matrix+StrippedStateEvent.swift */,
+				A54BA3B5285A407300453D5E /* Matrix+MinimalEvent.swift */,
+				A54BA3B3285A404700453D5E /* MatrixEvent.swift */,
+				A54BA3AF285A3F4E00453D5E /* Matrix+EventType.swift */,
+				A54BA3AC28592FF800453D5E /* Matrix.swift */,
+				A54BA3B1285A3F7600453D5E /* Matrix+API.swift */,
+			);
+			path = Matrix;
+			sourceTree = "<group>";
+		};
+		A54BA3C1285A42FE00453D5E /* Events */ = {
+			isa = PBXGroup;
+			children = (
+				A54BA3C8285A433500453D5E /* Content */,
+				A54BA3C2285A430300453D5E /* Matrix+ToDeviceEvent.swift */,
+				A54BA3C3285A431300453D5E /* Matrix+ClientEvent.swift */,
+				A54BA3C4285A431600453D5E /* Matrix+StrippedStateEvent.swift */,
+				A54BA3C5285A431900453D5E /* Matrix+MinimalEvent.swift */,
+				A54BA3C6285A431C00453D5E /* MatrixEvent.swift */,
+				A54BA3C7285A432000453D5E /* Matrix+EventType.swift */,
+			);
+			path = Events;
+			sourceTree = "<group>";
+		};
+		A54BA3C8285A433500453D5E /* Content */ = {
+			isa = PBXGroup;
+			children = (
+				A54BA3C9285A433500453D5E /* CanonicalAliasContent.swift */,
+				A54BA3CA285A433500453D5E /* MatrixMessageContent.swift */,
+				A54BA3CB285A433500453D5E /* JoinRuleContent.swift */,
+				A54BA3CC285A433500453D5E /* RoomTagContent.swift */,
+				A54BA3CD285A433500453D5E /* RoomEncryptionContent.swift */,
+				A54BA3CE285A433500453D5E /* RoomTopicContent.swift */,
+				A54BA3CF285A433500453D5E /* EncryptedEventContent.swift */,
+				A54BA3D0285A433500453D5E /* RoomNameContent.swift */,
+				A54BA3D1285A433500453D5E /* TagContent.swift */,
+				A54BA3D2285A433500453D5E /* RoomAvatarContent.swift */,
+				A54BA3D3285A433500453D5E /* RoomPowerLevelsContent.swift */,
+				A54BA3D4285A433500453D5E /* CreateContent.swift */,
+				A54BA3D5285A433500453D5E /* RoomMemberContent.swift */,
+			);
+			path = Content;
+			sourceTree = "<group>";
+		};
 		A5B32ACA2810E9EF001BB952 /* Backend */ = {
 			isa = PBXGroup;
 			children = (
+				A54BA3AE285A3EEB00453D5E /* Matrix */,
 				A5F111802810EAF400367DC0 /* AsyncMatrixInterface.swift */,
 				A54BA3A12850108300453D5E /* CirclesStore.swift */,
 				409F4351265DE1BA00690A61 /* LegacyStore.swift */,
 				A54BA3A32850FECD00453D5E /* LoginSession.swift */,
-				A54BA3AC28592FF800453D5E /* Matrix.swift */,
 				409F4354265DE1C800690A61 /* MatrixInterface.swift */,
 				A5A7E229282B0E19001A528D /* MatrixSession.swift */,
 				A54BA3AA28592D2000453D5E /* SetupSession.swift */,
@@ -743,6 +845,7 @@
 				409F42FE265DE0A200690A61 /* MatrixMessage.swift in Sources */,
 				40395EBA26C2D58A0044FB51 /* BringYourOwnServer.swift in Sources */,
 				A54BA3A42850FECD00453D5E /* LoginSession.swift in Sources */,
+				A54BA3DD285A433500453D5E /* RoomNameContent.swift in Sources */,
 				403CEA9D26E86B920054DBF4 /* AvatarForm.swift in Sources */,
 				404C72D3265DDF35000473DF /* ContentView.swift in Sources */,
 				403CEA9F26E86C7F0054DBF4 /* CirclesForm.swift in Sources */,
@@ -751,15 +854,19 @@
 				40BC0E4326B3199C00137A92 /* MatrixWellKnown.swift in Sources */,
 				A5E101FE2814FC9F000B2C42 /* PerfectBCrypt.swift in Sources */,
 				A509B89E2819B6C90053E5BC /* CirclesError.swift in Sources */,
+				A54BA3BA285A412800453D5E /* Matrix+ClientEvent.swift in Sources */,
 				40BC0E4526B45FE600137A92 /* AcknowledgementsSheet.swift in Sources */,
 				A542C8252816EB5B006DD8F8 /* MatrixCredentials.swift in Sources */,
+				A54BA3D6285A433500453D5E /* CanonicalAliasContent.swift in Sources */,
 				A5E101F82814FAFD000B2C42 /* bcrypt.c in Sources */,
 				403CEA9326E864160054DBF4 /* TermsOfServiceForm.swift in Sources */,
 				A56DAA65282D58A600554275 /* MatrixEvent.swift in Sources */,
 				A509B897281884E00053E5BC /* UIAuthSession.swift in Sources */,
 				40878FCA2694DBC400A66EF0 /* MessageComposerSheet.swift in Sources */,
+				A54BA3E2285A433500453D5E /* RoomMemberContent.swift in Sources */,
 				409F4326265DE12600690A61 /* CloudImagePicker.swift in Sources */,
 				409F4333265DE15F00690A61 /* CircleAvatar.swift in Sources */,
+				A54BA3D8285A433500453D5E /* JoinRuleContent.swift in Sources */,
 				A5A7E228282B06FD001A528D /* ApplicationState.swift in Sources */,
 				409F438D265DE2C200690A61 /* StreamTimelineScreen.swift in Sources */,
 				409F4306265DE0A200690A61 /* MatrixMsgContent.swift in Sources */,
@@ -773,6 +880,9 @@
 				A54BA3AB28592D2000453D5E /* SetupSession.swift in Sources */,
 				409F43A8265DE43B00690A61 /* RoomSecurityInfoSheet.swift in Sources */,
 				409F437F265DE28600690A61 /* RandomizedCircles.swift in Sources */,
+				A54BA3DA285A433500453D5E /* RoomEncryptionContent.swift in Sources */,
+				A54BA3B4285A404700453D5E /* MatrixEvent.swift in Sources */,
+				A54BA3B0285A3F4E00453D5E /* Matrix+EventType.swift in Sources */,
 				409F434A265DE18A00690A61 /* InvitationsView.swift in Sources */,
 				409F4323265DE11900690A61 /* Constants.swift in Sources */,
 				40AEA6752678E24200C9CBD1 /* BlurHashEncode.swift in Sources */,
@@ -781,10 +891,12 @@
 				409F435C265DE1EE00690A61 /* LoginScreen.swift in Sources */,
 				409F431E265DE11000690A61 /* DevicesScreen.swift in Sources */,
 				409F4335265DE15F00690A61 /* CirclePicker.swift in Sources */,
+				A54BA3BE285A41B800453D5E /* UserId.swift in Sources */,
 				409F42E9265DE06C00690A61 /* WebView.swift in Sources */,
 				409F434F265DE19C00690A61 /* KSError.swift in Sources */,
 				40878FC72694C00000A66EF0 /* MessageContextMenu.swift in Sources */,
 				409F4303265DE0A200690A61 /* InvitedRoom.swift in Sources */,
+				A54BA3B6285A407300453D5E /* Matrix+MinimalEvent.swift in Sources */,
 				409F4377265DE25000690A61 /* PhotoGalleryView.swift in Sources */,
 				409F436F265DE24000690A61 /* PersonDetailView.swift in Sources */,
 				403CEAA126E90DE10054DBF4 /* SignupStartForm.swift in Sources */,
@@ -797,6 +909,7 @@
 				409F437C265DE27F00690A61 /* RecentActivityView.swift in Sources */,
 				409F4362265DE21A00690A61 /* MessageCard.swift in Sources */,
 				409F42E3265DE00700690A61 /* Array+Sample.swift in Sources */,
+				A54BA3C0285A41EE00453D5E /* RoomId.swift in Sources */,
 				40878FCD2696198500A66EF0 /* TimelineSheetType.swift in Sources */,
 				409F4309265DE0A200690A61 /* SocialGroup.swift in Sources */,
 				409F436D265DE24000690A61 /* PeopleOverviewScreen.swift in Sources */,
@@ -805,9 +918,13 @@
 				40878FBC268E4D9000A66EF0 /* AppStoreInterface.swift in Sources */,
 				409F4382265DE29600690A61 /* SetupCircleCard.swift in Sources */,
 				409F4390265DE2CE00690A61 /* SystemNoticesView.swift in Sources */,
+				A54BA3DF285A433500453D5E /* RoomAvatarContent.swift in Sources */,
 				A5481C2228108580006F782F /* SignupSession.swift in Sources */,
 				A504DA7328120AF100EFF42E /* AsyncButton.swift in Sources */,
+				A54BA3DB285A433500453D5E /* RoomTopicContent.swift in Sources */,
 				403CEA9526E865740054DBF4 /* TokenForm.swift in Sources */,
+				A54BA3E1285A433500453D5E /* CreateContent.swift in Sources */,
+				A54BA3BC285A418B00453D5E /* Matrix+ToDeviceEvent.swift in Sources */,
 				409F438C265DE2C200690A61 /* StreamTimeline.swift in Sources */,
 				409F4305265DE0A200690A61 /* PeopleContainer.swift in Sources */,
 				409F43A2265DE3C800690A61 /* ProfileScreen.swift in Sources */,
@@ -831,12 +948,18 @@
 				40E4D88A268A76CF0055968A /* SignupScreen.swift in Sources */,
 				4073E7C4267915AF001A80CF /* RepliesView.swift in Sources */,
 				409F4343265DE17500690A61 /* GroupOverviewRow.swift in Sources */,
+				A54BA3DC285A433500453D5E /* EncryptedEventContent.swift in Sources */,
 				409F4352265DE1BA00690A61 /* LegacyStore.swift in Sources */,
 				403CEA9726E866B70054DBF4 /* ValidateEmailForm.swift in Sources */,
 				409F4300265DE0A200690A61 /* SocialStream.swift in Sources */,
+				A54BA3E0285A433500453D5E /* RoomPowerLevelsContent.swift in Sources */,
 				404C72D1265DDF35000473DF /* CirclesApp.swift in Sources */,
+				A54BA3B2285A3F7600453D5E /* Matrix+API.swift in Sources */,
+				A54BA3DE285A433500453D5E /* TagContent.swift in Sources */,
 				409F4341265DE17500690A61 /* GroupTimelineScreen.swift in Sources */,
+				A54BA3D7285A433500453D5E /* MatrixMessageContent.swift in Sources */,
 				409F4307265DE0A200690A61 /* PhotoGalleriesContainer.swift in Sources */,
+				A54BA3B8285A40AF00453D5E /* Matrix+StrippedStateEvent.swift in Sources */,
 				403CEA9B26E86AA90054DBF4 /* AllDoneForm.swift in Sources */,
 				409F43BA265DE51C00690A61 /* RoomInviteSheet.swift in Sources */,
 				409F4315265DE0F400690A61 /* ImagePicker.swift in Sources */,
@@ -851,6 +974,7 @@
 				409F4344265DE17500690A61 /* GroupConfigSheet.swift in Sources */,
 				409F4376265DE25000690A61 /* PhotoGalleryCard.swift in Sources */,
 				40CD7F6C2667D3B600DE315F /* PhotoPicker.swift in Sources */,
+				A54BA3D9285A433500453D5E /* RoomTagContent.swift in Sources */,
 				409F4396265DE2E900690A61 /* TermsScreen.swift in Sources */,
 				409F42E6265DE03B00690A61 /* Utils.swift in Sources */,
 				409F4363265DE21A00690A61 /* MessageAuthorHeader.swift in Sources */,
