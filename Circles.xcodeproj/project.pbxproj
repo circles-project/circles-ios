@@ -146,6 +146,8 @@
 		A51D65D2285A7F64008DA649 /* RoomPowerLevelsContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51D65BA285A7F64008DA649 /* RoomPowerLevelsContent.swift */; };
 		A51D65D3285A7F64008DA649 /* CreateContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51D65BB285A7F64008DA649 /* CreateContent.swift */; };
 		A51D65D4285A7F64008DA649 /* RoomMemberContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51D65BC285A7F64008DA649 /* RoomMemberContent.swift */; };
+		A51D65D6285A932A008DA649 /* SpaceChildContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51D65D5285A932A008DA649 /* SpaceChildContent.swift */; };
+		A51D65D8285A93E2008DA649 /* SpaceParentContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51D65D7285A93E2008DA649 /* SpaceParentContent.swift */; };
 		A542C8252816EB5B006DD8F8 /* MatrixCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = A542C8242816EB5B006DD8F8 /* MatrixCredentials.swift */; };
 		A5481C2228108580006F782F /* SignupSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5481C2128108580006F782F /* SignupSession.swift */; };
 		A5481C2528108DC7006F782F /* AnyCodable in Frameworks */ = {isa = PBXBuildFile; productRef = A5481C2428108DC7006F782F /* AnyCodable */; };
@@ -311,6 +313,8 @@
 		A51D65BA285A7F64008DA649 /* RoomPowerLevelsContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomPowerLevelsContent.swift; sourceTree = "<group>"; };
 		A51D65BB285A7F64008DA649 /* CreateContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateContent.swift; sourceTree = "<group>"; };
 		A51D65BC285A7F64008DA649 /* RoomMemberContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomMemberContent.swift; sourceTree = "<group>"; };
+		A51D65D5285A932A008DA649 /* SpaceChildContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceChildContent.swift; sourceTree = "<group>"; };
+		A51D65D7285A93E2008DA649 /* SpaceParentContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceParentContent.swift; sourceTree = "<group>"; };
 		A542C8242816EB5B006DD8F8 /* MatrixCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixCredentials.swift; sourceTree = "<group>"; };
 		A5481C2128108580006F782F /* SignupSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupSession.swift; sourceTree = "<group>"; };
 		A54BA3A12850108300453D5E /* CirclesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesStore.swift; sourceTree = "<group>"; };
@@ -653,6 +657,8 @@
 				A51D65BA285A7F64008DA649 /* RoomPowerLevelsContent.swift */,
 				A51D65BB285A7F64008DA649 /* CreateContent.swift */,
 				A51D65BC285A7F64008DA649 /* RoomMemberContent.swift */,
+				A51D65D5285A932A008DA649 /* SpaceChildContent.swift */,
+				A51D65D7285A93E2008DA649 /* SpaceParentContent.swift */,
 			);
 			path = Content;
 			sourceTree = "<group>";
@@ -898,6 +904,7 @@
 				409F436D265DE24000690A61 /* PeopleOverviewScreen.swift in Sources */,
 				409F4301265DE0A200690A61 /* MatrixDevice.swift in Sources */,
 				A51D65C0285A7F64008DA649 /* StrippedStateEvent.swift in Sources */,
+				A51D65D6285A932A008DA649 /* SpaceChildContent.swift in Sources */,
 				409F434C265DE18A00690A61 /* InvitationCard.swift in Sources */,
 				40878FBC268E4D9000A66EF0 /* AppStoreInterface.swift in Sources */,
 				409F4382265DE29600690A61 /* SetupCircleCard.swift in Sources */,
@@ -940,6 +947,7 @@
 				409F4300265DE0A200690A61 /* SocialStream.swift in Sources */,
 				A51D65C7285A7F64008DA649 /* MatrixEvent.swift in Sources */,
 				404C72D1265DDF35000473DF /* CirclesApp.swift in Sources */,
+				A51D65D8285A93E2008DA649 /* SpaceParentContent.swift in Sources */,
 				A51D65D2285A7F64008DA649 /* RoomPowerLevelsContent.swift in Sources */,
 				409F4341265DE17500690A61 /* GroupTimelineScreen.swift in Sources */,
 				A51D65C4285A7F64008DA649 /* Matrix.swift in Sources */,

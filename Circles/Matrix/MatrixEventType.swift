@@ -24,6 +24,9 @@ enum MatrixEventType: String, Codable {
     case mTag = "m.tag"
     // case mRoomPinnedEvents = "m.room.pinned_events" // https://spec.matrix.org/v1.2/client-server-api/#mroompinned_events
     
+    case mSpaceChild = "m.space.child"
+    case mSpaceParent = "m.space.parent"
+    
     // Add types for extensible events here
 }
 

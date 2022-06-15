@@ -242,4 +242,47 @@ class MatrixAPI {
         
         return responseBody.roomId
     }
+    
+    func createSpace(name: String) async throws -> String {
+        let roomId = try await createRoom(name: name, type: "m.space", encrypted: false)
+        return roomId
+    }
+    
+    func sendStateEvent(to roomId: RoomId,
+                        type: MatrixEventType,
+                        content: Codable,
+                        stateKey: String = ""
+    ) async throws -> String {
+        
+        let (data, response) = try await call(method: "PUT",
+                                              path: "/_matrix/client/\(version)/rooms/\(roomId)/state/\(type)/\(stateKey)",
+                                              body: content)
+        struct ResponseBody: Codable {
+            var eventId: String
+        }
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        guard let responseBody = try? decoder.decode(ResponseBody.self, from: data)
+        else {
+            let msg = "Failed to decode state event response"
+            print(msg)
+            throw Matrix.Error(msg)
+        }
+    
+        return responseBody.eventId
+    }
+
+    func spaceAddChild(_ child: RoomId, to parent: RoomId) async throws {
+        let servers = Array(Set([child.domain, parent.domain]))
+        let order = (0x20 ... 0x7e).randomElement()?.description ?? "A"
+        let content = SpaceChildContent(order: order, via: servers)
+        let _ = try await sendStateEvent(to: parent, type: .mSpaceChild, content: content, stateKey: child.description)
+    }
+    
+    func spaceAddParent(_ parent: RoomId, to child: RoomId, canonical: Bool = false) async throws {
+        let servers = Array(Set([child.domain, parent.domain]))
+        let content = SpaceParentContent(canonical: canonical, via: servers)
+        let _ = try await sendStateEvent(to: child, type: .mSpaceParent, content: content, stateKey: parent.description)
+    }
+
 }

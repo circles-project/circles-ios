@@ -72,6 +72,7 @@ enum Matrix {
         return wellKnown
     }
     
+    // MARK: Decoding
     
     static func decodeEventContent(of type: MatrixEventType, from decoder: Decoder) throws -> Codable {
         
@@ -115,6 +116,14 @@ enum Matrix {
         case .mEncrypted:
             let content = try container.decode(EncryptedEventContent.self, forKey: .content)
             return content
+            
+        case .mSpaceChild:
+            let content = try container.decode(SpaceChildContent.self, forKey: .content)
+            return content
+            
+        case .mSpaceParent:
+            let content = try container.decode(SpaceParentContent.self, forKey: .content)
+            return content
         
         case .mRoomMessage:
             // Peek into the content struct to examine the `msgtype`
@@ -152,6 +161,8 @@ enum Matrix {
 
         }
     }
+    
+    // MARK: Encoding
     
     static func encodeEventContent(content: Codable, of type: MatrixEventType, to encoder: Encoder) throws {
         enum CodingKeys: String, CodingKey {
@@ -282,6 +293,17 @@ enum Matrix {
             }
             try container.encode(roomTagContent, forKey: .content)
             
+        case .mSpaceChild:
+            guard let spaceChildContent = content as? SpaceChildContent else {
+                throw Matrix.Error("Couldn't convert content")
+            }
+            try container.encode(spaceChildContent, forKey: .content)
+            
+        case .mSpaceParent:
+            guard let spaceParentContent = content as? SpaceParentContent else {
+                throw Matrix.Error("Couldn't convert content")
+            }
+            try container.encode(spaceParentContent, forKey: .content)
         }
     }
     
