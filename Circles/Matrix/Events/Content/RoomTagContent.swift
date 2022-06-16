@@ -11,5 +11,5 @@ struct RoomTagContent: Codable {
     struct Tag: Codable {
         let order: Float
     }
-    let tags: [String: Tag]
+    var tags: [String: Tag]
 }

@@ -106,19 +106,25 @@ class MatrixAPI {
         return uri
     }
     
-    func uploadImage(_ original: UIImage, quality: CGFloat = 0.90) async throws -> String {
-        let url = URL(string: "/_matrix/media/\(version)/upload", relativeTo: baseUrl)!
-        var request = URLRequest(url: url)
-        request.setValue("image/jpeg", forHTTPHeaderField: "Content-Type")
-        
-        guard let jpeg = original.jpegData(compressionQuality: quality)
+    func uploadImage(_ image: UIImage, quality: CGFloat = 0.90) async throws -> String {
+
+        guard let jpeg = image.jpegData(compressionQuality: quality)
         else {
             let msg = "Failed to encode image as JPEG"
             print(msg)
             throw Matrix.Error(msg)
         }
         
-        let (data, response) = try await mediaUrlSession.upload(for: request, from: jpeg)
+        return try await uploadData(data: jpeg, contentType: "image/jpeg")
+    }
+    
+    func uploadData(data: Data, contentType: String) async throws -> String {
+        
+        let url = URL(string: "/_matrix/media/\(version)/upload", relativeTo: baseUrl)!
+        var request = URLRequest(url: url)
+        request.setValue(contentType, forHTTPHeaderField: "Content-Type")
+        
+        let (responseData, response) = try await mediaUrlSession.upload(for: request, from: data)
         
         guard let httpResponse = response as? HTTPURLResponse,
               [200].contains(httpResponse.statusCode)
@@ -133,7 +139,7 @@ class MatrixAPI {
         }
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        guard let responseBody = try? decoder.decode(UploadResponse.self, from: data)
+        guard let responseBody = try? decoder.decode(UploadResponse.self, from: responseData)
         else {
             let msg = "Failed to decode upload response"
             print(msg)
@@ -284,5 +290,67 @@ class MatrixAPI {
         let content = SpaceParentContent(canonical: canonical, via: servers)
         let _ = try await sendStateEvent(to: child, type: .mSpaceParent, content: content, stateKey: parent.description)
     }
+    
+    func roomAddTag(roomId: RoomId, tag: String, order: Float? = nil) async throws {
+        let path = "/_matrix/client/\(version)/user/\(creds.userId)/rooms/\(roomId)/tags/\(tag)"
+        let body = ["order": order ?? Float.random(in: 0.0 ..< 1.0)]
+        let _ = try await call(method: "PUT", path: path, body: body)
+    }
+    
+    private func roomGetTagEventContent(roomId: RoomId) async throws -> RoomTagContent {
+        let path = "/_matrix/client/\(version)/user/\(creds.userId)/rooms/\(roomId)/tags"
+        let (data, response) = try await call(method: "GET", path: path, body: nil)
+        
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        guard let tagContent = try? decoder.decode(RoomTagContent.self, from: data)
+        else {
+            let msg = "Failed to decode room tag content"
+            print(msg)
+            throw Matrix.Error(msg)
+        }
+        
+        return tagContent
+    }
+    
+    func roomGetTags(roomId: RoomId) async throws -> [String] {
+        let tagContent = try await roomGetTagEventContent(roomId: roomId)
+        let tags: [String] = [String](tagContent.tags.keys)
+        return tags
+    }
 
+    func roomSetAvatar(roomId: RoomId, image: UIImage) async throws {
+        let maxSize = CGSize(width: 640, height: 640)
+        
+        guard let scaledImage = downscale_image(from: image, to: maxSize)
+        else {
+            let msg = "Failed to downscale image"
+            print(msg)
+            throw Matrix.Error(msg)
+        }
+        
+        guard let jpegData = scaledImage.jpegData(compressionQuality: 0.90)
+        else {
+            let msg = "Failed to compress image"
+            print(msg)
+            throw Matrix.Error(msg)
+        }
+        
+        guard let uri = try? await uploadData(data: jpegData, contentType: "image/jpeg") else {
+            let msg = "Failed to upload image for room avatar"
+            print(msg)
+            throw Matrix.Error(msg)
+        }
+        
+        let info = mImageInfo(h: Int(scaledImage.size.height),
+                              w: Int(scaledImage.size.width),
+                              mimetype: "image/jpeg",
+                              size: jpegData.count)
+        
+        let _ = try await sendStateEvent(to: roomId, type: .mRoomAvatar, content: RoomAvatarContent(url: uri, info: info))
+    }
+    
+    func roomSetTopic(roomId: RoomId, topic: String) async throws {
+        let _ = try await sendStateEvent(to: roomId, type: .mRoomTopic, content: ["topic": topic])
+    }
 }

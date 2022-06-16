@@ -645,20 +645,20 @@
 			isa = PBXGroup;
 			children = (
 				A51D65B0285A7F64008DA649 /* CanonicalAliasContent.swift */,
-				A51D65B1285A7F64008DA649 /* MatrixMessageContent.swift */,
-				A51D65B2285A7F64008DA649 /* JoinRuleContent.swift */,
-				A51D65B3285A7F64008DA649 /* RoomTagContent.swift */,
-				A51D65B4285A7F64008DA649 /* RoomEncryptionContent.swift */,
-				A51D65B5285A7F64008DA649 /* RoomTopicContent.swift */,
-				A51D65B6285A7F64008DA649 /* EncryptedEventContent.swift */,
-				A51D65B7285A7F64008DA649 /* RoomNameContent.swift */,
-				A51D65B8285A7F64008DA649 /* TagContent.swift */,
-				A51D65B9285A7F64008DA649 /* RoomAvatarContent.swift */,
-				A51D65BA285A7F64008DA649 /* RoomPowerLevelsContent.swift */,
 				A51D65BB285A7F64008DA649 /* CreateContent.swift */,
+				A51D65B6285A7F64008DA649 /* EncryptedEventContent.swift */,
+				A51D65B2285A7F64008DA649 /* JoinRuleContent.swift */,
+				A51D65B1285A7F64008DA649 /* MatrixMessageContent.swift */,
+				A51D65B9285A7F64008DA649 /* RoomAvatarContent.swift */,
+				A51D65B4285A7F64008DA649 /* RoomEncryptionContent.swift */,
 				A51D65BC285A7F64008DA649 /* RoomMemberContent.swift */,
+				A51D65B7285A7F64008DA649 /* RoomNameContent.swift */,
+				A51D65BA285A7F64008DA649 /* RoomPowerLevelsContent.swift */,
+				A51D65B3285A7F64008DA649 /* RoomTagContent.swift */,
+				A51D65B5285A7F64008DA649 /* RoomTopicContent.swift */,
 				A51D65D5285A932A008DA649 /* SpaceChildContent.swift */,
 				A51D65D7285A93E2008DA649 /* SpaceParentContent.swift */,
+				A51D65B8285A7F64008DA649 /* TagContent.swift */,
 			);
 			path = Content;
 			sourceTree = "<group>";
