@@ -410,4 +410,16 @@ class MatrixAPI {
         let users = [UserId](responseBody.keys)
         return users
     }
+    
+    // https://spec.matrix.org/v1.2/client-server-api/#get_matrixclientv3roomsroomidstate
+    func roomGetState(roomId: RoomId) async throws -> [ClientEvent] {
+        let path = "/_matrix/client/\(version)/rooms/\(roomId)/state"
+        
+        let (data, response) = try await call(method: "GET", path: path)
+        
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        let events = try decoder.decode([ClientEvent].self, from: data)
+        return events
+    }
 }
