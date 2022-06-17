@@ -19,15 +19,19 @@ let ROOM_TAG_CHAT = APP_PREFIX + ".chat"
 let ROOM_TAG_PHOTOS = APP_PREFIX + ".photos"
 let ROOM_TAG_NOTICES = APP_PREFIX + ".notices"
 
+let ROOM_TAG_CIRCLES_SPACE_ROOT = "org.futo.circles.space.root"
+
 let EVENT_TYPE_CIRCLES = "social.kombucha.circles"
 let EVENT_TYPE_CONFIGURED = "social.kombucha.configured"
 let EVENT_TYPE_ROOMTYPE = "social.kombucha.room_type"
 
-// FIXME: Use new m.social room types
-let ROOM_TYPE_CIRCLE = APP_PREFIX + ".circle"
-let ROOM_TYPE_GROUP = APP_PREFIX + ".group"
-let ROOM_TYPE_CHAT = APP_PREFIX + ".chat"
-let ROOM_TYPE_PHOTOS = APP_PREFIX + ".photos"
+//let ROOM_TYPE_CIRCLE = APP_PREFIX + ".circle"
+//let ROOM_TYPE_GROUP = APP_PREFIX + ".group"
+//let ROOM_TYPE_CHAT = APP_PREFIX + ".chat"
+//let ROOM_TYPE_PHOTOS = APP_PREFIX + ".photos"
+let ROOM_TYPE_CIRCLE = "m.social.timeline"
+let ROOM_TYPE_GROUP = "m.social.group"
+let ROOM_TYPE_PHOTOS = "m.social.gallery"
 
 // Use this for the pseudo-circle containing all of the rooms
 // that we're following.
