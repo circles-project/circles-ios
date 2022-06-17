@@ -155,7 +155,7 @@ class MatrixAPI {
                     encrypted: Bool = true,
                     invite userIds: [String] = [],
                     direct: Bool = false
-    ) async throws -> String {
+    ) async throws -> RoomId {
         
         struct CreateRoomRequestBody: Codable {
             var creation_content: [String: String] = [:]
@@ -246,10 +246,10 @@ class MatrixAPI {
             throw Matrix.Error(msg)
         }
         
-        return responseBody.roomId
+        return RoomId(responseBody.roomId)!
     }
     
-    func createSpace(name: String) async throws -> String {
+    func createSpace(name: String) async throws -> RoomId {
         let roomId = try await createRoom(name: name, type: "m.space", encrypted: false)
         return roomId
     }
@@ -421,5 +421,9 @@ class MatrixAPI {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         let events = try decoder.decode([ClientEvent].self, from: data)
         return events
+    }
+    
+    func roomGetPowerLevels(roomId: RoomId) async throws -> [String: Int] {
+        throw Matrix.Error("Not implemented")
     }
 }
