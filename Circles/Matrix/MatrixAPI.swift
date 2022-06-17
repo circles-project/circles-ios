@@ -353,4 +353,43 @@ class MatrixAPI {
     func roomSetTopic(roomId: RoomId, topic: String) async throws {
         let _ = try await sendStateEvent(to: roomId, type: .mRoomTopic, content: ["topic": topic])
     }
+    
+    // https://spec.matrix.org/v1.2/client-server-api/#get_matrixclientv3roomsroomidmessages
+    // Good news!  `from` is no longer required as of v1.3 (June 2022),
+    // so we no longer have to call /sync before fetching messages.
+    func roomGetMessages(roomId: RoomId,
+                         forward: Bool = false,
+                         from: String? = nil,
+                         limit: Int? = 25
+    ) async throws -> [ClientEvent] {
+        let path = "/_matrix/client/\(version)/rooms/\(roomId)/messages"
+        struct RequestBody: Codable {
+            enum Direction: String, Codable {
+                case forward = "f"
+                case backward = "b"
+            }
+            var dir: Direction
+            var filter: String?
+            var from: String?
+            var limit: Int?
+            var to: String?
+        }
+        let body = RequestBody(dir: forward ? .forward : .backward, from: from, limit: limit)
+        let (data, response) = try await call(method: "GET", path: path, body: body)
+        
+        struct ResponseBody: Codable {
+            var chunk: [ClientEvent]
+            var end: String?
+            var start: String
+            var state: [ClientEvent]?
+        }
+        
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        
+        let responseBody = try decoder.decode(ResponseBody.self, from: data)
+        
+        return responseBody.chunk
+        
+    }
 }
