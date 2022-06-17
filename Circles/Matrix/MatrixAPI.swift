@@ -390,6 +390,24 @@ class MatrixAPI {
         let responseBody = try decoder.decode(ResponseBody.self, from: data)
         
         return responseBody.chunk
+    }
+    
+    // https://spec.matrix.org/v1.2/client-server-api/#get_matrixclientv3roomsroomidjoined_members
+    func roomGetJoinedMembers(roomId: RoomId) async throws -> [UserId] {
+        let path = "/_matrix/client/\(version)/rooms/\(roomId)/joined_members"
+        let (data, response) = try await call(method: "GET", path: path)
         
+        
+        struct RoomMember: Codable {
+            var avatarUrl: String
+            var displayName: String
+        }
+        typealias ResponseBody = [UserId: RoomMember]
+        
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        let responseBody = try decoder.decode(ResponseBody.self, from: data)
+        let users = [UserId](responseBody.keys)
+        return users
     }
 }
