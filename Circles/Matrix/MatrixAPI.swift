@@ -182,6 +182,28 @@ class MatrixAPI {
         return responseBody.contentUri
     }
     
+    // https://spec.matrix.org/v1.2/client-server-api/#get_matrixclientv3joined_rooms
+    func getJoinedRooms() async throws -> [RoomId] {
+        
+        let (data, response) = try await call(method: "GET", path: "/_matrix/client/\(version)/joined_rooms")
+        
+        struct ResponseBody: Codable {
+            var joinedRooms: [RoomId]
+        }
+        
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+
+        guard let responseBody = try? decoder.decode(ResponseBody.self, from: data)
+        else {
+            let msg = "Failed to decode list of joined rooms"
+            print("GETJOINEDROOMS\t\(msg)")
+            throw Matrix.Error(msg)
+        }
+        
+        return responseBody.joinedRooms
+    }
+    
     // https://spec.matrix.org/v1.2/client-server-api/#post_matrixclientv3createroom
     func createRoom(name: String,
                     type: String? = nil,
