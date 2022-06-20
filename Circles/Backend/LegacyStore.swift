@@ -128,57 +128,6 @@ class LegacyStore: ObservableObject {
 
     }
 
-    /*
-    private func _fetchWellKnown(for domain: String, completion: @escaping (MXResponse<MatrixWellKnown>) -> Void) {
-        print("WELLKNOWN\tFetching well-known server info for domain [\(domain)]")
-        guard let url = URL(string: "https://\(domain)/.well-known/matrix/client") else {
-            let msg = "Couldn't construct well-known URL"
-            print("WELLKNOWN\t\(msg)")
-            completion(.failure(KSError(message: msg)))
-            return
-        }
-        print("WELLKNOWN\tURL is \(url)")
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.cachePolicy = .reloadIgnoringLocalCacheData
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                print("WELLKNOWN\tFailed to fetch well-known URL")
-                completion(.failure(error))
-                return
-            }
-            guard let httpResponse = response as? HTTPURLResponse else {
-                let msg = "Couldn't decode HTTP response"
-                let err = KSError(message: msg)
-                print("WELLKNOWN\t\(msg)")
-                completion(.failure(err))
-                return
-            }
-            guard httpResponse.statusCode == 200 else {
-                let msg = "WELLKNOWN\tHTTP request failed"
-                let err = KSError(message: msg)
-                print("WELLKNOWN\t\(msg)")
-                completion(.failure(err))
-                return
-            }
-            let decoder = JSONDecoder()
-            //decoder.keyDecodingStrategy = .convertFromSnakeCase
-            let stuff = String(data: data!, encoding: .utf8)!
-            print("WELLKNOWN\tGot response data:\n\(stuff)")
-            guard let wellKnown = try? decoder.decode(MatrixWellKnown.self, from: data!) else {
-                let msg = "Couldn't decode response data"
-                let err = KSError(message: msg)
-                print("WELLKNOWN\t\(msg)")
-                completion(.failure(err))
-                return
-            }
-            print("WELLKNOWN\tSuccess!")
-            completion(.success(wellKnown))
-        }
-        task.resume()
-    }
-    */
-
     func setupListeners() {
         // Update 10/26/2020 -- HOWEVER, we need to be careful how we do this.
         // The MXSession comes from crufty old ObjC code.  For integration
