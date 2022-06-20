@@ -29,6 +29,7 @@ class MatrixAPI {
             "Authorization": "Bearer \(creds.accessToken)",
         ]
         apiConfig.requestCachePolicy = .reloadIgnoringLocalCacheData
+        apiConfig.httpMaximumConnectionsPerHost = 4 // Default is 6 but we're getting some 429's from Synapse...
         self.apiUrlSession = URLSession(configuration: apiConfig)
         
         let mediaConfig = URLSessionConfiguration.default
@@ -49,6 +50,7 @@ class MatrixAPI {
     }
     
     func call(method: String, path: String, body: Codable? = nil, expectedStatuses: [Int] = [200]) async throws -> (Data, HTTPURLResponse) {
+        print("APICALL\tCalling \(method) \(path)")
         let url = URL(string: path, relativeTo: baseUrl)!
         var request = URLRequest(url: url)
         request.httpMethod = method
@@ -56,18 +58,48 @@ class MatrixAPI {
         if let codableBody = body {
             let encoder = JSONEncoder()
             encoder.keyEncodingStrategy = .convertToSnakeCase
-            request.httpBody = try encoder.encode(AnyCodable(codableBody))
+            let encodedBody = try encoder.encode(AnyCodable(codableBody))
+            print("APICALL\tRaw request body = \n\(String(decoding: encodedBody, as: UTF8.self))")
+            request.httpBody = encodedBody
         }
         
-        let (data, response) = try await apiUrlSession.data(for: request)
+               
+        var slowDown = true
+        var delay: UInt64 = 2_000_000_000
+        var count = 0
         
-        guard let httpResponse = response as? HTTPURLResponse,
-              expectedStatuses.contains(httpResponse.statusCode)
-        else {
-            throw Matrix.Error("Matrix API call rejected")
-        }
+        repeat {
+            let (data, response) = try await apiUrlSession.data(for: request)
+            
+            guard let httpResponse = response as? HTTPURLResponse
+            else {
+                let msg = "Couldn't handle HTTP response"
+                print("APICALL\t\(msg)")
+                throw Matrix.Error(msg)
+            }
+            
+            if httpResponse.statusCode == 429 {
+                slowDown = true
+                print("APICALL\tGot 429 error...  Waiting \(delay) nanosecs and then retrying")
+                try await Task.sleep(nanoseconds: delay)
+                delay *= 2
+                count += 1
+            } else {
+                slowDown = false
+                guard expectedStatuses.contains(httpResponse.statusCode)
+                else {
+                    let msg = "Matrix API call rejected with status \(httpResponse.statusCode)"
+                    print("APICALL\t\(msg)")
+                    throw Matrix.Error(msg)
+                }
+                print("APICALL\tGot response with status \(httpResponse.statusCode)")
+                
+                return (data, httpResponse)
+            }
+            
+        } while slowDown && count < 5
         
-        return (data, httpResponse)
+        throw Matrix.Error("API call failed")
     }
     
     // https://spec.matrix.org/v1.2/client-server-api/#put_matrixclientv3profileuseriddisplayname
@@ -122,6 +154,7 @@ class MatrixAPI {
         
         let url = URL(string: "/_matrix/media/\(version)/upload", relativeTo: baseUrl)!
         var request = URLRequest(url: url)
+        request.httpMethod = "POST"
         request.setValue(contentType, forHTTPHeaderField: "Content-Type")
         
         let (responseData, response) = try await mediaUrlSession.upload(for: request, from: data)
@@ -156,6 +189,7 @@ class MatrixAPI {
                     invite userIds: [String] = [],
                     direct: Bool = false
     ) async throws -> RoomId {
+        print("CREATEROOM\tCreating room with name=[\(name)] and type=[\(type ?? "(none)")]")
         
         struct CreateRoomRequestBody: Codable {
             var creation_content: [String: String] = [:]
@@ -193,11 +227,11 @@ class MatrixAPI {
                     try Matrix.encodeEventContent(content: content, of: type, to: encoder)
                 }
             }
-            var initial_state: [StateEvent] = []
-            var invite: [String] = []
-            var invite_3pid: [String] = []
+            var initial_state: [StateEvent]?
+            var invite: [String]?
+            var invite_3pid: [String]?
             var is_direct: Bool = false
-            var name: String
+            var name: String?
             enum Preset: String, Codable {
                 case private_chat
                 case public_chat
@@ -205,7 +239,7 @@ class MatrixAPI {
             }
             var preset: Preset = .private_chat
             var room_alias_name: String?
-            var room_version: Int = 7
+            var room_version: String = "7"
             var topic: String?
             enum Visibility: String, Codable {
                 case pub = "public"
@@ -230,9 +264,11 @@ class MatrixAPI {
         }
         let requestBody = CreateRoomRequestBody(name: name, type: type, encrypted: encrypted)
         
+        print("CREATEROOM\tSending Matrix API request...")
         let (data, response) = try await call(method: "POST",
                                     path: "/_matrix/client/\(version)/createRoom",
                                     body: requestBody)
+        print("CREATEROOM\tGot Matrix API response")
         
         struct CreateRoomResponseBody: Codable {
             var roomId: String
@@ -250,6 +286,7 @@ class MatrixAPI {
     }
     
     func createSpace(name: String) async throws -> RoomId {
+        print("CREATESPACE\tCreating space with name [\(name)]")
         let roomId = try await createRoom(name: name, type: "m.space", encrypted: false)
         return roomId
     }
@@ -259,6 +296,7 @@ class MatrixAPI {
                         content: Codable,
                         stateKey: String = ""
     ) async throws -> String {
+        print("SENDSTATE\tSending state event of type [\(type.rawValue)] to room [\(roomId)]")
         
         let (data, response) = try await call(method: "PUT",
                                               path: "/_matrix/client/\(version)/rooms/\(roomId)/state/\(type)/\(stateKey)",
@@ -279,6 +317,7 @@ class MatrixAPI {
     }
 
     func spaceAddChild(_ child: RoomId, to parent: RoomId) async throws {
+        print("ADDCHILD\tAdding [\(child)] as a child space of [\(parent)]")
         let servers = Array(Set([child.domain, parent.domain]))
         let order = (0x20 ... 0x7e).randomElement()?.description ?? "A"
         let content = SpaceChildContent(order: order, via: servers)
