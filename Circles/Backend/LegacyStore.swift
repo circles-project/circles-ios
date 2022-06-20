@@ -590,7 +590,7 @@ extension LegacyStore: MatrixInterface {
 
         if keygenMethod == MatrixSecrets.KeygenMethod.fromTwoPasswords.rawValue {
             // Easy version.  Just use the raw passwords.
-            restClient.changePassword(from: oldPassword, to: newPassword, completion: completion)
+            restClient.changePassword(from: oldPassword, to: newPassword, logoutDevices: false, completion: completion)
         } else {
             // If we're here, then we need to hash the passwords before we can use them
             guard let oldSecrets = self.generateSecretsFromSinglePassword(userId: userId, password: oldPassword),
@@ -602,7 +602,7 @@ extension LegacyStore: MatrixInterface {
                 completion(.failure(err))
                 return
             }
-            restClient.changePassword(from: oldSecrets.loginPassword, to: newSecrets.loginPassword, completion: completion)
+            restClient.changePassword(from: oldSecrets.loginPassword, to: newSecrets.loginPassword, logoutDevices: false, completion: completion)
         }
     }
 
@@ -2046,7 +2046,7 @@ extension LegacyStore: MatrixInterface {
             .myUser
             .setPresence(
                 //MXPresenceUnknown,
-                MXPresenceOnline,
+                .online,
                 andStatusMessage: message,
                 success: {
                     let user = self.me()
