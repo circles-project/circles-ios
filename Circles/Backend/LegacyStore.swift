@@ -796,166 +796,6 @@ extension LegacyStore: MatrixInterface {
         )
     }
     
-    /*
-    func login(username: String, rawPassword: String, s4Password: String? = nil, completion: @escaping (MXResponse<Void>) -> Void) {
-        print("in login()")
-
-        // Check: Are we already logged in?
-        switch(self.session.state) {
-        case MXSessionState.closed:
-            
-            // We need the user's domain in order to look up the homeserver from the .well-known URL
-            guard let userDomain = getDomainFromUserId(username) ?? kombuchaDomain
-            else {
-                let msg = "Failed to determine domain for username [\(username)]"
-                print("LOGIN\t\(msg)")
-                let err = KSError(message: msg)
-                completion(.failure(err))
-                return
-            }
-
-            _fetchWellKnown(for: userDomain) { wellKnownResponse in
-                guard case let .success(wellKnownInfo) = wellKnownResponse,
-                      let hsURL = URL(string: wellKnownInfo.homeserver.base_url)
-                else {
-                    let msg = "Failed to look up well-known homeserver info for domain \(userDomain)"
-                    print("LOGIN\t\(msg))")
-                    let err = KSError(message: msg)
-                    completion(.failure(err))
-                    return
-                }
-
-                self.loginMxRc = MXRestClient(homeServer: hsURL,
-                                              unrecognizedCertificateHandler: nil)
-
-                // FIXME Only do this if we're using a single password
-                //       for both login and SSSS
-                // Actually - We should still use the "secrets" struct
-                // If we have two passwords, we should just generate it differently
-                //   - .loginPassword is just the "raw" password from the user
-                //   - .secretKey is generated from the special SSSS password
-                let keygenMethod: MatrixSecrets.KeygenMethod = s4Password == nil ? .fromSinglePassword : .fromTwoPasswords
-                var secrets: MatrixSecrets?
-
-                if keygenMethod == .fromSinglePassword {
-                    secrets = self.generateSecretsFromSinglePassword(userId: username, password: rawPassword)
-                    if secrets == nil {
-                        let msg = "Failed to generate secrets from username and password(s)"
-                        print(msg)
-                        completion(.failure(KSError(message: msg)))
-                        return
-                    }
-                }
-
-                var params: [String:Any] = [:]
-                params["type"] = "m.login.password"
-                params["identifier"] = ["type" : "m.id.user"]
-                params["user"] = username
-                params["password"] = secrets?.loginPassword ?? rawPassword // Use the bcrypt password if we generated one; Otherwise fall back to using the raw password
-                if let saved_device_id = UserDefaults.standard.string(forKey: "device_id[\(username)]") {
-                    params["device_id"] = saved_device_id
-                    print("LOGIN\tUsing existing deviceId [\(saved_device_id)]")
-                } else {
-                    print("LOGIN\tNo saved deviceId")
-                }
-                params["initial_device_display_name"] = "Circles (\(UIDevice.current.model))"
-
-                self.loginMxRc!.login(parameters: params) { response in
-                    print("LOGIN\tGot login response")
-                    switch(response) {
-                    case .failure(let err):
-                        print("LOGIN\tFailed: \(err)")
-                        completion(.failure(err))
-                    case .success(let creds):
-                        print("LOGIN\tLogged in")
-                        // Validate the credentials that we received
-                        guard let user_id = creds["user_id"] as? String,
-                              let access_token = creds["access_token"] as? String,
-                              let device_id = creds["device_id"] as? String
-                        else {
-                            let msg = "LOGIN\tLogged in but some creds are bogus"
-                            print(msg)
-                            let error = KSError(message: msg)
-                            completion(.failure(error))
-                            return
-                        }
-
-                        // Print credentials for debugging
-                        print("LOGIN\tGot user id = \(user_id)")
-                        print("LOGIN\tGot device id = \(device_id)")
-                        print("LOGIN\tGot access token = \(access_token)")
-
-                        var newCreds = MXCredentials()
-                        newCreds.userId = user_id
-                        newCreds.accessToken = access_token
-                        newCreds.deviceId = device_id
-                        newCreds.homeServer = hsURL.absoluteString
-
-                        // Save credentials in case the app is closed and re-started
-                        let defaults = UserDefaults.standard
-                        defaults.set(user_id, forKey: "user_id")
-                        defaults.set(device_id, forKey: "device_id[\(user_id)]")
-                        defaults.set(access_token, forKey: "access_token[\(user_id)]")
-                        // Also remember how we handle the user's raw password
-                        //   - eg Do we need to hash it before we use it for UIAA?
-                        defaults.set(keygenMethod.rawValue, forKey: "keygen_method[\(user_id)]")
-
-                        // Also save a copy of the device_id for the plain username.
-                        // This way, we'll be able to retrieve it next time even if the user doesn't
-                        // type in their full Matrix user ID
-
-                        if user_id != username {
-                            defaults.set(device_id, forKey: "device_id[\(username)]")
-                        }
-                        print("Saved credentials to UserDefaults")
-
-                        // Connect to the Matrix backend and go live
-                        self.sessionMxRc = MXRestClient(credentials: newCreds, unrecognizedCertificateHandler: nil)
-                        self.connect(restclient: self.sessionMxRc!) {
-                            // Now we can run anything that needs the running session and/or the crypto interface AND the password
-
-                            self.setupCrossSigning(password: secrets?.loginPassword ?? rawPassword)
-
-
-                            if let singlePasswordSecrets = secrets {
-                                UserDefaults.standard.set(singlePasswordSecrets.secretKey, forKey: "privateKey[\(user_id)]")
-                                UserDefaults.standard.set(singlePasswordSecrets.secretKey, forKey: "recoverySecretKey[\(user_id)]")
-                                self.recoverySecretKey = singlePasswordSecrets.secretKey
-                                self.setupRecovery(secrets: singlePasswordSecrets)
-                            } else {
-                                self.generateSecretsFromTwoPasswords(userId: user_id, loginPassword: rawPassword, s4Password: s4Password!) { secretsResponse in
-
-                                    switch secretsResponse {
-                                    case .failure(let err):
-                                        print("LOGIN\tFailed to generate secrets")
-                                    case .success(let twoPasswordSecrets):
-                                        UserDefaults.standard.set(twoPasswordSecrets.secretKey, forKey: "privateKey[\(user_id)]")
-                                        UserDefaults.standard.set(twoPasswordSecrets.secretKey, forKey: "recoverySecretKey[\(user_id)]")
-                                        self.recoverySecretKey = twoPasswordSecrets.secretKey
-                                        self.setupRecovery(secrets: twoPasswordSecrets)
-                                    }
-                                }
-                            }
-
-                            completion(.success(()))
-
-                        }
-                    }
-                }
-            }
-
-        default:
-            let msg = "In the wrong state... Not actually loggin in..."
-            print(msg)
-            let error = KSError(message: msg)
-            completion(.failure(error))
-            // Do nothing, we're already logged in
-            // FIXME What if we're logged in **as somebody else**?
-            break
-        }
-        print("Leaving login()")
-    }
-    */
     
     func setupRecovery(key: Data) {
         guard let crypto = self.session.crypto,
@@ -1569,36 +1409,6 @@ extension LegacyStore: MatrixInterface {
             case .success(let mxCreateRoomResponse):
                 print("CREATEROOM\tCreated new room")
                 self.objectWillChange.send()
-                /* // Already handled the encryption at creation time :)
-                if !insecure {
-                    if let roomId = mxCreateRoomResponse.roomId {
-                        let encryptionParams = [
-                            "algorithm": "m.megolm.v1.aes-sha2",
-                            "rotation_period_ms": "604800000",
-                            "rotation_period_msgs": "100"
-                        ]
-                        print("CREATEROOM\tSending room encryption event")
-                        restClient.sendEvent(toRoom: roomId, eventType: .roomEncryption, content: encryptionParams, txnId: nil) { response2 in
-                            switch response2 {
-                            case .success(let _):
-                                print("CREATEROOM\tSuccess!  Room is now encrypted.")
-                                completion(.success(roomId))
-                            case .failure(let err):
-                                print("CREATEROOM\tFailed to encrypt room: \(err)")
-                                completion(.failure(err))
-                            }
-                        }
-                    } else {
-                        let msg = "Failed to get new room id for [\(name)]"
-                        print("CREATEROOM\t\(msg)")
-                        completion(.failure(KSError(message: msg)))
-                    }
-                }
-                else {
-                    print("CREATEROOM\tCreated insecure room for [\(name)]")
-                    completion(.success(mxCreateRoomResponse.roomId))
-                }
-                */
                 guard let roomId = mxCreateRoomResponse.roomId else {
                     let msg = "Couldn't get id for new room"
                     print("CREATEROOM\t\(msg)")
@@ -1787,6 +1597,7 @@ extension LegacyStore: MatrixInterface {
         }
     }
     
+    /*
     func matrixApiCall(method: String, endpoint: String, body: Data?, contentType: String? = nil, completion: @escaping (Result<(HTTPURLResponse,Data?),MatrixError>)->Void) {
         let url = URL(string: endpoint, relativeTo: self.homeserver)!
         var request = URLRequest(url: url)
@@ -1820,6 +1631,7 @@ extension LegacyStore: MatrixInterface {
         }
         task.resume()
     }
+    */
     
     func uploadImage(image original: UIImage, completion: @escaping (MXProgress<URL>) -> Void) {
         var smallImage: UIImage?
@@ -1872,30 +1684,6 @@ extension LegacyStore: MatrixInterface {
                 print("Progress: New avatar upload is \(100 * progress.fractionCompleted)% complete")
                 break
             case .success(let url):
-                // 2020-11-18
-                // I wonder if we're doing something wrong here.
-                // Setting other profile info goes through session.myuser
-                // Hmmm what if we tried that instead?
-                //self.session.matrixRestClient.setAvatarUrl(url, completion: completion)
-                // cvw: What was I thinking above?  Was the restClient just not working?
-                //      This alternative version looks horrible in comparison to the one-liner above
-                /*
-                self
-                    .session
-                    .myUser
-                    .setAvatarUrl(
-                        url.absoluteString,
-                        success: {
-                            print("Successfully set avatar URL")
-                            self.me().objectWillChange.send()
-                            completion(.success(url))
-                        },
-                        failure: {error in
-                            print("Failed to set avatar URL: \(error)")
-                            completion(.failure(error!))
-                        }
-                    )
-                */
                 // And now we need to support setting our first avatar
                 // before we've even logged in for the fist time.
                 // (post-signup)
@@ -1955,35 +1743,6 @@ extension LegacyStore: MatrixInterface {
             //self.session.matrixRestClient.setDisplayName(name, completion: completion)
         }
         
-        /*
-        guard let userId = self.userId else {
-            let msg = "Can't set displayname when we don't have a user ID"
-            let err = KSError(message: msg)
-            completion(.failure(err))
-        }
-        let body = """
-        {
-        "displayname": "\(name)"
-        }
-        """
-            .replacingOccurrences(of: "\n", with: "")
-            .data(using: .utf8)
-        let apiVersion = "r0"
-        self.matrixApiCall(method: "PUT", endpoint: "_matrix/client/\(apiVersion)/profile/\(userId)/displayname", body: body) { response in
-            switch response {
-            case .success(let (httpResponse, responseData)):
-                if httpResponse.statusCode == 200 {
-                    completion(.success(name))
-                } else {
-                    let msg = "Failed to set display name"
-                    let err = KSError(message: msg)
-                    completion(.failure(err))
-                }
-            case .failure(let matrixError):
-                completion(.failure(matrixError))
-            }
-        }
-        */
     }
     
     func setStatusMessage(message: String, completion: @escaping (MXResponse<String>) -> Void) {
