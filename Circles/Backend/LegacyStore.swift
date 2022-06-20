@@ -36,7 +36,6 @@ class LegacyStore: ObservableObject {
     // New approach (Oct 2020) -- Let the MXSession hold the one
     // authoritative copy of all of its state.  Why duplicate extra work?
     var session: MXSession
-    var loginMxRc: MXRestClient?
     var sessionMxRc: MXRestClient?
     var signupMxRc: MXRestClient?
 
@@ -96,7 +95,6 @@ class LegacyStore: ObservableObject {
         logConf.logLevel = .debug
         MXLog.configure(logConf)
 
-        self.loginMxRc = nil
         self.sessionMxRc = nil
         self.session = MXSession()
         self.sessionState = .closed
@@ -115,7 +113,6 @@ class LegacyStore: ObservableObject {
         mxCreds.deviceId = creds.deviceId
 
         self.sessionMxRc = MXRestClient(credentials: mxCreds, unrecognizedCertificateHandler: nil)
-        self.loginMxRc = self.sessionMxRc
 
         self.connect(restclient: self.sessionMxRc!) {
             print("STORE\tBack from connect()")
@@ -1352,7 +1349,6 @@ extension LegacyStore: MatrixInterface {
                 // Connection(s) to the homeserver
                 self.signupMxRc = nil
                 self.sessionMxRc = nil
-                self.loginMxRc = nil
         //self.session.close()
                 print("Logout was successful")
         /*
