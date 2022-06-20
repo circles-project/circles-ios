@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct AvatarForm: View {
-    var matrix: MatrixInterface
-    @Binding var pseudoFlow: UIAA.Flow
+    var session: SetupSession
 
+    @State var displayName = ""
     @State var avatarImage: UIImage?
     @State var showPicker = false
     @State var pickerSourceType: UIImagePickerController.SourceType = .photoLibrary
@@ -61,16 +61,12 @@ struct AvatarForm: View {
 
             Spacer()
 
-            Button(action: {
-                // Upload the image and set it as our avatar
-                if let img = self.avatarImage {
-                    self.pending = true
-                    self.matrix.setAvatarImage(image: img) { response in
-                        if response.isSuccess {
-                            //self.stage = next[currentStage]!
-                            pseudoFlow.pop(stage: self.stage)
-                        }
-                        self.pending = false
+            AsyncButton(action: {
+                if let image = avatarImage {
+                    do {
+                        try await session.setupProfile(name: displayName, avatar: image)
+                    } catch {
+                        
                     }
                 }
             }) {
@@ -81,7 +77,7 @@ struct AvatarForm: View {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
-            .disabled(pending)
+            .disabled(avatarImage == nil)
 
         }
         .sheet(isPresented: $showPicker) {

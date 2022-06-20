@@ -48,8 +48,8 @@ struct ContentView: View {
         case .signingUp(let signupSession):
             SignupScreen(session: signupSession, store: store)
         
-        case .settingUp(let creds):
-            SetupScreen(creds: creds, store: store)
+        case .settingUp(let setupSession):
+            SetupScreen(session: setupSession, store: store)
             
         case .loggingIn(let loginSession):
             LoginScreen(session: loginSession)

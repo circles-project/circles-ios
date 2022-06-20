@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct SetupCircleCard: View {
-    var matrix: MatrixInterface
+    var session: SetupSession
     var circleName: String
     var userDisplayName: String
     

@@ -20,7 +20,7 @@ public class CirclesStore: ObservableObject {
         case haveCreds(MatrixCredentials)
         case online(LegacyStore)
         case signingUp(SignupSession)
-        case settingUp(MatrixCredentials) // or should this be (MatrixInterface) ???
+        case settingUp(SetupSession) // or should this be (MatrixInterface) ???
     }
     @Published var state: State
     
@@ -184,9 +184,21 @@ public class CirclesStore: ObservableObject {
         }
     }
     
-    func beginSetup(creds: MatrixCredentials) async throws {
+    func beginSetup(creds: MatrixCredentials, displayName: String) async throws {
+        
+        var fullCreds = creds
+        
+        if fullCreds.wellKnown == nil {
+            guard let domain = getDomainFromUserId(creds.userId) ?? ourDomain
+            else {
+                throw CirclesError("Couldn't get domain for user id [\(creds.userId)]")
+            }
+            fullCreds.wellKnown = try await fetchWellKnown(for: domain)
+        }
+        
+        let session = try SetupSession(creds: fullCreds, store: self, displayName: displayName)
         await MainActor.run {
-            self.state = .settingUp(creds)
+            self.state = .settingUp(session)
         }
     }
     

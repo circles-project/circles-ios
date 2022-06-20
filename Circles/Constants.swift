@@ -27,7 +27,7 @@ let EVENT_TYPE_ROOMTYPE = "social.kombucha.room_type"
 
 //let ROOM_TYPE_CIRCLE = APP_PREFIX + ".circle"
 //let ROOM_TYPE_GROUP = APP_PREFIX + ".group"
-//let ROOM_TYPE_CHAT = APP_PREFIX + ".chat"
+let ROOM_TYPE_CHAT = APP_PREFIX + ".chat"
 //let ROOM_TYPE_PHOTOS = APP_PREFIX + ".photos"
 let ROOM_TYPE_CIRCLE = "m.social.timeline"
 let ROOM_TYPE_GROUP = "m.social.group"

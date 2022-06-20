@@ -8,12 +8,8 @@
 import SwiftUI
 
 struct AllDoneForm: View {
-    var matrix: MatrixInterface
+    var store: CirclesStore
     let userId: String
-    @Binding var uiaaState: UIAA.SessionState?
-    //@Binding var selectedScreen: LoggedOutScreen.Screen
-
-    //@Binding var userId: String?
 
     @State var pending = false
 
@@ -35,14 +31,12 @@ struct AllDoneForm: View {
 
             Spacer()
 
-            Button(action: {
-                //self.selectedScreen = .login
-                self.pending = true
-                //matrix.finishSignupAndConnect()
-                //self.selectedScreen = .login
-
-                // Nuke our UIAA session state, which will send the UI back to the login screen
-                uiaaState = nil
+            AsyncButton(action: {
+                do {
+                    try await store.disconnect()
+                } catch {
+                    
+                }
             }) {
                 Text("Next: Log in")
                     .padding()
@@ -51,7 +45,6 @@ struct AllDoneForm: View {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
-            .disabled(pending)
 
 
             Spacer()

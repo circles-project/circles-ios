@@ -91,11 +91,12 @@ struct SignupScreen: View {
                 }
                 
             case .finished(let creds):
+                Spacer()
                 Text("Successfully signed up!")
                     .font(.headline)
                 AsyncButton(action: {
                     do {
-                        try await store.beginSetup(creds: creds)
+                        try await store.beginSetup(creds: creds, displayName: accountInfo.displayName)
                     } catch {
                         
                     }
@@ -107,6 +108,7 @@ struct SignupScreen: View {
                         .background(Color.accentColor)
                         .cornerRadius(10)
                 }
+                Spacer()
             }
         }
         Spacer()

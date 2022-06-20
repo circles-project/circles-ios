@@ -12,6 +12,7 @@ class SetupSession: ObservableObject {
     var creds: MatrixCredentials
     var store: CirclesStore
     var api: MatrixAPI
+    var displayName: String
     
     enum State {
         case profile
@@ -20,10 +21,11 @@ class SetupSession: ObservableObject {
     }
     @Published var state: State
     
-    init(creds: MatrixCredentials, store: CirclesStore) throws {
+    init(creds: MatrixCredentials, store: CirclesStore, displayName: String) throws {
         self.creds = creds
         self.store = store
         self.api = try MatrixAPI(creds: creds)
+        self.displayName = displayName
         self.state = .profile
     }
     
@@ -42,21 +44,25 @@ class SetupSession: ObservableObject {
     
     func setupCircles(_ circles: [CircleInfo]) async throws {
         print("Creating Spaces hierarchy for Circles rooms")
-        async let topLevelSpace = api.createSpace(name: "Circles")
-        async let myCircles = api.createSpace(name: "My Circles")
-        async let myGroups = api.createSpace(name: "My Groups")
-        async let myGalleries = api.createSpace(name: "My Photo Galleries")
+        print("- Creating Space rooms")
+        let topLevelSpace = try await api.createSpace(name: "Circles")
+        let myCircles = try await api.createSpace(name: "My Circles")
+        let myGroups = try await api.createSpace(name: "My Groups")
+        let myGalleries = try await api.createSpace(name: "My Photo Galleries")
+        
+        print("- Adding Space child relationships")
         
         try await api.spaceAddChild(myCircles, to: topLevelSpace)
         try await api.spaceAddChild(myGroups, to: topLevelSpace)
         try await api.spaceAddChild(myGalleries, to: topLevelSpace)
         
+        print("- Adding tag to top-level space")
         try await api.roomAddTag(roomId: topLevelSpace, tag: ROOM_TAG_CIRCLES_SPACE_ROOT)
         
         for circle in circles {
             print("Creating circle [\(circle.name)]")
-            async let circleRoom = api.createSpace(name: circle.name)
-            async let wallRoom = api.createRoom(name: circle.name, type: ROOM_TYPE_CIRCLE)
+            let circleRoom = try await api.createSpace(name: circle.name)
+            let wallRoom = try await api.createRoom(name: circle.name, type: ROOM_TYPE_CIRCLE)
             try await api.spaceAddChild(wallRoom, to: circleRoom)
             try await api.spaceAddChild(circleRoom, to: myCircles)
         }
