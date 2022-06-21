@@ -30,8 +30,8 @@ class SetupSession: ObservableObject {
     }
     
     func setupProfile(name: String, avatar: UIImage) async throws {
-        try await api.setDisplayName(name)
-        try await api.setAvatarImage(avatar)
+        try await api.setMyDisplayName(name)
+        try await api.setMyAvatarImage(avatar)
         await MainActor.run {
             self.state = .circles
         }
@@ -52,19 +52,19 @@ class SetupSession: ObservableObject {
         
         print("- Adding Space child relationships")
         
-        try await api.spaceAddChild(myCircles, to: topLevelSpace)
-        try await api.spaceAddChild(myGroups, to: topLevelSpace)
-        try await api.spaceAddChild(myGalleries, to: topLevelSpace)
+        try await api.addSpaceChild(myCircles, to: topLevelSpace)
+        try await api.addSpaceChild(myGroups, to: topLevelSpace)
+        try await api.addSpaceChild(myGalleries, to: topLevelSpace)
         
         print("- Adding tag to top-level space")
-        try await api.roomAddTag(roomId: topLevelSpace, tag: ROOM_TAG_CIRCLES_SPACE_ROOT)
+        try await api.addTag(roomId: topLevelSpace, tag: ROOM_TAG_CIRCLES_SPACE_ROOT)
         
         for circle in circles {
             print("Creating circle [\(circle.name)]")
             let circleRoom = try await api.createSpace(name: circle.name)
             let wallRoom = try await api.createRoom(name: circle.name, type: ROOM_TYPE_CIRCLE)
-            try await api.spaceAddChild(wallRoom, to: circleRoom)
-            try await api.spaceAddChild(circleRoom, to: myCircles)
+            try await api.addSpaceChild(wallRoom, to: circleRoom)
+            try await api.addSpaceChild(circleRoom, to: myCircles)
         }
         
         await MainActor.run {
