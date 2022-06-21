@@ -10,5 +10,5 @@ import Foundation
 struct SpaceChildContent: Codable {
     var order: String?
     var suggested: Bool?
-    var via: [String]
+    var via: [String]?
 }
