@@ -550,4 +550,92 @@ class MatrixAPI {
     func roomGetPowerLevels(roomId: RoomId) async throws -> [String: Int] {
         throw Matrix.Error("Not implemented")
     }
+    
+    // MARK: User profiles
+    
+    func userGetDisplayName(userId: UserId) async throws -> String? {
+        let path = "/_matrix/client/\(version)/profile/\(userId)/displayname"
+        let (data, response) = try await call(method: "GET", path: path)
+        
+        struct ResponseBody: Codable {
+            var displayname: String?
+        }
+        
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        
+        guard let responseBody = try? decoder.decode(ResponseBody.self, from: data)
+        else {
+            return nil
+        }
+        
+        return responseBody.displayname
+    }
+    
+    // https://spec.matrix.org/v1.2/client-server-api/#get_matrixclientv3profileuseridavatar_url
+    func userGetAvatarUrl(userId: UserId) async throws -> String? {
+        let path = "/_matrix/client/\(version)/profile/\(userId)/avatar_url"
+        let (data, response) = try await call(method: "GET", path: path)
+        
+        struct ResponseBody: Codable {
+            var avatarUrl: String?
+        }
+        
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        
+        guard let responseBody = try? decoder.decode(ResponseBody.self, from: data)
+        else {
+            return nil
+        }
+        
+        return responseBody.avatarUrl
+    }
+    
+    func userGetAvatarImage(userId: UserId) async throws -> UIImage? {
+        
+        
+        // Download the bytes from the given uri
+        guard let uri = try await userGetAvatarUrl(userId: userId)
+        else {
+            let msg = "Couldn't get mxc:// URI"
+            print("USER\t\(msg)")
+            throw Matrix.Error(msg)
+        }
+        guard let mxc = MXC(uri)
+        else {
+            let msg = "Invalid mxc:// URI"
+            print("USER\t\(msg)")
+            throw Matrix.Error(msg)
+        }
+        
+        let data = try await mediaDownload(mxc: mxc)
+        
+        // Create a UIImage
+        let image = UIImage(data: data)
+        
+        // return the UIImage
+        return image
+    }
+    
+    // MARK: Media API
+    
+    func mediaDownload(mxc: MXC) async throws -> Data {
+        let path = "/_matrix/media/\(version)/download/\(mxc.serverName)/\(mxc.mediaId)"
+        
+        let url = URL(string: path, relativeTo: baseUrl)!
+        let request = URLRequest(url: url)
+        
+        let (data, response) = try await mediaUrlSession.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse,
+              httpResponse.statusCode == 200
+        else {
+            let msg = "Failed to download media"
+            print("DOWNLOAD\t\(msg)")
+            throw Matrix.Error(msg)
+        }
+        
+        return data
+    }
 }
