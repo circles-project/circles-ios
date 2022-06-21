@@ -103,7 +103,7 @@ class MatrixAPI {
     }
     
     // https://spec.matrix.org/v1.2/client-server-api/#put_matrixclientv3profileuseriddisplayname
-    func setDisplayName(_ name: String) async throws {
+    func setMyDisplayName(_ name: String) async throws {
         let (_, _) = try await call(method: "PUT",
                                               path: "/_matrix/client/\(version)/profile/\(creds.userId)/displayname",
                                               body: [
@@ -560,7 +560,7 @@ class MatrixAPI {
             throw Matrix.Error(msg)
         }
         
-        let data = try await downloadMediaData(mxc: mxc)
+        let data = try await downloadData(mxc: mxc)
         
         // Create a UIImage
         let image = UIImage(data: data)
