@@ -484,6 +484,69 @@ class MatrixAPI {
         return events
     }
     
+    func roomInviteUser(roomId: RoomId, userId: UserId, reason: String? = nil) async throws {
+        let path = "/_matrix/client/\(version)/rooms/\(roomId)/invite"
+        let (data, response) = try await call(method: "POST",
+                                              path: path,
+                                              body: [
+                                                "user_id": "\(userId)",
+                                                "reason": reason
+                                              ])
+        // FIXME: Parse and handle any Matrix 400 or 403 errors
+    }
+    
+    func roomKickUser(roomId: RoomId, userId: UserId, reason: String? = nil) async throws {
+        let path = "/_matrix/client/\(version)/rooms/\(roomId)/kick"
+        let (data, response) = try await call(method: "POST",
+                                              path: path,
+                                              body: [
+                                                "user_id": "\(userId)",
+                                                "reason": reason
+                                              ])
+    }
+    
+    func roomBanUser(roomId: RoomId, userId: UserId, reason: String? = nil) async throws {
+        let path = "/_matrix/client/\(version)/rooms/\(roomId)/ban"
+        let (data, response) = try await call(method: "POST",
+                                              path: path,
+                                              body: [
+                                                "user_id": "\(userId)",
+                                                "reason": reason
+                                              ])
+    }
+    
+    func roomJoin(roomId: RoomId, reason: String? = nil) async throws {
+        let path = "/_matrix/client/\(version)/rooms/\(roomId)/join"
+        let (data, response) = try await call(method: "POST",
+                                              path: path,
+                                              body: [
+                                                "reason": reason
+                                              ])
+    }
+    
+    func roomKnock(roomId: RoomId, reason: String? = nil) async throws {
+        let path = "/_matrix/client/\(version)/knock/\(roomId)"
+        let (data, response) = try await call(method: "POST",
+                                              path: path,
+                                              body: [
+                                                "reason": reason
+                                              ])
+    }
+    
+    func roomLeave(roomId: RoomId, reason: String? = nil) async throws {
+        let path = "/_matrix/client/\(version)/rooms/\(roomId)/leave"
+        let (data, response) = try await call(method: "POST",
+                                              path: path,
+                                              body: [
+                                                "reason": reason
+                                              ])
+    }
+    
+    func roomForget(roomId: RoomId) async throws {
+        let path = "/_matrix/client/\(version)/rooms/\(roomId)/forget"
+        let (data, response) = try await call(method: "POST", path: path)
+    }
+    
     func roomGetPowerLevels(roomId: RoomId) async throws -> [String: Int] {
         throw Matrix.Error("Not implemented")
     }
