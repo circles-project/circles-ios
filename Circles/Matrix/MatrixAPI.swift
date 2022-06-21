@@ -111,14 +111,14 @@ class MatrixAPI {
                                               ])
     }
     
-    func setAvatarImage(_ image: UIImage) async throws {
+    func setMyAvatarImage(_ image: UIImage) async throws {
         // First upload the image
         let url = try await uploadImage(image, maxSize: CGSize(width: 256, height: 256))
         // Then set that as our avatar
-        try await setAvatarUrl(url)
+        try await setMyAvatarUrl(url)
     }
     
-    func setAvatarUrl(_ url: String) async throws {
+    func setMyAvatarUrl(_ url: String) async throws {
         let (_,_) = try await call(method: "PUT",
                                    path: "_matrix/client/\(version)/profile/\(creds.userId)/avatar_url",
                                    body: [
@@ -126,61 +126,7 @@ class MatrixAPI {
                                    ])
     }
     
-    func uploadImage(_ original: UIImage, maxSize: CGSize, quality: CGFloat = 0.90) async throws -> String {
-        guard let scaled = downscale_image(from: original, to: maxSize)
-        else {
-            let msg = "Failed to downscale image"
-            print(msg)
-            throw Matrix.Error(msg)
-        }
-        
-        let uri = try await uploadImage(scaled, quality: quality)
-        return uri
-    }
-    
-    func uploadImage(_ image: UIImage, quality: CGFloat = 0.90) async throws -> String {
-
-        guard let jpeg = image.jpegData(compressionQuality: quality)
-        else {
-            let msg = "Failed to encode image as JPEG"
-            print(msg)
-            throw Matrix.Error(msg)
-        }
-        
-        return try await uploadData(data: jpeg, contentType: "image/jpeg")
-    }
-    
-    func uploadData(data: Data, contentType: String) async throws -> String {
-        
-        let url = URL(string: "/_matrix/media/\(version)/upload", relativeTo: baseUrl)!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue(contentType, forHTTPHeaderField: "Content-Type")
-        
-        let (responseData, response) = try await mediaUrlSession.upload(for: request, from: data)
-        
-        guard let httpResponse = response as? HTTPURLResponse,
-              [200].contains(httpResponse.statusCode)
-        else {
-            let msg = "Upload request failed"
-            print(msg)
-            throw Matrix.Error(msg)
-        }
-        
-        struct UploadResponse: Codable {
-            var contentUri: String
-        }
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        guard let responseBody = try? decoder.decode(UploadResponse.self, from: responseData)
-        else {
-            let msg = "Failed to decode upload response"
-            print(msg)
-            throw Matrix.Error(msg)
-        }
-        
-        return responseBody.contentUri
-    }
+    // MARK: Rooms
     
     // https://spec.matrix.org/v1.2/client-server-api/#get_matrixclientv3joined_rooms
     func getJoinedRooms() async throws -> [RoomId] {
@@ -307,12 +253,6 @@ class MatrixAPI {
         return RoomId(responseBody.roomId)!
     }
     
-    func createSpace(name: String) async throws -> RoomId {
-        print("CREATESPACE\tCreating space with name [\(name)]")
-        let roomId = try await createRoom(name: name, type: "m.space", encrypted: false)
-        return roomId
-    }
-    
     func sendStateEvent(to roomId: RoomId,
                         type: MatrixEventType,
                         content: Codable,
@@ -338,27 +278,16 @@ class MatrixAPI {
         return responseBody.eventId
     }
 
-    func spaceAddChild(_ child: RoomId, to parent: RoomId) async throws {
-        print("ADDCHILD\tAdding [\(child)] as a child space of [\(parent)]")
-        let servers = Array(Set([child.domain, parent.domain]))
-        let order = (0x20 ... 0x7e).randomElement()?.description ?? "A"
-        let content = SpaceChildContent(order: order, via: servers)
-        let _ = try await sendStateEvent(to: parent, type: .mSpaceChild, content: content, stateKey: child.description)
-    }
+
     
-    func spaceAddParent(_ parent: RoomId, to child: RoomId, canonical: Bool = false) async throws {
-        let servers = Array(Set([child.domain, parent.domain]))
-        let content = SpaceParentContent(canonical: canonical, via: servers)
-        let _ = try await sendStateEvent(to: child, type: .mSpaceParent, content: content, stateKey: parent.description)
-    }
     
-    func roomAddTag(roomId: RoomId, tag: String, order: Float? = nil) async throws {
+    func addTag(roomId: RoomId, tag: String, order: Float? = nil) async throws {
         let path = "/_matrix/client/\(version)/user/\(creds.userId)/rooms/\(roomId)/tags/\(tag)"
         let body = ["order": order ?? Float.random(in: 0.0 ..< 1.0)]
         let _ = try await call(method: "PUT", path: path, body: body)
     }
     
-    private func roomGetTagEventContent(roomId: RoomId) async throws -> RoomTagContent {
+    private func getTagEventContent(roomId: RoomId) async throws -> RoomTagContent {
         let path = "/_matrix/client/\(version)/user/\(creds.userId)/rooms/\(roomId)/tags"
         let (data, response) = try await call(method: "GET", path: path, body: nil)
         
@@ -374,13 +303,13 @@ class MatrixAPI {
         return tagContent
     }
     
-    func roomGetTags(roomId: RoomId) async throws -> [String] {
-        let tagContent = try await roomGetTagEventContent(roomId: roomId)
+    func getTags(roomId: RoomId) async throws -> [String] {
+        let tagContent = try await getTagEventContent(roomId: roomId)
         let tags: [String] = [String](tagContent.tags.keys)
         return tags
     }
 
-    func roomSetAvatar(roomId: RoomId, image: UIImage) async throws {
+    func setAvatarImage(roomId: RoomId, image: UIImage) async throws {
         let maxSize = CGSize(width: 640, height: 640)
         
         guard let scaledImage = downscale_image(from: image, to: maxSize)
@@ -411,14 +340,14 @@ class MatrixAPI {
         let _ = try await sendStateEvent(to: roomId, type: .mRoomAvatar, content: RoomAvatarContent(url: uri, info: info))
     }
     
-    func roomSetTopic(roomId: RoomId, topic: String) async throws {
+    func setTopic(roomId: RoomId, topic: String) async throws {
         let _ = try await sendStateEvent(to: roomId, type: .mRoomTopic, content: ["topic": topic])
     }
     
     // https://spec.matrix.org/v1.2/client-server-api/#get_matrixclientv3roomsroomidmessages
     // Good news!  `from` is no longer required as of v1.3 (June 2022),
     // so we no longer have to call /sync before fetching messages.
-    func roomGetMessages(roomId: RoomId,
+    func getMessages(roomId: RoomId,
                          forward: Bool = false,
                          from: String? = nil,
                          limit: Int? = 25
@@ -454,7 +383,7 @@ class MatrixAPI {
     }
     
     // https://spec.matrix.org/v1.2/client-server-api/#get_matrixclientv3roomsroomidjoined_members
-    func roomGetJoinedMembers(roomId: RoomId) async throws -> [UserId] {
+    func getJoinedMembers(roomId: RoomId) async throws -> [UserId] {
         let path = "/_matrix/client/\(version)/rooms/\(roomId)/joined_members"
         let (data, response) = try await call(method: "GET", path: path)
         
@@ -473,7 +402,7 @@ class MatrixAPI {
     }
     
     // https://spec.matrix.org/v1.2/client-server-api/#get_matrixclientv3roomsroomidstate
-    func roomGetState(roomId: RoomId) async throws -> [ClientEvent] {
+    func getRoomState(roomId: RoomId) async throws -> [ClientEvent] {
         let path = "/_matrix/client/\(version)/rooms/\(roomId)/state"
         
         let (data, response) = try await call(method: "GET", path: path)
@@ -484,7 +413,7 @@ class MatrixAPI {
         return events
     }
     
-    func roomInviteUser(roomId: RoomId, userId: UserId, reason: String? = nil) async throws {
+    func inviteUser(roomId: RoomId, userId: UserId, reason: String? = nil) async throws {
         let path = "/_matrix/client/\(version)/rooms/\(roomId)/invite"
         let (data, response) = try await call(method: "POST",
                                               path: path,
@@ -495,7 +424,7 @@ class MatrixAPI {
         // FIXME: Parse and handle any Matrix 400 or 403 errors
     }
     
-    func roomKickUser(roomId: RoomId, userId: UserId, reason: String? = nil) async throws {
+    func kickUser(roomId: RoomId, userId: UserId, reason: String? = nil) async throws {
         let path = "/_matrix/client/\(version)/rooms/\(roomId)/kick"
         let (data, response) = try await call(method: "POST",
                                               path: path,
@@ -505,7 +434,7 @@ class MatrixAPI {
                                               ])
     }
     
-    func roomBanUser(roomId: RoomId, userId: UserId, reason: String? = nil) async throws {
+    func banUser(roomId: RoomId, userId: UserId, reason: String? = nil) async throws {
         let path = "/_matrix/client/\(version)/rooms/\(roomId)/ban"
         let (data, response) = try await call(method: "POST",
                                               path: path,
@@ -515,7 +444,7 @@ class MatrixAPI {
                                               ])
     }
     
-    func roomJoin(roomId: RoomId, reason: String? = nil) async throws {
+    func join(roomId: RoomId, reason: String? = nil) async throws {
         let path = "/_matrix/client/\(version)/rooms/\(roomId)/join"
         let (data, response) = try await call(method: "POST",
                                               path: path,
@@ -524,7 +453,7 @@ class MatrixAPI {
                                               ])
     }
     
-    func roomKnock(roomId: RoomId, reason: String? = nil) async throws {
+    func knock(roomId: RoomId, reason: String? = nil) async throws {
         let path = "/_matrix/client/\(version)/knock/\(roomId)"
         let (data, response) = try await call(method: "POST",
                                               path: path,
@@ -533,7 +462,7 @@ class MatrixAPI {
                                               ])
     }
     
-    func roomLeave(roomId: RoomId, reason: String? = nil) async throws {
+    func leave(roomId: RoomId, reason: String? = nil) async throws {
         let path = "/_matrix/client/\(version)/rooms/\(roomId)/leave"
         let (data, response) = try await call(method: "POST",
                                               path: path,
@@ -542,18 +471,40 @@ class MatrixAPI {
                                               ])
     }
     
-    func roomForget(roomId: RoomId) async throws {
+    func forget(roomId: RoomId) async throws {
         let path = "/_matrix/client/\(version)/rooms/\(roomId)/forget"
         let (data, response) = try await call(method: "POST", path: path)
     }
     
-    func roomGetPowerLevels(roomId: RoomId) async throws -> [String: Int] {
+    func getRoomPowerLevels(roomId: RoomId) async throws -> [String: Int] {
         throw Matrix.Error("Not implemented")
+    }
+    
+    // MARK: Spaces
+    
+    func createSpace(name: String) async throws -> RoomId {
+        print("CREATESPACE\tCreating space with name [\(name)]")
+        let roomId = try await createRoom(name: name, type: "m.space", encrypted: false)
+        return roomId
+    }
+    
+    func addSpaceChild(_ child: RoomId, to parent: RoomId) async throws {
+        print("ADDCHILD\tAdding [\(child)] as a child space of [\(parent)]")
+        let servers = Array(Set([child.domain, parent.domain]))
+        let order = (0x20 ... 0x7e).randomElement()?.description ?? "A"
+        let content = SpaceChildContent(order: order, via: servers)
+        let _ = try await sendStateEvent(to: parent, type: .mSpaceChild, content: content, stateKey: child.description)
+    }
+    
+    func addSpaceParent(_ parent: RoomId, to child: RoomId, canonical: Bool = false) async throws {
+        let servers = Array(Set([child.domain, parent.domain]))
+        let content = SpaceParentContent(canonical: canonical, via: servers)
+        let _ = try await sendStateEvent(to: child, type: .mSpaceParent, content: content, stateKey: parent.description)
     }
     
     // MARK: User profiles
     
-    func userGetDisplayName(userId: UserId) async throws -> String? {
+    func getDisplayName(userId: UserId) async throws -> String? {
         let path = "/_matrix/client/\(version)/profile/\(userId)/displayname"
         let (data, response) = try await call(method: "GET", path: path)
         
@@ -573,7 +524,7 @@ class MatrixAPI {
     }
     
     // https://spec.matrix.org/v1.2/client-server-api/#get_matrixclientv3profileuseridavatar_url
-    func userGetAvatarUrl(userId: UserId) async throws -> String? {
+    func getAvatarUrl(userId: UserId) async throws -> String? {
         let path = "/_matrix/client/\(version)/profile/\(userId)/avatar_url"
         let (data, response) = try await call(method: "GET", path: path)
         
@@ -592,11 +543,11 @@ class MatrixAPI {
         return responseBody.avatarUrl
     }
     
-    func userGetAvatarImage(userId: UserId) async throws -> UIImage? {
+    func getAvatarImage(userId: UserId) async throws -> UIImage? {
         
         
         // Download the bytes from the given uri
-        guard let uri = try await userGetAvatarUrl(userId: userId)
+        guard let uri = try await getAvatarUrl(userId: userId)
         else {
             let msg = "Couldn't get mxc:// URI"
             print("USER\t\(msg)")
@@ -609,7 +560,7 @@ class MatrixAPI {
             throw Matrix.Error(msg)
         }
         
-        let data = try await mediaDownload(mxc: mxc)
+        let data = try await downloadMediaData(mxc: mxc)
         
         // Create a UIImage
         let image = UIImage(data: data)
@@ -620,7 +571,7 @@ class MatrixAPI {
     
     // MARK: Media API
     
-    func mediaDownload(mxc: MXC) async throws -> Data {
+    func downloadData(mxc: MXC) async throws -> Data {
         let path = "/_matrix/media/\(version)/download/\(mxc.serverName)/\(mxc.mediaId)"
         
         let url = URL(string: path, relativeTo: baseUrl)!
@@ -637,5 +588,61 @@ class MatrixAPI {
         }
         
         return data
+    }
+    
+    func uploadImage(_ original: UIImage, maxSize: CGSize, quality: CGFloat = 0.90) async throws -> String {
+        guard let scaled = downscale_image(from: original, to: maxSize)
+        else {
+            let msg = "Failed to downscale image"
+            print(msg)
+            throw Matrix.Error(msg)
+        }
+        
+        let uri = try await uploadImage(scaled, quality: quality)
+        return uri
+    }
+    
+    func uploadImage(_ image: UIImage, quality: CGFloat = 0.90) async throws -> String {
+
+        guard let jpeg = image.jpegData(compressionQuality: quality)
+        else {
+            let msg = "Failed to encode image as JPEG"
+            print(msg)
+            throw Matrix.Error(msg)
+        }
+        
+        return try await uploadData(data: jpeg, contentType: "image/jpeg")
+    }
+    
+    func uploadData(data: Data, contentType: String) async throws -> String {
+        
+        let url = URL(string: "/_matrix/media/\(version)/upload", relativeTo: baseUrl)!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue(contentType, forHTTPHeaderField: "Content-Type")
+        
+        let (responseData, response) = try await mediaUrlSession.upload(for: request, from: data)
+        
+        guard let httpResponse = response as? HTTPURLResponse,
+              [200].contains(httpResponse.statusCode)
+        else {
+            let msg = "Upload request failed"
+            print(msg)
+            throw Matrix.Error(msg)
+        }
+        
+        struct UploadResponse: Codable {
+            var contentUri: String
+        }
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        guard let responseBody = try? decoder.decode(UploadResponse.self, from: responseData)
+        else {
+            let msg = "Failed to decode upload response"
+            print(msg)
+            throw Matrix.Error(msg)
+        }
+        
+        return responseBody.contentUri
     }
 }
