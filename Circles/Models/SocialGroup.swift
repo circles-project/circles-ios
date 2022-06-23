@@ -25,13 +25,27 @@ class SocialGroup: ObservableObject, Identifiable {
         self.room.id
     }
     
-    func leave(completion: @escaping (MXResponse<String>)->Void)
+    var roomId: RoomId? {
+        room.roomId
+    }
+    
+    func leave() async throws
     {
-        self.container.leave(group: self, completion: completion)
+        try await self.container.leave(group: self)
     }
     
     var name: String? {
         self.room.displayName
+    }
+}
+
+extension SocialGroup: Hashable {
+    static func == (lhs: SocialGroup, rhs: SocialGroup) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }
 
