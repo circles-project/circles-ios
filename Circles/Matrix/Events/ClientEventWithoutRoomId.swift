@@ -53,7 +53,7 @@ struct ClientEventWithoutRoomId: MatrixEvent {
         self.type = try container.decode(MatrixEventType.self, forKey: .type)
         self.unsigned = try? container.decode(UnsignedData.self, forKey: .unsigned)
          
-        self.content = try decodeEventContent(of: self.type, from: decoder)
+        self.content = try Matrix.decodeEventContent(of: self.type, from: decoder)
     }
     
     func encode(to encoder: Encoder) throws {
