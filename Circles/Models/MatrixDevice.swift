@@ -1,110 +1,67 @@
-//  Copyright 2020, 2021 Kombucha Digital Privacy Systems LLC
 //
 //  MatrixDevice.swift
-//  Circles for iOS
 //
-//  Created by Charles Wright on 1/20/21.
+//
+//  Created by Charles Wright on 5/12/22.
 //
 
 import Foundation
-import MatrixSDK
 
-class MatrixDevice: ObservableObject, Identifiable {
-    private let info: MXDeviceInfo
-    let id: String // For Identifiable
-    //let userId: String
-    let matrix: MatrixInterface
-    
-    init(from info: MXDeviceInfo, on matrix: MatrixInterface) {
-        self.info = info
-        self.id = info.deviceId
-        //self.userId = userId
-        self.matrix = matrix
+class MatrixDevice: ObservableObject, Decodable {
+    let deviceId: String
+    var id: String {
+        deviceId
     }
+    @Published var displayName: String?
     
-    var userId: String {
-        info.userId
+    var algorithms: [String]
+    
+    @Published var keys: [String: String]
+    var signatures: [UserId: [String: String]] // user_id -> key_id -> signature bytes
+    
+    let userId: UserId
+    
+    // FIXME: Commenting this out entirely until we know how to do it correctly
+    //@Published var verified: Bool
+    
+    // NOTE: Some of the elements here are not part of the Matrix spec.
+    // So the coding keys tell the coders which parts should be included in the JSON
+    enum CodingKeys: String, CodingKey {
+        case deviceId
+        case algorithms
+        case keys
+        case signatures
+        case userId
+        case unsigned
     }
-    
-    var user: MatrixUser? {
-        matrix.getUser(userId: info.userId)
+
+    /*
+    func encode(to encoder: Encoder) throws {
+        <#code#>
     }
+    */
     
-    var displayName: String? {
-        info.displayName
-    }
-    
-    var fingerprint: String? {
-        info.fingerprint
-    }
-    
-    var isVerified: Bool {
-        guard let trustLevel = info.trustLevel else {
-            return false
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        self.deviceId = try container.decode(String.self, forKey: .deviceId)
+        self.algorithms = try container.decode([String].self, forKey: .algorithms)
+        self.keys = try container.decode([String:String].self, forKey: .keys)
+        self.signatures = try container.decode([UserId:[String:String]].self, forKey: .signatures)
+        
+        struct Unsigned: Codable {
+            //var userId: UserId            // As of v1.3, the Unsigned object contains the displayname, but NOT the userId.  Did this change since v1.2???
+            var deviceDisplayName: String?
         }
-        return trustLevel.isVerified
-    }
-    
-    var isBlocked: Bool {
-        guard let trustLevel = info.trustLevel else {
-            return false
+        if let unsigned: Unsigned = try? container.decode(Unsigned.self, forKey: .unsigned) {
+            self.displayName = unsigned.deviceDisplayName
         }
-        return trustLevel.localVerificationStatus == .blocked
-    }
-    
-    var isCrossSigningVerified: Bool {
-        guard let trustLevel = info.trustLevel else {
-            return false
-        }
-        return trustLevel.isCrossSigningVerified
-    }
-    
-    var isLocallyVerified: Bool {
-        guard let trustLevel = info.trustLevel else {
-            return false
-        }
-        return trustLevel.isLocallyVerified
-    }
-    
-    func verify() {
-        self.matrix.verifyDevice(deviceId: self.id, userId: self.userId) { response in
-            if response.isSuccess {
-                self.objectWillChange.send()
-            }
-        }
-    }
-    
-    func block() {
-        self.matrix.blockDevice(deviceId: self.id, userId: self.userId) { response in
-            if response.isSuccess {
-                self.objectWillChange.send()
-            }
-        }
-    }
-    
-    var sessions: [MXOlmSession] {
-        // FIXME I don't think this is what we're supposed to provide
-        // I think it really wants the public key here, not just its fingerprint
-        //guard let deviceKey = self.fingerprint else {
-        guard let deviceKey = self.info.identityKey else {
-            return []
-        }
-        return matrix.getOlmSessions(deviceKey: deviceKey)
-    }
-    
-    var key: String {
-        self.info.identityKey
+        
+        self.userId = try container.decode(UserId.self, forKey: .userId)
+        
+        // FIXME: Oh gee, how do we tell whether this device counts as "verified" ???
+        // I guess we have to go through and check a bunch of signatures.. :-(
+        // Commenting out the whole `verified` idea until we know how to do it right
     }
 }
 
-extension MatrixDevice: Hashable {
-    // For Equatable
-    static func == (lhs: MatrixDevice, rhs: MatrixDevice) -> Bool {
-        return lhs.id == rhs.id
-    }
-    
-    // For Hashable
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
-}
