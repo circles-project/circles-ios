@@ -14,8 +14,11 @@ import MatrixSDK
 
 class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
     private let mxroom: MXRoom
-    let id: String
-    let matrix: MatrixInterface
+    let roomId: RoomId
+    var id: String {
+        roomId.description
+    }
+    let matrix: MatrixSession
     private var localEchoEvent: MXEvent?
     private var backwardTimeline: MXRoomEventTimeline?
 
@@ -25,9 +28,7 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
 
     @Published var membership = [String:String]()
 
-    var queue: DispatchQueue
     var downloadingAvatar: Bool = false
-    private var cachedAvatarImage: UIImage?
     
     // This local info works together with the MXSession's ignored users list,
     // which is stored in the Matrix account_data.
@@ -35,14 +36,19 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
     // weren't ignored when the message came in, but have since been ignored.
     private var ignoredSenders: Set<String> = []
 
-    init(from mxroom: MXRoom, on matrix: MatrixInterface) {
+    init(from mxroom: MXRoom, on matrix: MatrixSession) {
         self.mxroom = mxroom
-        self.id = mxroom.roomId
+        self.roomId = RoomId(mxroom.roomId)!
         self.matrix = matrix
-        self.queue = DispatchQueue(label: self.id, qos: .background)
 
-        self.updateDisplayName()
-        self.updateAvatar()
+        _ = Task {
+            try await asyncInit()
+        }
+    }
+    
+    func asyncInit() async throws {
+        try await self.updateDisplayName()
+        try await self.updateAvatar()
         self.initTimeline()
         self.refresh()
         self.updatePowerLevels()
@@ -138,7 +144,9 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
                 return
             }
             if let url = event.content["url"] as? String {
-                self._fetchAvatar(from: url)
+                _ = Task {
+                    try await fetchAvatar(from: url)
+                }
             }
 
         default:
@@ -177,26 +185,17 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
 
     @Published var displayName: String?
 
-    func updateDisplayName() {
-        //mxroom.summary.displayname
-        matrix.getRoomName(roomId: self.id) { response in
-            guard case let .success(name) = response else {
-                print("ROOM\tFailed to get displayname from Matrix")
-                return
-            }
-            self.displayName = name
+    func updateDisplayName() async throws {
+        let newName = try await matrix.getDisplayName(roomId: roomId)
+        await MainActor.run {
+            displayName = newName
         }
     }
 
-    func setDisplayName(_ name: String, completion: @escaping (MXResponse<Void>) -> Void) {
-        mxroom.setName(name) { response in
-            switch response {
-            case .failure(let error):
-                print("Failed to set display name for room \(self.id): \(error)")
-            case .success:
-                self.objectWillChange.send()
-            }
-            completion(response)
+    func setDisplayName(_ name: String) async throws {
+        try await matrix.setDisplayName(roomId: roomId, name: name)
+        await MainActor.run {
+            displayName = name
         }
     }
 
@@ -218,83 +217,29 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
     //       The set() just makes the API call
     @Published var avatarImage: UIImage?
 
-    func _fetchAvatar(from url: String) {
-
-        // So we don't have the image, but we know where to find it.
-        // Let's go get it.
-        // Maybe it's in the disk cache?
-        guard let cached_image = self.matrix.getCachedImage(mxURI: url) else {
-            // Nope, not in the disk cache.
-            // Gotta go out to the homeserver and fetch it
-            print("ROOM\tCached avatar image was nil for \(self.id)")
-            self.queue.sync(flags: .barrier) {
-                if !self.downloadingAvatar {
-                    self.downloadingAvatar = true
-                    self.matrix.downloadImage(mxURI: url) { downloadedImage in
-                        self.avatarImage = downloadedImage
-                        DispatchQueue.main.async {
-                            self.objectWillChange.send()
-                        }
-                        print("ROOM\tFetched avatar image for \(self.id)")
-                        self.downloadingAvatar = false
-                    }
-                } else {
-                    print("ROOM\tAvatar is already being downloaded; Doing nothing")
-                }
-            }
-            // Do nothing else for now
-            // Just gotta wait for the image to download
-            return
+    private func fetchAvatar(from url: String) async throws {
+        guard let mxc = MXC(url)
+        else {
+            let msg = "Invalid MXC URL"
+            print(msg)
+            throw Matrix.Error(msg)
         }
-        // Yay it was in the disk cache
-        print("ROOM\tUsing cached image for \(self.id)")
-        self.avatarImage = cached_image
-    }
-
-    func updateAvatar() {
-        // Do we have a URL?
-        guard let url = mxroom.summary.avatar else {
-            // Hmm I wonder if we really don't have an avatar for this room?
-            // Or is the MatrixSDK just failing us right now?
-            matrix.getRoomAvatar(roomId: self.id) { response in
-                guard case let .success(newUrl) = response else {
-                    print("ROOM\tCouldn't get avatar URL from Matrix")
-                    return
-                }
-                self._fetchAvatar(from: newUrl.absoluteString)
-            }
-            return
-        }
-        _fetchAvatar(from: url)
-    }
-
-    func setAvatarURL(url: URL, completion: @escaping (MXResponse<Void>) -> Void = {_ in }) {
-        self.mxroom.setAvatar(url: url) { response in
-            if response.isSuccess {
-                // Invalidate our old cache of the image
-                self.cachedAvatarImage = nil
-                // Tell SwiftUI it's time to redraw
-                self.objectWillChange.send()
-            }
-            completion(response)
+        let data = try await matrix.downloadData(mxc: mxc)
+        let image = UIImage(data: data)
+        await MainActor.run {
+            self.avatarImage = image
         }
     }
 
-    func setAvatarImage(image: UIImage, completion: @escaping (MXResponse<Void>) -> Void = { _ in }) {
-        print("Setting avatar image")
-        matrix.uploadImage(image: image) { response in
-            switch response {
-            case .failure(let error):
-                print("Error: Failed to upload image for new avatar.  Error: \(error)")
-                completion(.failure(error))
-
-            case .progress(let progress):
-                print("Progress: New avatar upload is \(100 * progress.fractionCompleted)% complete")
-
-            case .success(let url):
-                self.setAvatarURL(url: url, completion: completion)
-            }
+    func updateAvatar() async throws {
+        let image = try await matrix.getAvatarImage(roomId: roomId)
+        await MainActor.run {
+            self.avatarImage = image
         }
+    }
+
+    func setAvatarImage(image: UIImage) async throws {
+        try await matrix.setAvatarImage(roomId: roomId, image: image)
     }
 
     func enableEncryption(completion: @escaping (MXResponse<Void>)->Void) {
@@ -304,20 +249,26 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
     }
 
 
+    /*
     var creator: MatrixUser? {
         guard let userId = mxroom.summary.creatorUserId else {
             return nil
         }
         return matrix.getUser(userId: userId)
     }
+    */
+    var creatorId: UserId? {
+        UserId(mxroom.summary.creatorUserId)
+    }
 
     var owners: [MatrixUser] {
         userPowerLevels.keys.compactMap { key in
-            let userId = key as String
-            guard let power = self.userPowerLevels[userId] else {
+            let uid = key as String
+            guard let power = self.userPowerLevels[uid] else {
                 return nil
             }
             if power >= 100 {
+                guard let userId = UserId(uid) else { return nil }
                 return matrix.getUser(userId: userId)
             } else {
                 return nil
@@ -838,61 +789,6 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
         }
     }
 
-    func getRoomType(completion: @escaping (MXResponse<String>) -> Void) {
-        // Do we have a room type from the creation event?
-        if let creationType = self.type {
-            completion(.success(creationType))
-        }
-        else {
-            // This room must be older -- No room type in the creation event :(
-            // Let's go spelunking through the room state and see if we can find a type
-            mxroom.state { roomstate in
-                let events: [MXEvent] = roomstate?.stateEvents(with: .custom(EVENT_TYPE_ROOMTYPE)) ?? []
-                let maybeEvent = events
-                    .sorted(by: {$0.originServerTs < $1.originServerTs})
-                    .first
-                guard let event = maybeEvent else {
-                    let msg = "Couldn't find room type - No state events"
-                    print(msg)
-                    completion(.failure(KSError(message: msg)))
-                    return
-                }
-
-                let maybeMyType = event.content["type"] as? String
-
-                guard let roomtype = maybeMyType else {
-                    let msg = "Room has no type"
-                    print(msg)
-                    completion(.failure(KSError(message: msg)))
-                    return
-                }
-
-                // Yay we finally found it
-                completion(.success(roomtype))
-            }
-        }
-    }
-
-    func setRoomType(type: String, completion: @escaping (MXResponse<String>) -> Void) {
-
-        mxroom.sendStateEvent(
-            .custom(EVENT_TYPE_ROOMTYPE),
-            content: ["type": type],
-            stateKey: ""
-        ) { response in
-            switch response {
-            case .failure(let err):
-                let msg = "Failed to set room type: \(err)"
-                print(msg)
-                completion(.failure(KSError(message: msg)))
-            case .success:
-                let name = self.mxroom.summary.displayname ?? self.mxroom.roomId ?? "???"
-                print("Successfully set room \(name) type to \(type)")
-                completion(.success(type))
-            }
-        }
-    }
-
     func redact(message: MatrixMessage, reason: String?, completion: @escaping (MXResponse<Void>) -> Void) {
         mxroom.redactEvent(message.id, reason: reason) { response in
             if response.isSuccess {
@@ -913,24 +809,6 @@ class MatrixRoom: ObservableObject, Identifiable, Equatable, Hashable {
                 self.messages[message.id] = nil
             }
             completion(response)
-        }
-    }
-    
-    func ignoreUser(_ userId: String) {
-        self.matrix.ignoreUser(userId: userId) { response in
-            if response.isSuccess {
-                self.ignoredSenders.insert(userId)
-                self.objectWillChange.send()
-            }
-        }
-    }
-    
-    func unignoreUser(_ userId: String) {
-        self.matrix.unIgnoreUser(userId: userId) { response in
-            if response.isSuccess {
-                self.ignoredSenders.subtract([userId])
-                self.objectWillChange.send()
-            }
         }
     }
 

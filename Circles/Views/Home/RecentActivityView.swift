@@ -37,7 +37,7 @@ struct RecentActivityView: View {
         VStack {
             ForEach(recentCircles) { circle in
                 if let message = circle.stream.latestMessage {
-                    Text("From Circle: \(circle.name)")
+                    Text("From Circle: \(circle.name ?? "(unnamed circle)")")
                         //.font(.caption)
                         .fontWeight(.bold)
                         .padding(.top, 2)

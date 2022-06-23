@@ -11,31 +11,29 @@ import UIKit
 import MatrixSDK
 
 class SocialStream: ObservableObject, Identifiable {
-    //var id: String
-    var name: String
-    var tag: String
+    var id: String
+    var space: MatrixSpace
     // FIXME Compute the room list dynamically.
     //       Save lots of heartache chasing down sychronization bugs
     //var rooms: [MatrixRoom] // FIXME Make this a Set
     //var rooms: Set<MatrixRoom>
     //var store: KSStore
     //var graph: SocialGraph
-    var matrix: MatrixInterface
+    //var matrix: MatrixInterface
+    var session: CirclesSession
     
     
-    init(name: String, tag: String, matrix: MatrixInterface) {
-        //self.id = streamId
-        self.name = name
-        self.tag = tag
-
-        //self.store = store
-        //self.graph = graph
-        self.matrix = matrix
-        
-        // FIXME Compute this dynamically instead
-        //self.rooms = Set(matrix.getRooms(for: tag))
+    init(space: MatrixSpace, session: CirclesSession) {
+        self.space = space
+        self.id = "\(space.roomId)"
+        self.session = session
     }
     
+    var name: String {
+        space.name
+    }
+    
+    /*
     init(for user: MatrixUser) {
         self.name = user.id
         self.tag = user.id
@@ -48,10 +46,8 @@ class SocialStream: ObservableObject, Identifiable {
             }
         }
     }
+    */
     
-    var id: String {
-        self.tag
-    }
     
     // For displaying a consistent chronological view of the
     // Stream, we need to keep track of the "last first" message
@@ -153,27 +149,8 @@ class SocialStream: ObservableObject, Identifiable {
     }
     
     var rooms: [MatrixRoom] {
-        matrix.getRooms(for: self.tag).compactMap { room in
-            room
-        }
-    }
-    
-    func addRoom(roomId: String, completion handler: @escaping (MXResponse<Void>) -> Void) {
-        guard let room = self.matrix.getRoom(roomId: roomId) else {
-            let msg = "Couldn't find room \(roomId)"
-            let err = KSError(message: msg)
-            handler(.failure(err))
-            return
-        }
-        
-        room.addTag(tag: self.tag) { response in
-            handler(response)
-        }
-    }
-    
-    func removeRoom(room: MatrixRoom, completion handler: @escaping (MXResponse<Void>) -> Void) {
-        room.removeTag(tag: self.tag) { response in
-            handler(response)
+        space.children.compactMap {
+            session.matrix.legacy.getRoom(roomId: "\($0)")
         }
     }
     

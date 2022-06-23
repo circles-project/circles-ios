@@ -48,9 +48,9 @@ protocol MatrixInterface {
 
     func unIgnoreUser(userId: String, completion: @escaping (MXResponse<Void>) -> Void)
 
-    func getDevices(userId: String) -> [MatrixDevice]
+    func getDevices(userId: String) -> [MatrixCryptoDevice]
 
-    func getCurrentDevice() -> MatrixDevice?
+    func getCurrentDevice() -> MatrixMyDevice?
     
     func getRoom(roomId: String) -> MatrixRoom?
     
@@ -101,7 +101,7 @@ protocol MatrixInterface {
     
     func setStatusMessage(message: String, completion: @escaping (MXResponse<String>) -> Void)
     
-    func setRoomAvatar(roomId: String, image: UIImage, completion: @escaping (MXResponse<Void>) -> Void)
+    //func setRoomAvatar(roomId: String, image: UIImage, completion: @escaping (MXResponse<Void>) -> Void)
 
     func getRoomAvatar(roomId: String, completion: @escaping (MXResponse<URL>) -> Void)
 

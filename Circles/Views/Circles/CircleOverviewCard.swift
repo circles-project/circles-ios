@@ -35,7 +35,7 @@ struct CircleOverviewCard: View {
                 
                 VStack(alignment: .leading) {
                     HStack {
-                        Text(circle.name)
+                        Text(circle.name ?? "(unnamed circle)")
                             .font(.title2)
                             .fontWeight(.bold)
                         Spacer()

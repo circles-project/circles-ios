@@ -80,6 +80,8 @@ class LegacyStore: ObservableObject {
     // This saves us from struggling with UISI errors and unverified devices
     private var recoverySecretKey: Data?
     private var recoveryTimestamp: Date?
+    
+    private var newApi: MatrixAPI
         
     init(creds: MatrixCredentials) {
         // OK, let's see what we have to work with here.
@@ -2120,6 +2122,7 @@ extension LegacyStore: MatrixInterface {
         
     }
     
+    /*
     func setRoomAvatar(roomId: String, image: UIImage, completion: @escaping (MXResponse<Void>) -> Void) {
         if let restClient = self.signupMxRc {
             // We must not have logged in yet
@@ -2148,5 +2151,6 @@ extension LegacyStore: MatrixInterface {
             }
         }
     }
+    */
     
 }

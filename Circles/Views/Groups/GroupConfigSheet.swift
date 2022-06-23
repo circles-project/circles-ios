@@ -61,10 +61,14 @@ struct GroupConfigSheet: View {
             HStack {
                 TextField("Group name", text: $groupName)
                 
-                Button(action: {
-                    room.setDisplayName(self.groupName) { response in
+                AsyncButton(action: {
+                    do {
+                        try await room.setDisplayName(self.groupName)
                         self.groupName = ""
+                    } catch {
+                        
                     }
+                    
                 }) {
                     Label("Set", systemImage: "square.and.arrow.up")
                 }

@@ -179,8 +179,10 @@ struct GroupTimelineScreen: View {
                             .destructive(
                                 Text("Leave Group"),
                                 action: {
-                                    self.group.leave(completion: { _ in })
-                                    self.presentation.wrappedValue.dismiss()
+                                    let _ = Task {
+                                        try await self.group.leave()
+                                        self.presentation.wrappedValue.dismiss()
+                                    }
                                 }
                             )
                         ]

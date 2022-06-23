@@ -11,16 +11,19 @@ import MatrixSDK
 
 class MatrixUser: ObservableObject, Identifiable {
     private let mxuser: MXUser
-    let id: String // For Identifiable
-    let matrix: MatrixInterface
+    let userId: UserId
+    var id: String { // For Identifiable
+        userId.description
+    }
+    let matrix: MatrixSession
     var queue: DispatchQueue
     var downloadingAvatar: Bool
     var fetchingDisplayName: Bool
     
-    init(from mxuser: MXUser, on matrix: MatrixInterface) {
+    init(from mxuser: MXUser, on matrix: MatrixSession) {
         print("Initializing a new MatrixUser for \(mxuser.userId!)")
         self.mxuser = mxuser
-        self.id = mxuser.userId
+        self.userId = UserId(mxuser.userId)!
         self.matrix = matrix
         self.queue = DispatchQueue(label: mxuser.userId, qos: .background)
         self.downloadingAvatar = false
@@ -43,7 +46,7 @@ class MatrixUser: ObservableObject, Identifiable {
     }
     
     func refreshProfile(completion: @escaping (MXResponse<MatrixUser>) -> Void) {
-        self.matrix.refreshUser(userId: self.id) { response in
+        self.matrix.legacy.refreshUser(userId: self.id) { response in
             if response.isSuccess {
                 self.objectWillChange.send()
             }
@@ -51,41 +54,16 @@ class MatrixUser: ObservableObject, Identifiable {
         }
     }
     
-    var displayName: String? {
-        if let name = mxuser.displayname {
-            //print("USER\tAlready knew display name \"\(name)\" for user \(self.id)")
-            return name
-        }
-        else {
-            //self.queue.async {
-                //if !self.fetchingDisplayName {
-                    //self.fetchingDisplayName = true
-                    // Fire off a request to get the display name from Matrix
-                    print("USER\tLooking up display name for user \(self.id)")
-                    self.matrix.getDisplayName(userId: self.id) { response in
-                        //self.fetchingDisplayName = false
-                        if response.isSuccess {
-                            //DispatchQueue.main.async {
-                                self.objectWillChange.send()
-                            //}
-                        }
-                    }
-                //}
-            //}
-            return nil
-        }
-    }
+    @Published var displayName: String?
     
-    func setDisplayName(newName: String, completion: @escaping (MXResponse<Void>) -> Void) {
-        if matrix.whoAmI() != self.id {
+    func setDisplayName(newName: String) async throws {
+        guard displayName != newName
+        else {
             return
         }
-        
-        matrix.setDisplayName(name: newName) { response in
-            if response.isSuccess {
-                self.objectWillChange.send()
-            }
-            completion(response)
+        try await matrix.setMyDisplayName(newName)
+        await MainActor.run {
+            self.displayName = newName
         }
     }
     
@@ -109,6 +87,8 @@ class MatrixUser: ObservableObject, Identifiable {
             }
             return letters
         }
+        // We don't have a display name
+        // Return the first real (non "@") letter of the userid instead
         return String(self.id.prefix(2).suffix(1).capitalized)
     }
     
@@ -116,12 +96,12 @@ class MatrixUser: ObservableObject, Identifiable {
 
     func _fetchAvatar(from url: String) {
         print("USER\tFetching avatar image for \(self.id)")
-        guard let cached_image = self.matrix.getCachedImage(mxURI: url) else {
+        guard let cached_image = self.matrix.legacy.getCachedImage(mxURI: url) else {
             print("USER\tNo avatar image for \(self.id) in cache.  Downloading now...")
             //self.queue.async {
                 //if !self.downloadingAvatar {
                     //self.downloadingAvatar = true
-                    self.matrix.downloadImage(mxURI: url) { image in
+                    self.matrix.legacy.downloadImage(mxURI: url) { image in
                         print("USER\tDownloaded avatar image for \(self.id)")
                         DispatchQueue.main.async {
                             //self.objectWillChange.send()
@@ -146,7 +126,7 @@ class MatrixUser: ObservableObject, Identifiable {
     func updateAvatar() {
         //guard let url = self.mxuser.avatarUrl else {
         //    print("USER\tCouldn't find an avatar URL for user \(self.displayName ?? self.id)")
-            matrix.getAvatarUrl(userId: self.id) { response in
+            matrix.legacy.getAvatarUrl(userId: self.id) { response in
                 guard case let .success(newUrl) = response else {
                     print("USER\tCouldn't get avatar URL from Matrix for \(self.id)")
                     return
@@ -161,8 +141,8 @@ class MatrixUser: ObservableObject, Identifiable {
     }
     
     func setAvatarImage(image: UIImage, completion: @escaping (MXResponse<URL>) -> Void) {
-        if self.matrix.whoAmI() == self.id {
-            self.matrix.setAvatarImage(image: image) { response in
+        if matrix.creds.userId == userId {
+            matrix.legacy.setAvatarImage(image: image) { response in
                 if response.isSuccess {
                     print("USER\tSuccessfully set avatar image")
                     self.avatarImage = image
@@ -180,11 +160,11 @@ class MatrixUser: ObservableObject, Identifiable {
     
     
     var rooms: [MatrixRoom] {
-        self.matrix.getRooms(ownedBy: self)
+        self.matrix.legacy.getRooms(ownedBy: self)
     }
     
-    var devices: [MatrixDevice] {
-        self.matrix.getDevices(userId: self.id)
+    var devices: [MatrixCryptoDevice] {
+        self.matrix.legacy.getDevices(userId: self.id)
     }
     
     /*
@@ -194,7 +174,7 @@ class MatrixUser: ObservableObject, Identifiable {
     */
     
     func verify() {
-        self.matrix.verify(userId: self.id) { response in
+        self.matrix.legacy.verify(userId: self.id) { response in
             if response.isSuccess {
                 self.objectWillChange.send()
             }
@@ -213,17 +193,17 @@ class MatrixUser: ObservableObject, Identifiable {
     }
     
     var isVerified: Bool {
-        let trustLevel = matrix.getTrustLevel(userId: self.id)
+        let trustLevel = matrix.legacy.getTrustLevel(userId: self.id)
         return trustLevel.isVerified
     }
     
     var isCrossSigningVerified: Bool {
-        let trustLevel = matrix.getTrustLevel(userId: self.id)
+        let trustLevel = matrix.legacy.getTrustLevel(userId: self.id)
         return trustLevel.isCrossSigningVerified
     }
     
     var isLocallyVerified: Bool {
-        let trustLevel = matrix.getTrustLevel(userId: self.id)
+        let trustLevel = matrix.legacy.getTrustLevel(userId: self.id)
         return trustLevel.isLocallyVerified
     }
 }

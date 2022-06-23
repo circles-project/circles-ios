@@ -27,25 +27,6 @@ struct CircleTimelineScreen: View {
     //@State var showComposer = false
     @State var sheetType: CircleSheetType? = nil
     @State var image: UIImage?
-
-    /*
-    var composer: some View {
-        HStack {
-            if showComposer && circle.outbound != nil {
-                RoomMessageComposer(room: circle.outbound!)
-                    //.padding([.top, .leading, .trailing])
-                    .padding([.top, .leading, .trailing], 5)
-
-            } else {
-                //EmptyView()
-                Button(action: {self.showComposer = true}) {
-                    Label("Post a New Message", systemImage: "plus.bubble")
-                }
-                .padding(.top, 5)
-            }
-        }
-    }
-    */
     
     var toolbarMenu: some View {
         Menu {
@@ -161,9 +142,9 @@ struct CircleTimelineScreen: View {
                 .sheet(item: $sheetType) { st in
                     switch(st) {
                     case .invite:
-                        RoomInviteSheet(room: circle.outbound!)
+                        RoomInviteSheet(room: circle.wall!)
                     case .followers:
-                        RoomMembersSheet(room: circle.outbound!)
+                        RoomMembersSheet(room: circle.wall!)
                     case .following:
                         CircleConnectionsSheet(circle: circle)
                     case .photo:
@@ -178,7 +159,7 @@ struct CircleTimelineScreen: View {
                             
                         }
                     case .composer:
-                        MessageComposerSheet(room: circle.outbound!)
+                        MessageComposerSheet(room: circle.wall!)
                     default:
                         Text("Coming soon!")
                     }

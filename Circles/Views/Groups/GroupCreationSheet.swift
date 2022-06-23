@@ -38,7 +38,7 @@ struct GroupCreationSheet: View {
             
             Spacer()
             
-            Button(action: {
+            AsyncButton(action: {
                 groups.create(name: self.groupName) { response in
                     switch(response) {
                     case .failure(let error):
@@ -163,7 +163,7 @@ struct GroupCreationSheet: View {
                     .autocapitalization(.none)
                 
                 Button(action: {
-                    if let canonicalUserId = groups.matrix.canonicalizeUserId(userId: newestUserId) {
+                    if let canonicalUserId = groups.legacy.canonicalizeUserId(userId: newestUserId) {
                         self.newUserIds.append(canonicalUserId)
                     }
                     self.newestUserId = ""
@@ -183,7 +183,7 @@ struct GroupCreationSheet: View {
 */
                     List {
                         ForEach(newUserIds, id: \.self) { userId in
-                            if let user = groups.matrix.getUser(userId: userId) {
+                            if let user = groups.legacy.getUser(userId: userId) {
                                 MessageAuthorHeader(user: user)
                             }
                             else {

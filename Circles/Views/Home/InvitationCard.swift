@@ -84,19 +84,16 @@ struct InvitationCard: View {
                             
                         case ROOM_TYPE_GROUP:
                             print("We just joined a group!")
-                            // Tag the room as a Group
-                            matrixroom.addTag(tag: ROOM_TAG_GROUP) { response3 in
-                                switch(response3) {
-                                case .failure(let err):
-                                    print("ACCEPT Failed to set room tag Group")
-                                case .success:
-                                    print("ACCEPT Successfully set room tag Group")
-                                }
-                            }
-                            // Fetch some messages
-                            //room.paginate(count: 10)
                             let store = room.matrix.getStore()
-                            store.groups?.add(roomId: room.id)
+                            guard let groups = store.groups,
+                                  let groupRoomId = RoomId(room.id)
+                            else {
+                                print("ACCEPT\tFailed to add the new group")
+                            }
+                            _ = Task {
+                                try await groups.add(roomId: groupRoomId)
+                            }
+
                     
                         case ROOM_TYPE_CHAT:
                             // Tag the room as Chat

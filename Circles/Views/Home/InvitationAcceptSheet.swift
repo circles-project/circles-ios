@@ -69,49 +69,36 @@ struct InvitationAcceptSheet: View {
             Spacer()
             
             
-            Button(action: {
-                let dgroup = DispatchGroup()
+            AsyncButton(action: {
                 var errors: Error? = nil
                 //let tags = [ROOM_TAG_FOLLOWING]
                 
-                for circle in circles {
-                    print("Tagging room \(room.displayName ?? room.id) with tag: \(circle.tag)")
-                    dgroup.enter()
-                    room.addTag(tag: circle.tag) { response in
-                        switch(response) {
-                        case .failure(let error):
-                            let msg = "Failed to tag room: \(error)"
-                            print(msg)
-                            errors = errors ?? KSError(message: msg)
-                        case .success:
-                            print("Successfully tagged room \(room.displayName ?? room.id) for Circle \(circle.name)")
-                        }
-                        dgroup.leave()
-                    }
+                let task = Task {
+                    for circle in circles {
+                        try await circle.follow(room: room)
 
-                    if self.inviteBack {
-                        print("Inviting user \(inviter.id) to follow us on \(circle.name)")
-                        dgroup.enter()
-                        circle.outbound?.invite(userId: inviter.id) { response in
-                            switch response {
-                            case .failure:
-                                print("Failed to invite \(inviter.id) to \(circle.name)")
-                            case .success:
-                                print("Invited \(inviter.id) to follow \(circle.name)")
+                        if self.inviteBack {
+                            print("Inviting user \(inviter.id) to follow us on \(circle.name)")
+                            circle.wall?.invite(userId: inviter.id) { response in
+                                switch response {
+                                case .failure:
+                                    print("Failed to invite \(inviter.id) to \(circle.name)")
+                                case .success:
+                                    print("Invited \(inviter.id) to follow \(circle.name)")
+                                }
                             }
-                            dgroup.leave()
                         }
                     }
                 }
                 
+                await task.result
+                
                 // Once we've added it to our Circles, we can take it out of the list
                 store.newestRooms.removeAll(where: { $0 == room })
                 
-                dgroup.notify(queue: .main) {
-                    if errors == nil {
-                        // Yay we're done
-                        self.presentation.wrappedValue.dismiss()
-                    }
+                if errors == nil {
+                    // Yay we're done
+                    self.presentation.wrappedValue.dismiss()
                 }
             }) {
                 Image(systemName: "checkmark")

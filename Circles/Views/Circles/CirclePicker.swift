@@ -28,7 +28,7 @@ struct CirclePicker: View {
                             if selected.contains(circle) {
                                 HStack {
                                     //Image(systemName: "checkmark.circle")
-                                    Text(circle.name)
+                                    Text(circle.name ?? "unnamed")
                                         .fontWeight(.bold)
                                     Spacer()
                                 }
@@ -38,7 +38,7 @@ struct CirclePicker: View {
                             } else {
                                 HStack {
                                     //Image(systemName: "circle")
-                                    Text(circle.name)
+                                    Text(circle.name ?? "unnamed")
                                         .fontWeight(.bold)
                                     Spacer()
                                 }
