@@ -10,26 +10,36 @@ import Foundation
 import MatrixSDK
 
 class GroupsContainer: ObservableObject {
-    var matrix: MatrixInterface
-    @Published var groups: [SocialGroup] = []
+    var matrix: MatrixSession
+    var space: RoomId
+    @Published var groups: [SocialGroup]
     
-    init(_ interface: MatrixInterface) {
-        self.matrix = interface
+    init(space: RoomId, matrix: MatrixSession) {
+        self.space = space
+        self.matrix = matrix
+        self.groups = []
         
-        // Because we can't initialize any SocialGroup instances using our current 'self' as the GroupsContainer...
-        // Why doing it in this function is better, I'm not sure...
-        self.reload()
+        _ = Task {
+            await reload()
+        }
     }
     
-    func reload() {
-        if !self.groups.isEmpty {
+    func reload() async {
+        do {
+            let newRoomIds = try await self.matrix.getSpaceChildren(space)
             self.groups.removeAll()
-        }
-        let newGroups = self.matrix.getRooms(for: ROOM_TAG_GROUP)
-            .map { room in
-                SocialGroup(from: room, on: self)
+            let newGroups = newRoomIds.compactMap { (roomId: RoomId) -> SocialGroup? in
+                guard let room = matrix.legacy.getRoom(roomId: "\(roomId)") else { return nil }
+                return SocialGroup(from: room, on: self)
             }
-        self.groups.append(contentsOf: newGroups)
+        
+
+            await MainActor.run {
+                self.groups.append(contentsOf: newGroups)
+            }
+        } catch {
+            print("GROUPS\tReload failed")
+        }
     }
     
     /*
@@ -38,67 +48,36 @@ class GroupsContainer: ObservableObject {
     }
     */
 
-    func add(roomId: String) {
-        guard let room = self.matrix.getRoom(roomId: roomId) else {
-            print("GROUPS\tFailed to add a group for roomId \(roomId)")
-            return
+    func add(roomId: RoomId) async throws {
+        guard let room = matrix.legacy.getRoom(roomId: "\(roomId)") else {
+            let msg = "GROUPS\tFailed to add a group for roomId \(roomId)"
+            print(msg)
+            throw CirclesError(msg)
         }
+        try await matrix.addSpaceChild(roomId, to: space)
         let group = SocialGroup(from: room, on: self)
-        self.groups.append(group)
+        await MainActor.run {
+            self.groups.append(group)
+        }
     }
         
-    func create(name: String, completion: @escaping (MXResponse<SocialGroup>) -> Void)
+    func create(name: String) async throws -> SocialGroup
     {
-        self.matrix.createRoom(name: name,
-                               type: ROOM_TYPE_GROUP,
-                               tag: ROOM_TAG_GROUP,
-                               insecure: false
-        ) { response in
-            switch(response) {
-            case .failure(let err):
-                let msg = "Failed to create Room for new Group [\(name)]"
-                print("CREATEGROUP\t\(msg)")
-                completion(.failure(KSError(message: msg)))
-            case .success(let roomId):
-                print("CREATEGROUP\tSuccess!  Created new group [\(name)]")
-                if let room = self.matrix.getRoom(roomId: roomId) {
-                    room.setRoomType(type: ROOM_TYPE_GROUP) { response2 in
-                        if response2.isSuccess {
-                            self.objectWillChange.send()
-                            let newGroup = SocialGroup(from: room, on: self)
-                            self.groups.insert(newGroup, at: 0)
-                            completion(.success(newGroup))
-                        }
-                        else {
-                            // No reason to leave the room hanging around
-                            self.matrix.leaveRoom(roomId: roomId, completion: {_ in })
-
-                            let msg = "Failed to tag new Room as a Group"
-                            completion(.failure(KSError(message: msg)))
-                        }
-                    }
-                }
-                else {
-                    let msg = "Couldn't create MatrixRoom from mxroom"
-                    completion(.failure(KSError(message: msg)))
-                }
-            }
+        let roomId = try await matrix.createRoom(name: name, type: ROOM_TYPE_GROUP, encrypted: true)
+        let stringRoomId = "\(roomId)"
+        guard let room = matrix.legacy.getRoom(roomId: stringRoomId)
+        else {
+            let msg = "Couldn't create MatrixRoom"
+            print("GROUPS\t\(msg)")
+            throw CirclesError(msg)
         }
+        let group = SocialGroup(from: room, on: self)
+        groups.append(group)
+        return group
     }
     
-    func leave(group: SocialGroup, completion: @escaping (MXResponse<String>)->Void)
+    func leave(group: SocialGroup, reason: String? = nil) async throws
     {
-        self.matrix.leaveRoom(roomId: group.room.id) { success in
-            if success {
-                self.groups.removeAll(where: { candidate in
-                    candidate.id == group.id
-                })
-                completion(.success(group.id))
-            }
-            else {
-                let msg = "Failed to leave group \(group.id)"
-                completion(.failure(KSError(message: msg)))
-            }
-        }
+        try await matrix.leave(roomId: group.roomId!, reason: reason)
     }
 }
