@@ -36,6 +36,7 @@ class UIAuthSession: UIASession, ObservableObject {
     }
     
     let url: URL
+    let method: String
     //let accessToken: String? // FIXME: Make this MatrixCredentials ???
     let creds: MatrixCredentials?
     @Published var state: State
@@ -54,7 +55,8 @@ class UIAuthSession: UIASession, ObservableObject {
         }
     }
         
-    init(_ url: URL, credentials: MatrixCredentials? = nil, requestDict: [String:AnyCodable]) {
+    init(_ method: String? = nil, _ url: URL, credentials: MatrixCredentials? = nil, requestDict: [String:AnyCodable]) {
+        self.method = method ?? "POST"
         self.url = url
         //self.accessToken = accessToken
         self.creds = credentials
@@ -244,7 +246,7 @@ class UIAuthSession: UIASession, ObservableObject {
         print("\(tag)\tStarting")
         
         var request = URLRequest(url: url)
-        request.httpMethod = "POST"
+        request.httpMethod = method
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         // We want to be generic: Handle both kinds of use cases: (1) signup (no access token) and (2) re-auth (already have an access token, but need to re-verify identity)
         if let accessToken = self.creds?.accessToken {
@@ -324,7 +326,7 @@ class UIAuthSession: UIASession, ObservableObject {
             throw CirclesError(msg)
         }
         
-        let bss = try BlindSaltSpeke.ClientSession(clientId: userId, serverId: self.url.host!, password: password)
+        let bss = try BlindSaltSpeke.ClientSession(clientId: "\(userId)", serverId: self.url.host!, password: password)
         let blind = bss.generateBlind()
         let args: [String: String] = [
             "blind": Data(blind).base64EncodedString(),
@@ -385,7 +387,7 @@ class UIAuthSession: UIASession, ObservableObject {
             throw CirclesError(msg)
         }
         
-        let bss = try BlindSaltSpeke.ClientSession(clientId: userId, serverId: self.url.host!, password: password)
+        let bss = try BlindSaltSpeke.ClientSession(clientId: "\(userId)", serverId: self.url.host!, password: password)
         let blind = bss.generateBlind()
         let args: [String: String] = [
             "type": stage,
