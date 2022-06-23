@@ -1,129 +1,164 @@
-//  Copyright 2020, 2021 Kombucha Digital Privacy Systems LLC
 //
 //  InvitedRoom.swift
-//  Circles for iOS
 //
-//  Created by Charles Wright on 12/21/20.
 //
-//  InvitedRoom is like MatrixRoom, but much more limited.
-//  It only supports the basic functionality needed to display an invitation.
-//  We use this so that we avoid creating a MatrixRoom for a room where we
-//  don't yet have the full complete information.  It seems that, when we do
-//  that, the Room doesn't ever quite work right once we join.  So instead,
-//  now we create an InvitedRoom for use before we have the full access, and
-//  once we join, we can create a fresh MatrixRoom with full functionality,
-//  and it shouldn't be messed up by the original incomplete state.
+//  Created by Charles Wright on 5/19/22.
+//
 
 import Foundation
-import MatrixSDK
+import UIKit
 
-class InvitedRoom: ObservableObject, Identifiable {
-    var matrix: MatrixInterface
-    private var mxroom: MXRoom
-    var id: String
-    var isPending = true
+class InvitedRoom: ObservableObject {
+    var matrix: MatrixSession
     
-    init(from mxroom: MXRoom, on matrix: MatrixInterface) {
-        self.mxroom = mxroom
+    let roomId: RoomId
+    let type: String?
+    let version: String
+    let predecessorRoomId: RoomId?
+    
+    let encrypted: Bool
+    
+    let creator: UserId
+    let sender: UserId
+    
+    var name: String?
+    var topic: String?
+    var avatarUrl: String?
+    @Published var avatar: UIImage?
+    
+    var members: [UserId]
+    
+    private var stateEventsCache: [MatrixEventType: [StrippedStateEvent]]  // From /sync
+    
+    init(matrix: MatrixSession, roomId: RoomId, stateEvents: [StrippedStateEvent]) throws {
+
         self.matrix = matrix
-        self.id = mxroom.roomId
-    }
-    
-    // Copied from MatrixRoom
-    var displayName: String? {
-        mxroom.summary.displayname
-    }
-    
-    // Copied from MatrixRoom
-    var avatarURL: String? {
-        mxroom.summary.avatar
-    }
-    
-    // Copied from MatrixRoom
-    var avatarImage: UIImage? {
-        guard let url = mxroom.summary.avatar else { return nil }
-        guard let cached_image = self.matrix.getCachedImage(mxURI: url) else {
-            matrix.downloadImage(mxURI: url) { new_image in
-                self.objectWillChange.send()
-                print("Fetched avatar image for \(self.id)")
+        self.roomId = roomId
+        
+        self.members = []
+        self.stateEventsCache = [:]
+        
+        var type: String?
+        var version: String?
+        var creator: UserId?
+        var sender: UserId?
+        var predecessor: RoomId?
+        var encryption: StrippedStateEvent?
+        
+        for event in stateEvents {
+            
+            if stateEventsCache[event.type] == nil {
+                stateEventsCache[event.type] = []
             }
-            return nil
+            stateEventsCache[event.type]?.append(event)
+                        
+            switch event.type {
+            case .mRoomCreate:
+                guard let content = event.content as? CreateContent
+                else {
+                    let msg = "Couldn't understand room creation event"
+                    throw Matrix.Error(msg)
+                }
+                type = content.type
+                version = content.roomVersion
+                creator = event.sender
+                predecessor = content.predecessor.roomId
+            case .mRoomName:
+                guard let content = event.content as? RoomNameContent
+                else {
+                    let msg = "Couldn't parse room name event"
+                    print(msg)
+                    throw Matrix.Error(msg)
+                }
+                self.name = content.name
+            case .mRoomAvatar:
+                guard let content = event.content as? RoomAvatarContent
+                else {
+                    let msg = "Couldn't parse room avatar event"
+                    throw Matrix.Error(msg)
+                }
+                self.avatarUrl = content.url
+            case .mRoomTopic:
+                guard let content = event.content as? RoomTopicContent
+                else {
+                    let msg = "Couldn't parse room topic event"
+                    print(msg)
+                    throw Matrix.Error(msg)
+                }
+                self.topic = content.topic
+            case .mRoomMember:
+                guard let content = event.content as? RoomMemberContent,
+                      let memberUserId = UserId(event.stateKey)
+                else {
+                    let msg = "Couldn't parse room member event"
+                    print(msg)
+                    throw Matrix.Error(msg)
+                }
+                
+                if memberUserId == matrix.creds.userId
+                    && content.membership == .invite {
+                    // This is the event that invited us!
+                    sender = event.sender
+                } else if content.membership == .join {
+                    // This is somebody else in the room
+                    self.members.append(memberUserId)
+                }
+            case .mRoomEncryption:
+                encryption = event
+            default:
+                // Do nothing
+                continue
+            }
         }
-        print("Using cached image for \(self.id)")
-        return cached_image
-    }
-    
-    // Copied from MatrixRoom
-    func whoInvitedMe() -> String? {
-        let me = self.matrix.whoAmI()
-        guard let enumerator = mxroom.enumeratorForStoredMessagesWithType(in: ["m.room.member"]) else {
-            return nil
-        }
-        var batch: [MXEvent]? = nil
-        var inviteEvent: MXEvent? = nil
-        repeat {
-            batch = enumerator.nextEventsBatch(100, threadId: nil)
-            inviteEvent = batch?.last {
-                $0.type == kMXEventTypeStringRoomMember && $0.stateKey == me
-            }
-            if let event = inviteEvent {
-                return event.sender
-            }
-        } while inviteEvent == nil && batch != nil
+        
+        guard let t = type,
+              let v = version,
+              let c = creator,
+              let p = predecessor
+        else {
+            let msg = "Could not find room creation event"
+            print(msg)
+            throw Matrix.Error(msg)
 
-        return nil
+        }
+
+        self.type = t
+        self.version = v
+        self.creator = c
+        self.predecessorRoomId = p
+        
+        guard let s = sender
+        else {
+            let msg = "Could not find room invite event"
+            print(msg)
+            throw Matrix.Error(msg)
+        }
+        
+        self.sender = s
+        
+        if encryption != nil {
+            self.encrypted = true
+        } else {
+            self.encrypted = false
+        }
     }
     
-    // Adapted from MatrixRoom
-    func join(tags: [String] = [],  completion: @escaping (_ response: MXResponse<MatrixRoom>) -> Void = {_ in }) {
-        if mxroom.summary.membership == .join {
+    func join(reason: String? = nil) async throws {
+        try await matrix.join(roomId: roomId, reason: reason)
+    }
+    
+    func getAvatarImage() async throws {
+        guard let url = avatarUrl,
+              let mxc = MXC(url)
+        else {
             return
         }
         
-        mxroom.join { response1 in
-            switch(response1) {
-            case .failure(let error):
-                print("INVITED\tFailed to join room \(self.id): \(error)")
-                completion(.failure(error))
-                
-            case .success:
-                self.isPending = false
-                self.objectWillChange.send()
-                
-                let dgroup = DispatchGroup()
-                var failures: KSError? = nil
-                
-                // Now that we have access to the full Room state,
-                // we can instantiate a full MatrixRoom
-                guard let room = self.matrix.getRoom(roomId: self.mxroom.roomId) else {
-                    completion(.failure(KSError(message: "Couldn't init Matrix Room")))
-                    return
-                }
-                
-                for tag in tags {
-                    dgroup.enter()
-                    room.addTag(tag: tag) { response2 in
-                        if response2.isFailure {
-                            let msg = "INVITED\tFailed to set tag [\(tag)]"
-                            print(msg)
-                            failures = failures ?? KSError(message: msg)
-                        }
-                        dgroup.leave()
-                    }
-                }
-                
-                dgroup.notify(queue: .main) {
-                    if let fail = failures {
-                        print("INVITED\tDone, but we had one or more failures.  FAIL.")
-                        completion(.failure(fail))
-                    }
-                    else {
-                        print("INVITED\tSuccess!  We joined the room!")
-                        completion(.success(room))
-                    }
-                }
-            }
+        let data = try await matrix.downloadData(mxc: mxc)
+        let image = UIImage(data: data)
+        
+        await MainActor.run {
+            self.avatar = image
         }
     }
-    
 }
