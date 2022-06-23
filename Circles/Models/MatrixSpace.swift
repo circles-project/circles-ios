@@ -28,7 +28,7 @@ class MatrixSpace: ObservableObject {
         // FIXME: Fetch the name too???
     }
     
-    class func create(roomId: RoomId, api: MatrixAPI) async throws -> MatrixSpace {
+    class func factory(roomId: RoomId, api: MatrixAPI) async throws -> MatrixSpace {
         var space = MatrixSpace(roomId: roomId, api: api)
         try await space.load()
         return space
