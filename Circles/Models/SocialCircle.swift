@@ -10,57 +10,69 @@ import Foundation
 import MatrixSDK
 
 class SocialCircle: ObservableObject, Identifiable {
-    var graph: SocialGraph
-    //var store: KSStore
-    var matrix: MatrixInterface
+
+    var space: MatrixSpace
+    var session: CirclesSession
+    var wall: MatrixRoom?
     
-    var id: String
-    var tag: String
-    var name: String
+    var id: String {
+        space.roomId.description
+    }
+    
+    var name: String? {
+        space.name
+    }
     
     var stream: SocialStream
     
-    class func randomId() -> String {
-        let range: Range<UInt64> = 0 ..< (1 << 53)
-        let id = UInt64.random(in: range)
-        let circleId = String(format: "%016qx", id)
-        return circleId
+    init(space: MatrixSpace, wall: MatrixRoom?, session: CirclesSession) {
+        self.session = session
+        self.space = space
+        self.wall = wall
+        self.stream = SocialStream(space: space, session: session)
     }
     
-    init(circleId: String, name: String, graph: SocialGraph) {
-        //self.graph = store as SocialGraph
-        //self.matrix = store as MatrixInterface
-        self.graph = graph
-        self.matrix = graph.matrix
+    class func create(roomId: RoomId, session: CirclesSession) async throws -> SocialCircle {
+        let space = try await MatrixSpace.create(roomId: roomId, api: session.matrix)
         
-        self.id = circleId
-        self.name = name
-        self.tag = "social.kombucha.circles." + self.id
-        
-        self.stream = SocialStream(name: name, tag: tag, matrix: graph.matrix)
-    }
-    
-    var outbound: MatrixRoom? {
-        stream.rooms.filter { room in
-            print("OUTBOUND\tFound room \(room.id)")
-            for tag in room.tags {
-                print("OUTBOUND\t\tTag: \(tag)")
+        // FIXME: Find the wall room
+        let roomIds = space.children
+        var rooms = [MatrixRoom]()
+        for roomId in roomIds {
+            if let room = try await session.matrix.getRoom(roomId: roomId) {
+                rooms.append(room)
             }
-            return room.tags.contains(ROOM_TAG_OUTBOUND)
         }
-        .first
+        let wall = rooms.first {
+            $0.creatorId == session.matrix.creds.userId
+        }
+
+        let circle = SocialCircle(space: space, wall: wall, session: session)
+        return circle
     }
     
     var followers: [MatrixUser] {
-        var members = self.outbound?.joinedMembers ?? []
+        var members = self.wall?.joinedMembers ?? []
         members.removeAll { user in
-            user == matrix.me()
+            user.userId == session.matrix.creds.userId
         }
         return members
     }
     
-    func unfollow(room: MatrixRoom, completion handler: @escaping (MXResponse<Void>) -> Void) {
-        self.stream.removeRoom(room: room, completion: handler)
+    func follow(room: MatrixRoom) async throws {
+        guard let roomId = RoomId(room.id)
+        else {
+            throw CirclesError("Invalid room id")
+        }
+        try await space.addChild(with: roomId)
+    }
+    
+    func unfollow(room: MatrixRoom) async throws {
+        guard let roomId = RoomId(room.id)
+        else {
+            throw CirclesError("Invalid room id")
+        }
+        try await space.removeChild(with: roomId)
     }
 }
 
