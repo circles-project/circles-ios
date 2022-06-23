@@ -48,7 +48,8 @@ public class CirclesStore: ObservableObject {
     
     private func loadCredentials(_ user: String? = nil) -> MatrixCredentials? {
         
-        guard let userId = user ?? UserDefaults.standard.string(forKey: "user_id")
+        guard let uid = user ?? UserDefaults.standard.string(forKey: "user_id"),
+              let userId = UserId(uid)
         else {
             return nil
         }
@@ -70,11 +71,7 @@ public class CirclesStore: ObservableObject {
         
         var fullCreds = creds
         if fullCreds.wellKnown == nil {
-            guard let domain = getDomainFromUserId(creds.userId) else {
-                let msg = "Could not determine domain for user id"
-                print("CONNECT\t\(msg)")
-                throw CirclesError(msg)
-            }
+            let domain = creds.userId.domain
             fullCreds.wellKnown = try await fetchWellKnown(for: domain)
         }
         
@@ -105,8 +102,8 @@ public class CirclesStore: ObservableObject {
         legacyStore.setupRecovery(key: recoveryKey)
     }
     
-    func generateRecoveryKey(userId: String, password: String) async throws -> Data {
-        guard let userData = userId.data(using: .utf8) else {
+    func generateRecoveryKey(userId: UserId, password: String) async throws -> Data {
+        guard let userData = userId.description.data(using: .utf8) else {
             let msg = "Failed to convert user id to data"
             print("KEYGEN\t\(msg)")
             throw CirclesError(msg)
@@ -189,10 +186,7 @@ public class CirclesStore: ObservableObject {
         var fullCreds = creds
         
         if fullCreds.wellKnown == nil {
-            guard let domain = getDomainFromUserId(creds.userId) ?? ourDomain
-            else {
-                throw CirclesError("Couldn't get domain for user id [\(creds.userId)]")
-            }
+            let domain = creds.userId.domain
             fullCreds.wellKnown = try await fetchWellKnown(for: domain)
         }
         
