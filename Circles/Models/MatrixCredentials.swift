@@ -10,7 +10,7 @@ import Foundation
 struct MatrixCredentials: Codable {
     var accessToken: String
     var deviceId: String
-    var userId: String
+    var userId: UserId
     var wellKnown: MatrixWellKnown?
     //var homeServer: String? // Warning: Deprecated; Do not use
 }
