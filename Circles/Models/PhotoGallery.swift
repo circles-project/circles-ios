@@ -26,8 +26,8 @@ class PhotoGallery: ObservableObject, Identifiable, Equatable, Hashable {
         room.roomId
     }
     
-    func leave() async throws {
-        try await session.leaveGallery(galleryId: galleryId)
+    func leave(reason: String? = nil) async throws {
+        try await session.leaveGallery(galleryId: galleryId, reason: reason)
     }
     
     static func == (lhs: PhotoGallery, rhs: PhotoGallery) -> Bool {
