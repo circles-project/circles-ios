@@ -7,7 +7,7 @@
 
 import Foundation
 
-class MatrixDevice: ObservableObject, Decodable {
+class MatrixCryptoDevice: ObservableObject, Decodable {
     let deviceId: String
     var id: String {
         deviceId
