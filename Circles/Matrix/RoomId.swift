@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct RoomId: LosslessStringConvertible, Codable, Equatable {
+struct RoomId: LosslessStringConvertible, Codable, Equatable, Hashable {
     let opaqueId: String
     let domain: String
     
