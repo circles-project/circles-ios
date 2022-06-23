@@ -18,6 +18,8 @@ class MatrixAPI {
     private var apiUrlSession: URLSession   // For making API calls
     private var mediaUrlSession: URLSession // For downloading media
     
+    // MARK: Init
+    
     init(creds: MatrixCredentials) throws {
         self.version = "r0"
         
@@ -49,6 +51,8 @@ class MatrixAPI {
         self.baseUrl = URL(string: wk.homeserver.baseUrl)!
     }
     
+    // MARK: API Call
+    
     func call(method: String, path: String, body: Codable? = nil, expectedStatuses: [Int] = [200]) async throws -> (Data, HTTPURLResponse) {
         print("APICALL\tCalling \(method) \(path)")
         let url = URL(string: path, relativeTo: baseUrl)!
@@ -65,7 +69,7 @@ class MatrixAPI {
         
                
         var slowDown = true
-        var delay: UInt64 = 2_000_000_000
+        var delayNs: UInt64 = 1_000_000_000
         var count = 0
         
         repeat {
@@ -80,9 +84,19 @@ class MatrixAPI {
             
             if httpResponse.statusCode == 429 {
                 slowDown = true
-                print("APICALL\tGot 429 error...  Waiting \(delay) nanosecs and then retrying")
-                try await Task.sleep(nanoseconds: delay)
-                delay *= 2
+
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                if let rateLimitError = try? decoder.decode(Matrix.RateLimitError.self, from: data),
+                   let delayMs = rateLimitError.retryAfterMs {
+                    delayNs = 1_000_000 * UInt64(delayMs)
+                } else {
+                    delayNs *= 2
+                }
+                
+                print("APICALL\tGot 429 error...  Waiting \(delayNs) nanosecs and then retrying")
+                try await Task.sleep(nanoseconds: delayNs)
+                
                 count += 1
             } else {
                 slowDown = false
@@ -101,6 +115,8 @@ class MatrixAPI {
         
         throw Matrix.Error("API call failed")
     }
+    
+    // MARK: My User Profile
     
     // https://spec.matrix.org/v1.2/client-server-api/#put_matrixclientv3profileuseriddisplayname
     func setMyDisplayName(_ name: String) async throws {
@@ -126,10 +142,217 @@ class MatrixAPI {
                                    ])
     }
     
+    func setMyStatus(message: String) async throws {
+        let body = [
+            "presence": "online",
+            "status_msg": message,
+        ]
+        try await call(method: "PUT", path: "/_matrix/client/\(version)/presence/\(creds.userId)/status", body: body)
+    }
+    
+    // MARK: Other User Profiles
+    
+    func getDisplayName(userId: UserId) async throws -> String? {
+        let path = "/_matrix/client/\(version)/profile/\(userId)/displayname"
+        let (data, response) = try await call(method: "GET", path: path)
+        
+        struct ResponseBody: Codable {
+            var displayname: String?
+        }
+        
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        
+        guard let responseBody = try? decoder.decode(ResponseBody.self, from: data)
+        else {
+            return nil
+        }
+        
+        return responseBody.displayname
+    }
+    
+    // https://spec.matrix.org/v1.2/client-server-api/#get_matrixclientv3profileuseridavatar_url
+    func getAvatarUrl(userId: UserId) async throws -> String? {
+        let path = "/_matrix/client/\(version)/profile/\(userId)/avatar_url"
+        let (data, response) = try await call(method: "GET", path: path)
+        
+        struct ResponseBody: Codable {
+            var avatarUrl: String?
+        }
+        
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        
+        guard let responseBody = try? decoder.decode(ResponseBody.self, from: data)
+        else {
+            return nil
+        }
+        
+        return responseBody.avatarUrl
+    }
+    
+    func getAvatarImage(userId: UserId) async throws -> UIImage? {
+        
+        
+        // Download the bytes from the given uri
+        guard let uri = try await getAvatarUrl(userId: userId)
+        else {
+            let msg = "Couldn't get mxc:// URI"
+            print("USER\t\(msg)")
+            throw Matrix.Error(msg)
+        }
+        guard let mxc = MXC(uri)
+        else {
+            let msg = "Invalid mxc:// URI"
+            print("USER\t\(msg)")
+            throw Matrix.Error(msg)
+        }
+        
+        let data = try await downloadData(mxc: mxc)
+        
+        // Create a UIImage
+        let image = UIImage(data: data)
+        
+        // return the UIImage
+        return image
+    }
+    
+    func getProfileInfo(userId: String) async throws -> (String?,String?) {
+               
+        let (data, response) = try await call(method: "GET", path: "/_matrix/client/\(version)/profile/\(userId)")
+        
+        struct UserProfileInfo: Codable {
+            let displayName: String?
+            let avatarUrl: String?
+            
+        }
+        
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        guard let profileInfo: UserProfileInfo = try? decoder.decode(UserProfileInfo.self, from: data)
+        else {
+            let msg = "Failed to decode user profile"
+            print(msg)
+            throw Matrix.Error(msg)
+        }
+        
+        return (profileInfo.displayName, profileInfo.avatarUrl)
+    }
+    
+    // MARK: Account Data
+    
+    // https://spec.matrix.org/v1.2/client-server-api/#get_matrixclientv3useruseridaccount_datatype
+    func getAccountData<T>(for eventType: String, of dataType: T.Type) async throws -> T where T: Decodable {
+        let path = "/_matrix/client/\(version)/user/\(creds.userId)/account_data/\(eventType)"
+        let (data, response) = try await call(method: "GET", path: path)
+        
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        
+        let content = try decoder.decode(dataType, from: data)
+        
+        return content
+    }
+    
+    // MARK: Devices
+    
+    func getDevices() async throws -> [MatrixMyDevice] {
+        let path = "/_matrix/client/\(version)/devices"
+        let (data, response) = try await call(method: "GET", path: path)
+        
+        struct DeviceInfo: Codable {
+            var deviceId: String
+            var displayName: String?
+            var lastSeenIp: String?
+            var lastSeenTs: Int?
+        }
+        
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        guard let infos = try? decoder.decode([DeviceInfo].self, from: data)
+        else {
+            let msg = "Couldn't decode device info"
+            print("DEVICES\t\(msg)")
+            throw Matrix.Error(msg)
+        }
+        
+        let devices = infos.map {
+            MatrixMyDevice(matrix: self, deviceId: $0.deviceId, displayName: $0.displayName, lastSeenIp: $0.lastSeenIp, lastSeenUnixMs: $0.lastSeenTs)
+        }
+        
+        return devices
+    }
+    
+    func getDevice(deviceId: String) async throws -> MatrixMyDevice {
+        let path = "/_matrix/client/\(version)/devices/\(deviceId)"
+        let (data, response) = try await call(method: "GET", path: path)
+        
+        struct DeviceInfo: Codable {
+            var deviceId: String
+            var displayName: String?
+            var lastSeenIp: String?
+            var lastSeenTs: Int?
+        }
+        
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        guard let info = try? decoder.decode(DeviceInfo.self, from: data)
+        else {
+            let msg = "Couldn't decode info for device \(deviceId)"
+            print("DEVICES\t\(msg)")
+            throw Matrix.Error(msg)
+        }
+        
+        let device = MatrixMyDevice(matrix: self, deviceId: info.deviceId, displayName: info.displayName, lastSeenIp: info.lastSeenIp, lastSeenUnixMs: info.lastSeenTs)
+        
+        return device
+    }
+    
+    func setDeviceDisplayName(deviceId: String, displayName: String) async throws {
+        let path = "/_matrix/client/\(version)/devices/\(deviceId)"
+        let (data, response) = try await call(method: "PUT",
+                                              path: path,
+                                              body: [
+                                                "display_name": displayName
+                                              ])
+    }
+    
+    // https://spec.matrix.org/v1.3/client-server-api/#delete_matrixclientv3devicesdeviceid
+    // FIXME This must support UIA.  Return a UIAASession???
+    func deleteDevice(deviceId: String) async throws -> UIAuthSession? {
+        let path = "/_matrix/client/\(version)/devices/\(deviceId)"
+        let (data, response) = try await call(method: "DELETE",
+                                              path: path,
+                                              body: nil,
+                                              expectedStatuses: [200,401])
+        switch response.statusCode {
+        case 200:
+            // No need to do UIA.  Maybe we recently authenticated ourselves for another API call?
+            // Anyway, we're happy.  Tell the caller that we're good to go; no more work to do.
+            return nil
+        case 401:
+            // We need to auth
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            guard let uiaState = try? decoder.decode(UIAA.SessionState.self, from: data)
+            else {
+                let msg = "Could not decode UIA info"
+                print("API\t\(msg)")
+                throw Matrix.Error(msg)
+            }
+            let uiaSession = UIAuthSession("DELETE", URL(string: path, relativeTo: baseUrl)!, credentials: creds, requestDict: [:])
+            uiaSession.state = .connected(uiaState)
+            
+            return uiaSession
+        default:
+            throw Matrix.Error("Got unexpected response")
+        }
+    }
+    
     // MARK: Rooms
     
     // https://spec.matrix.org/v1.2/client-server-api/#get_matrixclientv3joined_rooms
-    func getJoinedRooms() async throws -> [RoomId] {
+    func getJoinedRoomIds() async throws -> [RoomId] {
         
         let (data, response) = try await call(method: "GET", path: "/_matrix/client/\(version)/joined_rooms")
         
@@ -154,7 +377,7 @@ class MatrixAPI {
     func createRoom(name: String,
                     type: String? = nil,
                     encrypted: Bool = true,
-                    invite userIds: [String] = [],
+                    invite userIds: [UserId] = [],
                     direct: Bool = false
     ) async throws -> RoomId {
         print("CREATEROOM\tCreating room with name=[\(name)] and type=[\(type ?? "(none)")]")
@@ -277,9 +500,8 @@ class MatrixAPI {
     
         return responseBody.eventId
     }
-
-
     
+    // MARK: Room tags
     
     func addTag(roomId: RoomId, tag: String, order: Float? = nil) async throws {
         let path = "/_matrix/client/\(version)/user/\(creds.userId)/rooms/\(roomId)/tags/\(tag)"
@@ -308,6 +530,8 @@ class MatrixAPI {
         let tags: [String] = [String](tagContent.tags.keys)
         return tags
     }
+    
+    // MARK: Room Metadata
 
     func setAvatarImage(roomId: RoomId, image: UIImage) async throws {
         let maxSize = CGSize(width: 640, height: 640)
@@ -340,9 +564,39 @@ class MatrixAPI {
         let _ = try await sendStateEvent(to: roomId, type: .mRoomAvatar, content: RoomAvatarContent(url: uri, info: info))
     }
     
+    func getAvatarImage(roomId: RoomId) async throws -> UIImage? {
+        guard let content = try? await getRoomState(roomId: roomId, for: .mRoomAvatar, of: RoomAvatarContent.self)
+        else {
+            // No avatar for this room???
+            return nil
+        }
+        
+        guard let mxc = MXC(content.url)
+        else {
+            let msg = "Invalid avatar image URL"
+            print(msg)
+            throw Matrix.Error(msg)
+        }
+        
+        let data = try await downloadData(mxc: mxc)
+        let image = UIImage(data: data)
+        return image
+    }
+    
     func setTopic(roomId: RoomId, topic: String) async throws {
         let _ = try await sendStateEvent(to: roomId, type: .mRoomTopic, content: ["topic": topic])
     }
+    
+    func setDisplayName(roomId: RoomId, name: String) async throws {
+        try await sendStateEvent(to: roomId, type: .mRoomName, content: RoomNameContent(name: name))
+    }
+    
+    func getDisplayName(roomId: RoomId) async throws -> String {
+        let content = try await getRoomState(roomId: roomId, for: .mRoomName, of: RoomNameContent.self)
+        return content.name
+    }
+    
+    // MARK: Room Messages
     
     // https://spec.matrix.org/v1.2/client-server-api/#get_matrixclientv3roomsroomidmessages
     // Good news!  `from` is no longer required as of v1.3 (June 2022),
@@ -411,6 +665,23 @@ class MatrixAPI {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         let events = try decoder.decode([ClientEvent].self, from: data)
         return events
+    }
+    
+    func getRoomState<T>(roomId: RoomId, for eventType: MatrixEventType, of dataType: T.Type, with stateKey: String? = nil) async throws -> T where T: Decodable {
+        let path = "/_matrix/client/\(version)/rooms/\(roomId)/state/\(eventType)/\(stateKey ?? "")"
+        let (data, response) = try await call(method: "GET", path: path)
+        
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        
+        guard let content = try? decoder.decode(dataType, from: data)
+        else {
+            let msg = "Couldn't decode room state for event type \(eventType)"
+            print(msg)
+            throw Matrix.Error(msg)
+        }
+        
+        return content
     }
     
     func inviteUser(roomId: RoomId, userId: UserId, reason: String? = nil) async throws {
@@ -489,7 +760,7 @@ class MatrixAPI {
     }
     
     func addSpaceChild(_ child: RoomId, to parent: RoomId) async throws {
-        print("ADDCHILD\tAdding [\(child)] as a child space of [\(parent)]")
+        print("SPACES\tAdding [\(child)] as a child space of [\(parent)]")
         let servers = Array(Set([child.domain, parent.domain]))
         let order = (0x20 ... 0x7e).randomElement()?.description ?? "A"
         let content = SpaceChildContent(order: order, via: servers)
@@ -502,72 +773,31 @@ class MatrixAPI {
         let _ = try await sendStateEvent(to: child, type: .mSpaceParent, content: content, stateKey: parent.description)
     }
     
-    // MARK: User profiles
-    
-    func getDisplayName(userId: UserId) async throws -> String? {
-        let path = "/_matrix/client/\(version)/profile/\(userId)/displayname"
-        let (data, response) = try await call(method: "GET", path: path)
-        
-        struct ResponseBody: Codable {
-            var displayname: String?
+    func getSpaceChildren(_ roomId: RoomId) async throws -> [RoomId] {
+        let allStateEvents = try await getRoomState(roomId: roomId)
+        let spaceChildEvents = allStateEvents.filter {
+            $0.type == .mSpaceChild
         }
-        
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        
-        guard let responseBody = try? decoder.decode(ResponseBody.self, from: data)
-        else {
-            return nil
+        return spaceChildEvents.compactMap {
+            guard let childRoomIdString = $0.stateKey,
+                  let content = $0.content as? SpaceChildContent,
+                  content.via != nil  // This check for `via` is the only way we have to know if this child relationship is still valid
+            else {
+                return nil
+            }
+            
+            return RoomId(childRoomIdString)
         }
-        
-        return responseBody.displayname
     }
     
-    // https://spec.matrix.org/v1.2/client-server-api/#get_matrixclientv3profileuseridavatar_url
-    func getAvatarUrl(userId: UserId) async throws -> String? {
-        let path = "/_matrix/client/\(version)/profile/\(userId)/avatar_url"
-        let (data, response) = try await call(method: "GET", path: path)
-        
-        struct ResponseBody: Codable {
-            var avatarUrl: String?
-        }
-        
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        
-        guard let responseBody = try? decoder.decode(ResponseBody.self, from: data)
-        else {
-            return nil
-        }
-        
-        return responseBody.avatarUrl
+    func removeSpaceChild(_ child: RoomId, from parent: RoomId) async throws {
+        print("SPACES\tRemoving [\(child)] as a child space of [\(parent)]")
+        let order = "\(0x7e)"
+        let content = SpaceChildContent(order: order, via: nil)  // This stupid `via = nil` thing is the only way we have to remove a child relationship
+        let _ = try await sendStateEvent(to: parent, type: .mSpaceChild, content: content, stateKey: child.description)
     }
     
-    func getAvatarImage(userId: UserId) async throws -> UIImage? {
-        
-        
-        // Download the bytes from the given uri
-        guard let uri = try await getAvatarUrl(userId: userId)
-        else {
-            let msg = "Couldn't get mxc:// URI"
-            print("USER\t\(msg)")
-            throw Matrix.Error(msg)
-        }
-        guard let mxc = MXC(uri)
-        else {
-            let msg = "Invalid mxc:// URI"
-            print("USER\t\(msg)")
-            throw Matrix.Error(msg)
-        }
-        
-        let data = try await downloadData(mxc: mxc)
-        
-        // Create a UIImage
-        let image = UIImage(data: data)
-        
-        // return the UIImage
-        return image
-    }
+
     
     // MARK: Media API
     
