@@ -19,6 +19,12 @@ enum Matrix {
         }
     }
     
+    struct RateLimitError: Swift.Error, Codable {
+        var errcode: String
+        var error: String?
+        var retryAfterMs: Int?
+    }
+    
     
     
     static func getDomainFromUserId(_ userId: String) -> String? {
