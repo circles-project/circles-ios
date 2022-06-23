@@ -32,8 +32,8 @@ class SocialCircle: ObservableObject, Identifiable {
         self.stream = SocialStream(space: space, session: session)
     }
     
-    class func create(roomId: RoomId, session: CirclesSession) async throws -> SocialCircle {
-        let space = try await MatrixSpace.create(roomId: roomId, api: session.matrix)
+    class func factory(roomId: RoomId, session: CirclesSession) async throws -> SocialCircle {
+        let space = try await MatrixSpace.factory(roomId: roomId, api: session.matrix)
         
         // FIXME: Find the wall room
         let roomIds = space.children

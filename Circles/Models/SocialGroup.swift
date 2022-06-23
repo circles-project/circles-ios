@@ -14,24 +14,24 @@ import MatrixSDK
 
 class SocialGroup: ObservableObject, Identifiable {
     var room: MatrixRoom
-    var container: GroupsContainer
+    var session: CirclesSession
     
-    init(from room: MatrixRoom, on container: GroupsContainer) {
+    init(room: MatrixRoom, session: CirclesSession) {
         self.room = room
-        self.container = container
+        self.session = session
     }
     
     var id: String {
         self.room.id
     }
     
-    var roomId: RoomId? {
+    var groupId: RoomId {
         room.roomId
     }
     
-    func leave() async throws
+    func leave(reason: String? = nil) async throws
     {
-        try await self.container.leave(group: self)
+        try await session.leaveGroup(groupId: groupId, reason: reason)
     }
     
     var name: String? {

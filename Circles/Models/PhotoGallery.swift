@@ -9,21 +9,34 @@
 import Foundation
 import MatrixSDK
 
-class PhotoGallery: ObservableObject, Identifiable {
+class PhotoGallery: ObservableObject, Identifiable, Equatable, Hashable {
     var room: MatrixRoom
-    var container: PhotoGalleriesContainer
+    var session: CirclesSession
     
-    init(from room: MatrixRoom, on container: PhotoGalleriesContainer) {
+    init(room: MatrixRoom, session: CirclesSession) {
         self.room = room
-        self.container = container
+        self.session = session
     }
     
     var id: String {
         self.room.id
     }
     
-    func leave(completion: @escaping (MXResponse<String>)->Void)
-    {
-        self.container.leave(gallery: self, completion: completion)
+    var galleryId: RoomId {
+        room.roomId
     }
+    
+    func leave() async throws {
+        try await session.leaveGallery(galleryId: galleryId)
+    }
+    
+    static func == (lhs: PhotoGallery, rhs: PhotoGallery) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        self.galleryId.hash(into: &hasher)
+    }
+    
+    
 }
