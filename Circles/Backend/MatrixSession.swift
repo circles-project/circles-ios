@@ -81,7 +81,7 @@ class MatrixSession: MatrixAPI, ObservableObject {
 
 
     // https://spec.matrix.org/v1.2/client-server-api/#get_matrixclientv3sync
-    func sync() async throws {
+    func sync() async throws -> String {
         struct SyncRequestBody: Codable {
             var filter: String?
             var fullState: Bool?
@@ -194,7 +194,13 @@ class MatrixSession: MatrixAPI, ObservableObject {
         if let task = syncTask {
             let result = await task.result
             // FIXME: Handle errors here
-            return
+            switch result {
+            case .failure(let error):
+                // FIXME: Handle errors here
+                throw error
+            case .success(let nextToken):
+                return nextToken
+            }
         } else {
             syncTask = .init(priority: .background) {
                 let requestBody = SyncRequestBody(timeout: 0)
@@ -242,6 +248,14 @@ class MatrixSession: MatrixAPI, ObservableObject {
                 self.syncTask = nil
                 
                 return responseBody.nextBatch
+            }
+            
+            let result = await syncTask!.result
+            switch result {
+            case .failure(let error):
+                throw error
+            case .success(let nextToken):
+                return nextToken
             }
         }
     }
