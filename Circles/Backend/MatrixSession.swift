@@ -13,9 +13,6 @@ class MatrixSession: MatrixAPI, ObservableObject {
     //private var store: SQLiteDataStore
     
     var legacy: LegacyStore
-    
-    let homeserver: String
-    let identityServer: String
 
     @Published var displayName: String?
     @Published var avatarUrl: URL?
@@ -29,14 +26,14 @@ class MatrixSession: MatrixAPI, ObservableObject {
     @Published var users: [UserId: MatrixUser]
 
     // Need some private stuff that outside callers can't see
-    private var syncTask: Task?
+    private var syncTask: Task<String,Error>?  // FIXME: Make this use the  SyncResponseBody thing instead of String ???
 
     //private var deviceCache: [String: MatrixDevice]
     private var ignoreUserIds: Set<String>
     
     private var storagePath: String
-    private var mediaUrlSession: URLSession // For downloading media
-    private var apiUrlSession: URLSession   // For making API calls
+    //private var mediaUrlSession: URLSession // For downloading media
+    //private var apiUrlSession: URLSession   // For making API calls
     
     // We need to use the Matrix 'recovery' feature to back up crypto keys etc
     // This saves us from struggling with UISI errors and unverified devices
@@ -44,13 +41,23 @@ class MatrixSession: MatrixAPI, ObservableObject {
     private var recoveryTimestamp: Date?
     
     override init(creds: MatrixCredentials) throws {
-        try super.init(creds: creds)
+        self.legacy = LegacyStore(creds: creds)
         
-        //self.store = SQLiteDataStore(userId: creds.userId, deviceId: creds.deviceId)
-                
+        self.device = MatrixMyDevice(deviceId: creds.deviceId)
+
         self.rooms = [:] // FIXME: Load rooms from the store
         self.users = [:]
         self.invitations = [:]
+    
+        //self.store = SQLiteDataStore(userId: creds.userId, deviceId: creds.deviceId)
+        
+        self.ignoreUserIds = []
+        let documentsPath = NSSearchPathForDirectoriesInDomains(
+            .documentDirectory, .userDomainMask, true
+        ).first!
+        self.storagePath = "\(documentsPath)/\(creds.userId)"
+        
+        try super.init(creds: creds)
         
         /* // FIXME: Does this still make sense given that we're now building on MatrixAPI???
         // Look up the homeserver (and identity server)
@@ -185,9 +192,11 @@ class MatrixSession: MatrixAPI, ObservableObject {
         }
         
         if let task = syncTask {
-            return await task
+            let result = await task.result
+            // FIXME: Handle errors here
+            return
         } else {
-            syncTask = Task {
+            syncTask = .init(priority: .background) {
                 let requestBody = SyncRequestBody(timeout: 0)
                 let (data, response) = try await self.call(method: "GET", path: "/_matrix/client/v3/sync", body: requestBody)
                 
@@ -196,7 +205,9 @@ class MatrixSession: MatrixAPI, ObservableObject {
                 guard let responseBody = try? decoder.decode(SyncResponseBody.self, from: data)
                 else {
                     self.syncTask = nil
-                    throw Error()
+                    let msg = "Failed to decode /sync response"
+                    print(msg)
+                    throw Matrix.Error(msg)
                 }
                 
                 // Process the sync response, updating local state
@@ -204,12 +215,12 @@ class MatrixSession: MatrixAPI, ObservableObject {
                 // Handle invites
                 if let invitedRoomsDict = responseBody.rooms?.invite {
                     for (roomId, info) in invitedRoomsDict {
-                        guard let events = info.inviteState.events
+                        guard let events = info.inviteState?.events
                         else {
                             continue
                         }
                         if self.invitations[roomId] == nil {
-                            let room = InvitedRoom(matrix: self, roomId: RoomId, stateEvents: events)
+                            let room = try InvitedRoom(matrix: self, roomId: roomId, stateEvents: events)
                             self.invitations[roomId] = room
                         }
                     }
@@ -229,6 +240,8 @@ class MatrixSession: MatrixAPI, ObservableObject {
                 
                 
                 self.syncTask = nil
+                
+                return responseBody.nextBatch
             }
         }
     }
@@ -289,10 +302,25 @@ class MatrixSession: MatrixAPI, ObservableObject {
     // https://spec.matrix.org/v1.2/client-server-api/#put_matrixclientv3useruseridaccount_datatype
     func ignoreUser(userId: String) async throws {
         throw Matrix.Error("Not implemented")
+        
+        // First make sure that we have the current list
+        
+        // Add the user to it
+        
+        // Send the combined list to the server
+        
+        throw Matrix.Error("Not implemented")
     }
     
     // https://spec.matrix.org/v1.2/client-server-api/#ignoring-users
     func unIgnoreUser(userId: String) async throws {
+        
+        // First make sure we have the current list
+        
+        // Remove the user from the list
+        
+        // Send the reduced list to the server
+        
         throw Matrix.Error("Not implemented")
     }
     
