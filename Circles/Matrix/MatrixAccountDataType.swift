@@ -11,6 +11,7 @@ enum MatrixAccountDataType: Codable {
     case mIdentityServer // "m.identity_server"
     case mFullyRead // "m.fully_read"
     case mDirect // "m.direct"
+    case mIgnoredUserList
     case mSecretStorageKey(String) // "m.secret_storage.key.[key ID]"
     
     init(from decoder: Decoder) throws {
@@ -26,6 +27,10 @@ enum MatrixAccountDataType: Codable {
             
         case "m.direct":
             self = .mDirect
+            return
+            
+        case "m.ignored_user_list":
+            self = .mIgnoredUserList
             return
             
         default:
