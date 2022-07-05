@@ -31,27 +31,10 @@ struct CircleConnectionsSheet: View {
         }
     }
     
-    func unfollow() async throws {
+    func leaveRooms() async throws {
         for room in roomsToLeave {
-            try await circle.unfollow(room: room)
-        }
-    }
-    
-    func leaveRooms() {
-        let dgroup = DispatchGroup()
-        
-        for room in roomsToLeave {
-            dgroup.enter()
-            room.matrix.leaveRoom(roomId: room.id) { success in
-                if success {
-                    roomsToLeave.remove(room)
-                }
-                dgroup.leave()
-            }
-        }
-        
-        dgroup.notify(queue: .main) {
-            // Nothing else to do
+            try await room.matrix.leave(roomId: room.roomId)
+            roomsToLeave.remove(room)
         }
     }
     
@@ -87,7 +70,10 @@ struct CircleConnectionsSheet: View {
                                                 
                                                 _ = Task { try await circle.unfollow(room: room) }
                                             }),
-                                            .destructive(Text("Unfollow completely (remove from all circles)"), action: { _ = Task { try await unfollow() } }),
+                                            .destructive(Text("Unfollow completely (remove from all circles)"), action: {
+                                                _ = Task { try await leaveRooms() }
+                                                
+                                            }),
                                             .cancel() {
                                                 roomsToLeave.removeAll()
                                             }
