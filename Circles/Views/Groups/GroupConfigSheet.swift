@@ -20,7 +20,9 @@ struct GroupConfigSheet: View {
     
     var picker: some View {
         EmbeddedImagePicker(selectedImage: $headerImage, isEnabled: $showPicker) { image in
-            room.setAvatarImage(image: image)
+            let _ = Task {
+                try await room.setAvatarImage(image: image)
+            }
         }
     }
     
