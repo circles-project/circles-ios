@@ -26,7 +26,10 @@ class MatrixSession: MatrixAPI, ObservableObject {
     @Published var users: [UserId: MatrixUser]
 
     // Need some private stuff that outside callers can't see
-    private var syncTask: Task<String,Error>?  // FIXME: Make this use the  SyncResponseBody thing instead of String ???
+    private var syncRequestTask: Task<String,Error>?
+    private var keepSyncing: Bool = true
+    private var syncDelayNs: UInt64 = 30_000_000_000
+    private var backgroundSyncTask: Task<String,Error>?
 
     //private var deviceCache: [String: MatrixDevice]
     private var ignoreUserIds: Set<String>
@@ -191,7 +194,7 @@ class MatrixSession: MatrixAPI, ObservableObject {
             var toDevice: ToDevice?
         }
         
-        if let task = syncTask {
+        if let task = syncRequestTask {
             let result = await task.result
             // FIXME: Handle errors here
             switch result {
@@ -202,7 +205,7 @@ class MatrixSession: MatrixAPI, ObservableObject {
                 return nextToken
             }
         } else {
-            syncTask = .init(priority: .background) {
+            syncRequestTask = .init(priority: .background) {
                 let requestBody = SyncRequestBody(timeout: 0)
                 let (data, response) = try await self.call(method: "GET", path: "/_matrix/client/v3/sync", body: requestBody)
                 
@@ -210,7 +213,7 @@ class MatrixSession: MatrixAPI, ObservableObject {
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
                 guard let responseBody = try? decoder.decode(SyncResponseBody.self, from: data)
                 else {
-                    self.syncTask = nil
+                    self.syncRequestTask = nil
                     let msg = "Failed to decode /sync response"
                     print(msg)
                     throw Matrix.Error(msg)
@@ -245,12 +248,12 @@ class MatrixSession: MatrixAPI, ObservableObject {
                 }
                 
                 
-                self.syncTask = nil
+                self.syncRequestTask = nil
                 
                 return responseBody.nextBatch
             }
             
-            let result = await syncTask!.result
+            let result = await syncRequestTask!.result
             switch result {
             case .failure(let error):
                 throw error
@@ -260,22 +263,71 @@ class MatrixSession: MatrixAPI, ObservableObject {
         }
     }
     
+    func startSyncing() async throws {
+        if backgroundSyncTask != nil {
+            let msg = "Can't start syncing, we're already syncing!"
+            print(msg)
+            throw Matrix.Error(msg)
+        }
+        
+        keepSyncing = true
+        
+        backgroundSyncTask = Task.detached(priority: .background) {
+            while self.keepSyncing {
+                let token = try await self.sync()
+                try await Task.sleep(nanoseconds: self.syncDelayNs)
+            }
+            return "Done" // FIXME: This is a kludge because apparently I need to return *something* and String was an easy answer...
+        }
+    }
+    
     func pause() async throws {
         // pause() doesn't actually make any API calls
         // It just tells our own local sync task to take a break
+        self.keepSyncing = false
     }
     
     func close() async throws {
         // close() is like pause; it doesn't make any API calls
         // It just tells our local sync task to shut down
+        self.keepSyncing = false
+        // FIXME: Is there anything else that we need to do here?
+        //        I guess technically we should throw out any state related to the current sync session?
     }
     
-    func createRecovery(privateKey: Data) async throws {
-        throw Matrix.Error("Not implemented")
+    // See https://spec.matrix.org/v1.2/client-server-api/#server-side-key-backups
+    // Especially https://spec.matrix.org/v1.2/client-server-api/#post_matrixclientv3room_keysversion
+    func createRecovery(privateKey: Data) async throws -> String {
+        let path = "/_matrix/client/\(version)/room_keys/version"
+        
+        struct RequestBody: Codable {
+            let algorithm = "m.megolm_backup.v1.curve25519-aes-sha2"
+            var authData: MegolmBackupV1AuthData
+            
+            struct MegolmBackupV1AuthData: Codable {
+                var publicKey: String
+                var signatures: [String]?
+            }
+        }
+        let requestBody = RequestBody(authData: RequestBody.MegolmBackupV1AuthData(publicKey: "FIXME"))
+        
+        let (data, response) = try await self.call(method: "POST", path: path, body: requestBody)
+        
+        struct ResponseBody: Codable {
+            var version: String
+        }
+        
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        
+        let responseBody = try decoder.decode(ResponseBody.self, from: data)
+        return responseBody.version
     }
     
-    func deleteRecovery() async throws {
-        throw Matrix.Error("Not implemented")
+    // https://spec.matrix.org/v1.2/client-server-api/#delete_matrixclientv3room_keysversionversion
+    func deleteRecovery(_ recoveryId: String) async throws {
+        let path = "/_matrix/client/\(version)/room_keys/version/\(recoveryId)"
+        let (data, response) = try await self.call(method: "DELETE", path: path)
     }
     
     func whoAmI() -> UserId {
