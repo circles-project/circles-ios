@@ -44,7 +44,7 @@ class SignupSession: UIAuthSession {
         }
         requestDict["x_show_msisdn"] = AnyCodable(showMSISDN)
         requestDict["inhibit_login"] = AnyCodable(inhibitLogin)
-        super.init(signupURL, requestDict: requestDict)
+        super.init(method: "POST", url: signupURL, requestDict: requestDict)
         self.desiredUsername = username
     }
     

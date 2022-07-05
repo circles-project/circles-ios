@@ -168,6 +168,27 @@ enum Matrix {
         }
     }
     
+    static func decodeAccountData(of dataType: MatrixAccountDataType, from decoder: Decoder) throws -> Decodable {
+        let container = try decoder.container(keyedBy: MinimalEvent.CodingKeys.self)
+
+        switch dataType {
+            
+        case .mIdentityServer:
+            throw Matrix.Error("Not implemented")
+            
+        case .mFullyRead:
+            throw Matrix.Error("Not implemented")
+
+        case .mDirect:
+            let content = try container.decode(mDirectContent.self, forKey: .content)
+            return content
+
+        case .mSecretStorageKey(let string):
+            throw Matrix.Error("Not implemented")
+
+        }
+    }
+    
     // MARK: Encoding
     
     static func encodeEventContent(content: Codable, of type: MatrixEventType, to encoder: Encoder) throws {

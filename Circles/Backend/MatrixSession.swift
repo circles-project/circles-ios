@@ -83,23 +83,35 @@ class MatrixSession: MatrixAPI, ObservableObject {
             var timeout: Int?
         }
         
-        struct SyncResponseBody: Codable {
+        struct SyncResponseBody: Decodable {
             struct MinimalEventsContainer: Codable {
                 var events: [MinimalEvent]?
             }
-            struct AccountData: Codable {
+            struct AccountData: Decodable {
                 // Here we can't use the MinimalEvent type that we already defined
                 // Because Matrix is batshit and puts crazy stuff into these `type`s
-                struct Event: Codable {
-                    var type: String
-                    var content: Codable
+                struct Event: Decodable {
+                    var type: MatrixAccountDataType
+                    var content: Decodable
+                    
+                    enum CodingKeys: String, CodingKey {
+                        case type
+                        case content
+                    }
+                    
+                    init(from decoder: Decoder) throws {
+                        let container = try decoder.container(keyedBy: CodingKeys.self)
+                        
+                        self.type = try container.decode(MatrixAccountDataType.self, forKey: .type)
+                        self.content = try Matrix.decodeAccountData(of: self.type, from: decoder)
+                    }
                 }
                 var events: [Event]?
             }
             typealias Presence =  MinimalEventsContainer
             typealias Ephemeral = MinimalEventsContainer
             
-            struct Rooms: Codable {
+            struct Rooms: Decodable {
                 var invite: [RoomId: InvitedRoomSyncInfo]?
                 var join: [RoomId: JoinedRoomSyncInfo]?
                 var knock: [RoomId: KnockedRoomSyncInfo]?
@@ -119,7 +131,7 @@ class MatrixSession: MatrixAPI, ObservableObject {
                 var limited: Bool?
                 var prevBatch: String?
             }
-            struct JoinedRoomSyncInfo: Codable {
+            struct JoinedRoomSyncInfo: Decodable {
                 struct RoomSummary: Codable {
                     var heroes: [UserId]?
                     var invitedMemberCount: Int?
@@ -149,7 +161,7 @@ class MatrixSession: MatrixAPI, ObservableObject {
                 }
                 var knockState: KnockState?
             }
-            struct LeftRoomSyncInfo: Codable {
+            struct LeftRoomSyncInfo: Decodable {
                 var accountData: AccountData?
                 var state: StateEventsContainer?
                 var timeline: Timeline?
@@ -177,7 +189,7 @@ class MatrixSession: MatrixAPI, ObservableObject {
         } else {
             syncTask = Task {
                 let requestBody = SyncRequestBody(timeout: 0)
-                let (data, response) = try await self.matrixApiCall(method: "GET", path: "/_matrix/client/v3/sync", body: requestBody)
+                let (data, response) = try await self.call(method: "GET", path: "/_matrix/client/v3/sync", body: requestBody)
                 
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -396,7 +408,19 @@ class MatrixSession: MatrixAPI, ObservableObject {
         throw Matrix.Error("Not implemented")
     }
     
-
+    override func leave(roomId: RoomId, reason: String? = nil) async throws {
+        try await super.leave(roomId: roomId, reason: reason)
+        await MainActor.run {
+            self.rooms[roomId] = nil
+        }
+    }
+    
+    func decline(roomId: RoomId, reason: String? = nil) async throws {
+        try await super.leave(roomId: roomId, reason: reason)
+        await MainActor.run {
+            self.invitations[roomId] = nil
+        }
+    }
     
     
     func fetchRoomMemberList(roomId: String) async throws -> [String : String] {

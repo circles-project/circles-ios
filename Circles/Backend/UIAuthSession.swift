@@ -55,8 +55,8 @@ class UIAuthSession: UIASession, ObservableObject {
         }
     }
         
-    init(_ method: String? = nil, _ url: URL, credentials: MatrixCredentials? = nil, requestDict: [String:AnyCodable]) {
-        self.method = method ?? "POST"
+    init(method: String, url: URL, credentials: MatrixCredentials? = nil, requestDict: [String:AnyCodable]) {
+        self.method = method
         self.url = url
         //self.accessToken = accessToken
         self.creds = credentials
