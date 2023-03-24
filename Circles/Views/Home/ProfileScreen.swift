@@ -86,10 +86,8 @@ struct ProfileScreen: View {
                     .sheet(isPresented: $showPicker) {
                         ImagePicker(selectedImage: $newImage) { maybeImg in
                             if let img = maybeImg {
-                                user.matrix.setAvatarImage(image: img) { response in
-                                    if response.isSuccess {
-                                        user.objectWillChange.send()
-                                    }
+                                let _ = Task {
+                                    try await user.session.setMyAvatarImage(img)
                                     self.newImage = nil
                                 }
                             }
@@ -98,51 +96,40 @@ struct ProfileScreen: View {
                 
                     //TextField("Display Name", text: $displayName)
                     HStack {
-                        Text("Name")
-                        Spacer()
-                        TextField(user.displayName ?? "", text: $displayName) { (editing) in
-                            if !editing {
-                                if !displayName.isEmpty {
-                                    user.matrix.setDisplayName(name: displayName) { response in
-                                        if response.isSuccess {
-                                            user.objectWillChange.send()
-                                        }
-                                        self.displayName = ""
-                                    }
+                        TextField(text: $displayName, prompt: Text(user.displayName ?? "")) {
+                            Text("Name")
+                        }
+                        .onSubmit {
+                            if !displayName.isEmpty {
+                                let _ = Task {
+                                    try await user.session.setMyDisplayName(displayName)
+                                    self.displayName = ""
                                 }
                             }
-                        }
-                        onCommit: {
-                            // Letting onEditingChanged do all the work..
                         }
                         .multilineTextAlignment(.trailing)
                         .disableAutocorrection(true)
                     }
                 
                     HStack {
-                        //TextField("Status", text: $statusMessage)
-                        Text("Status")
-                        Spacer()
-                        TextField(user.statusMsg ?? "", text: $statusMessage) { (editing) in
-                            if !editing {
+                        TextField(text: $statusMessage, prompt: Text(user.statusMessage ?? "")) {
+                            Text("Status message")
+                        }
+                            .onSubmit {
                                 if !statusMessage.isEmpty {
-                                    user.matrix.setStatusMessage(message: statusMessage) { response in
-                                        if response.isSuccess {
-                                            user.objectWillChange.send()
-                                        }
+                                    let _ = Task {
+                                        try await user.session.setMyStatus(message: statusMessage)
                                         self.statusMessage = ""
                                     }
                                 }
                             }
-                        }
-                        onCommit: {
-                            // Letting onEditingChanged do all the work..
-                        }
+
                         .multilineTextAlignment(.trailing)
                     }
 
                 }
                 
+                /*
                 Section(header: HStack{
                     Text("Public Email Addresses")
 
@@ -165,6 +152,7 @@ struct ProfileScreen: View {
                         Label("Add New Email", systemImage: "plus.circle")
                     }
                 }
+                */
                 
             }
             .navigationBarTitle("My Profile", displayMode: .inline)
