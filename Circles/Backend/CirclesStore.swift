@@ -9,6 +9,7 @@ import Foundation
 import StoreKit
 
 import CryptoKit
+import Matrix
 
 
 public class CirclesStore: ObservableObject {
@@ -16,9 +17,9 @@ public class CirclesStore: ObservableObject {
     enum State {
         case starting
         case nothing(CirclesError?)
-        case loggingIn(LoginSession) // Because /login will soon take more than a simple username/password
-        case haveCreds(MatrixCredentials)
-        case online(LegacyStore)
+        case loggingIn(LoginSession) // Because /login can now take more than a simple username/password
+        case haveCreds(Matrix.Credentials)
+        case online(CirclesSession)
         case signingUp(SignupSession)
         case settingUp(SetupSession) // or should this be (MatrixInterface) ???
     }
@@ -35,18 +36,32 @@ public class CirclesStore: ObservableObject {
         // or
         // .nothing - if there are no creds to be found
 
-        guard let creds = loadCredentials()
-        else {
-            // Apparently we're offline, waiting for (valid) credentials to log in
-            print("STORE\tDidn't find valid login credentials - Setting state to .nothing")
-            self.state = .nothing(nil)
-            return
+        let _ = Task {
+            guard let creds = loadCredentials()
+            else {
+                // Apparently we're offline, waiting for (valid) credentials to log in
+                print("STORE\tDidn't find valid login credentials - Setting state to .nothing")
+                await MainActor.run {
+                    self.state = .nothing(nil)
+                }
+                return
+            }
+         
+            // Woo we have credentials
+            await MainActor.run {
+                self.state = .haveCreds(creds)
+            }
+            
+            // Now let's see if we can use them to connect
+            try await self.connect(creds: creds)
         }
-
-        self.state = .haveCreds(creds)
     }
     
-    private func loadCredentials(_ user: String? = nil) -> MatrixCredentials? {
+    private func loadSyncToken(userId: UserId, deviceId: String) -> String? {
+        UserDefaults.standard.string(forKey: "sync_token[\(userId)::\(deviceId)]")
+    }
+    
+    private func loadCredentials(_ user: String? = nil) -> Matrix.Credentials? {
         
         guard let uid = user ?? UserDefaults.standard.string(forKey: "user_id"),
               let userId = UserId(uid)
@@ -59,104 +74,23 @@ public class CirclesStore: ObservableObject {
             return nil
         }
         
-        return MatrixCredentials(accessToken: accessToken,
-                                 deviceId: deviceId,
-                                 userId: userId)
+        return Matrix.Credentials(userId: userId,
+                                  accessToken: accessToken,
+                                  deviceId: deviceId)
     }
     
-    func connect(creds: MatrixCredentials) async throws {
-        // If the creds don't already include well-known, then fetch homeserver info using well-known URL from the given domain
-        // Init a new MatrixSession with that homeserver and these creds
-        // Set our state to be online with that session
-        
-        var fullCreds = creds
-        if fullCreds.wellKnown == nil {
-            let domain = creds.userId.domain
-            fullCreds.wellKnown = try await fetchWellKnown(for: domain)
-        }
-        
-        let ls = LegacyStore(creds: fullCreds)
+    func connect(creds: Matrix.Credentials) async throws {
+        let token = loadSyncToken(userId: creds.userId, deviceId: creds.deviceId)
+        let matrix = try await Matrix.Session(creds: creds, syncToken: token)
+        let session = try await CirclesSession.factory(matrix: matrix)
         await MainActor.run {
-            self.state = .online(ls)
+            self.state = .online(session)
         }
     }
+
     
-    func connectNewDevice(creds: MatrixCredentials, password: String) async throws {
-        // Connect to the homeserver using the given creds, as usual
-        try await connect(creds: creds)
-        // But since we're a new device, we have some housekeeping work to do
-        // 1. Cross-signing
-        // 2. Generate the key for Recovery / S4 / Encrypted Backup and connect to it
-        guard case let .online(legacyStore) = self.state
-        else {
-            // Guess we failed to connect.  No need to do the post-connect setup then.
-            return
-        }
-        
-        // 1. Cross-signing
-        legacyStore.setupCrossSigning(password: password)
-        
-        // 2. Recovery
-        let recoveryKey = try await generateRecoveryKey(userId: creds.userId, password: password)
-        UserDefaults.standard.set(recoveryKey, forKey: "recovery_key[\(creds.userId)]")
-        legacyStore.setupRecovery(key: recoveryKey)
-    }
-    
-    func generateRecoveryKey(userId: UserId, password: String) async throws -> Data {
-        guard let userData = userId.description.data(using: .utf8) else {
-            let msg = "Failed to convert user id to data"
-            print("KEYGEN\t\(msg)")
-            throw CirclesError(msg)
-        }
-
-        let saltDigest = SHA256.hash(data: userData)
-        let saltString = saltDigest
-            .map { String(format: "%02hhx", $0) }
-            .prefix(16)
-            .joined()
-        print("KEYGEN\tComputed salt string = [\(saltString)]")
-
-        let numRounds = 14
-        guard let bcrypt = try? BCrypt.Hash(password, salt: "$2a$\(numRounds)$\(saltString)")
-        else {
-            let msg = "BCrypt KDF failed"
-            print("KEYGEN\t\(msg)")
-            throw CirclesError(msg)
-        }
-        //print("KEYGEN\tGot bcrypt hash = [\(bcrypt)]")
-        //print("       \t                   12345678901234567890123456789012345678901234567890")
-
-        // Grabbing only the last 31 chars gives us just the hash
-        let root = String(bcrypt.suffix(31))
-
-        let recoveryKey = SHA256.hash(data: "Recovery|\(root)".data(using: .utf8)!)
-            .withUnsafeBytes {
-                Data(Array($0))
-            }
-        print("KEYGEN\tGot new recovery key = [\(recoveryKey)]")
-
-        return recoveryKey
-    }
-    
-    func login(username: String) async throws {
-        // First we have to look at what the user entered for their username
-        // - Is it a full Matrix user id?  If so, we need to find the homeserver for their domain.
-        // - If it's not a full user id, then we assume the domain is our own, and we find the homeserver based on the country code of the user's StoreKit storefront
-        // Then we create a LoginSession with the given homeserver, and set our state to .loggingIn
-        
-        let userDomain = getDomainFromUserId(username)
-        guard let domain = userDomain ?? ourDomain
-        else {
-            let err = CirclesError("Couldn't find domain for \(username)")
-            self.state = .nothing(err)
-            return
-        }
-        
-        let wellKnown = try await fetchWellKnown(for: domain)
-        let homeserverUrl = URL(string: wellKnown.homeserver.baseUrl)!
-        let loginSession = LoginSession(username: username,
-                                        homeserverUrl: homeserverUrl,
-                                        store: self)
+    func login(userId: UserId) async throws {
+        let loginSession = try await LoginSession(username: userId.username, domain: userId.domain)
         await MainActor.run {
             self.state = .loggingIn(loginSession)
         }
@@ -171,23 +105,21 @@ public class CirclesStore: ObservableObject {
             print("SIGNUP\tCouldn't find domain from StoreKit info")
             return
         }
-        let wellKnown = try await fetchWellKnown(for: domain)
-        if let hsUrl = URL(string: wellKnown.homeserver.baseUrl) {
-            let deviceModel = await UIDevice.current.model
-            let signupSession = SignupSession(homeserver: hsUrl, initialDeviceDisplayName: "Circles (\(deviceModel))")
-            await MainActor.run {
-                self.state = .signingUp(signupSession)
-            }
+
+        let deviceModel = await UIDevice.current.model
+        let signupSession = try await SignupSession(domain: domain, initialDeviceDisplayName: "Circles (\(deviceModel))")
+        await MainActor.run {
+            self.state = .signingUp(signupSession)
         }
     }
     
-    func beginSetup(creds: MatrixCredentials, displayName: String) async throws {
+    func beginSetup(creds: Matrix.Credentials, displayName: String) async throws {
         
         var fullCreds = creds
         
         if fullCreds.wellKnown == nil {
             let domain = creds.userId.domain
-            fullCreds.wellKnown = try await fetchWellKnown(for: domain)
+            fullCreds.wellKnown = try await Matrix.fetchWellKnown(for: domain)
         }
         
         let session = try SetupSession(creds: fullCreds, store: self, displayName: displayName)
@@ -198,6 +130,9 @@ public class CirclesStore: ObservableObject {
     
     func disconnect() async throws {
         // First disconnect any connected session
+        if case let .online(session) = self.state {
+            try await session.close()
+        }
         // Then set our state to .nothing
         await MainActor.run {
             self.state = .nothing(nil)
@@ -205,16 +140,7 @@ public class CirclesStore: ObservableObject {
     }
     
     // MARK: Domain handling
-    
-    func getDomainFromUserId(_ userId: String) -> String? {
-        let toks = userId.split(separator: ":")
-        if toks.count != 2 {
-            return nil
-        }
 
-        let domain = String(toks[1])
-        return domain
-    }
     
     private var ourDomain: String? {
 
@@ -223,8 +149,8 @@ public class CirclesStore: ObservableObject {
             return nil
         }
 
-        let usDomain = "kombucha.social"
-        let euDomain = "eu.kombucha.social"
+        let usDomain = "circu.li"
+        let euDomain = "eu.circu.li"
 
         switch countryCode {
         case "USA":
@@ -295,46 +221,4 @@ public class CirclesStore: ObservableObject {
         }
     }
     
-    // MARK: Well known
-    
-    func fetchWellKnown(for domain: String) async throws -> MatrixWellKnown {
-        
-        guard let url = URL(string: "https://\(domain)/.well-known/matrix/client") else {
-            let msg = "Couldn't construct well-known URL"
-            print("WELLKNOWN\t\(msg)")
-            throw CirclesError(msg)
-        }
-        print("WELLKNOWN\tURL is \(url)")
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        //request.cachePolicy = .reloadIgnoringLocalCacheData
-        request.cachePolicy = .returnCacheDataElseLoad
-
-        
-        let (data, response) = try await URLSession.shared.data(for: request)
-
-        guard let httpResponse = response as? HTTPURLResponse else {
-            let msg = "Couldn't decode HTTP response"
-            print("WELLKNOWN\t\(msg)")
-            throw CirclesError(msg)
-        }
-        guard httpResponse.statusCode == 200 else {
-            let msg = "HTTP request failed"
-            print("WELLKNOWN\t\(msg)")
-            throw CirclesError(msg)
-        }
-        
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let stuff = String(data: data, encoding: .utf8)!
-        print("WELLKNOWN\tGot response data:\n\(stuff)")
-        guard let wellKnown = try? decoder.decode(MatrixWellKnown.self, from: data) else {
-            let msg = "Couldn't decode response data"
-            print("WELLKNOWN\t\(msg)")
-            throw CirclesError(msg)
-        }
-        print("WELLKNOWN\tSuccess!")
-        return wellKnown
-    }
 }

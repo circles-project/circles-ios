@@ -16,7 +16,7 @@ extension CirclesOverviewSheetType: Identifiable {
 }
 
 struct CirclesOverviewScreen: View {
-    @ObservedObject var store: LegacyStore
+    @ObservedObject var container: ContainerRoom<CircleSpace>
     @State var selection: String = ""
     
     @State private var sheetType: CirclesOverviewSheetType? = nil
@@ -36,9 +36,9 @@ struct CirclesOverviewScreen: View {
         NavigationView {
             VStack(alignment: .leading, spacing: 0) {
                 ScrollView {
-                    ForEach(store.circles) { circle in
-                        NavigationLink(destination: CircleTimelineScreen(circle: circle)) {
-                            CircleOverviewCard(circle: circle)
+                    ForEach(container.rooms) { circle in
+                        NavigationLink(destination: CircleTimelineScreen(space: circle)) {
+                            CircleOverviewCard(space: circle)
                                 //.padding(.top)
                         }
                         .onTapGesture {
@@ -55,7 +55,7 @@ struct CirclesOverviewScreen: View {
             .sheet(item: $sheetType) { st in
                 switch(st) {
                 case .create:
-                    CircleCreationSheet(store: store)
+                    CircleCreationSheet(container: container)
                 }
             }
             .toolbar {

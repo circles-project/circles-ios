@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AsyncButton<Label: View>: View {
-    var action: () async -> Void
+    var action: () async throws -> Void
     @ViewBuilder var label: () -> Label
 
     @State private var pending = false
@@ -19,7 +19,7 @@ struct AsyncButton<Label: View>: View {
                 pending = true
             
                 Task {
-                    await action()
+                    try await action()
                     pending = false
                 }
             },

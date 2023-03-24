@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import MatrixSDK
+import Matrix
 
 struct ContentView: View {
     @ObservedObject var store: CirclesStore
@@ -36,7 +36,7 @@ struct ContentView: View {
             
         case .haveCreds(let creds):
             VStack {
-                Text("Connecting as \(creds.userId)")
+                Text("Connecting as \(creds.userId.description)")
                 ProgressView()
                     .onAppear {
                         _ = Task {
@@ -54,13 +54,90 @@ struct ContentView: View {
         case .loggingIn(let loginSession):
             LoginScreen(session: loginSession)
 
-        case .online(let legacyStore):
-            LoggedinScreen(store: store, legacyStore: legacyStore)
-
+        case .online(let circlesSession):
+            TabbedInterface(session: circlesSession)
+                .environmentObject(circlesSession.galleries)
+            
         default:
             errorView
         }
     }
+    
+    enum Tab: String {
+        case home
+        case circles
+        case people
+        case groups
+        case photos
+    }
+    
+    struct TabbedInterface: View {
+        @ObservedObject var session: CirclesSession
+        
+        @State private var selection: Tab = .home
+
+        
+        var body: some View {
+            TabView(selection: $selection) {
+
+                /*
+                HomeScreen(store: self.store,
+                           user: self.store.me(),
+                           tab: self.$selection)
+                    .tabItem {
+                        Image(systemName: "house.fill")
+                        Text("Home")
+                    }
+                    .tag(Tab.home)
+                */
+                
+                CirclesOverviewScreen(container: self.session.circles)
+                    .tabItem {
+                        Image(systemName: "circles.hexagonpath")
+                        Text("Circles")
+                    }
+                    .tag(Tab.circles)
+                
+                PeopleOverviewScreen(container: self.session.people)
+                    .tabItem {
+                        Image(systemName: "rectangle.stack.person.crop")
+                        Text("People")
+                    }
+                    .tag(Tab.people)
+                
+                GroupsOverviewScreen(container: self.session.groups)
+                    .tabItem {
+                        Image(systemName: "person.2.square.stack")
+                        Text("Groups")
+                    }
+                    .tag(Tab.groups)
+                
+                PhotosOverviewScreen(container: self.session.galleries)
+                    .tabItem {
+                        Image(systemName: "photo.fill.on.rectangle.fill")
+                        Text("Photos")
+                    }
+                    .tag(Tab.photos)
+                
+                /*
+                Text("Chat Screen")
+                    .tabItem {
+                        Image(systemName: "bubble.left.and.bubble.right.fill")
+                        //Text("Direct Messages")}
+                        Text("Chat")
+                    }
+                    .tag(5)
+                */
+                
+
+            }
+            //.accentColor(.green)
+
+
+        }
+
+    }
+    
 }
 
 /*
