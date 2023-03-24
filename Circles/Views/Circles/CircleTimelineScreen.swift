@@ -121,7 +121,7 @@ struct CircleTimelineScreen: View {
         let foo = self.stupidSwiftUiTrick
             
             CircleTimeline(space: space)
-                .navigationBarTitle(space.name, displayMode: .inline)
+                .navigationBarTitle(space.name ?? "Circle", displayMode: .inline)
                 .toolbar {
                     ToolbarItemGroup(placement: .automatic) {
                         toolbarMenu
@@ -143,14 +143,15 @@ struct CircleTimelineScreen: View {
                         CircleConnectionsSheet(space: space)
                     case .photo:
                         ImagePicker(selectedImage: self.$image, sourceType: .photoLibrary, allowEditing: false) { maybeImage in
-                            guard let room = self.circle.outbound,
+                            guard let room = self.space.wall,
                                   let newImage = maybeImage
                             else {
-                                print("CIRCLEIMAGE\tEither we couldn't find an outbound room, or the user didn't pick an image")
+                                print("CIRCLEIMAGE\tEither we couldn't find a room where we can post, or the user didn't pick an image")
                                 return
                             }
-                            room.setAvatarImage(image: newImage)
-                            
+                            let _ = Task {
+                                try await room.setAvatarImage(image: newImage)
+                            }
                         }
                     case .composer:
                         MessageComposerSheet(room: space.wall!)

@@ -52,7 +52,6 @@
 		409F4343265DE17500690A61 /* GroupOverviewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F433D265DE17400690A61 /* GroupOverviewRow.swift */; };
 		409F4344265DE17500690A61 /* GroupConfigSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F433E265DE17500690A61 /* GroupConfigSheet.swift */; };
 		409F4345265DE17500690A61 /* GroupsOverviewScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F433F265DE17500690A61 /* GroupsOverviewScreen.swift */; };
-		409F434A265DE18A00690A61 /* InvitationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4347265DE18900690A61 /* InvitationsView.swift */; };
 		409F434B265DE18A00690A61 /* InvitationAcceptSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4348265DE18900690A61 /* InvitationAcceptSheet.swift */; };
 		409F435B265DE1EE00690A61 /* LoggedOutScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4359265DE1EE00690A61 /* LoggedOutScreen.swift */; };
 		409F435C265DE1EE00690A61 /* LoginScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F435A265DE1EE00690A61 /* LoginScreen.swift */; };
@@ -72,8 +71,7 @@
 		409F4382265DE29600690A61 /* SetupCircleCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4381265DE29600690A61 /* SetupCircleCard.swift */; };
 		409F4385265DE2A400690A61 /* RoomMessageComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4384265DE2A400690A61 /* RoomMessageComposer.swift */; };
 		409F4388265DE2B100690A61 /* TokenSignUpScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4387265DE2B100690A61 /* TokenSignUpScreen.swift */; };
-		409F438C265DE2C200690A61 /* StreamTimeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F438A265DE2C200690A61 /* StreamTimeline.swift */; };
-		409F438D265DE2C200690A61 /* StreamTimelineScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F438B265DE2C200690A61 /* StreamTimelineScreen.swift */; };
+		409F438C265DE2C200690A61 /* CircleTimeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F438A265DE2C200690A61 /* CircleTimeline.swift */; };
 		409F4390265DE2CE00690A61 /* SystemNoticesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F438F265DE2CE00690A61 /* SystemNoticesView.swift */; };
 		409F4393265DE2DE00690A61 /* TimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4392265DE2DE00690A61 /* TimelineView.swift */; };
 		409F4396265DE2E900690A61 /* TermsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4395265DE2E900690A61 /* TermsScreen.swift */; };
@@ -168,7 +166,6 @@
 		409F433D265DE17400690A61 /* GroupOverviewRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupOverviewRow.swift; sourceTree = "<group>"; };
 		409F433E265DE17500690A61 /* GroupConfigSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupConfigSheet.swift; sourceTree = "<group>"; };
 		409F433F265DE17500690A61 /* GroupsOverviewScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupsOverviewScreen.swift; sourceTree = "<group>"; };
-		409F4347265DE18900690A61 /* InvitationsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InvitationsView.swift; sourceTree = "<group>"; };
 		409F4348265DE18900690A61 /* InvitationAcceptSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InvitationAcceptSheet.swift; sourceTree = "<group>"; };
 		409F4359265DE1EE00690A61 /* LoggedOutScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggedOutScreen.swift; sourceTree = "<group>"; };
 		409F435A265DE1EE00690A61 /* LoginScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginScreen.swift; sourceTree = "<group>"; };
@@ -188,8 +185,7 @@
 		409F4381265DE29600690A61 /* SetupCircleCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetupCircleCard.swift; sourceTree = "<group>"; };
 		409F4384265DE2A400690A61 /* RoomMessageComposer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomMessageComposer.swift; sourceTree = "<group>"; };
 		409F4387265DE2B100690A61 /* TokenSignUpScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenSignUpScreen.swift; sourceTree = "<group>"; };
-		409F438A265DE2C200690A61 /* StreamTimeline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamTimeline.swift; sourceTree = "<group>"; };
-		409F438B265DE2C200690A61 /* StreamTimelineScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamTimelineScreen.swift; sourceTree = "<group>"; };
+		409F438A265DE2C200690A61 /* CircleTimeline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleTimeline.swift; sourceTree = "<group>"; };
 		409F438F265DE2CE00690A61 /* SystemNoticesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemNoticesView.swift; sourceTree = "<group>"; };
 		409F4392265DE2DE00690A61 /* TimelineView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelineView.swift; sourceTree = "<group>"; };
 		409F4395265DE2E900690A61 /* TermsScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TermsScreen.swift; sourceTree = "<group>"; };
@@ -370,7 +366,6 @@
 				409F431B265DE10F00690A61 /* DevicesScreen.swift */,
 				409F430E265DE0E600690A61 /* HomeScreen.swift */,
 				409F4348265DE18900690A61 /* InvitationAcceptSheet.swift */,
-				409F4347265DE18900690A61 /* InvitationsView.swift */,
 				409F43A1265DE3C800690A61 /* ProfileScreen.swift */,
 				409F43B3265DE4C800690A61 /* ProfileView.swift */,
 				409F437B265DE27F00690A61 /* RecentActivityView.swift */,
@@ -456,8 +451,7 @@
 				409F439B265DE38200690A61 /* ProfileImageView.swift */,
 				4073E7C3267915AF001A80CF /* RepliesView.swift */,
 				409F4384265DE2A400690A61 /* RoomMessageComposer.swift */,
-				409F438A265DE2C200690A61 /* StreamTimeline.swift */,
-				409F438B265DE2C200690A61 /* StreamTimelineScreen.swift */,
+				409F438A265DE2C200690A61 /* CircleTimeline.swift */,
 				40878FCC2696198500A66EF0 /* TimelineSheetType.swift */,
 				409F4392265DE2DE00690A61 /* TimelineView.swift */,
 			);
@@ -631,7 +625,6 @@
 				409F4326265DE12600690A61 /* CloudImagePicker.swift in Sources */,
 				409F4333265DE15F00690A61 /* CircleAvatar.swift in Sources */,
 				A5A7E228282B06FD001A528D /* ApplicationState.swift in Sources */,
-				409F438D265DE2C200690A61 /* StreamTimelineScreen.swift in Sources */,
 				409F4340265DE17500690A61 /* GroupCreationSheet.swift in Sources */,
 				409F4364265DE21A00690A61 /* MessageReportingSheet.swift in Sources */,
 				40F906BB269DF96100287B27 /* MessageSheetType.swift in Sources */,
@@ -641,7 +634,6 @@
 				A54BA3AB28592D2000453D5E /* SetupSession.swift in Sources */,
 				409F43A8265DE43B00690A61 /* RoomSecurityInfoSheet.swift in Sources */,
 				409F437F265DE28600690A61 /* RandomizedCircles.swift in Sources */,
-				409F434A265DE18A00690A61 /* InvitationsView.swift in Sources */,
 				409F4323265DE11900690A61 /* Constants.swift in Sources */,
 				40AEA6752678E24200C9CBD1 /* BlurHashEncode.swift in Sources */,
 				409F4320265DE11000690A61 /* DeviceInfoView.swift in Sources */,
@@ -667,7 +659,7 @@
 				409F4390265DE2CE00690A61 /* SystemNoticesView.swift in Sources */,
 				A504DA7328120AF100EFF42E /* AsyncButton.swift in Sources */,
 				403CEA9526E865740054DBF4 /* TokenForm.swift in Sources */,
-				409F438C265DE2C200690A61 /* StreamTimeline.swift in Sources */,
+				409F438C265DE2C200690A61 /* CircleTimeline.swift in Sources */,
 				409F43A2265DE3C800690A61 /* ProfileScreen.swift in Sources */,
 				409F4337265DE15F00690A61 /* CirclesOverviewScreen.swift in Sources */,
 				40E4D887268A76070055968A /* AppStoreSubscriptionForm.swift in Sources */,

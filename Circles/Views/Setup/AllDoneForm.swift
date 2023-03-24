@@ -27,7 +27,7 @@ struct AllDoneForm: View {
 
             Spacer()
             Text("Your user ID is:")
-            Text("\(userId)")
+            Text("\(userId.description)")
                     .fontWeight(.bold)
 
             Spacer()

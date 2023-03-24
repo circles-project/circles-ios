@@ -66,15 +66,15 @@ struct SignupScreen: View {
 
                 if let stage = stages.first {
                     switch stage {
-                    case LOGIN_STAGE_TOKEN_KOMBUCHA,
-                         LOGIN_STAGE_TOKEN_MATRIX,
-                         LOGIN_STAGE_TOKEN_MSC3231:
+                    case AUTH_TYPE_REGISTRATION_TOKEN,
+                         AUTH_TYPE_MSC3231_TOKEN:
                         TokenForm(tokenType: stage, session: session)
 
-                    case LOGIN_STAGE_TERMS_OF_SERVICE:
+                    case AUTH_TYPE_TERMS:
                         TermsOfServiceForm(session: session)
 
-                    case LOGIN_STAGE_VERIFY_EMAIL:
+                    /*
+                    case AUTH_TYPE_ENROLL_EMAIL_SUBMIT_TOKEN:
                         if emailSessionInfo != nil {
                             ValidateEmailForm(session: session, emailSessionInfo: $emailSessionInfo, creds: $creds)
                         } else {
@@ -84,6 +84,7 @@ struct SignupScreen: View {
                     case LOGIN_STAGE_APPLE_SUBSCRIPTION:
                         //Text("Apple Subscription Stage")
                         AppStoreSubscriptionForm(session: session, uiaaState: uiaaState)
+                    */
                         
                     default:
                         Text("Stage is [\(stage)]")

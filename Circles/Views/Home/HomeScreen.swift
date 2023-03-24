@@ -10,7 +10,7 @@ import SwiftUI
 import Matrix
 
 struct HomeScreen: View {
-    @ObservedObject var store: CirclesStore
+    @ObservedObject var session: CirclesSession
     @ObservedObject var user: Matrix.User
     //@Binding var screen: HomeTabMasterView.Screen?
     @Binding var tab: ContentView.Tab
@@ -28,7 +28,6 @@ struct HomeScreen: View {
         case profile
         case account
         case notices
-        case invites
         case sessions
         case credits
     }
@@ -58,7 +57,7 @@ struct HomeScreen: View {
     var notices: some View {
         // Here we need to look in all rooms tagged with m.server_notice
         VStack(alignment: .leading) {
-            if let room = store.getSystemNoticesRoom() {
+            if let room = session.matrix.systemNoticesRoom {
                 HStack {
                     Image(systemName: "exclamationmark.triangle.fill")
 
@@ -72,35 +71,12 @@ struct HomeScreen: View {
             }
         }
     }
-    
-    var invitations: some View {
-        VStack(alignment: .leading) {
-            var invitedRooms = store.getInvitedRooms()
-            if !invitedRooms.isEmpty {
-                Label("New Invitations", systemImage:"envelope.open.fill")
 
-                /*
-                InvitationsView(store: store)
-                    .padding(.trailing, 2)
-                */
-                
-                Button(action: {
-                    self.sheetType = .invites
-                }) {
-                    Label("See \(invitedRooms.count) new invitations", systemImage: "envelope.circle")
-                }
-                .padding(.leading)
-                
-                Divider()
-            }
-        }
-
-    }
     
     var devices: some View {
         VStack(alignment: .leading) {
 
-            let unverifiedDevices = user.devices.filter { !$0.isVerified }
+            let unverifiedDevices = user.devices.filter { !$0.crossSigningTrusted && !$0.locallyTrusted }
             if !unverifiedDevices.isEmpty {
                 HStack {
                     //Image(systemName: "desktopcomputer")
@@ -115,9 +91,9 @@ struct HomeScreen: View {
                 Text("If a new session is legitimate, please verify it so that other users can trust it. Otherwise you will not be able to see other users' postings from your new session.")
                     .font(.footnote)
                 
-                ForEach(unverifiedDevices) { device in
+                ForEach(unverifiedDevices, id: \.deviceId) { device in
                 //ForEach(user.devices) { device in
-                    DeviceInfoView(device: device)
+                    DeviceInfoView(session: session.matrix, device: device)
                     //Text(device.displayName ?? "(unnamed device)")
                 }
                 .padding(.leading)
@@ -145,7 +121,7 @@ struct HomeScreen: View {
         VStack(alignment: .leading) {
             Label("Latest Posts From My Network", systemImage: "bubble.left.and.bubble.right.fill")
                 .font(.headline)
-            RecentActivityView(store: store)
+            RecentActivityView(session: session)
                 .padding(.trailing, 2)
         }
     }
@@ -166,12 +142,6 @@ struct HomeScreen: View {
                 self.sheetType = .notices
             }) {
                 Label("System Notices", systemImage: "exclamationmark.triangle.fill")
-            }
-
-            Button(action: {
-                self.sheetType = .invites
-            }) {
-                Label("New Invitations", systemImage: "envelope.open.fill")
             }
 
             Button(action: {
@@ -206,8 +176,6 @@ struct HomeScreen: View {
 
                         notices
 
-                        invitations
-
                         //events
 
                         devices
@@ -230,11 +198,9 @@ struct HomeScreen: View {
                 case .account:
                     AccountScreen(user: self.user)
                 case .notices:
-                    SystemNoticesScreen(store: self.store)
-                case .invites:
-                    InvitationsScreen(store: self.store)
+                    SystemNoticesScreen(session: self.session)
                 case .sessions:
-                    DevicesScreen(user: self.user)
+                    DevicesScreen(session: self.session.matrix)
                 case .credits:
                     AcknowledgementsSheet()
                 /*
@@ -252,7 +218,9 @@ struct HomeScreen: View {
                     .cancel {self.showConfirmLogout = false},
                     .destructive(Text("Yes, log me out")) {
                         //self.store.logout()
-                        self.store.pause()
+                        let _ = Task {
+                            try await self.session.close()
+                        }
                         //self.presentation.wrappedValue.dismiss()
                     }
                 ]

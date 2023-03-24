@@ -44,7 +44,7 @@ struct ProfileView: View {
                 }
                 .padding(.top)
                 
-                Text("\(user.userId)")
+                Text("\(user.userId.description)")
                     .font(.footnote)
                     .foregroundColor(Color.gray)
                     .lineLimit(1)

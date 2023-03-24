@@ -16,10 +16,19 @@ struct LoginScreen: View {
     
     var body: some View {
         VStack {
+            Text("Login Screen")
+            Text("beep boop")
+            /*
             switch session.state {
             case .notConnected:
                 ProgressView()
                 Text("Connecting to server")
+                    .onAppear {
+                        let _ = Task {
+                            try await session.connect()
+                        }
+                    }
+                
             case .connected(let authTypes, let errorMessage):
                 if authTypes.contains("m.login.password") {
                     RandomizedCircles()
@@ -102,7 +111,8 @@ struct LoginScreen: View {
                 Text("Something else")
             */
             }
-        }
+             */
+         }
     }
 
 }

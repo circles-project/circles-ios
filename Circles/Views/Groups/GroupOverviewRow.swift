@@ -14,9 +14,11 @@ struct GroupOverviewRow: View {
     
     var timestamp: some View {
         let formatter = RelativeDateTimeFormatter()
-        let date = Date(timeIntervalSince1970: Double(room.timestamp)/1000.0)
-        
-        return Text("Last updated \(date, formatter: formatter)")
+        if let date = room.latestMessage?.timestamp {
+            return Text("Last updated \(date, formatter: formatter)")
+        } else {
+            return Text("")
+        }
     }
     
     var shield: some View {

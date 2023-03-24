@@ -82,7 +82,7 @@ public class CirclesStore: ObservableObject {
     func connect(creds: Matrix.Credentials) async throws {
         let token = loadSyncToken(userId: creds.userId, deviceId: creds.deviceId)
         let matrix = try await Matrix.Session(creds: creds, syncToken: token)
-        let session = try await CirclesSession.factory(matrix: matrix)
+        let session = try await CirclesSession(matrix: matrix)
         await MainActor.run {
             self.state = .online(session)
         }

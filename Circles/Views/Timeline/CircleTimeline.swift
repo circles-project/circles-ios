@@ -1,21 +1,23 @@
 //  Copyright 2020, 2021 Kombucha Digital Privacy Systems LLC
+//  Copyright 2023 FUTO Holdings Inc
 //
-//  StreamScreen.swift
+//  CircleTimeline.swift
 //  Circles for iOS
 //
 //  Created by Charles Wright on 11/6/20.
 //
 
 import SwiftUI
+import Matrix
 
-struct StreamTimeline: View {
-    @ObservedObject var stream: SocialStream
+struct CircleTimeline: View {
+    @ObservedObject var space: CircleSpace
     private var formatter: DateFormatter
     @State private var showDebug = false
     @State private var loading = false
 
-    init(stream: SocialStream) {
-        self.stream = stream
+    init(space: CircleSpace) {
+        self.space = space
         self.formatter = DateFormatter()
         formatter.dateStyle = .long
         formatter.timeStyle = .long
@@ -26,35 +28,39 @@ struct StreamTimeline: View {
             Button(action: {self.showDebug = false}) {
                 Label("Hide debug info", systemImage: "eye.slash")
             }
-            Text("\(stream.rooms.count) rooms in the Stream")
-            ForEach(stream.rooms) { room in
-                let owners = room.owners.compactMap { user in
-                        user.displayName
-                    }
-                    .joined(separator: ", ")
+            Text("\(space.rooms.count) rooms in the Stream")
+            ForEach(space.rooms) { room in
+                let owner = room.creator
+                let messages = room.messages
                     
                 HStack {
-                    Text("\(room.messages.count) total messages in \(owners): \(room.displayName ?? room.id)")
+                    Text("\(messages.count) total messages in \(owner.description): \(room.name ?? room.roomId.description)")
                         .padding(.leading, 10)
-                    if room.tags.contains(ROOM_TAG_OUTBOUND) {
-                        Text("(writable)")
+                    if owner == room.session.creds.userId {
+                        Text("(my room)")
                             .fontWeight(.bold)
                     }
                 }
-                if let firstMessage = room.first,
+                if let firstMessage = messages.first,
                    let ts = firstMessage.timestamp {
                     Text("since \(formatter.string(from: ts))")
                         .padding(.leading, 20)
                 }
             }
+            /*
             let lfr = stream.lastFirstRoom
             Text("Last first room is \(lfr?.displayName ?? "None")")
+            */
         }
         .font(.caption)
     }
     
     var body: some View {
-        let messages = stream.getTopLevelMessages()
+        //let messages = stream.getTopLevelMessages()
+        // FIXME: Hacky kludgy version
+        let messages = space.rooms.reduce([], { (messages, room) -> [Matrix.Message] in
+            messages + room.messages
+        })
         VStack(alignment: .leading) {
             ScrollView {
                 LazyVStack(alignment: .leading) {
@@ -79,20 +85,16 @@ struct StreamTimeline: View {
                         ProgressView("Loading...")
                             .progressViewStyle(LinearProgressViewStyle())
                     }
-                    else if stream.canPaginate {
-                        Button(action: {
-                            self.loading = true
-                            stream.paginate() { response in
-                                self.loading = false
-                            }
+                    else if space.canPaginate() {
+                        AsyncButton(action: {
+                            try await space.paginate()
                         }) {
                             Text("Load More")
                         }
                         .onAppear {
                             // Basically it's like we automatically click "Load More" for the user
-                            self.loading = true
-                            stream.paginate() { response in
-                                self.loading = false
+                            let _ = Task {
+                                try await space.paginate()
                             }
                         }
                     }

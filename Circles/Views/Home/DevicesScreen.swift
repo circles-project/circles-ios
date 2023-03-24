@@ -10,20 +10,19 @@ import SwiftUI
 import Matrix
 
 struct DevicesScreen: View {
-    @ObservedObject var user: Matrix.User
+    @ObservedObject var session: Matrix.Session
 
     var currentDeviceView: some View {
         VStack(alignment: .leading, spacing: 15) {
-            let myDevice = user.session.getCurrentDevice()
-            if let dev = myDevice {
-                    let myDeviceModel = UIDevice.current.model
-                    let iconName = myDeviceModel.components(separatedBy: .whitespaces).first?.lowercased() ?? "desktopcomputer"
-                    Label("This \(myDeviceModel)", systemImage: iconName)
-                        .font(.headline)
+            if let dev = session.device {
+                let myDeviceModel = UIDevice.current.model
+                let iconName = myDeviceModel.components(separatedBy: .whitespaces).first?.lowercased() ?? "desktopcomputer"
+                Label("This \(myDeviceModel)", systemImage: iconName)
+                    .font(.headline)
 
-                    DeviceInfoView(device: dev)
-                        .padding(.leading)
-                    Divider()
+                DeviceInfoView(session: session, device: dev)
+                    .padding(.leading)
+                Divider()
             }
         }
     }
@@ -38,9 +37,10 @@ struct DevicesScreen: View {
 
                 currentDeviceView
 
-                let myDevice = user.session.getCurrentDevice()
-
-                let unverifiedDevices = user.devices.filter { !$0.isVerified }
+                let myDevice = session.device
+                
+                /*
+                let unverifiedDevices = session.devices.filter { !$0.isVerified }
                 if !unverifiedDevices.isEmpty {
                     VStack(alignment: .leading, spacing: 15) {
                         Label("Other Unverified Sessions", systemImage: "display.trianglebadge.exclamationmark")
@@ -48,7 +48,7 @@ struct DevicesScreen: View {
                         ForEach(unverifiedDevices) { device in
                         //ForEach(user.devices) { device in
                             if myDevice == nil || device != myDevice {
-                                DeviceInfoView(device: device)
+                                DeviceInfoView(session: session, device: device)
                             }
                             //Text(device.displayName ?? "(unnamed device)")
                         }
@@ -56,8 +56,10 @@ struct DevicesScreen: View {
                         Divider()
                     }
                 }
+                */
 
-                let verifiedDevices = user.devices.filter { $0.isVerified }
+                /*
+                let verifiedDevices = session.devices.filter { $0.isVerified }
                 if !verifiedDevices.isEmpty {
                     VStack(alignment: .leading, spacing: 15) {
 
@@ -71,6 +73,7 @@ struct DevicesScreen: View {
                         .padding(.leading)
                     }
                 }
+                */
 
                 Spacer()
             }

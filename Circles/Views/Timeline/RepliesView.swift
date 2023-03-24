@@ -16,7 +16,7 @@ struct RepliesView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            let messages = room.getReplies(to: parent.id)
+            let messages = parent.replies
             if !expanded && !messages.isEmpty {
                 HStack {
                     Spacer()
