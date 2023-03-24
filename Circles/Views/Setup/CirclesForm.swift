@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import MatrixSDK
+import Matrix
 
 struct CirclesForm: View {
     var session: SetupSession

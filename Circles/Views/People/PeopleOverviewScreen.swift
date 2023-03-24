@@ -7,22 +7,23 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct PeopleOverviewScreen: View {
-    @ObservedObject var container: PeopleContainer
+    @ObservedObject var container: ContainerRoom<Matrix.SpaceRoom>
     
     var body: some View {
         NavigationView {
             ScrollView {
                 LazyVStack(alignment: .leading) {
                     
-                    //Text("\(container.people.count) People")
+                    //Text("\(container.rooms.count) People")
                     
-                    ForEach(container.people) { user in
+                    ForEach(container.rooms) { room in
                         
                         VStack(alignment: .leading) {
-                            
-                            NavigationLink(destination: PersonDetailView(user: user)) {
+                            let user = room.session.getUser(userId: room.creator)
+                            NavigationLink(destination: PersonDetailView(space: room)) {
                                 //Text("\(user.displayName ?? user.id)")
                                 PersonHeaderRow(user: user)
                             }
@@ -39,11 +40,7 @@ struct PeopleOverviewScreen: View {
             .navigationBarTitle("My People", displayMode: .inline)
         }
         .navigationViewStyle(StackNavigationViewStyle())
-        .onAppear {
-            if container.people.isEmpty {
-                container.reload()
-            }
-        }
+
     }
 }
 

@@ -7,12 +7,13 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct HomeScreen: View {
-    @ObservedObject var store: LegacyStore
-    @ObservedObject var user: MatrixUser
+    @ObservedObject var store: CirclesStore
+    @ObservedObject var user: Matrix.User
     //@Binding var screen: HomeTabMasterView.Screen?
-    @Binding var tab: LoggedinScreen.Tab
+    @Binding var tab: ContentView.Tab
     
     @State var showAcceptSheet = false
     @State var showImagePicker = false
@@ -35,7 +36,7 @@ struct HomeScreen: View {
 
 
     var image: Image {
-        if let img = user.avatarImage {
+        if let img = user.avatar {
             return Image(uiImage: img)
         } else {
             return Image(systemName: "person.crop.square.fill")

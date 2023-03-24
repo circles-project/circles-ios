@@ -21,7 +21,7 @@ extension CircleSheetType: Identifiable {
 }
 
 struct CircleTimelineScreen: View {
-    @ObservedObject var circle: SocialCircle
+    @ObservedObject var space: CircleSpace
     @Environment(\.presentationMode) var presentation
     
     //@State var showComposer = false
@@ -31,12 +31,6 @@ struct CircleTimelineScreen: View {
     var toolbarMenu: some View {
         Menu {
             Menu {
-                Button(action: {
-                    circle.graph.removeCircle(circle: circle)
-                    self.presentation.wrappedValue.dismiss()
-                }) {
-                    Label("Delete this Circle", systemImage: "trash")
-                }
                 
                 Button(action: {
                     self.sheetType = .photo
@@ -114,7 +108,7 @@ struct CircleTimelineScreen: View {
     }
 
     var stupidSwiftUiTrick: Int {
-        print("DEBUGUI\tStreamTimeline rendering for Circle \(circle.id)")
+        print("DEBUGUI\tStreamTimeline rendering for Circle \(space.roomId)")
         return 0
     }
     
@@ -126,27 +120,27 @@ struct CircleTimelineScreen: View {
             */
         let foo = self.stupidSwiftUiTrick
             
-            StreamTimeline(stream: circle.stream)
-                .navigationBarTitle(circle.name, displayMode: .inline)
+            CircleTimeline(space: space)
+                .navigationBarTitle(space.name, displayMode: .inline)
                 .toolbar {
                     ToolbarItemGroup(placement: .automatic) {
                         toolbarMenu
                     }
                 }
                 .onAppear {
-                    print("DEBUGUI\tStreamTimeline appeared for Circle \(circle.id)")
+                    print("DEBUGUI\tStreamTimeline appeared for Circle \(space.roomId)")
                 }
                 .onDisappear {
-                    print("DEBUGUI\tStreamTimeline disappeared for Circle \(circle.id)")
+                    print("DEBUGUI\tStreamTimeline disappeared for Circle \(space.roomId)")
                 }
                 .sheet(item: $sheetType) { st in
                     switch(st) {
                     case .invite:
-                        RoomInviteSheet(room: circle.wall!)
+                        RoomInviteSheet(room: space.wall!)
                     case .followers:
-                        RoomMembersSheet(room: circle.wall!)
+                        RoomMembersSheet(room: space.wall!)
                     case .following:
-                        CircleConnectionsSheet(circle: circle)
+                        CircleConnectionsSheet(space: space)
                     case .photo:
                         ImagePicker(selectedImage: self.$image, sourceType: .photoLibrary, allowEditing: false) { maybeImage in
                             guard let room = self.circle.outbound,
@@ -159,7 +153,7 @@ struct CircleTimelineScreen: View {
                             
                         }
                     case .composer:
-                        MessageComposerSheet(room: circle.wall!)
+                        MessageComposerSheet(room: space.wall!)
                     default:
                         Text("Coming soon!")
                     }

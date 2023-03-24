@@ -13,7 +13,7 @@ struct StreamTimelineScreen: View {
     
     var body: some View {
         StreamTimeline(stream: stream)
-            .navigationBarTitle(stream.name)
+            .navigationBarTitle(stream.name ?? "Timeline")
     }
 }
 

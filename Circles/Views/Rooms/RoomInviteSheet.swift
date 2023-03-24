@@ -7,18 +7,19 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct RoomInviteSheet: View {
-    @ObservedObject var room: MatrixRoom
+    @ObservedObject var room: Matrix.Room
     var title: String? = nil
     @Environment(\.presentationMode) var presentation
-    @State var newUserIds: [String] = []
-    @State var newestUserId: String = ""
+    @State var newUsers: [Matrix.User] = []
+    @State var newestUserIdString: String = ""
     @State var pending = false
 
     var inputForm: some View {
         VStack(alignment: .center) {
-            Text(title ?? "Invite New Followers to \(room.displayName ?? room.id)")
+            Text(title ?? "Invite New Followers to \(room.name ?? "This Room")")
                 .font(.headline)
                 .fontWeight(.bold)
 
@@ -26,15 +27,22 @@ struct RoomInviteSheet: View {
 
 
             HStack {
-                TextField("User ID", text: $newestUserId)
+                TextField("User ID", text: $newestUserIdString)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
 
-                Button(action: {
-                    if let canonicalUserId = room.matrix.canonicalizeUserId(userId: newestUserId) {
-                        self.newUserIds.append(canonicalUserId)
+                AsyncButton(action: {
+                    guard let userId = UserId(newestUserIdString)
+                    else {
+                        // FIXME: Set some error message
+                        return
                     }
-                    self.newestUserId = ""
+                    let user = room.session.getUser(userId: userId)
+
+                    await MainActor.run {
+                        self.newUsers.append(user)
+                        self.newestUserIdString = ""
+                    }
                 }) {
                     Text("Add")
                 }
@@ -45,64 +53,23 @@ struct RoomInviteSheet: View {
             VStack(alignment: .leading) {
                 Text("Users to Invite:")
                 VStack(alignment: .leading) {
-                    /*
-                    if newUserIds.isEmpty {
-                        Text("(none)")
-                    }
-                    else {
- */
-                        List {
-                            ForEach(newUserIds, id: \.self) { userId in
-                                if let user = room.matrix.getUser(userId: userId) {
-                                    MessageAuthorHeader(user: user)
-                                }
-                                else {
-                                    //Text(userId)
-                                    DummyMessageAuthorHeader(userId: userId)
-                                }
-                            }
-                            .onDelete(perform: { indexSet in
-                                self.newUserIds.remove(atOffsets: indexSet)
-                            })
+                    List {
+                        ForEach(newUsers) { user in
+                            MessageAuthorHeader(user: user)
                         }
-                    //}
+                    }
                 }
                 .padding(.leading)
 
 
             }
 
-            Button(action: {
-                let dgroup = DispatchGroup()
-                var errors: KSError? = nil
-
-                self.pending = true
-
-                for userId in newUserIds {
-                    dgroup.enter()
-                    room.invite(userId: userId) { response in
-                        print("INVITE\tGot invite response")
-                        switch(response) {
-                        case .failure(let error):
-                            let msg = "Failed to send invitation: \(error)"
-                            print(msg)
-                            errors = errors ?? KSError(message: msg)
-                        case .success:
-                            print("INVITE\tSuccessfully invited \(userId) to \(room.id)")
-                        }
-                        dgroup.leave()
-                    }
+            AsyncButton(action: {
+                for user in newUsers {
+                    try await room.invite(userId: user.userId)
                 }
 
-                dgroup.notify(queue: .main) {
-                    self.pending = false
-                    guard let err = errors else {
-                        self.presentation.wrappedValue.dismiss()
-                        return
-                    }
-
-                    print("INVITE\tInvite(s) failed: \(err)")
-                }
+                self.presentation.wrappedValue.dismiss()
             }) {
                 Label("Send Invitation(s)", systemImage: "envelope")
             }

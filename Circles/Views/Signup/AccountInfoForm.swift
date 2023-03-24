@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct AccountInfoForm: View {
     //var matrix: MatrixInterface
@@ -150,12 +151,41 @@ struct AccountInfoForm: View {
             Spacer()
 
             AsyncButton(action: {
+                if session.storage["username"] == nil {
+                    do {
+                        try await session.doUsernameStage(username: accountInfo.username)
+                    } catch {
+                        print("SIGNUP-AccountInfoForm:\tFailed to enroll username")
+                        // FIXME: Also set the error message for the UI
+                        self.showAlert = true
+                        self.alertTitle = "Error: Username"
+                        self.alertMessage = "Please choose a different username."
+                        return
+                    }
+                }
+                
+                if session.storage["password"] == nil {
+                    do {
+                        try await session.doPasswordEnrollStage(newPassword: accountInfo.password)
+                    } catch {
+                        print("SIGNUP-AccountInfoForm:\tFailed to set password")
+                        // FIXME: Also set the error message for the UI
+                        self.showAlert = true
+                        self.alertTitle = "Error: Password"
+                        self.alertMessage = "Please choose a different password."
+                        return
+                    }
+                }
+                
                 do {
-                    session.setUsername(accountInfo.username)
-                    session.setPassword(accountInfo.password)
                     self.emailSessionInfo = try await session.doLegacyEmailRequestToken(address: accountInfo.emailAddress)
                 } catch {
-                    print("SIGNUP-AccountInfoForm\t:( Couldn't send validation email")
+                    print("SIGNUP-AccountInfoForm:\tCouldn't send validation email")
+                    // FIXME: Also set the error message for the UI
+                    self.showAlert = true
+                    self.alertTitle = "Error: Email"
+                    self.alertMessage = "Please double-check that your email address is correct."
+                    return
                 }
             }) {
                 Text("Submit")
@@ -165,7 +195,9 @@ struct AccountInfoForm: View {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
-            .disabled(accountInfo.username.isEmpty || accountInfo.password.isEmpty || accountInfo.password != repeatPassword)
+            .disabled(accountInfo.username.isEmpty ||
+                      accountInfo.password.isEmpty || accountInfo.password != repeatPassword ||
+                      accountInfo.emailAddress.isEmpty)
         }
         .alert(isPresented: $showAlert) {
             Alert(title: Text(alertTitle),

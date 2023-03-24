@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Matrix
 
 enum PhotosSheetType: String {
     case create
@@ -18,7 +19,7 @@ extension PhotosSheetType: Identifiable {
 
 struct PhotosOverviewScreen: View {
     //@ObservedObject var store: KSStore
-    @ObservedObject var container: PhotoGalleriesContainer
+    @ObservedObject var container: ContainerRoom<GalleryRoom>
     //@State var showCreationSheet = false
     
     @State private var sheetType: PhotosSheetType? = nil
@@ -44,10 +45,10 @@ struct PhotosOverviewScreen: View {
     var body: some View {
         NavigationView {
             ScrollView {
-                ForEach(container.galleries) { gallery in
+                ForEach(container.rooms) { room in
                     //Text("Found room \(room.roomId.string)")
-                    NavigationLink(destination: PhotoGalleryView(gallery: gallery)) {
-                        PhotoGalleryCard(room: gallery.room)
+                    NavigationLink(destination: PhotoGalleryView(room: room)) {
+                        PhotoGalleryCard(room: room)
                         // FIXME Add a longPress gesture
                         //       for setting/changing the
                         //       avatar image for the gallery

@@ -7,9 +7,10 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct GroupConfigSheet: View {
-    @ObservedObject var room: MatrixRoom
+    @ObservedObject var room: Matrix.Room
     @Environment(\.presentationMode) var presentation
 
     @State var groupName: String = ""
@@ -65,7 +66,7 @@ struct GroupConfigSheet: View {
                 
                 AsyncButton(action: {
                     do {
-                        try await room.setDisplayName(self.groupName)
+                        try await room.setName(newName: self.groupName)
                         self.groupName = ""
                     } catch {
                         
@@ -79,10 +80,8 @@ struct GroupConfigSheet: View {
             HStack {
                 TextField("Status message", text: $groupTopic)
                 
-                Button(action: {
-                    room.setTopic(topic: self.groupTopic) { response in
-                        self.groupTopic = ""
-                    }
+                AsyncButton(action: {
+                    try await room.setTopic(newTopic: self.groupTopic)
                 }) {
                     Label("Set", systemImage: "square.and.arrow.up")
                 }

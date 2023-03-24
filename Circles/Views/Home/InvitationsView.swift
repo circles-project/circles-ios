@@ -7,12 +7,12 @@
 //
 
 import SwiftUI
-
+import Matrix
 
 struct InvitationsView: View {
-    var store: LegacyStore
-    @State var invitedRooms: [InvitedRoom] = []
-    @State var selectedRoom: MatrixRoom?
+    var store: CirclesStore
+    @State var invitedRooms: [Matrix.InvitedRoom] = []
+    @State var selectedRoom: Matrix.Room?
     @State var showAcceptSheet = false
 
     var body: some View {
@@ -64,7 +64,7 @@ struct InvitationsView: View {
 }
 
 struct InvitationsScreen: View {
-    var store: LegacyStore
+    var store: CirclesStore
     
     var body: some View {
         ScrollView {

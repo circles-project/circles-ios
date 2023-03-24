@@ -6,10 +6,11 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct MessageComposerSheet: View {
-    var room: MatrixRoom
-    var parentMessage: MatrixMessage?
+    var room: Matrix.Room
+    var parentMessage: Matrix.Message?
     @State var isPresented = true
 
     var body: some View {

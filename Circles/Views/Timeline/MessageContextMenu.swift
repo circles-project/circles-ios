@@ -6,11 +6,11 @@
 //
 
 import SwiftUI
-
+import Matrix
 
 
 struct MessageContextMenu: View {
-    var message: MatrixMessage
+    var message: Matrix.Message
     @Binding var sheetType: MessageSheetType?
 
     var body: some View {
@@ -31,12 +31,12 @@ struct MessageContextMenu: View {
         }
         */
 
-        if message.type == MatrixMsgType.image.rawValue {
+        if message.content?.msgtype == .image {
             Button(action: saveImage) {
                 Label("Save image", systemImage: "square.and.arrow.down")
             }
 
-              if message.sender == message.matrix.whoAmI() {
+            if message.sender.userId == message.room.session.creds.userId {
                 Button(action: {}) {
                     Label("Share", systemImage: "square.and.arrow.up")
                 }
@@ -56,25 +56,23 @@ struct MessageContextMenu: View {
         }
 
         Menu {
-            Button(action: {
-                message.room.setPowerLevel(userId: message.sender, power: 0) { response in
-                    // Nothing we can do here, either way
-                }
+            AsyncButton(action: {
+                try await message.room.setPowerLevel(userId: message.sender.userId, power: -10)
             }) {
                 Label("Block sender from posting here", systemImage: "person.crop.circle.badge.xmark")
             }
-            .disabled( !message.room.amIaModerator() )
+            .disabled( !message.room.iCanChangeState(type: M_ROOM_POWER_LEVELS) )
 
-            Button(action: {
-                    message.room.kick(userId: message.sender,
-                                      reason: "Removed by \(message.matrix.whoAmI()) for message \(message.id)")
+            AsyncButton(action: {
+                try await message.room.kick(userId: message.sender.userId,
+                                  reason: "Removed by \(message.room.session.whoAmI()) for message \(message.eventId)")
             }) {
                 Label("Remove sender", systemImage: "trash.circle")
             }
-            .disabled( !message.room.amIaModerator() )
+            .disabled( !message.room.iCanKick )
 
-            Button(action: {
-                message.room.ignoreUser(message.sender)
+            AsyncButton(action: {
+                try await message.room.session.ignoreUser(userId: message.sender.userId)
             }) {
                 Label("Ignore sender", systemImage: "person.crop.circle.badge.minus")
             }
@@ -93,16 +91,13 @@ struct MessageContextMenu: View {
             }
         }
         Menu {
-            Button(action: {
-                message.room.redact(message: message,
-                                    reason: "Deleted by \(message.matrix.whoAmI())") { response in
-                    // Nothing else to do?
-                    // If it failed, it failed...
-                }
+            AsyncButton(action: {
+                try await message.room.redact(eventId: message.eventId,
+                                              reason: "Deleted by \(message.room.session.whoAmI())")
             }) {
                 Label("Delete", systemImage: "trash")
             }
-            .disabled(message.sender != message.matrix.whoAmI() && !message.room.amIaModerator())
+            .disabled(!message.room.iCanRedact)
             .foregroundColor(.red)
 
         } label: {
@@ -110,13 +105,14 @@ struct MessageContextMenu: View {
         }
     }
 
-    func saveEncryptedImage(content: mImageContent) {
-        guard let file = content.info.file ?? content.info.thumbnail_file else {
+    func saveEncryptedImage(content: Matrix.mImageContent) {
+        /*
+        guard let file = content.file ?? content.info.thumbnail_file else {
             print("SAVEIMAGE\tError: Encrypted image doesn't have an encrypted file :(")
             return
         }
         let url = file.url
-        let matrix = message.matrix
+        let matrix = message.room.session
 
         guard let cachedImage = matrix.getCachedEncryptedImage(mxURI: url.absoluteString) else {
             matrix.downloadEncryptedImage(fileinfo: file, mimetype: content.info.mimetype) { response in
@@ -134,10 +130,11 @@ struct MessageContextMenu: View {
         print("SAVEIMAGE\tEncrypted image was already in cache.  Saving...")
         let imageSaver = ImageSaver()
         imageSaver.writeToPhotoAlbum(image: cachedImage)
-
+        */
     }
 
-    func savePlaintextImage(content: mImageContent) {
+    func savePlaintextImage(content: Matrix.mImageContent) {
+        /*
         guard let fullresUrl: URL = content.url ?? content.info.thumbnail_url else {
             return
         }
@@ -156,9 +153,11 @@ struct MessageContextMenu: View {
         print("Image was in cache, saving...")
         let imageSaver = ImageSaver()
         imageSaver.writeToPhotoAlbum(image: cachedImage)
+        */
     }
 
     func saveImage() {
+        /*
         switch(message.content) {
         case .image(let imageContent):
             if message.isEncrypted {
@@ -172,6 +171,7 @@ struct MessageContextMenu: View {
             print("SAVEIMAGE\tTried to saveImage on something that wasn't an m.image (eventId = \(message.id))")
             return
         }
+        */
     }
 
 }

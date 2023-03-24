@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Matrix
 
 enum GroupsSheetType: String {
     case create
@@ -18,7 +19,7 @@ extension GroupsSheetType: Identifiable {
 }
 
 struct GroupsOverviewScreen: View {
-    @ObservedObject var container: GroupsContainer
+    @ObservedObject var container: ContainerRoom<GroupRoom>
     @State var sheetType: GroupsSheetType?
     
     var body: some View {
@@ -26,9 +27,9 @@ struct GroupsOverviewScreen: View {
         NavigationView {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    ForEach(container.groups) { group in
-                        NavigationLink(destination: GroupTimelineScreen(group: group)) {
-                            GroupOverviewRow(room: group.room)
+                    ForEach(container.rooms) { room in
+                        NavigationLink(destination: GroupTimelineScreen(room: room)) {
+                            GroupOverviewRow(room: room)
                         }
                         .buttonStyle(PlainButtonStyle())
                         .padding(.vertical, 2)

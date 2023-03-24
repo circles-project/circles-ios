@@ -7,9 +7,10 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct ProfileAddEmailView: View {
-    @ObservedObject var user: MatrixUser
+    @ObservedObject var user: Matrix.User
     @State var email: String = ""
     @State var showValidationSection = false
     @State var token: String = ""
@@ -48,7 +49,7 @@ struct ProfileAddEmailView: View {
 }
 
 struct ProfileScreen: View {
-    @ObservedObject var user: MatrixUser
+    @ObservedObject var user: Matrix.User
     @State var displayName = ""
     @State var statusMessage = ""
     @State var emailAddresses: [String] = [] // FIXME this should come from the MatrixUser
@@ -58,7 +59,7 @@ struct ProfileScreen: View {
     @State var newImage: UIImage?
     
     var image: Image {
-        if let img = newImage ?? user.avatarImage {
+        if let img = newImage ?? user.avatar {
             return Image(uiImage: img)
         }
         else {

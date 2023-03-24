@@ -7,16 +7,21 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct PersonDetailView: View {
-    @ObservedObject var user: MatrixUser
-    @State var showComposer = false
-    @State var selectedRoom: MatrixRoom? = nil
-    @State var selectedMessage: MatrixMessage?
+    @ObservedObject var space: PersonRoom
+    @ObservedObject var user: Matrix.User
+    @State var rooms: [Matrix.SpaceChildRoom] = []
+    
+    init(space: PersonRoom) {
+        self.space = space
+        self.user = space.session.getUser(userId: space.creator)
+    }
     
     var avatar: Image {
-        return (user.avatarImage != nil)
-            ? Image(uiImage: user.avatarImage!)
+        return (user.avatar != nil)
+            ? Image(uiImage: user.avatar!)
             : Image(systemName: "person.crop.square")
     }
     
@@ -24,7 +29,7 @@ struct PersonDetailView: View {
         HStack {
             Text("Latest Status:")
                 .fontWeight(.bold)
-            Text(user.statusMsg ?? "(no status message)")
+            Text(user.statusMessage ?? "(no status message)")
         }
         .font(.subheadline)
     }
@@ -35,7 +40,7 @@ struct PersonDetailView: View {
                 .font(.headline)
                 .fontWeight(.bold)
             VStack(alignment: .leading) {
-                ForEach(user.rooms.filter({$0.tags.contains(ROOM_TAG_FOLLOWING)})) { room in
+                ForEach(rooms) { room in
                     PersonsCircleRow(room: room)
                 }
             }
@@ -67,10 +72,6 @@ struct PersonDetailView: View {
     
     var timeline: some View {
         VStack {
-            let rooms = user.rooms
-                .filter({ room in
-                    room.tags.contains(ROOM_TAG_FOLLOWING)
-                })
             
             if !rooms.isEmpty {
                 Text("\(user.displayName ?? "This user")'s Circles")
@@ -79,56 +80,16 @@ struct PersonDetailView: View {
                 
                 VStack(alignment: .leading) {
                     ForEach(rooms) { room in
-                        if self.selectedRoom == room {
-                            PersonsCircleRow(room: room)
-                                .padding(.vertical, 5)
-                                .foregroundColor(Color.white)
-                                .background(Color.accentColor)
-                        }
-                        else {
-                            Button(action: {
-                                self.selectedRoom = room
-                                self.showComposer = false
-                            }) {
-                                PersonsCircleRow(room: room)
-                            }
-                        }
-                    }
-                    
-                    if self.selectedRoom == nil {
-                        PersonsDummyCircleRow(user: user)
+                        PersonsCircleRow(room: room)
                             .padding(.vertical, 5)
                             .foregroundColor(Color.white)
                             .background(Color.accentColor)
+
                     }
-                    else {
-                        Button(action: {
-                            self.selectedRoom = nil
-                            self.showComposer = false
-                        }) {
-                            PersonsDummyCircleRow(user: user)
-                        }
-                    }
-                }
-                
-                Divider()
-                
-                if let room = self.selectedRoom {
-                    /*
-                    composer
-                        .padding([.top,.leading,.trailing])
-                    */
-                    
-                    TimelineView(room: room)
-                        .padding(.leading, 10)
-                }
-                else {
-                    StreamTimeline(stream: SocialStream(for: user))
-                        .padding(.leading, 10)
                 }
             }
             else {
-                Text("Not following any Circles for \(user.displayName ?? "This user")")
+                Text("No Circles for \(user.displayName ?? "this user")")
             }
         }
     }
@@ -167,7 +128,9 @@ struct PersonDetailView: View {
         .onAppear {
             // Hit the Homeserver to make sure we have the latest
             //user.matrix.getDisplayName(userId: user.id) { _ in }
-            user.refreshProfile(completion: { _ in })
+            let _ = Task {
+                try await user.refreshProfile()
+            }
         }
     }
 }

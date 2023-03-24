@@ -7,17 +7,18 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct ProfileView: View {
-    @ObservedObject var user: MatrixUser
+    @ObservedObject var user: Matrix.User
     
     @State var showImagePicker = false
     @State var showNameSheet = false
     @State var newAvatarImage = UIImage()
     
     var profile_picture: Image {
-        return (user.avatarImage != nil)
-            ? Image(uiImage: user.avatarImage!)
+        return (user.avatar != nil)
+            ? Image(uiImage: user.avatar!)
             : Image(systemName: "person.crop.square")
     }
     
@@ -43,12 +44,12 @@ struct ProfileView: View {
                 }
                 .padding(.top)
                 
-                Text(user.id)
+                Text("\(user.userId)")
                     .font(.footnote)
                     .foregroundColor(Color.gray)
                     .lineLimit(1)
             
-                if let status = user.statusMsg {
+                if let status = user.statusMessage {
                     Text("\"\(status)\"")
                         .font(.subheadline)
                         .fontWeight(.medium)

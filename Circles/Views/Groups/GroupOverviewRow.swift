@@ -7,15 +7,16 @@
 //
 
 import SwiftUI
-import MatrixSDK
+import Matrix
 
 struct GroupOverviewRow: View {
-    @ObservedObject var room: MatrixRoom
+    @ObservedObject var room: Matrix.Room
     
     var timestamp: some View {
         let formatter = RelativeDateTimeFormatter()
+        let date = Date(timeIntervalSince1970: Double(room.timestamp)/1000.0)
         
-        return Text("Last updated \(room.timestamp, formatter: formatter)")
+        return Text("Last updated \(date, formatter: formatter)")
     }
     
     var shield: some View {
@@ -34,7 +35,7 @@ struct GroupOverviewRow: View {
     var body: some View {
         HStack(alignment: .top) {
 
-            Image(uiImage: room.avatarImage ?? UIImage())
+            Image(uiImage: room.avatar ?? UIImage())
                 .renderingMode(.original)
                 .resizable()
                 .scaledToFill()
@@ -47,7 +48,7 @@ struct GroupOverviewRow: View {
             VStack(alignment: .leading, spacing: 2) {
                 HStack(alignment: .center, spacing: 3) {
                     shield
-                    Text(room.displayName ?? room.id)
+                    Text(room.name ?? room.id)
                         .fontWeight(.bold)
                     Spacer()
                     Image(systemName: "chevron.right")
@@ -55,7 +56,7 @@ struct GroupOverviewRow: View {
                 .font(.title2)
 
                 VStack(alignment: .leading) {
-                    Text("\(room.membersCount) members")
+                    Text("\(room.joinedMembers.count) members")
                         .font(.subheadline)
                         .foregroundColor(.gray)
                     

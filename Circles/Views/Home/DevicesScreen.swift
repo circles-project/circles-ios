@@ -7,13 +7,14 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct DevicesScreen: View {
-    @ObservedObject var user: MatrixUser
+    @ObservedObject var user: Matrix.User
 
     var currentDeviceView: some View {
         VStack(alignment: .leading, spacing: 15) {
-            let myDevice = user.matrix.getCurrentDevice()
+            let myDevice = user.session.getCurrentDevice()
             if let dev = myDevice {
                     let myDeviceModel = UIDevice.current.model
                     let iconName = myDeviceModel.components(separatedBy: .whitespaces).first?.lowercased() ?? "desktopcomputer"
@@ -37,7 +38,7 @@ struct DevicesScreen: View {
 
                 currentDeviceView
 
-                let myDevice = user.matrix.getCurrentDevice()
+                let myDevice = user.session.getCurrentDevice()
 
                 let unverifiedDevices = user.devices.filter { !$0.isVerified }
                 if !unverifiedDevices.isEmpty {

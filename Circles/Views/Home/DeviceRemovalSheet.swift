@@ -7,19 +7,17 @@
 //
 
 import SwiftUI
-import MatrixSDK
+import Matrix
 
 struct DeviceRemovalSheet: View {
-    @ObservedObject var device: MatrixDevice
+    var device: Matrix.CryptoDevice
+    var session: Matrix.Session
     @Environment(\.presentationMode) var presentation
 
-    @State var password: String = ""
     @State var alertTitle: String = ""
     @State var alertMessage: String = ""
     @State var showAlert = false
-    
-    @State var pending = false
-    
+        
     var icon: Image {
         if let name = device.displayName {
             if name.contains("iPhone") {
@@ -59,7 +57,7 @@ struct DeviceRemovalSheet: View {
                 VStack(alignment: .leading) {
                     Text("\(device.displayName ?? "(unknown)")")
                         .font(.title2)
-                    Text(device.id)
+                    Text(device.deviceId)
                         .fontWeight(.bold)
                 }
             }
@@ -69,30 +67,19 @@ struct DeviceRemovalSheet: View {
     var buttons: some View {
         VStack(alignment: .center, spacing: 30) {
             
-            Button(action: {
-                self.pending = true
+            AsyncButton(action: {
                 // First we have to get an MXAuthenticationSession
                 // Then we can delete the device
                 // We should probably just have the MatrixInterface handle all of this for us...
-                device.matrix.deleteDevice(deviceId: device.id, password: password) { response in
-                    if response.isSuccess {
-                        print("Successfully deleted device \(device.id)")
-                        self.presentation.wrappedValue.dismiss()
-                    }
-                    else {
-                        print("Failed to remove session \(device.id)")
-                        self.password = ""
-                        self.alertTitle = "Failed to remove session"
-                        self.alertMessage = "Double-check the password and try again"
-                        self.showAlert = true
-                    }
-                    self.pending = false
-                }
+                
+                // FIXME: This is going to give us a UIA session.  Need to handle UIA at a deeper layer.
+                try await session.deleteDevice(deviceId: device.deviceId)
+                
             }) {
                 Label("Delete Session", systemImage: "xmark.shield")
                     .foregroundColor(Color.red)
             }
-            .disabled(password.isEmpty || pending)
+            .disabled(true) // FIXME: This is disabled until we figure out how to do UIA
             .alert(isPresented: $showAlert) {
                 Alert(title: Text(alertTitle),
                       message: Text(alertMessage),
@@ -106,35 +93,9 @@ struct DeviceRemovalSheet: View {
         }
     }
     
-    var passwordForm: some View {
-        VStack {
-            Spacer()
-            HStack {
-                Image(systemName: "exclamationmark.triangle")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 50, height: 50, alignment: .center)
-                Text("Removing a login session requires authentication.")
-                    .padding()
-            }
-            Spacer()
-            Text("Enter your password to proceed:")
-            SecureFieldWithEye(label: "Password", text: $password)
-                .frame(width: 300, height: 40)
-                .padding()
-                .overlay(
-                    RoundedRectangle(cornerRadius: 4)
-                        .stroke(Color.gray, lineWidth: 2)
-                )
-            Spacer()
-        }
-    }
-    
     var body: some View {
         VStack {
             header
-
-            passwordForm
             
             Spacer()
 

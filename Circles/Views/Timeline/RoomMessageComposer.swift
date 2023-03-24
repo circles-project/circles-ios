@@ -8,17 +8,18 @@
 
 import SwiftUI
 import PhotosUI
+import Matrix
 
 struct RoomMessageComposer: View {
-    @ObservedObject var room: MatrixRoom
+    @ObservedObject var room: Matrix.Room
     //@Binding var isPresented: Bool
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.presentationMode) var presentation
-    var inReplyTo: MatrixMessage?
+    var inReplyTo: Matrix.Message?
 
     
     //var onCancel: () -> Void
-    @State private var newMessageType: MatrixMsgType = .text
+    @State private var newMessageType: Matrix.MessageType = .text
     @State private var newMessageText = ""
     @State private var newImage: UIImage?
     @State private var showPicker = false
@@ -112,53 +113,28 @@ struct RoomMessageComposer: View {
                     //.background(RoundedRectangle(cornerRadius: 4).stroke(Color.red, lineWidth: 1))
             }
 
-            Button(action: {
+            AsyncButton(action: {
                 switch(self.newMessageType) {
+                    
                 case .text:
-                    self.inProgress = true
                     if let parentMessage = self.inReplyTo {
                         print("REPLY\tSending reply")
-                        parentMessage.postReply(text: self.newMessageText) { response in
-                            if response.isSuccess {
-                                //self.isPresented = false
-                                self.presentation.wrappedValue.dismiss()
-                            }
-                            self.inProgress = false
-                        }
+                        try await parentMessage.room.sendReply(to: parentMessage.eventId, text: self.newMessageText)
+                        self.presentation.wrappedValue.dismiss()
                     } else {
-                        self.room.postText(text: self.newMessageText) { response in
-                            switch(response) {
-                            case .failure(let error):
-                                print("COMPOSER Failed to post text message: \(error)")
-                                // FIXME Set a Bool to show an Alert
-                            case .success(let str):
-                                print("COMPOSER Successfully posted text message")
-                                if let eventId = str {
-                                      print("COMPOSER Got event id \(eventId)")
-                                }
-                                //self.isPresented = false
-                                self.presentation.wrappedValue.dismiss()
-                            }
-                            self.inProgress = false
-                        }
+                        try await self.room.sendText(text: self.newMessageText)
+                        self.presentation.wrappedValue.dismiss()
                     }
+                    
                 case .image:
                     guard let img = self.newImage else {
                         print("COMPOSER Trying to post an image without actually selecting an image")
                         return
                     }
-                    self.inProgress = true
-                    room.postImage(image: img, caption: newMessageText) { response in
-                        switch(response) {
-                        case .failure(let err):
-                            print("COMPOSER Failed to post image: \(err)")
-                        case .success(let maybeMsg):
-                            print("COMPOSER Successfully posted image.  Got response [\(maybeMsg ?? "(No message)")].")
-                            //self.isPresented = false
-                            self.presentation.wrappedValue.dismiss()
-                        }
-                        self.inProgress = false
-                    }
+                    
+                    try await self.room.sendImage(image: img)
+                    self.presentation.wrappedValue.dismiss()
+                    
                 default:
                     print("COMPOSER Doing nothing for now...")
                 }
@@ -180,7 +156,9 @@ struct RoomMessageComposer: View {
     var body: some View {
         GeometryReader { proxy in
         VStack(alignment: .leading, spacing: 2) {
-            MessageAuthorHeader(user: room.matrix.me())
+            let myUserId = room.session.creds.userId
+            let myUser = room.session.getUser(userId: myUserId)
+            MessageAuthorHeader(user: myUser)
 
             ZStack {
                 switch(newMessageType) {
@@ -251,29 +229,14 @@ struct RoomMessageComposer: View {
                     ImagePicker(selectedImage: self.$newImage, sourceType: localSourceType)
                 case .camera:
                     ImagePicker(selectedImage: $newImage, sourceType: .camera)
+                default:
+                    ImagePicker(selectedImage: $newImage, sourceType: localSourceType)
                 }
             case .cloud:
-                CloudImagePicker(matrix: room.matrix, selectedImage: self.$newImage)
+                //CloudImagePicker(session: room.session, selectedImage: self.$newImage)
+                Text("FIXME: CloudImagePicker")
             }
         })
-        .onAppear() {
-            room.matrix.ensureEncryption(roomId: room.id) { response in
-                // Nothing we can really do here anyway
-                switch response {
-                case .success:
-                    // Yay it worked
-                    //self.alertTitle = "Encryption Success"
-                    //self.alertMessage = "All systems go for a new encrypted post"
-                    //self.showAlert = true
-                    return
-                case .failure(let error):
-                    print("Error: Failed to ensure encryption in room [\(room.displayName ?? room.id)]")
-                    self.alertTitle = "Failed to ensure encryption"
-                    self.alertMessage = "Circles could not ensure that all recipients will be able to receive decryption keys for this post"
-                    self.showAlert = true
-                }
-            }
-        }
         .alert(isPresented: $showAlert) {
             Alert(title: Text(alertTitle),
                   message: Text(alertMessage),

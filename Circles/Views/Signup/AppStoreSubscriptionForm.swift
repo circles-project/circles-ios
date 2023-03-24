@@ -9,6 +9,8 @@
 import SwiftUI
 import StoreKit
 
+import Matrix
+
 struct MembershipProductCard: View {
     @EnvironmentObject var appStore: AppStoreInterface
     var product: SKProduct
@@ -88,8 +90,8 @@ struct AppStoreSubscriptionForm: View {
 
     @State var selectedProduct: SKProduct?
 
-    let stage = LOGIN_STAGE_APPLE_SUBSCRIPTION
-
+    let stage = AUTH_TYPE_APPLE_SUBSCRIPTION
+    
     var buttonBar: some View {
         HStack {
             Spacer()

@@ -7,13 +7,14 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct TimelineView: View {
-    @ObservedObject var room: MatrixRoom
+    @ObservedObject var room: Matrix.Room
     var displayStyle: MessageDisplayStyle = .timeline
     @State var debug = false
     @State var loading = false
-    @State var selectedMessage: MatrixMessage?
+    @State var selectedMessage: Matrix.Message?
     @State var sheetType: TimelineSheetType?
 
     /*
@@ -34,11 +35,10 @@ struct TimelineView: View {
                         .progressViewStyle(LinearProgressViewStyle())
                 }
                 else if room.canPaginate() {
-                    Button(action: {
+                    AsyncButton(action: {
                         self.loading = true
-                        room.paginate() { response in
-                            self.loading = false
-                        }
+                        try await room.paginate()
+                        self.loading = false
                     }) {
                         Text("Load More")
                     }
@@ -46,7 +46,8 @@ struct TimelineView: View {
                         // It's a magic self-clicking button.
                         // If it ever appears, we basically automatically click it for the user
                         self.loading = true
-                        room.paginate() { response in
+                        let _ = Task {
+                            try await room.paginate()
                             self.loading = false
                         }
                     }
@@ -57,7 +58,7 @@ struct TimelineView: View {
             if CIRCLES_DEBUG {
                 VStack(alignment: .leading) {
                     if self.debug {
-                        Text("Room has \(room.messages.count) total messages")
+                        Text("Room has \(room.timeline.count) total messages")
                             .font(.caption)
                         Button(action: {self.debug = false}) {
                             Label("Hide debug info", systemImage: "eye.slash")
@@ -77,7 +78,7 @@ struct TimelineView: View {
     
     var body: some View {
         // Get all the top-level messages (ie not the replies etc)
-        let messages = room.getMessages().filter { (message) in
+        let messages = room.timeline.values.filter { (message) in
             message.relatesToId == nil
         }
 
@@ -96,9 +97,11 @@ struct TimelineView: View {
                     ForEach(messages) { msg in
                         VStack(alignment: .leading) {
                             HStack {
+                                /*
                                 if CIRCLES_DEBUG && self.debug {
                                     Text("\(messages.firstIndex(of: msg) ?? -1)")
                                 }
+                                */
                                 MessageCard(message: msg, displayStyle: displayStyle)
                                     .padding(.top, 5)
                                     /*

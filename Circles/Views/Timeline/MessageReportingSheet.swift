@@ -7,9 +7,10 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct MessageReportingSheet: View {
-    @ObservedObject var message: MatrixMessage
+    @ObservedObject var message: Matrix.Message
     //@Binding var show: Bool
     @Environment(\.presentationMode) var presentation
     @State private var reportedSeverity: Double = 0.0
@@ -40,15 +41,10 @@ struct MessageReportingSheet: View {
             }
             .padding(buttonPadding)
             Spacer()
-            Button(action: {
+            AsyncButton(action: {
                 let reasons = Array(selectedCategories)
-                message.room.report(message: message,
-                                    severity: Int(reportedSeverity),
-                                    reasons: reasons) { response in
-                    if response.isSuccess {
-                        self.presentation.wrappedValue.dismiss()
-                    }
-                }
+                try await message.room.report(eventId: message.eventId, score: Int(reportedSeverity), reason: reasons.joined(separator: "; "))
+                self.presentation.wrappedValue.dismiss()
             }) {
                 Label("Submit Report", systemImage: "exclamationmark.shield")
             }

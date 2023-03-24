@@ -7,6 +7,7 @@
 
 import SwiftUI
 import StoreKit
+import Matrix
 
 struct SignupStartForm: View {
     //var matrix: MatrixInterface
@@ -27,9 +28,8 @@ struct SignupStartForm: View {
             Spacer()
 
             let tokenFlow = state.flows.first(where: {
-                $0.stages.contains(LOGIN_STAGE_TOKEN_KOMBUCHA) ||
-                    $0.stages.contains(LOGIN_STAGE_TOKEN_MATRIX) ||
-                    $0.stages.contains(LOGIN_STAGE_TOKEN_MSC3231)
+                    $0.stages.contains(AUTH_TYPE_REGISTRATION_TOKEN) ||
+                    $0.stages.contains(AUTH_TYPE_MSC3231_TOKEN)
             })
             if tokenFlow != nil {
                 Text("Already have a Circles token?")
@@ -55,7 +55,7 @@ struct SignupStartForm: View {
             Spacer()
 
             let appleFlow = state.flows.first(where: {
-                $0.stages.contains(LOGIN_STAGE_APPLE_SUBSCRIPTION)
+                $0.stages.contains(AUTH_TYPE_APPLE_SUBSCRIPTION)
             })
             if appleFlow != nil {
                 Text("No token?  No problem.")

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct TermsOfServiceForm: View {
     //var matrix: MatrixInterface
@@ -19,7 +20,7 @@ struct TermsOfServiceForm: View {
     @State var alertTitle = ""
     @State var alertMessage = ""
     
-    let stage = LOGIN_STAGE_TERMS_OF_SERVICE
+    let stage = AUTH_TYPE_TERMS
     
     let langCode = Bundle.main.preferredLocalizations[0]
 

@@ -7,12 +7,13 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct PersonHeaderRow: View {
-    @ObservedObject var user: MatrixUser
+    @ObservedObject var user: Matrix.User
     
     var image: Image {
-        guard let img = user.avatarImage else {
+        guard let img = user.avatar else {
             return Image(systemName: "person.crop.square")
         }
         
@@ -27,7 +28,7 @@ struct PersonHeaderRow: View {
     }
     
     var status: String {
-        guard let msg = user.statusMsg else {
+        guard let msg = user.statusMessage else {
             return ""
         }
         return "\"" + msg + "\""

@@ -7,42 +7,12 @@
 //
 
 import SwiftUI
-import MatrixSDK
+import Matrix
 
-extension MXOlmSession: Identifiable {
-    public var id: String {
-        session.sessionIdentifier()
-    }
-}
-
-struct OlmSessionView: View {
-    var session: MXOlmSession
-    
-    var timestamp: some View {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .short
-        dateFormatter.timeStyle = .short
-        
-        return Text(dateFormatter.string(from: Date(timeIntervalSince1970: session.lastReceivedMessageTs)) )
-    }
-    
-    var body: some View {
-        HStack {
-            Image(systemName: "key.fill")
-            Image(systemName: "key")
-                .rotationEffect(Angle(degrees: 180.0))
-                .offset(x: -10.0, y: 0.0)
-            VStack {
-                Text(session.session.sessionIdentifier())
-                    .lineLimit(1)
-                timestamp
-            }
-        }
-    }
-}
 
 struct DeviceInfoView: View {
-    @ObservedObject var device: MatrixDevice
+    var session: Matrix.Session
+    var device: Matrix.CryptoDevice
     
     @State var showDetails = false
     @State var showRemoveDialog = false
@@ -66,7 +36,7 @@ struct DeviceInfoView: View {
     
     var verificationStatus: some View {
         HStack {
-            if device.isVerified {
+            if device.crossSigningTrusted || device.locallyTrusted {
                 Image(systemName: "checkmark.shield")
                     .foregroundColor(Color.green)
                 Text("Verified")
@@ -84,10 +54,8 @@ struct DeviceInfoView: View {
     
     var verifyButtons: some View {
         HStack(alignment: .center, spacing: 20){
-            
-            //if !device.isVerified {
-                // Only offer to remove the device if it's really ours
-                if device.userId == device.matrix.whoAmI() {
+
+            if device.userId == "\(session.creds.userId)" {
                     Button(action: { self.showRemoveDialog = true }) {
                         Label("Remove ", systemImage: "xmark.shield")
                     }
@@ -95,21 +63,26 @@ struct DeviceInfoView: View {
                     .foregroundColor(Color.red)
                     .overlay(RoundedRectangle(cornerRadius: 8)
                                 .stroke(Color.red))
+                    /*
                     .sheet(isPresented: $showRemoveDialog) {
-                        DeviceRemovalSheet(device: device)
+                        DeviceRemovalSheet(device: device, session: session)
                     }
-                } else {
-                    Spacer()
-                }
+                    */
+            } else {
+                Spacer()
+            }
                 
-                Button(action: { device.verify() }) {
-                    Label("Verify ", systemImage: "checkmark.shield")
-                        .padding(3)
-                        .foregroundColor(Color.accentColor)
-                        .overlay(RoundedRectangle(cornerRadius: 8)
-                                    .stroke(Color.accentColor))
-                }
-                .disabled(device.isVerified)
+            AsyncButton(action: {
+                // FIXME: Figure out what to do here
+                //device.verify()
+            }) {
+                Label("Verify ", systemImage: "checkmark.shield")
+                    .padding(3)
+                    .foregroundColor(Color.accentColor)
+                    .overlay(RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color.accentColor))
+            }
+            .disabled(true)
 
             //}
 
@@ -134,6 +107,7 @@ struct DeviceInfoView: View {
                     }
                 }
                 VStack(alignment: .leading) {
+                    /*
                     HStack {
                         Text("Fingerprint: ")
                         Text(device.fingerprint ?? "(No session fingerprint)")
@@ -144,8 +118,9 @@ struct DeviceInfoView: View {
                         Text(device.key)
                             .lineLimit(1)
                     }
+                    */
                     HStack {
-                        if device.isCrossSigningVerified {
+                        if device.crossSigningTrusted {
                             Image(systemName: "checkmark.shield")
                                 .foregroundColor(Color.green)
                         }
@@ -156,7 +131,7 @@ struct DeviceInfoView: View {
                         Text("Cross Signing")
                     }
                     HStack {
-                        if device.isLocallyVerified {
+                        if device.locallyTrusted {
                             Image(systemName: "checkmark.shield")
                                 .foregroundColor(Color.green)
                         }
@@ -192,7 +167,7 @@ struct DeviceInfoView: View {
                     .frame(width: 40, height: 40, alignment: .center)
                 VStack(alignment: .leading) {
                     Text(device.displayName ?? "(Unnamed Session)")
-                    Text(device.id)
+                    Text(device.deviceId)
                         .fontWeight(.bold)
                 }
                 Spacer()
@@ -218,7 +193,8 @@ struct DeviceInfoView: View {
             }
             .padding(.leading, 25)
         }
-        .contextMenu {
+        .contextMenu(menuItems: {
+            /*
             if let user = device.user {
                 if user != device.matrix.me() {
                     Button(action: { user.verify() }) {
@@ -231,10 +207,14 @@ struct DeviceInfoView: View {
                     */
                 }
             }
-            Button(action: {device.verify()}) {
+            */
+            Button(action: {
+                // FIXME: Re-implement all this junk...
+                //device.verify()
+            }) {
                 Label("Verify Session", systemImage: "checkmark.shield")
-            }
-        }
+            }.disabled(true)
+        })
     }
     
     /*

@@ -8,6 +8,7 @@
 
 import SwiftUI
 import StoreKit
+import Matrix
 
 struct LoginScreen: View {
     @ObservedObject var session: LoginSession

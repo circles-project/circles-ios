@@ -7,19 +7,20 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct InvitationAcceptSheet: View {
     //@EnvironmentObject var store: KSStore
-    @ObservedObject var store: LegacyStore
-    @ObservedObject var room: MatrixRoom
+    @ObservedObject var container: ContainerRoom<CircleSpace>
+    @ObservedObject var room: Matrix.InvitedRoom
     @Environment(\.presentationMode) var presentation
-    @State var circles: Set<SocialCircle> = []
+    @State var selected: Set<CircleSpace> = []
     @State var inviteBack = false
     
     var body: some View {
         VStack {
-            let inviterId = room.whoInvitedMe()!
-            let inviter = store.getUser(userId: inviterId)!
+            let inviterId = room.sender
+            let inviter = room.session.getUser(userId: inviterId)
             
             Text("You are now following:")
                 .font(.title)
@@ -32,7 +33,7 @@ struct InvitationAcceptSheet: View {
                         .frame(width: 100, height: 100)
                         .foregroundColor(Color.gray)
                     
-                    Image(uiImage: room.avatarImage ?? UIImage())
+                    Image(uiImage: room.avatar ?? UIImage())
                         .resizable()
                         .scaledToFill()
                         .frame(width: 100, height: 100)
@@ -48,7 +49,7 @@ struct InvitationAcceptSheet: View {
                     Text("\(inviter.displayName ?? inviter.id):")
                         .font(.title2)
                         .fontWeight(.bold)
-                    Text(room.displayName ?? room.id)
+                    Text(room.name ?? room.roomId.description)
                         .font(.title2)
                         .fontWeight(.bold)
                         //.foregroundColor(Color.white)
@@ -62,59 +63,30 @@ struct InvitationAcceptSheet: View {
                         
             Text("You can also connect this Circle to see updates in one of your Circles.")
                 //.padding(.horizontal)
-            CirclePicker(store: store, selected: $circles)
-            Toggle("Also invite \(inviter.displayName ?? inviter.id) to follow me here", isOn: $inviteBack)
+            CirclePicker(container: container, selected: $selected)
+            Toggle("Also invite \(inviter.displayName ?? inviter.userId.description) to follow me here", isOn: $inviteBack)
                 .toggleStyle(SwitchToggleStyle(tint: .accentColor))
 
             Spacer()
             
             
             AsyncButton(action: {
-                var errors: Error? = nil
-                //let tags = [ROOM_TAG_FOLLOWING]
                 
-                let task = Task {
-                    for circle in circles {
-                        try await circle.follow(room: room)
+                for space in container.rooms {
+                    try await space.addChildRoom(room.roomId)
 
-                        if self.inviteBack {
-                            print("Inviting user \(inviter.id) to follow us on \(circle.name)")
-                            circle.wall?.invite(userId: inviter.id) { response in
-                                switch response {
-                                case .failure:
-                                    print("Failed to invite \(inviter.id) to \(circle.name)")
-                                case .success:
-                                    print("Invited \(inviter.id) to follow \(circle.name)")
-                                }
-                            }
-                        }
+                    if self.inviteBack {
+                        print("Inviting user \(inviter.userId) to follow us on \(space.name)")
+                        try await space.wall?.invite(userId: inviter.userId)
                     }
                 }
-                
-                await task.result
-                
-                // Once we've added it to our Circles, we can take it out of the list
-                store.newestRooms.removeAll(where: { $0 == room })
-                
-                if errors == nil {
-                    // Yay we're done
-                    self.presentation.wrappedValue.dismiss()
-                }
+
             }) {
                 Image(systemName: "checkmark")
                 Text("Done")
             }
             .padding()
-            
-            /* // No canceling anymore -- In the new model, we already accepted the invitation
-            Button(action: {
-                    self.presentation.wrappedValue.dismiss()
-            }) {
-                Image(systemName: "xmark")
-                Text("Cancel")
-            }
-            .padding()
-            */
+
         }
         .padding()
     }

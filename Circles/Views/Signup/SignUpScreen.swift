@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import MatrixSDK
+import Matrix
 
 struct SignupAccountInfo {
     var displayName: String = ""
@@ -26,7 +26,7 @@ struct SignupScreen: View {
     var store: CirclesStore
 
     //@State var selectedFlow: UIAA.Flow?
-    @State var creds: MXCredentials?
+    @State var creds: Matrix.Credentials?
     //@State var emailSessionId: String?
     @State var emailSessionInfo: SignupSession.LegacyEmailRequestTokenResponse?
 

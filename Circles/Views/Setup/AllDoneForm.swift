@@ -6,10 +6,11 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct AllDoneForm: View {
     var store: CirclesStore
-    let userId: String
+    let userId: UserId
 
     @State var pending = false
 
@@ -26,7 +27,7 @@ struct AllDoneForm: View {
 
             Spacer()
             Text("Your user ID is:")
-            Text(userId)
+            Text("\(userId)")
                     .fontWeight(.bold)
 
             Spacer()

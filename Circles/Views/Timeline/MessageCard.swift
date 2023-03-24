@@ -8,6 +8,8 @@
 
 import SwiftUI
 import Foundation
+import Matrix
+
 //import MarkdownUI
 //import NativeMarkKit
 
@@ -63,13 +65,10 @@ struct MessageText: View {
 }
 
 struct MessageThumbnail: View {
-    @ObservedObject var message: MatrixMessage
+    @ObservedObject var message: Matrix.Message
     
     var thumbnail: Image {
-        guard let img = message.thumbnailImage ?? message.blurhashImage else {
-            return Image(systemName: "photo")
-        }
-        return Image(uiImage: img)
+        Image(uiImage: message.thumbnail ?? message.blur ?? UIImage())
     }
     
     var body: some View {
@@ -79,11 +78,6 @@ struct MessageThumbnail: View {
                 .scaledToFit()
                 .clipShape(RoundedRectangle(cornerRadius: 6))
                 .foregroundColor(.gray)
-            
-            if message.thumbnailURL != nil && message.thumbnailImage == nil
-            {
-                ProgressView()
-            }
         }
     }
     
@@ -91,7 +85,7 @@ struct MessageThumbnail: View {
 }
 
 struct MessageTimestamp: View {
-    var message: MatrixMessage
+    var message: Matrix.Message
     
     var body: some View {
         let dateFormatter = DateFormatter()
@@ -105,7 +99,7 @@ struct MessageTimestamp: View {
 }
 
 struct MessageCard: View {
-    @ObservedObject var message: MatrixMessage
+    @ObservedObject var message: Matrix.Message
     var displayStyle: MessageDisplayStyle
     @Environment(\.colorScheme) var colorScheme
     //@State var showReplyComposer = false
@@ -145,42 +139,56 @@ struct MessageCard: View {
     
     var content: some View {
         VStack {
-            switch(message.content) {
-            case .text(let textContent):
-                MessageText(textContent.body)
-                //Markdown(Document(textContent.body))
-                //NativeMarkText(textContent.body)
-                    //.frame(minHeight: 30, maxHeight:400)
-                    .padding(.horizontal, 3)
-                    .padding(.vertical, 5)
-            case .image(let imageContent):
-                HStack {
-                    Spacer()
-                    VStack(alignment: .center) {
-                        MessageThumbnail(message: message)
-                            .padding(1)
+            switch(message.content?.msgtype) {
+            case .text:
+                if let textContent = message.content as? Matrix.mTextContent {
+                    MessageText(textContent.body)
+                    //Markdown(Document(textContent.body))
+                    //NativeMarkText(textContent.body)
+                        //.frame(minHeight: 30, maxHeight:400)
+                        .padding(.horizontal, 3)
+                        .padding(.vertical, 5)
+                }
+                else {
+                    EmptyView()
+                }
 
-                        if let caption = getCaption(body: imageContent.body) {
-                            if let fancyCaption = try? AttributedString(markdown: caption, options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)) {
-                                Text(fancyCaption)
-                                    .padding(.horizontal, 3)
-                                    .padding(.bottom, 5)
-                            }
-                            else {
-                                Text(caption)
-                                    .padding(.horizontal, 3)
-                                    .padding(.bottom, 5)
+            case .image:
+                if let imageContent = message.content as? Matrix.mImageContent {
+                    HStack {
+                        Spacer()
+                        VStack(alignment: .center) {
+                            MessageThumbnail(message: message)
+                                .padding(1)
+                            
+                            if let caption = imageContent.caption {
+                                if let fancyCaption = try? AttributedString(markdown: caption, options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)) {
+                                    Text(fancyCaption)
+                                        .padding(.horizontal, 3)
+                                        .padding(.bottom, 5)
+                                }
+                                else {
+                                    Text(caption)
+                                        .padding(.horizontal, 3)
+                                        .padding(.bottom, 5)
+                                }
                             }
                         }
+                        Spacer()
                     }
-                    Spacer()
+                } else {
+                    EmptyView()
                 }
-            case .video(let videoContent):
-                ZStack(alignment: .center) {
-                    MessageThumbnail(message: message)
-                    Image(systemName: "play.circle")
+            case .video:
+                if let videoContent = message.content as? Matrix.mVideoContent {
+                    ZStack(alignment: .center) {
+                        MessageThumbnail(message: message)
+                        Image(systemName: "play.circle")
+                    }
+                    .frame(minWidth: 200, maxWidth: 400, minHeight: 200, maxHeight: 500, alignment: .center)
+                } else {
+                    EmptyView()
                 }
-                .frame(minWidth: 200, maxWidth: 400, minHeight: 200, maxHeight: 500, alignment: .center)
             default:
                 if message.type == "m.room.encrypted" {
                     ZStack {
@@ -226,8 +234,8 @@ struct MessageCard: View {
     }
     
     var avatarImage: Image {
-        message.avatarImage != nil
-            ? Image(uiImage: message.avatarImage!)
+        message.sender.avatar != nil
+            ? Image(uiImage: message.sender.avatar!)
             : Image(systemName: "person.fill")
         // FIXME We can do better here.
         //       Use the SF Symbols for the user's initial(s)
@@ -271,15 +279,15 @@ struct MessageCard: View {
     var reactions: some View {
         HStack {
             //Spacer()
-            let sortedReactions = self.message.reactions.sorted(by: {$0.count > $1.count})
-            ForEach(sortedReactions.prefix(7)) { reaction in
-                let emoji = reaction.emoji
-                let count = reaction.count
-                Text(emoji)
+            let sortedReactions = self.message.reactions.keys.sorted(by: { k1,k2 in
+                message.reactions[k1]! > message.reactions[k2]!
+            })
+            ForEach(sortedReactions.prefix(7), id: \.self) { reaction in
+                Text(reaction)
                 //Text("\(emoji)\(count) ")
             }
             if sortedReactions.count > 7 {
-
+                Text("...")
             }
         }
     }
@@ -332,11 +340,8 @@ struct MessageCard: View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Type: \(message.type)")
             Text("Related: \(message.relatesToId ?? "none")")
-            Text("BlurHash: \(message.blurhash ?? "none")")
-            if let hash = message.blurhash {
-                if let img = message.blurhashImage {
-                    Text("BlurHash is \(Int(img.size.width))x\(Int(img.size.height))")
-                }
+            if let blurImage = message.blur {
+                Text("BlurHash is \(Int(blurImage.size.width))x\(Int(blurImage.size.height))")
             }
         }
     }
@@ -346,11 +351,11 @@ struct MessageCard: View {
         VStack(alignment: .leading, spacing: 2) {
 
             if displayStyle != .photoGallery {
-                MessageAuthorHeader(user: message.matrix.getUser(userId: message.sender)!)
+                MessageAuthorHeader(user: message.sender)
             }
 
             if CIRCLES_DEBUG && self.debug {
-                Text(message.id)
+                Text(message.eventId)
                     .font(.caption)
             }
 

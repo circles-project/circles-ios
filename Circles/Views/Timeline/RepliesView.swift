@@ -6,10 +6,11 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct RepliesView: View {
-    @ObservedObject var room: MatrixRoom
-    var parent: MatrixMessage
+    @ObservedObject var room: Matrix.Room
+    var parent: Matrix.Message
     @State var expanded = false
     @State var showReplyComposer = false
 

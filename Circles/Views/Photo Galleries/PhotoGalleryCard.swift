@@ -7,13 +7,14 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct PhotoGalleryCard: View {
-    @ObservedObject var room: MatrixRoom
+    @ObservedObject var room: Matrix.Room
     
     var avatar: Image {
-        room.avatarImage != nil
-            ? Image(uiImage: room.avatarImage!)
+        room.avatar != nil
+            ? Image(uiImage: room.avatar!)
             : Image(systemName: "photo")
     }
     
@@ -26,7 +27,7 @@ struct PhotoGalleryCard: View {
                 .scaledToFit()
                 .clipShape(RoundedRectangle(cornerRadius: 6))
     
-            Text(room.displayName ?? room.id)
+            Text(room.name ?? room.id)
                 .font(.title)
                 .fontWeight(.bold)
                 .foregroundColor(.white)

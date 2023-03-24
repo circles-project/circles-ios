@@ -7,18 +7,18 @@
 //
 
 import SwiftUI
-import MatrixSDK
+import Matrix
 
 struct GroupCreationSheet: View {
     //@ObservedObject var store: KSStore
-    @ObservedObject var groups: GroupsContainer
+    @ObservedObject var groups: ContainerRoom<GroupRoom>
     @Environment(\.presentationMode) var presentation
     
     @State var groupName: String = ""
     @State var groupTopic: String = ""
     
     @State var newestUserId: String = ""
-    @State var newUserIds: [String] = []
+    @State var users: [Matrix.User] = []
     
     @State var headerImage: UIImage? = nil
     @State var showPicker = false
@@ -39,50 +39,37 @@ struct GroupCreationSheet: View {
             Spacer()
             
             AsyncButton(action: {
-                groups.create(name: self.groupName) { response in
-                    switch(response) {
-                    case .failure(let error):
-                        print("Failed to create new group [\(self.groupName)]: \(error)")
-                    case .success(let newGroup):
-                        let room = newGroup.room
-                        let dgroup = DispatchGroup()
-                        var errors: Error? = nil
-                        
-                        if !self.groupTopic.isEmpty {
-                            dgroup.enter()
-                            room.setTopic(topic: self.groupTopic) { response in
-                                if response.isFailure {
-                                    errors = errors ?? KSError(message: "Failed to set topic")
-                                }
-                                dgroup.leave()
-                            }
-                        }
-                        if let img = self.headerImage {
-                            dgroup.enter()
-                            room.setAvatarImage(image: img) { response in
-                                if response.isFailure {
-                                    errors = errors ?? KSError(message: "Failed to set avatar image")
-                                }
-                                dgroup.leave()
-                            }
-                        }
-                        for userId in self.newUserIds {
-                            dgroup.enter()
-                            room.invite(userId: userId) { response in
-                                if response.isFailure {
-                                    errors = errors ?? KSError(message: "Failed to invite \(userId)")
-                                }
-                                dgroup.leave()
-                            }
-                        }
-                    
-                        dgroup.notify(queue: .main) {
-                            if errors == nil {
-                                self.presentation.wrappedValue.dismiss()
-                            }
-                        }
+                
+                guard let roomId = try? await groups.createChildRoom(name: self.groupName,
+                                                                     type: ROOM_TYPE_GROUP,
+                                                                     encrypted: true,
+                                                                     avatar: self.headerImage),
+                      let room = try await groups.session.getRoom(roomId: roomId)
+                else {
+                    // Set error message
+                    return
+                }
+                
+                if !self.groupTopic.isEmpty {
+                    do {
+                        try await room.setTopic(newTopic: self.groupTopic)
+                    } catch {
+                        // set error message
+                        return
                     }
                 }
+                
+                for user in self.users {
+                    do {
+                        try await room.invite(userId: user.userId)
+                    } catch {
+                        // set error message
+                        return
+                    }
+                }
+                
+                self.presentation.wrappedValue.dismiss()
+
             })
             {
                 Text("Create")
@@ -162,10 +149,15 @@ struct GroupCreationSheet: View {
                 TextField("User ID", text: $newestUserId)
                     .autocapitalization(.none)
                 
-                Button(action: {
-                    if let canonicalUserId = groups.legacy.canonicalizeUserId(userId: newestUserId) {
-                        self.newUserIds.append(canonicalUserId)
+                AsyncButton(action: {
+                    guard let userId = UserId(newestUserId)
+                    else {
+                        self.newestUserId = ""
+                        // FIXME: Set error message
+                        return
                     }
+                    let user = groups.session.getUser(userId: userId)
+                    self.users.append(user)
                     self.newestUserId = ""
                 }) {
                     Text("Add")
@@ -175,27 +167,11 @@ struct GroupCreationSheet: View {
             .padding(.horizontal)
             
             VStack(alignment: .leading) {
-                /*
-                if newUserIds.isEmpty {
-                    Text("(none)")
+
+                List($users, editActions: .delete) { $user in
+                    MessageAuthorHeader(user: user)
                 }
-                else {
-*/
-                    List {
-                        ForEach(newUserIds, id: \.self) { userId in
-                            if let user = groups.legacy.getUser(userId: userId) {
-                                MessageAuthorHeader(user: user)
-                            }
-                            else {
-                                //Text(userId)
-                                DummyMessageAuthorHeader(userId: userId)
-                            }
-                        }
-                        .onDelete(perform: { indexSet in
-                            self.newUserIds.remove(atOffsets: indexSet)
-                        })
-                    }
-                //}
+
             }
             .padding(.leading)
                 

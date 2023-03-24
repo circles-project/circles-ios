@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import MatrixSDK
+import Matrix
 import WebKit
 
 #if false

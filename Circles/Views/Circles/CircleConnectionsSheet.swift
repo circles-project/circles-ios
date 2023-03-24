@@ -7,11 +7,12 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct CircleConnectionsSheet: View {
-    @ObservedObject var circle: SocialCircle
+    @ObservedObject var space: CircleSpace
     @Environment(\.presentationMode) var presentation
-    @State var roomsToLeave: Set<MatrixRoom> = []
+    @State var roomsToLeave: [Matrix.Room] = []
     @State var showConfirmLeave = false
     
     var buttonBar: some View {
@@ -33,14 +34,13 @@ struct CircleConnectionsSheet: View {
     
     func leaveRooms() async throws {
         for room in roomsToLeave {
-            try await room.matrix.leave(roomId: room.roomId)
-            roomsToLeave.remove(room)
+            try await space.leaveChildRoom(room.roomId)
         }
     }
     
     var confirmationString: String {
         let roomNames = roomsToLeave.map { room in
-            "\(room.owners.first?.displayName ?? "(unknown)"): \(room.displayName ?? "(untitled)")"
+            "\(room.creator): \(room.name ?? "(untitled)")"
         }
             .sorted {
                 $0 < $1
@@ -57,37 +57,23 @@ struct CircleConnectionsSheet: View {
                 .fontWeight(.bold)
             
             List {
-                let rooms = circle.stream.rooms
-                
-                ForEach(rooms) { room in
-                    PersonsCircleRow(room: room, showOwners: true)
-                        .actionSheet(isPresented: $showConfirmLeave) {
-                            ActionSheet(title: Text("Confirm Removal"),
-                                        message: Text(confirmationString),
-                                        buttons: [
-                                            .destructive(Text("Remove from this circle, but do not unfollow"), action: {
-                                                // Remove the selected Room(s) from the given circle
-                                                
-                                                _ = Task { try await circle.unfollow(room: room) }
-                                            }),
-                                            .destructive(Text("Unfollow completely (remove from all circles)"), action: {
-                                                _ = Task { try await leaveRooms() }
-                                                
-                                            }),
-                                            .cancel() {
-                                                roomsToLeave.removeAll()
-                                            }
-                                        ]
-                            )
-                        }
+                ForEach(space.rooms) { room in
+                    let user = space.session.getUser(userId: room.creator)
+                    //PersonsCircleRow(room: room)
+                    VStack {
+                        Text("User: \(room.creator.description)")
+                        Text("Room: \(room.name ?? room.roomId.description)")
+                    }
+                    .padding()
                 }
                 .onDelete { indexes in
                     for index in indexes {
-                        roomsToLeave.insert(rooms[index])
+                        roomsToLeave.append(space.rooms[index])
                     }
                     self.showConfirmLeave = true
                 }
             }
+            // FIXME: Show a confirmation dialog
             
             Spacer()
 

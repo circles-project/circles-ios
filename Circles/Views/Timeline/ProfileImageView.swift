@@ -7,12 +7,13 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct ProfileImageView: View {
-    @ObservedObject var user: MatrixUser
+    @ObservedObject var user: Matrix.User
     
     var image: Image {
-        Image(uiImage: user.avatarImage ?? UIImage(systemName: "person.fill")!)
+        Image(uiImage: user.avatar ?? UIImage(systemName: "person.fill")!)
     }
     
     var body: some View {

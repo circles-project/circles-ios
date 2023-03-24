@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Matrix
 
 enum GallerySheetType: String {
     case new
@@ -18,9 +19,9 @@ extension GallerySheetType: Identifiable {
 }
 
 struct PhotoGalleryView: View {
-    //@ObservedObject var room: MatrixRoom
-    @ObservedObject var gallery: PhotoGallery
-    @State var selectedMessage: MatrixMessage?
+    @ObservedObject var room: Matrix.Room
+    //@ObservedObject var gallery: PhotoGallery
+    @State var selectedMessage: Matrix.Message?
     @Environment(\.presentationMode) var presentation
 
     @State var sheetType: GallerySheetType? = nil
@@ -39,12 +40,6 @@ struct PhotoGalleryView: View {
             }) {
                 Label("New cover image", systemImage: "photo")
             }
-            Button(action: {
-                self.gallery.leave() { _ in }
-                self.presentation.wrappedValue.dismiss()
-            }) {
-                Label("Remove this gallery", systemImage: "xmark.bin")
-            }
         }
         label: {
             Label("More", systemImage: "ellipsis.circle")
@@ -52,14 +47,14 @@ struct PhotoGalleryView: View {
     }
     
     var timeline: some View {
-        TimelineView(room: gallery.room, displayStyle: .photoGallery)
+        TimelineView(room: room, displayStyle: .photoGallery)
     }
     
     var body: some View {
         VStack {
             timeline
         }
-        .navigationBarTitle(gallery.room.displayName ?? "Untitled gallery")
+        .navigationBarTitle(room.name ?? "Untitled gallery")
         .toolbar {
             ToolbarItemGroup(placement: .automatic) {
                 toolbarMenu
@@ -70,24 +65,13 @@ struct PhotoGalleryView: View {
             case .new:
                 ImagePicker(selectedImage: self.$newPhoto, sourceType: .photoLibrary) { maybeImg in
                     if let img = maybeImg {
-                        gallery.room.postImage(image: img) { response in
-                            switch(response) {
-                            case .failure(let err):
-                                break
-                            case .success(let msg):
-                                break
-                            }
-                        }
+                        let _ = Task { try await room.sendImage(image: img) }
                     }
                 }
             case .avatar:
                 ImagePicker(selectedImage: self.$newAvatar, sourceType: .photoLibrary) { maybeImg in
                     if let img = maybeImg {
-                        gallery.room.setAvatarImage(image: img) { response in
-                            if response.isSuccess {
-                                gallery.room.objectWillChange.send()
-                            }
-                        }
+                        let _ = Task { try await room.setAvatarImage(image: img) }
                     }
                 }
             }

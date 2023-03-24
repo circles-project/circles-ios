@@ -7,9 +7,10 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct MessageAuthorHeader: View {
-    @ObservedObject var user: MatrixUser
+    @ObservedObject var user: Matrix.User
     //@ObservedObject var room: MatrixRoom
     
     var shield: some View {
