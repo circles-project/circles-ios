@@ -13,16 +13,20 @@ struct AsyncButton<Label: View>: View {
 
     @State private var pending = false
 
+    func runAction() {
+        pending = true
+    
+        Task(priority: .medium) {
+            try await action()
+            await MainActor.run {
+                pending = false
+            }
+        }
+    }
+    
     var body: some View {
         Button(
-            action: {
-                pending = true
-            
-                Task {
-                    try await action()
-                    pending = false
-                }
-            },
+            action: runAction,
             label: {
                 label()
             }
