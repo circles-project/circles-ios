@@ -27,29 +27,27 @@ struct SignupStartForm: View {
 
             Spacer()
 
-            let tokenFlow = state.flows.first(where: {
-                    $0.stages.contains(AUTH_TYPE_REGISTRATION_TOKEN) ||
-                    $0.stages.contains(AUTH_TYPE_MSC3231_TOKEN)
+            let freeFlow = state.flows.first(where: { flow in
+                    !flow.stages.contains(AUTH_TYPE_GOOGLE_SUBSCRIPTION) &&
+                    !flow.stages.contains(AUTH_TYPE_APPLE_SUBSCRIPTION)
             })
-            if tokenFlow != nil {
-                Text("Already have a Circles token?")
-            } else {
-                Label("Token signup is not available at this time.  Please try again later.", systemImage: "exclamationmark.triangle")
+            if freeFlow == nil {
+                Label("Subscriptionless signup is not available at this time.  Please try again later.", systemImage: "exclamationmark.triangle")
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 20)
             }
             AsyncButton(action: {
                 //selectedFlow = tokenFlow
-                await session.selectFlow(flow: tokenFlow!)
+                await session.selectFlow(flow: freeFlow!)
             }) {
-                Text("Sign up with token")
+                Text("Sign up for free")
                     .padding()
                     .frame(width: 300.0, height: 40.0)
                     .foregroundColor(.white)
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
-            .disabled( nil == tokenFlow )
+            .disabled( nil == freeFlow )
 
 
             Spacer()
@@ -57,9 +55,7 @@ struct SignupStartForm: View {
             let appleFlow = state.flows.first(where: {
                 $0.stages.contains(AUTH_TYPE_APPLE_SUBSCRIPTION)
             })
-            if appleFlow != nil {
-                Text("No token?  No problem.")
-            } else {
+            if appleFlow == nil {
                 Label("New paid subscriptions are currently unavailable.  Please try again later.", systemImage: "exclamationmark.triangle")
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 20)

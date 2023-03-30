@@ -101,6 +101,8 @@
 		A54BA3A62851222200453D5E /* WelcomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3A52851222200453D5E /* WelcomeScreen.swift */; };
 		A54BA3A928529BE500453D5E /* SetupScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3A828529BE500453D5E /* SetupScreen.swift */; };
 		A54BA3AB28592D2000453D5E /* SetupSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3AA28592D2000453D5E /* SetupSession.swift */; };
+		A5A40B6129D468C3009A17EE /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = A5A40B6029D468C3009A17EE /* MarkdownUI */; };
+		A5A40B6329D46ABD009A17EE /* HtmlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A40B6229D46ABD009A17EE /* HtmlView.swift */; };
 		A5A7E228282B06FD001A528D /* ApplicationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A7E227282B06FD001A528D /* ApplicationState.swift */; };
 		A5BECC35280F7A1100B1FCC6 /* TPInAppReceipt in Frameworks */ = {isa = PBXBuildFile; productRef = A5BECC34280F7A1100B1FCC6 /* TPInAppReceipt */; };
 		A5BECC38280F7A2400B1FCC6 /* KeyboardKit in Frameworks */ = {isa = PBXBuildFile; productRef = A5BECC37280F7A2400B1FCC6 /* KeyboardKit */; };
@@ -213,6 +215,7 @@
 		A54BA3A52851222200453D5E /* WelcomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreen.swift; sourceTree = "<group>"; };
 		A54BA3A828529BE500453D5E /* SetupScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupScreen.swift; sourceTree = "<group>"; };
 		A54BA3AA28592D2000453D5E /* SetupSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupSession.swift; sourceTree = "<group>"; };
+		A5A40B6229D46ABD009A17EE /* HtmlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HtmlView.swift; sourceTree = "<group>"; };
 		A5A7E227282B06FD001A528D /* ApplicationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationState.swift; sourceTree = "<group>"; };
 		A5D2A3F529C0EED700428C45 /* Sequence+asyncMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sequence+asyncMap.swift"; sourceTree = "<group>"; };
 		A5E101F62814FAFD000B2C42 /* Circles-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Circles-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -235,6 +238,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A5BECC38280F7A2400B1FCC6 /* KeyboardKit in Frameworks */,
+				A5A40B6129D468C3009A17EE /* MarkdownUI in Frameworks */,
 				A5D2A3EC29BA643C00428C45 /* Matrix in Frameworks */,
 				4069F79826729DD200FB6090 /* StoreKit.framework in Frameworks */,
 				A5BECC35280F7A1100B1FCC6 /* TPInAppReceipt in Frameworks */,
@@ -321,6 +325,7 @@
 				A504DA7228120AF100EFF42E /* AsyncButton.swift */,
 				A509B89B2818A1F80053E5BC /* Array+Extension.swift */,
 				A5D2A3F529C0EED700428C45 /* Sequence+asyncMap.swift */,
+				A5A40B6229D46ABD009A17EE /* HtmlView.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -544,6 +549,7 @@
 				A5481C2428108DC7006F782F /* AnyCodable */,
 				A509B89928189E950053E5BC /* BlindSaltSpeke */,
 				A5D2A3EB29BA643C00428C45 /* Matrix */,
+				A5A40B6029D468C3009A17EE /* MarkdownUI */,
 			);
 			productName = Circles;
 			productReference = 404C72CD265DDF35000473DF /* Circles.app */;
@@ -579,6 +585,7 @@
 				A5481C2328108DC7006F782F /* XCRemoteSwiftPackageReference "AnyCodable" */,
 				A509B89828189E950053E5BC /* XCRemoteSwiftPackageReference "BlindSaltSpeke" */,
 				A5D2A3EA29BA643C00428C45 /* XCRemoteSwiftPackageReference "matrix.swift" */,
+				A5A40B5F29D468C3009A17EE /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 			);
 			productRefGroup = 404C72CE265DDF35000473DF /* Products */;
 			projectDirPath = "";
@@ -663,6 +670,7 @@
 				409F43A2265DE3C800690A61 /* ProfileScreen.swift in Sources */,
 				409F4337265DE15F00690A61 /* CirclesOverviewScreen.swift in Sources */,
 				40E4D887268A76070055968A /* AppStoreSubscriptionForm.swift in Sources */,
+				A5A40B6329D46ABD009A17EE /* HtmlView.swift in Sources */,
 				409F4336265DE15F00690A61 /* CircleTimelineScreen.swift in Sources */,
 				409F4370265DE24000690A61 /* PersonHeaderRow.swift in Sources */,
 				409F4332265DE15F00690A61 /* CircleCreationSheet.swift in Sources */,
@@ -769,6 +777,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -823,6 +832,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -840,6 +850,7 @@
 				DEVELOPMENT_TEAM = Y5CK8529S5;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Circles/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -870,6 +881,7 @@
 				DEVELOPMENT_TEAM = Y5CK8529S5;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Circles/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -926,6 +938,14 @@
 				minimumVersion = 0.6.4;
 			};
 		};
+		A5A40B5F29D468C3009A17EE /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 		A5BECC33280F7A1100B1FCC6 /* XCRemoteSwiftPackageReference "TPInAppReceipt" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tikhop/TPInAppReceipt";
@@ -962,6 +982,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A5481C2328108DC7006F782F /* XCRemoteSwiftPackageReference "AnyCodable" */;
 			productName = AnyCodable;
+		};
+		A5A40B6029D468C3009A17EE /* MarkdownUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A5A40B5F29D468C3009A17EE /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
+			productName = MarkdownUI;
 		};
 		A5BECC34280F7A1100B1FCC6 /* TPInAppReceipt */ = {
 			isa = XCSwiftPackageProductDependency;

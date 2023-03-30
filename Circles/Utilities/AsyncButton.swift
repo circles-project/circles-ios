@@ -16,7 +16,7 @@ struct AsyncButton<Label: View>: View {
     func runAction() {
         pending = true
     
-        Task(priority: .medium) {
+        Task {
             try await action()
             await MainActor.run {
                 pending = false

@@ -79,6 +79,14 @@ public class CirclesStore: ObservableObject {
                                   deviceId: deviceId)
     }
     
+    private func saveCredentials(creds: Matrix.Credentials) {
+        /*
+        UserDefaults.standard.set(creds.userId, forKey: "user_id")
+        UserDefaults.standard.set(creds.deviceId, forKey: "device_id[\(creds.userId)]")
+        UserDefaults.standard.set(creds.accessToken, forKey: "access_token[\(creds.userId)]")
+        */
+    }
+    
     func connect(creds: Matrix.Credentials) async throws {
         let token = loadSyncToken(userId: creds.userId, deviceId: creds.deviceId)
         let matrix = try await Matrix.Session(creds: creds, syncToken: token)
@@ -90,7 +98,10 @@ public class CirclesStore: ObservableObject {
 
     
     func login(userId: UserId) async throws {
-        let loginSession = try await LoginSession(username: userId.username, domain: userId.domain)
+        let loginSession = try await LoginSession(userId: userId, completion: { creds in
+            self.saveCredentials(creds: creds)
+            try await self.connect(creds: creds)
+        })
         await MainActor.run {
             self.state = .loggingIn(loginSession)
         }
@@ -107,7 +118,10 @@ public class CirclesStore: ObservableObject {
         }
 
         let deviceModel = await UIDevice.current.model
-        let signupSession = try await SignupSession(domain: domain, initialDeviceDisplayName: "Circles (\(deviceModel))")
+        let signupSession = try await SignupSession(domain: domain, initialDeviceDisplayName: "Circles (\(deviceModel))", completion: { creds in
+            self.saveCredentials(creds: creds)
+            //try await self.connect(creds: creds)
+        })
         await MainActor.run {
             self.state = .signingUp(signupSession)
         }
