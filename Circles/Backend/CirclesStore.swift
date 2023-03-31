@@ -127,7 +127,7 @@ public class CirclesStore: ObservableObject {
         }
     }
     
-    func beginSetup(creds: Matrix.Credentials, displayName: String) async throws {
+    func beginSetup(creds: Matrix.Credentials) async throws {
         
         var fullCreds = creds
         
@@ -136,7 +136,7 @@ public class CirclesStore: ObservableObject {
             fullCreds.wellKnown = try await Matrix.fetchWellKnown(for: domain)
         }
         
-        let session = try SetupSession(creds: fullCreds, store: self, displayName: displayName)
+        let session = try SetupSession(creds: fullCreds, store: self)
         await MainActor.run {
             self.state = .settingUp(session)
         }
@@ -163,8 +163,18 @@ public class CirclesStore: ObservableObject {
             return nil
         }
 
-        let usDomain = "circu.li"
-        let euDomain = "eu.circu.li"
+        let DEBUG = true
+        
+        let usDomain: String
+        let euDomain: String
+        
+        if DEBUG {
+            usDomain = "us.circles-dev.net"
+            euDomain = "nl.circles-dev.net"
+        } else {
+            usDomain = "circu.li"
+            euDomain = "eu.circu.li"
+        }
 
         switch countryCode {
         case "USA":

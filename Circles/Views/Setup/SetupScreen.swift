@@ -13,13 +13,14 @@ struct SetupScreen: View {
     */
     @ObservedObject var session: SetupSession
     var store: CirclesStore
+    @State var displayName: String?
     
     var body: some View {
         switch session.state {
         case .profile:
             AvatarForm(session: session)
-        case .circles:
-            CirclesForm(session: session, displayName: session.displayName)
+        case .circles(let displayName):
+            CirclesForm(session: session, displayName: displayName)
         case .allDone:
             AllDoneForm(store: store, userId: session.creds.userId)
         }

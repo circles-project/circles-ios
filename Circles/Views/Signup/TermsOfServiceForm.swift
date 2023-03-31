@@ -30,7 +30,7 @@ struct TermsOfServiceForm: View {
     
     let stage = AUTH_TYPE_TERMS
     
-    init(params: TermsParams, session: SignupSession) {
+    init(params: TermsParams, session: UIAuthSession<Matrix.Credentials>) {
         self.params = params
         self.policies = params.policies
         self.session = session

@@ -29,15 +29,7 @@ class CirclesSession: ObservableObject {
     init(matrix: Matrix.Session) async throws {
         self.matrix = matrix
         
-        let EVENT_TYPE_CIRCLES_CONFIG = "org.futo.circles.config"
-        struct CirclesConfig: Codable {
-            var root: RoomId
-            var circles: RoomId
-            var groups: RoomId
-            var galleries: RoomId
-            var people: RoomId
-        }
-        let config = try await matrix.getAccountData(for: EVENT_TYPE_CIRCLES_CONFIG, of: CirclesConfig.self)
+        let config = try await matrix.getAccountData(for: EVENT_TYPE_CIRCLES_CONFIG, of: CirclesConfigContent.self)
 
         guard let groups = try await matrix.getRoom(roomId: config.groups, as: ContainerRoom<GroupRoom>.self),
               let galleries = try await matrix.getRoom(roomId: config.galleries, as: ContainerRoom<GalleryRoom>.self),

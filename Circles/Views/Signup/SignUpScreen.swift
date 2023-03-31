@@ -17,88 +17,34 @@ struct SignupAccountInfo {
     var userId: String = ""
 }
 
-struct UiaUsernameView: View {
-    var session: SignupSession
-    @State var username: String = ""
-    
-    @State var showAlert = false
-    @State var alertTitle = ""
-    @State var alertMessage = ""
+
+
+
+struct SignupFinishedView: View {
+    var store: CirclesStore
+    var creds: Matrix.Credentials
     
     var body: some View {
-        VStack(alignment: .center) {
+        VStack {
             Spacer()
-            Text("Choose your username")
-                .font(.title2)
-            Text("")
-            TextField("Username", text: $username, prompt: Text("@username"))
-                .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
-                .disableAutocorrection(true)
-                .frame(width: 300.0, height: 40.0)
-            Spacer()
-            
+            Text("Successfully signed up!")
+                .font(.headline)
             AsyncButton(action: {
-                
                 do {
-                    try await session.doUsernameStage(username: username)
+                    try await store.beginSetup(creds: creds)
                 } catch {
-                    // Tell the user that we hit an error
-                    print("SIGNUP/Username\tUsername stage failed")
-                    self.alertTitle = "Something went wrong"
-                    self.alertMessage = "Failed to complete Username stage"
-                    self.showAlert = true
-                    print("SIGNUP/Username\tExisting username = \(session.realRequestDict["username"] as? String)")
+                    
                 }
-
             }) {
-                Text("Submit")
+                Text("Next: Set Up")
                     .padding()
                     .frame(width: 300.0, height: 40.0)
                     .foregroundColor(.white)
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
-            /*
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text(alertTitle),
-                      message: Text(alertMessage),
-                      dismissButton: .cancel(Text("OK"))
-                )
-            }
-            */
+            Spacer()
         }
-    }
-}
-
-struct UiaInProgressView: View {
-    var session: SignupSession
-    var state: UIAA.SessionState
-    var stages: [String]
-    
-    
-    
-    var body: some View {
-
-        // Text("UIA in progress")
-
-        if let stage = stages.first {
-            //Text("We have a first stage: \(stage)")
-            
-            if stage == AUTH_TYPE_TERMS,
-               let stageId = UIAA.StageId(AUTH_TYPE_TERMS),
-               let params = state.params?[stageId] as? TermsParams {
-                //UiaTermsView(params: params)
-                TermsOfServiceForm(params: params, session: session)
-            } else
-            if stage == AUTH_TYPE_ENROLL_USERNAME {
-                UiaUsernameView(session: session)
-            } else {
-                Text("Stage = \(stage)")
-            }
-        } else {
-            Text("Looks like we're all done!")
-        }
-        
     }
 }
 
@@ -161,24 +107,7 @@ struct SignupScreen: View {
                 UiaInProgressView(session: session, state: uiaaState, stages: stages)
                 
             case .finished(let creds):
-                Spacer()
-                Text("Successfully signed up!")
-                    .font(.headline)
-                AsyncButton(action: {
-                    do {
-                        try await store.beginSetup(creds: creds, displayName: accountInfo.displayName)
-                    } catch {
-                        
-                    }
-                }) {
-                    Text("Next: Set Up")
-                        .padding()
-                        .frame(width: 300.0, height: 40.0)
-                        .foregroundColor(.white)
-                        .background(Color.accentColor)
-                        .cornerRadius(10)
-                }
-                Spacer()
+                SignupFinishedView(store: store, creds: creds)
             }
         }
         Spacer()
