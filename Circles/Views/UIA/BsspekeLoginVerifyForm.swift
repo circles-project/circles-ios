@@ -1,28 +1,28 @@
 //
-//  BsspekeEnrollSaveForm.swift
+//  BsspekeLoginVerifyForm.swift
 //  Circles
 //
-//  Created by Charles Wright on 3/31/23.
+//  Created by Charles Wright on 4/3/23.
 //
 
 import Foundation
 import SwiftUI
 import Matrix
 
-struct BsspekeEnrollSaveForm: View {
+struct BsspekeLoginVerifyForm: View {
     var session: UIASession
     
     var body: some View {
         VStack {
             Spacer()
             ProgressView {
-                Text("Completing password registration")
+                Text("Verifying password")
             }
             Spacer()
         }
         .onAppear {
             Task {
-                try await session.doBSSpekeEnrollSaveStage()
+                try await session.doBSSpekeLoginVerifyStage()
             }
         }
     }

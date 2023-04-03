@@ -12,6 +12,7 @@ import Matrix
 
 struct LoginScreen: View {
     @ObservedObject var session: LoginSession
+    var store: CirclesStore
     @State var password = ""
     
     var body: some View {
@@ -29,17 +30,50 @@ struct LoginScreen: View {
                     }
             }
             
-        case .connected(let state):
+        case .connected(let uiaaState):
             VStack {
-                Text("Connected")
-                Text("SessionID = \(state.session)")
+                ProgressView()
+            }
+            .onAppear {
+                if uiaaState.flows.count == 1,
+                   let flow = uiaaState.flows.first
+                {
+                    Task {
+                        await session.selectFlow(flow: flow)
+                    }
+                } else {
+                    if let flow = uiaaState.flows.first(where: {
+                        $0.stages.contains(AUTH_TYPE_LOGIN_BSSPEKE_OPRF) && $0.stages.contains(AUTH_TYPE_LOGIN_BSSPEKE_VERIFY)
+                    }) {
+                        Task {
+                            await session.selectFlow(flow: flow)
+                        }
+                    }
+                }
+            }
+            
+        case .inProgress(let uiaaState, let stages):
+            UiaInProgressView(session: session, state: uiaaState, stages: stages)
+            
+        case .finished(let codableCreds):
+            VStack {
+                Spacer()
+                Text("Success!")
+                Spacer()
+            }
+            .onAppear {
+                if let creds = codableCreds as? Matrix.Credentials {
+                    Task {
+                        try await store.connect(creds: creds)
+                    }
+                }
             }
             
         default:
             VStack {
-                
-                Text("Login Screen")
-                Text("beep boop")
+                Spacer()
+                Text("Something went wrong")
+                Spacer()
             }
         }
   

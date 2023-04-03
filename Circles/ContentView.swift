@@ -52,7 +52,7 @@ struct ContentView: View {
             SetupScreen(session: setupSession, store: store)
             
         case .loggingIn(let loginSession):
-            LoginScreen(session: loginSession)
+            LoginScreen(session: loginSession, store: store)
 
         case .online(let circlesSession):
             TabbedInterface(session: circlesSession)

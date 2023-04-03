@@ -57,7 +57,7 @@ struct SignupScreen: View {
     var store: CirclesStore
 
     //@State var selectedFlow: UIAA.Flow?
-    @State var creds: Matrix.Credentials?
+    //@State var creds: Matrix.Credentials?
     //@State var emailSessionId: String?
     //@State var emailSessionInfo: SignupSession.LegacyEmailRequestTokenResponse?
 
@@ -106,8 +106,12 @@ struct SignupScreen: View {
             case .inProgress(let uiaaState, let stages):
                 UiaInProgressView(session: session, state: uiaaState, stages: stages)
                 
-            case .finished(let creds):
-                SignupFinishedView(store: store, creds: creds)
+            case .finished(let codableCreds):
+                if let creds = codableCreds as? Matrix.Credentials {
+                    SignupFinishedView(store: store, creds: creds)
+                } else {
+                    Text("There was a problem")
+                }
             }
         }
         Spacer()
