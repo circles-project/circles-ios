@@ -136,7 +136,7 @@ public class CirclesStore: ObservableObject {
             fullCreds.wellKnown = try await Matrix.fetchWellKnown(for: domain)
         }
         
-        let session = try SetupSession(creds: fullCreds, store: self)
+        let session = try await SetupSession(creds: fullCreds, store: self)
         await MainActor.run {
             self.state = .settingUp(session)
         }
