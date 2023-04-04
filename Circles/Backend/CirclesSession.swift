@@ -7,8 +7,12 @@
 
 import Foundation
 import Matrix
+import os
+
 
 class CirclesSession: ObservableObject {
+    var logger: os.Logger
+    
     
     var matrix: Matrix.Session
     
@@ -27,10 +31,13 @@ class CirclesSession: ObservableObject {
     var people: ContainerRoom<PersonRoom>      // Top-level people space contains the space rooms for each of our contacts
     
     init(matrix: Matrix.Session) async throws {
+        self.logger = Logger(subsystem: "Circles", category: "Session")
         self.matrix = matrix
         
+        logger.debug("Loading config from Matrix")
         let config = try await matrix.getAccountData(for: EVENT_TYPE_CIRCLES_CONFIG, of: CirclesConfigContent.self)
 
+        logger.debug("Loading Matrix spaces")
         guard let groups = try await matrix.getRoom(roomId: config.groups, as: ContainerRoom<GroupRoom>.self),
               let galleries = try await matrix.getRoom(roomId: config.galleries, as: ContainerRoom<GalleryRoom>.self),
               let circles = try await matrix.getRoom(roomId: config.circles, as: ContainerRoom<CircleSpace>.self),
