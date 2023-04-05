@@ -54,53 +54,63 @@ class ContainerRoom<T: Matrix.Room>: Matrix.Room {
     public override func updateTimeline(from events: [ClientEventWithoutRoomId]) async throws {
         logger.debug("Updating timeline")
         try await super.updateTimeline(from: events)
+        for event in events {
+            if event.type == M_SPACE_CHILD {
+                await self.updateSpaceChild(from: event)
+            }
+        }
+    }
+    
+    func updateSpaceChild(from event: ClientEventWithoutRoomId) async {
+        // Make sure it's a valid space child event
+        guard event.type == M_SPACE_CHILD,
+              let stateKey = event.stateKey,
+              let content = event.content as? SpaceChildContent,
+              let childRoomId = RoomId(stateKey)
+        else {
+            return
+        }
+
+        logger.debug("Child room id = \(childRoomId)")
+        
+        // OK, are we adding or removing a space child room?
+        if content.via?.first == nil {
+            // We're removing an old child room from the space
+            
+            await MainActor.run {
+                self.rooms.removeAll(where: { $0.roomId == childRoomId })
+            }
+            return
+
+        } else {
+            // We're adding a new child room to the space
+            
+            if let existingChild = self.rooms.first(where: {$0.roomId == childRoomId}) {
+                logger.debug("Child room \(existingChild.roomId) is already in the space")
+                return
+            }
+            
+            guard let room = try? await self.session.getRoom(roomId: childRoomId, as: T.self)
+            else {
+                logger.error("Failed to create Room for new child room \(childRoomId)")
+                return
+            }
+            await MainActor.run {
+                self.rooms.append(room)
+            }
+        }
     }
     
     // Add a Room object to our rooms list whenever we get a new space child
-    public override func updateState(from event: ClientEventWithoutRoomId) async {
+    public override func updateState(from events: [ClientEventWithoutRoomId]) async {
         logger.debug("Updating state")
         // First do all the normal stuff to update our local room state
-        await super.updateState(from: event)
+        await super.updateState(from: events)
         
         // Then check to see whether this event is one that we need to handle
-        if event.type == M_SPACE_CHILD {
-            logger.debug("Got a new \(event.type) event")
-            // Make sure it's a valid space child event
-            guard let stateKey = event.stateKey,
-                  let content = event.content as? SpaceChildContent,
-                  let childRoomId = RoomId(stateKey)
-            else {
-                return
-            }
-            logger.debug("Child room id = \(childRoomId)")
-            
-            // OK, are we adding or removing a space child room?
-            if content.via?.first == nil {
-                // We're removing an old child room from the space
-                
-                await MainActor.run {
-                    self.rooms.removeAll(where: { $0.roomId == childRoomId })
-                }
-                return
-
-            } else {
-                // We're adding a new child room to the space
-                
-                /*
-                guard let stateEvents = try? await self.session.getRoomStateEvents(roomId: roomId),
-                      let room = try? T(roomId: roomId, session: self.session, initialState: stateEvents)
-                else {
-                    return
-                }
-                */
-                guard let room = try? await self.session.getRoom(roomId: childRoomId, as: T.self)
-                else {
-                    logger.error("Failed to create Room for new child room \(childRoomId)")
-                    return
-                }
-                await MainActor.run {
-                    self.rooms.append(room)
-                }
+        for event in events {
+            if event.type == M_SPACE_CHILD {
+                await self.updateSpaceChild(from: event)
             }
         }
     }
