@@ -59,6 +59,18 @@ struct MessageAuthorHeader: View {
         }
         */
         .padding(.leading, 2)
+        .onAppear {
+            if user.avatarUrl == nil || user.displayName == nil {
+                Task {
+                    try await user.refreshProfile()
+                }
+            }
+            if user.avatar == nil && user.avatarUrl != nil {
+                Task {
+                    try await user.fetchAvatarImage()
+                }
+            }
+        }
     }
 }
 

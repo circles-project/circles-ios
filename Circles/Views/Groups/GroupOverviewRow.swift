@@ -46,6 +46,13 @@ struct GroupOverviewRow: View {
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .foregroundColor(.gray)
                 .padding(.all, 2)
+                .onAppear {
+                    if room.avatar == nil && room.avatarUrl != nil {
+                        Task {
+                            try await room.fetchAvatarImage()
+                        }
+                    }
+                }
             
             VStack(alignment: .leading, spacing: 2) {
                 HStack(alignment: .center, spacing: 3) {

@@ -53,6 +53,11 @@ struct RoomCircleAvatar: View {
                         .scaleEffect(scale)
                         .position(x: location.x,
                                   y: location.y)
+                        .onAppear {
+                            Task {
+                                try await room.fetchAvatarImage()
+                            }
+                        }
                     
                     if let displayName = user.displayName {
                         let initials = displayName.split(whereSeparator: { $0.isWhitespace }).joined().capitalized
