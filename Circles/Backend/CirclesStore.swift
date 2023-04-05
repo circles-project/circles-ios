@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import os
 import StoreKit
 
 import CryptoKit
@@ -25,8 +26,12 @@ public class CirclesStore: ObservableObject {
     }
     @Published var state: State
     
+    var logger: os.Logger
+    
     
     init() {
+        self.logger = Logger(subsystem: "Circles", category: "Store")
+        
         // Ok, we're just starting out
         self.state = .starting
 
@@ -88,12 +93,17 @@ public class CirclesStore: ObservableObject {
     }
     
     func connect(creds: Matrix.Credentials) async throws {
+        logger.debug("connect()")
         let token = loadSyncToken(userId: creds.userId, deviceId: creds.deviceId)
+        logger.debug("Got token = \(token ?? "none")")
         let matrix = try await Matrix.Session(creds: creds, syncToken: token)
+        logger.debug("Set up Matrix")
         let session = try await CirclesSession(matrix: matrix)
+        logger.debug("Set up CirclesSession")
         await MainActor.run {
             self.state = .online(session)
         }
+        logger.debug("Set state to .online")
     }
 
     

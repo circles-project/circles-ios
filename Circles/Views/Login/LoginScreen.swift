@@ -58,15 +58,18 @@ struct LoginScreen: View {
         case .finished(let codableCreds):
             VStack {
                 Spacer()
-                Text("Success!")
-                Spacer()
-            }
-            .onAppear {
                 if let creds = codableCreds as? Matrix.Credentials {
-                    Task {
-                        try await store.connect(creds: creds)
-                    }
+                    Text("Success!")
+                        .onAppear {
+                            print("LoginScreen:\tLogin success - Telling the Store to connect()")
+                            Task {
+                                try await store.connect(creds: creds)
+                            }
+                        }
+                } else {
+                    Text("Login success, but there was a problem...")
                 }
+                Spacer()
             }
             
         default:
