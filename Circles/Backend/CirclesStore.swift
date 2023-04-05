@@ -96,7 +96,7 @@ public class CirclesStore: ObservableObject {
         logger.debug("connect()")
         let token = loadSyncToken(userId: creds.userId, deviceId: creds.deviceId)
         logger.debug("Got token = \(token ?? "none")")
-        let matrix = try await Matrix.Session(creds: creds, syncToken: token)
+        let matrix = try await Matrix.Session(creds: creds, syncToken: token, startSyncing: false)
         logger.debug("Set up Matrix")
         let session = try await CirclesSession(matrix: matrix)
         logger.debug("Set up CirclesSession")

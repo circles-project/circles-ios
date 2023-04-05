@@ -6,13 +6,16 @@
 //
 
 import Foundation
+import os
 import Matrix
 
 class ContainerRoom<T: Matrix.Room>: Matrix.Room {
-    public var rooms: [T]
+    @Published public var rooms: [T]
+    var logger: os.Logger
     
     public required init(roomId: RoomId, session: Matrix.Session, initialState: [ClientEventWithoutRoomId], initialTimeline: [ClientEventWithoutRoomId] = []) throws {
         self.rooms = []
+        self.logger = Logger(subsystem: "container", category: roomId.description)
         try super.init(roomId: roomId, session: session, initialState: initialState, initialTimeline: initialTimeline)
         
         // Now let's look to see what (if any) child rooms we have
@@ -27,11 +30,20 @@ class ContainerRoom<T: Matrix.Room>: Matrix.Room {
                     else {
                         continue
                     }
+                    logger.debug("Found a child room: \(childRoomId)")
+                    /*
                     let stateEvents = try await self.session.getRoomStateEvents(roomId: roomId)
                     let room = try T(roomId: childRoomId, session: session, initialState: stateEvents, initialTimeline: [])
+                    */
+                    guard let room = try await session.getRoom(roomId: childRoomId, as: T.self)
+                    else {
+                        logger.error("Failed to create child room \(childRoomId)")
+                        continue
+                    }
                     tmpRooms.append(room)
                 }
                 let newRooms = tmpRooms
+                logger.debug("Found a total of \(newRooms.count) child rooms")
                 await MainActor.run {
                     self.rooms = newRooms
                 }
@@ -39,13 +51,20 @@ class ContainerRoom<T: Matrix.Room>: Matrix.Room {
         }
     }
     
+    public override func updateTimeline(from events: [ClientEventWithoutRoomId]) async throws {
+        logger.debug("Updating timeline")
+        try await super.updateTimeline(from: events)
+    }
+    
     // Add a Room object to our rooms list whenever we get a new space child
     public override func updateState(from event: ClientEventWithoutRoomId) async {
+        logger.debug("Updating state")
         // First do all the normal stuff to update our local room state
         await super.updateState(from: event)
         
         // Then check to see whether this event is one that we need to handle
         if event.type == M_SPACE_CHILD {
+            logger.debug("Got a new \(event.type) event")
             // Make sure it's a valid space child event
             guard let stateKey = event.stateKey,
                   let content = event.content as? SpaceChildContent,
@@ -53,6 +72,7 @@ class ContainerRoom<T: Matrix.Room>: Matrix.Room {
             else {
                 return
             }
+            logger.debug("Child room id = \(childRoomId)")
             
             // OK, are we adding or removing a space child room?
             if content.via?.first == nil {
@@ -66,9 +86,16 @@ class ContainerRoom<T: Matrix.Room>: Matrix.Room {
             } else {
                 // We're adding a new child room to the space
                 
+                /*
                 guard let stateEvents = try? await self.session.getRoomStateEvents(roomId: roomId),
                       let room = try? T(roomId: roomId, session: self.session, initialState: stateEvents)
                 else {
+                    return
+                }
+                */
+                guard let room = try? await self.session.getRoom(roomId: childRoomId, as: T.self)
+                else {
+                    logger.error("Failed to create Room for new child room \(childRoomId)")
                     return
                 }
                 await MainActor.run {

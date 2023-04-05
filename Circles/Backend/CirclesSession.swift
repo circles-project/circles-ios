@@ -26,9 +26,9 @@ class CirclesSession: ObservableObject {
     //typealias PersonRoom = Matrix.SpaceRoom // Each person's profile room is a space, where we may or may not be members of the child rooms
     
     var circles: ContainerRoom<CircleSpace>     // Our top-level circles space contains the spaces for each of our circles
-    var groups: ContainerRoom<GroupRoom>     // Top-level groups space contains the individual rooms for each of our groups
-    var galleries: ContainerRoom<GalleryRoom>  // Top-level galleries space contains the individual rooms for each of our galleries
-    var people: ContainerRoom<PersonRoom>      // Top-level people space contains the space rooms for each of our contacts
+    var groups: ContainerRoom<GroupRoom>        // Top-level groups space contains the individual rooms for each of our groups
+    var galleries: ContainerRoom<GalleryRoom>   // Top-level galleries space contains the individual rooms for each of our galleries
+    var people: ContainerRoom<PersonRoom>       // Top-level people space contains the space rooms for each of our contacts
     
     init(matrix: Matrix.Session) async throws {
         self.logger = Logger(subsystem: "Circles", category: "Session")
@@ -52,6 +52,8 @@ class CirclesSession: ObservableObject {
         self.galleries = galleries
         self.circles = circles
         self.people = people
+        
+        try await matrix.startBackgroundSync()
     }
 
     
