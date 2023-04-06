@@ -56,11 +56,9 @@ struct GroupOverviewRow: View {
             
             VStack(alignment: .leading, spacing: 2) {
                 HStack(alignment: .center, spacing: 3) {
-                    shield
                     Text(room.name ?? room.id)
                         .fontWeight(.bold)
                     Spacer()
-                    Image(systemName: "chevron.right")
                 }
                 .font(.title2)
 

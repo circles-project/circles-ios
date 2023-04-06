@@ -39,8 +39,6 @@ struct CircleOverviewCard: View {
                             .font(.title2)
                             .fontWeight(.bold)
                         Spacer()
-                        Image(systemName: "chevron.right")
-                            .font(.title2)
                     }
                     Text("Following \(space.rooms.count)")
                         .font(.subheadline)
