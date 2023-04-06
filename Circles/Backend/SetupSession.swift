@@ -67,9 +67,12 @@ class SetupSession: ObservableObject {
         try await client.putAccountData(config, for: EVENT_TYPE_CIRCLES_CONFIG)
         
         for circle in circles {
-            print("Creating circle [\(circle.name)]")
+            print("- Creating circle [\(circle.name)]")
             let circleRoomId = try await client.createSpace(name: circle.name)
             let wallRoomId = try await client.createRoom(name: circle.name, type: ROOM_TYPE_CIRCLE)
+            if let avatar = circle.avatar {
+                try await client.setAvatarImage(roomId: wallRoomId, image: avatar)
+            }
             try await client.addSpaceChild(wallRoomId, to: circleRoomId)
             try await client.addSpaceChild(circleRoomId, to: myCircles)
         }
