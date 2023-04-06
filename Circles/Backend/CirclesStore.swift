@@ -66,6 +66,10 @@ public class CirclesStore: ObservableObject {
         UserDefaults.standard.string(forKey: "sync_token[\(userId)::\(deviceId)]")
     }
     
+    private func saveSyncToken(token: String, userId: UserId, deviceId: String) {
+        UserDefaults.standard.set(token, forKey: "sync_token[\(userId)::\(deviceId)]")
+    }
+    
     private func loadCredentials(_ user: String? = nil) -> Matrix.Credentials? {
         
         guard let uid = user ?? UserDefaults.standard.string(forKey: "user_id"),
@@ -85,11 +89,9 @@ public class CirclesStore: ObservableObject {
     }
     
     private func saveCredentials(creds: Matrix.Credentials) {
-        /*
-        UserDefaults.standard.set(creds.userId, forKey: "user_id")
+        UserDefaults.standard.set("\(creds.userId)", forKey: "user_id")
         UserDefaults.standard.set(creds.deviceId, forKey: "device_id[\(creds.userId)]")
         UserDefaults.standard.set(creds.accessToken, forKey: "access_token[\(creds.userId)]")
-        */
     }
     
     func connect(creds: Matrix.Credentials) async throws {
