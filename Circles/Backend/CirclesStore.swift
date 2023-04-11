@@ -57,8 +57,7 @@ public class CirclesStore: ObservableObject {
                 self.state = .haveCreds(creds)
             }
             
-            // Now let's see if we can use them to connect
-            try await self.connect(creds: creds)
+            // Don't connect yet.  Let the UI call connect() on its own.
         }
     }
     
@@ -112,7 +111,10 @@ public class CirclesStore: ObservableObject {
     func login(userId: UserId) async throws {
         let loginSession = try await LoginSession(userId: userId, completion: { creds in
             self.saveCredentials(creds: creds)
-            try await self.connect(creds: creds)
+            //try await self.connect(creds: creds)
+            await MainActor.run {
+                self.state = .haveCreds(creds)
+            }
         })
         await MainActor.run {
             self.state = .loggingIn(loginSession)
