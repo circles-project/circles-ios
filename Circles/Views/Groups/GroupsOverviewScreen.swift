@@ -25,15 +25,33 @@ struct GroupsOverviewScreen: View {
     var body: some View {
         //let groups = container.groups
         NavigationView {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    ForEach(container.rooms) { room in
-                        NavigationLink(destination: GroupTimelineScreen(room: room)) {
-                            GroupOverviewRow(room: room)
+            ZStack {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 0) {
+                        ForEach(container.rooms) { room in
+                            NavigationLink(destination: GroupTimelineScreen(room: room)) {
+                                GroupOverviewRow(room: room)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            .padding(.vertical, 2)
+                            Divider()
                         }
-                        .buttonStyle(PlainButtonStyle())
-                        .padding(.vertical, 2)
-                        Divider()
+                    }
+                }
+                
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            self.sheetType = .create
+                        }) {
+                            Image(systemName: "plus.circle.fill")
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .padding()
+                        }
                     }
                 }
             }
