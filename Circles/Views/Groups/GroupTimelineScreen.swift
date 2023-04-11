@@ -94,23 +94,7 @@ struct GroupTimelineScreen: View {
             }) {
                 Label("Security", systemImage: "shield.fill")
             }
-
-            Button(action: {
-                self.sheetType = .composer
-            }) {
-                Label("Post a new message", systemImage: "rectangle.badge.plus")
-            }
             
-            /*
-            Button(action: {
-                group.room.matrix.discardCryptoSession(roomId: group.room.id) {
-                    print("Deleted outgoing crypto session for room \(group.room.displayName ?? "???") [\(group.room.id))] ")
-                }
-            }) {
-                Label("Reset encryption", systemImage: "clear")
-            }
-            */
-
         }
         label: {
             Label("More", systemImage: "ellipsis.circle")
@@ -122,36 +106,56 @@ struct GroupTimelineScreen: View {
     }
     
     var body: some View {
-        VStack(alignment: .center) {
-
-            /*
-            VStack(alignment: .leading) {
-                Text("Debug Info")
-                Text("roomId: \(group.room.id)")
-                Text("type: \(group.room.type ?? "(none)")")
+        
+        ZStack {
+            
+            VStack(alignment: .center) {
+                
+                /*
+                 VStack(alignment: .leading) {
+                 Text("Debug Info")
+                 Text("roomId: \(group.room.id)")
+                 Text("type: \(group.room.type ?? "(none)")")
+                 }
+                 .font(.footnote)
+                 */
+                
+                timeline
+                    .sheet(item: $sheetType) { st in
+                        switch(st) {
+                        case .members:
+                            RoomMembersSheet(room: room, title: "Group members for \(room.name ?? "(unnamed group)")")
+                        case .invite:
+                            RoomInviteSheet(room: room, title: "Invite new members to \(room.name ?? "(unnamed group)")")
+                            
+                        case .configure:
+                            GroupConfigSheet(room: room)
+                            
+                        case .security:
+                            RoomSecurityInfoSheet(room: room)
+                            
+                        case .composer:
+                            MessageComposerSheet(room: room, parentMessage: nilParentMessage)
+                            
+                        }
+                    }
             }
-            .font(.footnote)
-            */
-
-            timeline
-                .sheet(item: $sheetType) { st in
-                    switch(st) {
-                    case .members:
-                        RoomMembersSheet(room: room, title: "Group members for \(room.name ?? "(unnamed group)")")
-                    case .invite:
-                        RoomInviteSheet(room: room, title: "Invite new members to \(room.name ?? "(unnamed group)")")
-                        
-                    case .configure:
-                        GroupConfigSheet(room: room)
-                        
-                    case .security:
-                        RoomSecurityInfoSheet(room: room)
-
-                    case .composer:
-                        MessageComposerSheet(room: room, parentMessage: nilParentMessage)
-
+            
+            VStack {
+                Spacer()
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        self.sheetType = .composer
+                    }) {
+                        Image(systemName: "plus.bubble.fill")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 50, height: 50)
+                            .padding()
                     }
                 }
+            }
         }
         .toolbar {
             ToolbarItemGroup(placement: .automatic) {
@@ -159,7 +163,15 @@ struct GroupTimelineScreen: View {
             }
         }
         .navigationBarTitle(title, displayMode: .inline)
-
+        .onAppear {
+            // Hack kludge to make this @$%*# thing *&#$%ing update
+            Task {
+                try await Task.sleep(for: .milliseconds(500))
+                await MainActor.run {
+                    room.objectWillChange.send()
+                }
+            }
+        }
     }
 }
 
