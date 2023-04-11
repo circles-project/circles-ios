@@ -21,6 +21,12 @@ struct PhotosOverviewScreen: View {
     //@ObservedObject var store: KSStore
     @ObservedObject var container: ContainerRoom<GalleryRoom>
     //@State var showCreationSheet = false
+    var room: Matrix.Room?
+    
+    init(container: ContainerRoom<GalleryRoom>) {
+        self.container = container
+        self.room = container.rooms.first
+    }
     
     @State private var sheetType: PhotosSheetType? = nil
     
@@ -44,16 +50,34 @@ struct PhotosOverviewScreen: View {
     
     var body: some View {
         NavigationView {
-            ScrollView {
-                ForEach(container.rooms) { room in
-                    //Text("Found room \(room.roomId.string)")
-                    NavigationLink(destination: PhotoGalleryView(room: room)) {
-                        PhotoGalleryCard(room: room)
-                        // FIXME Add a longPress gesture
-                        //       for setting/changing the
-                        //       avatar image for the gallery
+            ZStack {
+                ScrollView {
+                    ForEach(container.rooms) { room in
+                        //Text("Found room \(room.roomId.string)")
+                        NavigationLink(destination: PhotoGalleryView(room: room)) {
+                            PhotoGalleryCard(room: room)
+                            // FIXME Add a longPress gesture
+                            //       for setting/changing the
+                            //       avatar image for the gallery
+                        }
+                        .padding(1)
                     }
-                    .padding(1)
+                }
+                
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            self.sheetType = .create
+                        }) {
+                            Image(systemName: "plus.circle.fill")
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .padding()
+                        }
+                    }
                 }
             }
             .navigationBarTitle("Photo Galleries", displayMode: .inline)
@@ -70,8 +94,8 @@ struct PhotosOverviewScreen: View {
                     toolbarMenu
                 }
             }
+            .navigationViewStyle(StackNavigationViewStyle())
         }
-        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 
