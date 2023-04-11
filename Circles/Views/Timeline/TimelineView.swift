@@ -80,7 +80,7 @@ struct TimelineView: View {
         // Get all the top-level messages (ie not the replies etc)
         let messages = room.timeline.values.filter { (message) in
             message.relatesToId == nil
-        }
+        }.sorted(by: {$0.timestamp > $1.timestamp})
 
         ScrollView {
             LazyVStack(alignment: .center) {
