@@ -64,7 +64,6 @@ struct CirclesOverviewScreen: View {
                 }
             }
         }
-        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 
