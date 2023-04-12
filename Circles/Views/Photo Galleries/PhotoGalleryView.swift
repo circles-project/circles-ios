@@ -51,8 +51,24 @@ struct PhotoGalleryView: View {
     }
     
     var body: some View {
-        VStack {
+        ZStack {
             timeline
+            
+            VStack {
+                Spacer()
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        self.sheetType = .new
+                    }) {
+                        Image(systemName: "plus.circle.fill")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 50, height: 50)
+                            .padding()
+                    }
+                }
+            }
         }
         .navigationBarTitle(room.name ?? "Untitled gallery")
         .toolbar {

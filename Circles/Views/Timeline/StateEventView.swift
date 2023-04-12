@@ -11,22 +11,23 @@ import Matrix
 
 struct StateEventView: View {
     var message: Matrix.Message
+    var roomType: String = "room"
     
     var body: some View {
         VStack {
             let sender = message.sender.displayName ?? "\(message.sender.userId)"
             switch message.type {
             case M_ROOM_CREATE:
-                Text("*Created by \(sender)*")
+                Text("*\(roomType.capitalized) created by \(sender)*")
                 
             case M_ROOM_AVATAR:
                 Text("*\(sender) set a new cover image*")
                 
             case M_ROOM_NAME:
-                Text("*\(sender) set the name*")
+                Text("*\(sender) set the \(roomType) name*")
                 
             case M_ROOM_TOPIC:
-                Text("*\(sender) set the topic*")
+                Text("*\(sender) set the \(roomType) topic*")
                 
             case M_ROOM_MEMBER:
                 if let content = message.content as? RoomMemberContent
@@ -52,13 +53,16 @@ struct StateEventView: View {
                         }
                     }
                 } else {
-                    EmptyView()
-                    
+                    Text("*\(sender) updated the \(roomType) state*")
                 }
                 
                 
             default:
-                EmptyView()
+                if message.stateKey != nil {
+                    Text("*\(sender) updated the \(roomType) state*")
+                } else {
+                    Text("*\(sender) sent an unknown message (\(message.type))*")
+                }
             }
         }
         .font(.caption)

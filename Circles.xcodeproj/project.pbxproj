@@ -95,6 +95,8 @@
 		A509B89A28189E950053E5BC /* BlindSaltSpeke in Frameworks */ = {isa = PBXBuildFile; productRef = A509B89928189E950053E5BC /* BlindSaltSpeke */; };
 		A509B89C2818A1F80053E5BC /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A509B89B2818A1F80053E5BC /* Array+Extension.swift */; };
 		A509B89E2819B6C90053E5BC /* CirclesError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A509B89D2819B6C90053E5BC /* CirclesError.swift */; };
+		A52DF68129E59A81008860C3 /* RoomAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68029E59A81008860C3 /* RoomAvatar.swift */; };
+		A52DF68329E59C32008860C3 /* StateEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68229E59C32008860C3 /* StateEventView.swift */; };
 		A52FEBFD2862521F00AE4E3A /* CirclesSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52FEBFC2862521F00AE4E3A /* CirclesSession.swift */; };
 		A5481C2528108DC7006F782F /* AnyCodable in Frameworks */ = {isa = PBXBuildFile; productRef = A5481C2428108DC7006F782F /* AnyCodable */; };
 		A54BA3A22850108300453D5E /* CirclesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3A12850108300453D5E /* CirclesStore.swift */; };
@@ -220,6 +222,8 @@
 		A504DA7228120AF100EFF42E /* AsyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncButton.swift; sourceTree = "<group>"; };
 		A509B89B2818A1F80053E5BC /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
 		A509B89D2819B6C90053E5BC /* CirclesError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesError.swift; sourceTree = "<group>"; };
+		A52DF68029E59A81008860C3 /* RoomAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomAvatar.swift; sourceTree = "<group>"; };
+		A52DF68229E59C32008860C3 /* StateEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateEventView.swift; sourceTree = "<group>"; };
 		A52FEBFC2862521F00AE4E3A /* CirclesSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesSession.swift; sourceTree = "<group>"; };
 		A54BA3A12850108300453D5E /* CirclesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesStore.swift; sourceTree = "<group>"; };
 		A54BA3A52851222200453D5E /* WelcomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreen.swift; sourceTree = "<group>"; };
@@ -482,6 +486,7 @@
 				409F438A265DE2C200690A61 /* CircleTimeline.swift */,
 				40878FCC2696198500A66EF0 /* TimelineSheetType.swift */,
 				409F4392265DE2DE00690A61 /* TimelineView.swift */,
+				A52DF68229E59C32008860C3 /* StateEventView.swift */,
 			);
 			path = Timeline;
 			sourceTree = "<group>";
@@ -503,6 +508,7 @@
 				409F43B9265DE51C00690A61 /* RoomInviteSheet.swift */,
 				409F43A5265DE43B00690A61 /* RoomMembersSheet.swift */,
 				409F43A6265DE43B00690A61 /* RoomSecurityInfoSheet.swift */,
+				A52DF68029E59A81008860C3 /* RoomAvatar.swift */,
 			);
 			path = Rooms;
 			sourceTree = "<group>";
@@ -746,11 +752,13 @@
 				A52FEBFD2862521F00AE4E3A /* CirclesSession.swift in Sources */,
 				409F4315265DE0F400690A61 /* ImagePicker.swift in Sources */,
 				409F4338265DE15F00690A61 /* CircleConnectionsSheet.swift in Sources */,
+				A52DF68129E59A81008860C3 /* RoomAvatar.swift in Sources */,
 				40CEFCD426780D8300857D4D /* MessageDetailSheet.swift in Sources */,
 				409F4385265DE2A400690A61 /* RoomMessageComposer.swift in Sources */,
 				A5FCF63F29CC9AF8008278B0 /* CircleSpace.swift in Sources */,
 				409F4399265DE34700690A61 /* AccountScreen.swift in Sources */,
 				A5A40B6629D608C7009A17EE /* UiaInProgressView.swift in Sources */,
+				A52DF68329E59C32008860C3 /* StateEventView.swift in Sources */,
 				A509B89C2818A1F80053E5BC /* Array+Extension.swift in Sources */,
 				409F439C265DE38200690A61 /* ProfileImageView.swift in Sources */,
 				409F434B265DE18A00690A61 /* InvitationAcceptSheet.swift in Sources */,

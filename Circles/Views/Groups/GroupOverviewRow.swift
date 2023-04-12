@@ -21,22 +21,11 @@ struct GroupOverviewRow: View {
         }
     }
     
-    var shield: some View {
-        VStack(alignment: .leading) {
-            if room.isEncrypted {
-                Image(systemName: "lock.shield")
-                    .foregroundColor(Color.accentColor)
-            }
-            else {
-                Image(systemName: "xmark.shield")
-                    .foregroundColor(Color.red)
-            }
-        }
-    }
     
     var body: some View {
         HStack(alignment: .top) {
 
+            /*
             Image(uiImage: room.avatar ?? UIImage())
                 .renderingMode(.original)
                 .resizable()
@@ -47,12 +36,29 @@ struct GroupOverviewRow: View {
                 .foregroundColor(.gray)
                 .padding(.all, 2)
                 .onAppear {
-                    if room.avatar == nil && room.avatarUrl != nil {
-                        Task {
-                            try await room.fetchAvatarImage()
+                    room.updateAvatarImage()
+                }
+             */
+            RoomAvatar(room: room)
+                .frame(width: 120, height: 120)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                /*
+                .onAppear {
+                    // Dirty nasty hack to test how/when SwiftUI is updating our Views
+                    Task {
+                        while true {
+                            let sec = Int.random(in: 10...30)
+                            try await Task.sleep(for: .seconds(sec))
+                            let imageName = ["diamond.fill", "circle.fill", "square.fill", "seal.fill", "shield.fill"].randomElement()!
+                            let newImage = UIImage(systemName: imageName)
+                            await MainActor.run {
+                                print("Setting avatar for room \(room.roomId)")
+                                room.avatar = newImage
+                            }
                         }
                     }
                 }
+                */
             
             VStack(alignment: .leading, spacing: 2) {
                 HStack(alignment: .center, spacing: 3) {
@@ -74,6 +80,10 @@ struct GroupOverviewRow: View {
                     timestamp
                         .font(.subheadline)
                         .foregroundColor(.gray)
+                    
+                    Text(room.roomId.description)
+                        .font(.subheadline)
+                        .foregroundColor(.red)
                 }
                 .padding(.leading, 8)
             }

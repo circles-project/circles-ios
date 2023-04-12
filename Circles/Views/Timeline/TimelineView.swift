@@ -34,7 +34,7 @@ struct TimelineView: View {
                     ProgressView("Loading...")
                         .progressViewStyle(LinearProgressViewStyle())
                 }
-                else if room.canPaginate() {
+                else if room.canPaginate {
                     AsyncButton(action: {
                         self.loading = true
                         try await room.paginate()
@@ -89,35 +89,35 @@ struct TimelineView: View {
                 
 
                     if let msg = room.localEchoMessage {
-                        MessageCard(message: msg, displayStyle: displayStyle)
+                        MessageCard(message: msg, displayStyle: displayStyle, isLocalEcho: true)
                             .border(Color.red)
                             .padding([.top, .leading, .trailing], 3)
                     }
                     
-                    ForEach(messages) { msg in
-                        VStack(alignment: .leading) {
-                            HStack {
-                                /*
-                                if CIRCLES_DEBUG && self.debug {
-                                    Text("\(messages.firstIndex(of: msg) ?? -1)")
-                                }
-                                */
-                                MessageCard(message: msg, displayStyle: displayStyle)
+                    ForEach(messages) { message in
+                        if message.type == M_ROOM_MESSAGE {
+
+                            VStack(alignment: .leading) {
+
+                                MessageCard(message: message, displayStyle: displayStyle)
                                     .padding(.top, 5)
                                     /*
-                                    .onAppear {
-                                        //print("INFINITE_SCROLL\tChecking to see if we need to paginate")
-                                        if msg == messages.last {
-                                            print("INFINITE_SCROLL\tPaginating room \(room.displayName ?? "Unnamed room") [\(room.id)]")
-                                            loading = true
-                                            room.paginate() { _ in
-                                                loading = false
-                                            }
-                                        }
-                                    }
-                                    */
+                                     .onAppear {
+                                     //print("INFINITE_SCROLL\tChecking to see if we need to paginate")
+                                     if msg == messages.last {
+                                     print("INFINITE_SCROLL\tPaginating room \(room.displayName ?? "Unnamed room") [\(room.id)]")
+                                     loading = true
+                                     room.paginate() { _ in
+                                     loading = false
+                                     }
+                                     }
+                                     }
+                                     */
+                                RepliesView(room: room, parent: message)
+
                             }
-                            RepliesView(room: room, parent: msg)
+                        } else {
+                            StateEventView(message: message)
                         }
                     }
                     .padding([.leading, .trailing], 3)

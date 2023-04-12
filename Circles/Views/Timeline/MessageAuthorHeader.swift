@@ -22,13 +22,13 @@ struct MessageAuthorHeader: View {
     }
     
     var body: some View {
-        HStack(alignment: .center) {
+        HStack(alignment: .top) {
             
             //profileImage
             ProfileImageView(user: user)
                 //.resizable()
                 .scaledToFill()
-                .frame(width: 40, height: 40)
+                .frame(width: 60, height: 60)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
 
             

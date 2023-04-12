@@ -26,27 +26,58 @@ struct PhotoGalleryCard: View {
         */
     }
     
+    var timestamp: some View {
+        let date = Date()
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .long
+        return Text("\(date, formatter: formatter)")
+    }
+    
     var body: some View {
         ZStack {
             
-            avatar
-                .renderingMode(.original)
-                .resizable()
-                .scaledToFit()
-                .clipShape(RoundedRectangle(cornerRadius: 6))
-    
-            Text(room.name ?? room.id)
-                .font(.title)
-                .fontWeight(.bold)
-                .foregroundColor(.white)
-                .shadow(color: .black, radius: 5)
-        }
-        .onAppear {
-            if room.avatar == nil && room.avatarUrl != nil {
-                // Fetch the avatar from the url
-                Task {
-                    try await room.fetchAvatarImage()
+            RoomAvatar(room: room)
+                /*
+                .onAppear {
+                    // Dirty nasty hack to test how/when SwiftUI is updating our Views
+                    Task {
+                        while true {
+                            let sec = Int.random(in: 10...30)
+                            try await Task.sleep(for: .seconds(sec))
+                            let imageName = ["diamond.fill", "circle.fill", "square.fill", "seal.fill", "shield.fill"].randomElement()!
+                            let newImage = UIImage(systemName: imageName)
+                            await MainActor.run {
+                                print("Setting avatar for room \(room.roomId)")
+                                room.avatar = newImage
+                            }
+                        }
+                    }
                 }
+                */
+    
+            VStack {
+                Text(room.name ?? "")
+                    .font(.title)
+                    .fontWeight(.bold)
+
+                Text(room.roomId.description)
+                    .font(.subheadline)
+                timestamp
+                    .font(.subheadline)
+                //Text(room.avatarUrl?.mediaId ?? "(none)")
+                //    .font(.subheadline)
+
+            }
+            .foregroundColor(.white)
+            .shadow(color: .black, radius: 5)
+        }
+
+        .contextMenu {
+            Button(action: {
+                room.objectWillChange.send()
+            }) {
+                Text("Update")
             }
         }
     }

@@ -85,7 +85,7 @@ struct CircleTimeline: View {
                         ProgressView("Loading...")
                             .progressViewStyle(LinearProgressViewStyle())
                     }
-                    else if space.canPaginate() {
+                    else if space.canPaginate {
                         AsyncButton(action: {
                             try await space.paginate()
                         }) {

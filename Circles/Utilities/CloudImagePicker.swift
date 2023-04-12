@@ -14,7 +14,7 @@ struct GalleryThumbnail: View {
     
     var body: some View {
         ZStack {
-            Image(uiImage: message.thumbnail ?? message.blur ?? UIImage())
+            Image(uiImage: message.thumbnail ?? message.blurhashImage ?? UIImage())
         }
         .onAppear {
             if message.thumbnail == nil && (message.content?.thumbnail_url != nil || message.content?.thumbnail_file != nil) {

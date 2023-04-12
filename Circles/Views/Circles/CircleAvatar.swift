@@ -54,9 +54,7 @@ struct RoomCircleAvatar: View {
                         .position(x: location.x,
                                   y: location.y)
                         .onAppear {
-                            Task {
-                                try await room.fetchAvatarImage()
-                            }
+                            room.updateAvatarImage()
                         }
                     
                     if let displayName = user.displayName {

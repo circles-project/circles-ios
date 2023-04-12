@@ -68,7 +68,7 @@ struct MessageThumbnail: View {
     @ObservedObject var message: Matrix.Message
     
     var thumbnail: Image {
-        Image(uiImage: message.thumbnail ?? message.blur ?? UIImage())
+        Image(uiImage: message.thumbnail ?? message.blurhashImage ?? UIImage())
     }
     
     var body: some View {
@@ -101,6 +101,7 @@ struct MessageTimestamp: View {
 struct MessageCard: View {
     @ObservedObject var message: Matrix.Message
     var displayStyle: MessageDisplayStyle
+    var isLocalEcho = false
     @Environment(\.colorScheme) var colorScheme
     //@State var showReplyComposer = false
     @State var reporting = false
@@ -242,19 +243,25 @@ struct MessageCard: View {
         //       e.g. Image(sysetmName: "a.circle.fill")
     }
     
+    @ViewBuilder
     var shield: some View {
-         message.isEncrypted
-            ? Image(systemName: "lock.shield")
+        if isLocalEcho {
+            ProgressView()
+        } else if message.isEncrypted {
+            Image(systemName: "lock.fill")
                 .foregroundColor(Color.blue)
-            : Image(systemName: "xmark.shield")
+        } else {
+            Image(systemName: "lock.slash.fill")
                 .foregroundColor(Color.red)
+        }
     }
 
     var likeButton: some View {
         Button(action: {
             self.sheetType = .reactions
         }) {
-            Label("Like", systemImage: "heart")
+            //Label("Like", systemImage: "heart")
+            Image(systemName: "heart")
         }
     }
 
@@ -262,7 +269,8 @@ struct MessageCard: View {
         Button(action: {
             self.sheetType = .composer
         }) {
-            Label("Reply", systemImage: "bubble.right")
+            //Label("Reply", systemImage: "bubble.right")
+            Image(systemName: "bubble.right")
         }
     }
 
@@ -272,7 +280,8 @@ struct MessageCard: View {
                            sheetType: $sheetType)
         }
         label: {
-            Label("More", systemImage: "ellipsis.circle")
+            //Label("More", systemImage: "ellipsis.circle")
+            Image(systemName: "ellipsis.circle")
         }
     }
 
@@ -298,8 +307,6 @@ struct MessageCard: View {
 
             HStack(alignment: .center) {
 
-                shield
-
                 if self.displayStyle == .photoGallery {
                     //profileImage
                     //ProfileImageView(user: message.matrix.getUser(userId: message.sender)!)
@@ -309,18 +316,18 @@ struct MessageCard: View {
                     .clipShape(RoundedRectangle(cornerRadius: 4))
                 }
 
-                //Spacer()
-                timestamp
-                //relativeTimestamp
                 Spacer()
-                //likeButton
-
-                reactions
+                timestamp
             }
             .padding(.trailing, 3)
 
+            if !message.reactions.isEmpty {
+                reactions
+            }
+            
             if displayStyle != .composer {
                 HStack {
+                    shield
                     Spacer()
                     likeButton
                     if message.relatesToId == nil {
@@ -329,7 +336,7 @@ struct MessageCard: View {
                     menuButton
                 }
                 .padding(.top, 3)
-                .padding(.trailing, 3)
+                .padding(.horizontal, 3)
             }
 
         }
@@ -340,7 +347,7 @@ struct MessageCard: View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Type: \(message.type)")
             Text("Related: \(message.relatesToId ?? "none")")
-            if let blurImage = message.blur {
+            if let blurImage = message.blurhashImage {
                 Text("BlurHash is \(Int(blurImage.size.width))x\(Int(blurImage.size.height))")
             }
         }

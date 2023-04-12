@@ -9,6 +9,12 @@ import Foundation
 import Matrix
 import os
 
+#if os(macOS)
+import AppKit
+#else
+import UIKit
+#endif
+
 
 class CirclesSession: ObservableObject {
     var logger: os.Logger
@@ -54,6 +60,23 @@ class CirclesSession: ObservableObject {
         self.people = people
         
         try await matrix.startBackgroundSync()
+        
+        /*
+        // FIXME: CRAZY DEBUGGING
+        Task {
+            while true {
+                if let (roomId, room) = self.matrix.rooms.randomElement() {
+                    let imageName = ["diamond.fill", "circle.fill", "square.fill", "seal.fill", "shield.fill"].randomElement()!
+                    let image = UIImage(systemName: imageName)
+                    await MainActor.run {
+                        print("Randomizing avatar for room \(roomId.opaqueId) / \(room.roomId.opaqueId) to be \(imageName)")
+                        room.avatar = image
+                    }
+                }
+                try await Task.sleep(for: .seconds(2))
+            }
+        }
+        */
     }
 
     
