@@ -69,6 +69,7 @@ struct ContentView: View {
         case people
         case groups
         case photos
+        case settings
     }
     
     struct TabbedInterface: View {
@@ -118,6 +119,13 @@ struct ContentView: View {
                         Text("Photos")
                     }
                     .tag(Tab.photos)
+                
+                SettingsScreen(session: session)
+                    .tabItem {
+                        Image(systemName: "gearshape")
+                        Text("Settings")
+                    }
+                    .tag(Tab.settings)
                 
                 /*
                 Text("Chat Screen")
