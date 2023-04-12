@@ -10,7 +10,7 @@ import SwiftUI
 import Foundation
 import Matrix
 
-//import MarkdownUI
+import MarkdownUI
 //import NativeMarkKit
 
 enum MessageDisplayStyle {
@@ -23,10 +23,12 @@ enum MessageDisplayStyle {
 struct MessageText: View {
     var text: String
     var paragraphs: [Substring]
+    var markdown: MarkdownContent
     
     init(_ text: String) {
         self.text = text
         self.paragraphs = text.split(separator: "\n")
+        self.markdown = MarkdownContent(text)
     }
     
     /*
@@ -55,12 +57,15 @@ struct MessageText: View {
     */
     
     var body: some View {
+        /*
         if let fancyText = try? AttributedString(markdown: self.text, options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)) {
             return Text(fancyText)
         }
         else {
             return Text(self.text)
         }
+        */
+        Markdown(markdown)
     }
 }
 
