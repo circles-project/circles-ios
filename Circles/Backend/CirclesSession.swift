@@ -40,17 +40,60 @@ class CirclesSession: ObservableObject {
         self.logger = Logger(subsystem: "Circles", category: "Session")
         self.matrix = matrix
         
+        let startTS = Date()
+        
         logger.debug("Loading config from Matrix")
+        let configStart = Date()
         let config = try await matrix.getAccountData(for: EVENT_TYPE_CIRCLES_CONFIG, of: CirclesConfigContent.self)
+        let configEnd = Date()
+        let configTime = configEnd.timeIntervalSince(configStart)
+        logger.debug("\(configTime) sec to load config from the server")
 
         logger.debug("Loading Matrix spaces")
-        guard let groups = try await matrix.getRoom(roomId: config.groups, as: ContainerRoom<GroupRoom>.self),
-              let galleries = try await matrix.getRoom(roomId: config.galleries, as: ContainerRoom<GalleryRoom>.self),
-              let circles = try await matrix.getRoom(roomId: config.circles, as: ContainerRoom<CircleSpace>.self),
-              let people = try await matrix.getRoom(roomId: config.people, as: ContainerRoom<PersonRoom>.self)
+        
+        
+        let groupsStart = Date()
+        guard let groups = try await matrix.getRoom(roomId: config.groups, as: ContainerRoom<GroupRoom>.self)
         else {
-            throw CirclesError("Failed to initialize Circles space hierarchy")
+            logger.error("Failed to load Groups space")
+            throw CirclesError("Failed to load Groups space")
         }
+        let groupsEnd = Date()
+        let groupsTime = groupsEnd.timeIntervalSince(groupsStart)
+        logger.debug("\(groupsTime) sec to load Groups space")
+        
+        
+        let galleriesStart = Date()
+        guard let galleries = try await matrix.getRoom(roomId: config.galleries, as: ContainerRoom<GalleryRoom>.self)
+        else {
+            logger.error("Failed to load Galleries space")
+            throw CirclesError("Failed to load Galleries space")
+        }
+        let galleriesEnd = Date()
+        let galleriesTime = galleriesEnd.timeIntervalSince(galleriesStart)
+        logger.debug("\(galleriesTime) sec to load Galleries space")
+        
+        
+        let circlesStart = Date()
+        guard let circles = try await matrix.getRoom(roomId: config.circles, as: ContainerRoom<CircleSpace>.self)
+        else {
+            logger.error("Failed to load Circles space")
+            throw CirclesError("Failed to load Circles space")
+        }
+        let circlesEnd = Date()
+        let circlesTime = circlesEnd.timeIntervalSince(circlesStart)
+        logger.debug("\(circlesTime) sec to load Circles space")
+        
+        
+        let peopleStart = Date()
+        guard let people = try await matrix.getRoom(roomId: config.people, as: ContainerRoom<PersonRoom>.self)
+        else {
+            logger.error("Failed to load People space")
+            throw CirclesError("Failed to load People space")
+        }
+        let peopleEnd = Date()
+        let peopleTime = peopleEnd.timeIntervalSince(peopleStart)
+        logger.debug("\(peopleTime) sec to load People space")
         
         self.rootRoomId = config.root
         
@@ -58,6 +101,11 @@ class CirclesSession: ObservableObject {
         self.galleries = galleries
         self.circles = circles
         self.people = people
+        
+        let endTS = Date()
+        
+        let totalTime = endTS.timeIntervalSince(startTS)
+        logger.debug("\(totalTime) sec to initialize Circles Session")
         
         try await matrix.startBackgroundSync()
         
