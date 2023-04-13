@@ -368,7 +368,8 @@ struct MessageCard: MessageView {
         .padding(.all, 3.0)
         .background(
             RoundedRectangle(cornerRadius: 4)
-                .foregroundColor(colorScheme == .dark ? .black : .white)
+                //.foregroundColor(.init(light: .white, dark: .black))
+                .foregroundColor(.background)
                 .shadow(color: .gray, radius: 2, x: 0, y: 1)
         )
 
