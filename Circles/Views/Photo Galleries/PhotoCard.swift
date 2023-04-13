@@ -37,7 +37,6 @@ struct PhotoCard: MessageView {
             Image(systemName: "heart")
                 .resizable()
                 .scaledToFit()
-                .frame(width: buttonSize, height: buttonSize)
         }
     }
 
@@ -49,7 +48,6 @@ struct PhotoCard: MessageView {
             Image(systemName: "bubble.right")
                 .resizable()
                 .scaledToFit()
-                .frame(width: buttonSize, height: buttonSize)
         }
     }
 
@@ -63,40 +61,7 @@ struct PhotoCard: MessageView {
             Image(systemName: "ellipsis.circle")
                 .resizable()
                 .scaledToFit()
-                .frame(width: buttonSize, height: buttonSize)
         }
-    }
-    
-    @ViewBuilder
-    var footer: some View {
-        HStack(spacing: 10) {
-            /*
-            let user = message.sender
-            let img = user.avatar ?? UIImage(systemName: "person")!
-            Image(uiImage: img)
-                .resizable()
-                .scaledToFill()
-                .clipShape(RoundedRectangle(cornerRadius: 6))
-                .frame(width: 40, height: 40)
-                //.padding(.leading, 10)
-            
-            Spacer()
-            
-            Text("\(message.timestamp, formatter: formatter)")
-                .font(.callout)
-            */
-            
-            Spacer()
-            
-            likeButton
-            replyButton
-            menuButton
-        }
-        .padding(2)
-        .foregroundColor(.white)
-        .shadow(color: .black, radius: 10)
-        .padding(.horizontal, 2)
-        //.background(RoundedRectangle(cornerRadius: 4).opacity(0.3))
     }
     
     
@@ -119,7 +84,25 @@ struct PhotoCard: MessageView {
             
             VStack {
                 Spacer()
-                footer
+                
+                GeometryReader { geometry in
+                    let size: CGFloat = geometry.size.width > 500 ? 30 : 20
+                    let pad: CGFloat = geometry.size.width > 500 ? 2 : 1
+                    HStack {
+                        Spacer()
+                        
+                        likeButton.frame(width: size, height: size)
+                        
+                        replyButton.frame(width: size, height: size)
+                        
+                        menuButton.frame(width: size, height: size)
+                    }
+                    .padding(pad)
+                    .foregroundColor(.white)
+                    .shadow(color: .black, radius: 10)
+                    .padding(.horizontal, 2)
+                }
+                .frame(height: 35)
             }
             .frame(maxWidth: photoWidth)
 
