@@ -35,11 +35,14 @@ struct SettingsScreen: View {
                 }
                 Section(header: Text("Subscription")) {
                     Text("Expiration Date")
+                        .badge("Tomorrow")
                     Text("Cloud Storage")
+                        .badge(Text("10GB"))
                 }
                 Section(header: Text("Other Stuff")) {
                     Text("Notifications")
                     Text("Version")
+                        .badge("1.0.0")
                 }
                 Section(header: Label("Danger Zone", systemImage: "exclamationmark.triangle")) {
                     Text("Deactivate Account")
