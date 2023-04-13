@@ -24,7 +24,7 @@ struct RecentActivityView: View {
                         // Set the tab to be "Circles"
                         // Set the selected circle to be this one
                     }) {
-                        MessageCard(message: message, displayStyle: .timeline)
+                        MessageCard(message: message)
                             .padding(.leading)
                     }
                     .buttonStyle(PlainButtonStyle())
@@ -36,7 +36,7 @@ struct RecentActivityView: View {
                         //.font(.caption)
                         .fontWeight(.bold)
                         .padding(.top, 2)
-                    MessageCard(message: message, displayStyle: .timeline)
+                    MessageCard(message: message)
                         .padding(.leading)
                 }
             }

@@ -47,7 +47,7 @@ struct PhotoGalleryView: View {
     }
     
     var timeline: some View {
-        TimelineView(room: room, displayStyle: .photoGallery)
+        TimelineView<PhotoCard>(room: room, displayStyle: .photoGallery)
     }
     
     var body: some View {

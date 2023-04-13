@@ -9,7 +9,7 @@
 import SwiftUI
 import Matrix
 
-struct TimelineView: View {
+struct TimelineView<V: MessageView>: View {
     @ObservedObject var room: Matrix.Room
     var displayStyle: MessageDisplayStyle = .timeline
     @State var debug = false
@@ -76,6 +76,7 @@ struct TimelineView: View {
         }
     }
     
+    @ViewBuilder
     var body: some View {
         // Get all the top-level messages (ie not the replies etc)
         let messages = room.timeline.values.filter { (message) in
@@ -89,7 +90,7 @@ struct TimelineView: View {
                 
 
                     if let msg = room.localEchoMessage {
-                        MessageCard(message: msg, displayStyle: displayStyle, isLocalEcho: true)
+                        V(message: msg, isLocalEcho: true)
                             .border(Color.red)
                             .padding([.top, .leading, .trailing], 3)
                     }
@@ -99,7 +100,7 @@ struct TimelineView: View {
 
                             VStack(alignment: .leading) {
 
-                                MessageCard(message: message, displayStyle: displayStyle)
+                                V(message: message, isLocalEcho: false)
                                     .padding(.top, 5)
                                     /*
                                      .onAppear {

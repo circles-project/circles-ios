@@ -71,7 +71,7 @@ struct CircleTimeline: View {
                                 if CIRCLES_DEBUG && showDebug {
                                     Text("\(index)")
                                 }
-                                MessageCard(message: msg, displayStyle: .timeline)
+                                MessageCard(message: msg)
                             }
                             RepliesView(room: msg.room, parent: msg)
                         }

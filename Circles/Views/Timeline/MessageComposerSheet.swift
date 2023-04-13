@@ -20,7 +20,7 @@ struct MessageComposerSheet: View {
                 .fontWeight(.bold)
             
             if let parent = parentMessage {
-                MessageCard(message: parent, displayStyle: .timeline)
+                MessageCard(message: parent)
                     .padding(3)
             }
             let pad: CGFloat = parentMessage == nil ? 0 : 10

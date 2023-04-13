@@ -31,7 +31,7 @@ struct RepliesView: View {
             }
             if expanded {
                 ForEach(messages) { message in
-                    MessageCard(message: message, displayStyle: .timeline)
+                    MessageCard(message: message)
                 }
                 HStack {
                     Spacer()

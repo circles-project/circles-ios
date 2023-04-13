@@ -15,7 +15,7 @@ struct SystemNoticesView: View {
     var body: some View {
         VStack(alignment: .leading) {
             if let room = session.matrix.systemNoticesRoom {
-                TimelineView(room: room)
+                TimelineView<MessageCard>(room: room)
                     .padding(.leading)
             } else {
                 Text("No current notices")

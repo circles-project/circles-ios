@@ -61,12 +61,14 @@ struct PhotoGalleryCard: View {
                     .font(.title)
                     .fontWeight(.bold)
 
-                Text(room.roomId.description)
-                    .font(.subheadline)
-                timestamp
-                    .font(.subheadline)
-                //Text(room.avatarUrl?.mediaId ?? "(none)")
-                //    .font(.subheadline)
+                if CIRCLES_DEBUG {
+                    Text(room.roomId.description)
+                        .font(.subheadline)
+                    timestamp
+                        .font(.subheadline)
+                    //Text(room.avatarUrl?.mediaId ?? "(none)")
+                    //    .font(.subheadline)
+                }
 
             }
             .foregroundColor(.white)

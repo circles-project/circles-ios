@@ -66,6 +66,7 @@ struct MessageText: View {
         }
         */
         Markdown(markdown)
+            .textSelection(.enabled)
     }
 }
 
@@ -103,9 +104,8 @@ struct MessageTimestamp: View {
     }
 }
 
-struct MessageCard: View {
+struct MessageCard: MessageView {
     @ObservedObject var message: Matrix.Message
-    var displayStyle: MessageDisplayStyle
     var isLocalEcho = false
     @Environment(\.colorScheme) var colorScheme
     //@State var showReplyComposer = false
@@ -113,6 +113,11 @@ struct MessageCard: View {
     private let debug = false
     @State var showDetailView = false
     @State var sheetType: MessageSheetType? = nil
+    
+    init(message: Matrix.Message, isLocalEcho: Bool = false) {
+        self.message = message
+        self.isLocalEcho = isLocalEcho
+    }
 
     func getCaption(body: String) -> String? {
         // By default, Matrix sets the text body to be the filename
@@ -165,19 +170,11 @@ struct MessageCard: View {
                         Spacer()
                         VStack(alignment: .center) {
                             MessageThumbnail(message: message)
-                                .padding(1)
+                                //.padding(1)
                             
-                            if let caption = imageContent.caption {
-                                if let fancyCaption = try? AttributedString(markdown: caption, options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)) {
-                                    Text(fancyCaption)
-                                        .padding(.horizontal, 3)
-                                        .padding(.bottom, 5)
-                                }
-                                else {
-                                    Text(caption)
-                                        .padding(.horizontal, 3)
-                                        .padding(.bottom, 5)
-                                }
+                            if let caption = imageContent.caption,
+                               let markdown = MarkdownContent(caption) {
+                                Markdown(markdown)
                             }
                         }
                         Spacer()
@@ -310,27 +307,11 @@ struct MessageCard: View {
         VStack(alignment: .leading) {
             Divider()
 
-            HStack(alignment: .center) {
-
-                if self.displayStyle == .photoGallery {
-                    //profileImage
-                    //ProfileImageView(user: message.matrix.getUser(userId: message.sender)!)
-                    avatarImage.resizable()
-                    .frame(width: 20, height: 20)
-                    .scaledToFill()
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
-                }
-
-                Spacer()
-                timestamp
-            }
-            .padding(.trailing, 3)
-
             if !message.reactions.isEmpty {
                 reactions
             }
             
-            if displayStyle != .composer {
+            //if displayStyle != .composer {
                 HStack {
                     shield
                     Spacer()
@@ -342,7 +323,8 @@ struct MessageCard: View {
                 }
                 .padding(.top, 3)
                 .padding(.horizontal, 3)
-            }
+                .font(.headline)
+            //}
 
         }
         .padding(.bottom, 3)
@@ -361,10 +343,8 @@ struct MessageCard: View {
     var mainCard: some View {
         
         VStack(alignment: .leading, spacing: 2) {
-
-            if displayStyle != .photoGallery {
-                MessageAuthorHeader(user: message.sender)
-            }
+            
+            MessageAuthorHeader(user: message.sender)
 
             if CIRCLES_DEBUG && self.debug {
                 Text(message.eventId)
@@ -372,10 +352,15 @@ struct MessageCard: View {
             }
 
             content
-
+            
             if CIRCLES_DEBUG {
                 details
                     .font(.caption)
+            }
+            
+            HStack {
+                Spacer()
+                timestamp
             }
 
             footer
