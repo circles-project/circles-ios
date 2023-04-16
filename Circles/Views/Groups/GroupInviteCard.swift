@@ -18,7 +18,7 @@ struct GroupInviteCard: View {
     var body: some View {
         VStack(alignment: .center) {
             
-            Text("New Invitation!")
+            Label("New Invitation!", systemImage: "envelope.open")
                 .font(.title2)
                 .fontWeight(.bold)
             
@@ -76,8 +76,8 @@ struct GroupInviteCard: View {
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 10)
+                .stroke(Color.primary, lineWidth: 2)
                 .foregroundColor(.background)
-                .border(Color.primary, width: 2)
         )
         .padding(2)
         .onAppear {
