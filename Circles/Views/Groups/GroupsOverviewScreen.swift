@@ -28,6 +28,12 @@ struct GroupsOverviewScreen: View {
             ZStack {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 0) {
+                        let invitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_GROUP }
+                        ForEach(invitations) { invitation in
+                            let user = container.session.getUser(userId: invitation.sender)
+                            GroupInviteCard(room: invitation, user: user, container: container)
+                        }
+                        
                         ForEach(container.rooms) { room in
                             NavigationLink(destination: GroupTimelineScreen(room: room)) {
                                 GroupOverviewRow(room: room)
