@@ -51,8 +51,13 @@ struct GroupInviteCard: View {
                 }
                 .padding(2)
                 .frame(width: 120.0, height: 40.0)
-                .foregroundColor(.white)
-                .background(Color.red.opacity(0.5))
+                //.foregroundColor(.white)
+                //.background(Color.red.opacity(0.5))
+                .foregroundColor(.red)
+                .background(RoundedRectangle(cornerRadius: 10)
+                    .stroke(Color.red, lineWidth: 2)
+                    .foregroundColor(.background)
+                )
                 .cornerRadius(10)
                 
                 Spacer()
@@ -66,20 +71,25 @@ struct GroupInviteCard: View {
                 }
                 .padding(2)
                 .frame(width: 120.0, height: 40.0)
-                .foregroundColor(.white)
-                .background(Color.green.opacity(0.5))
+                //.foregroundColor(.white)
+                //.background(Color.green.opacity(0.5))
+                .foregroundColor(.green)
+                .background(RoundedRectangle(cornerRadius: 10)
+                    .stroke(Color.green, lineWidth: 2)
+                    .foregroundColor(.background)
+                )
                 .cornerRadius(10)
                 
                 Spacer()
             }
         }
-        .padding()
+        .padding(4)
         .background(
             RoundedRectangle(cornerRadius: 10)
-                .stroke(Color.primary, lineWidth: 2)
+                .stroke(Color.gray, lineWidth: 2)
                 .foregroundColor(.background)
         )
-        .padding(2)
+        .padding(4)
         .onAppear {
             room.updateAvatarImage()
         }
