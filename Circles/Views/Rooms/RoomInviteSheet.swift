@@ -72,10 +72,10 @@ struct RoomInviteSheet: View {
                         }
                     }
                 }
-                .padding(.leading)
-
-
+                //.padding(.leading)
             }
+            
+            Spacer()
 
             AsyncButton(action: {
                 for user in newUsers {

@@ -13,6 +13,7 @@ enum GallerySheetType: String {
     case new
     //case settings
     case avatar
+    case invite
 }
 extension GallerySheetType: Identifiable {
     var id: String { rawValue }
@@ -39,6 +40,11 @@ struct PhotoGalleryView: View {
                 self.sheetType = .avatar
             }) {
                 Label("New cover image", systemImage: "photo")
+            }
+            Button(action: {
+                self.sheetType = .invite
+            }) {
+                Label("Share with friends", systemImage: "person.2.circle")
             }
         }
         label: {
@@ -90,6 +96,8 @@ struct PhotoGalleryView: View {
                         let _ = Task { try await room.setAvatarImage(image: img) }
                     }
                 }
+            case .invite:
+                RoomInviteSheet(room: self.room)
             }
         }
     }

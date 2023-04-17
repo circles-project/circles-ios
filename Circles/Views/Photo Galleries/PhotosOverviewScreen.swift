@@ -52,6 +52,12 @@ struct PhotosOverviewScreen: View {
         NavigationView {
             ZStack {
                 ScrollView {
+                        let invitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_PHOTOS }
+                        ForEach(invitations) { invitation in
+                            let user = container.session.getUser(userId: invitation.sender)
+                            GalleryInviteCard(room: invitation, user: user, container: container)
+                        }
+                    
                     ForEach(container.rooms) { room in
                         //Text("Found room \(room.roomId.string)")
                         NavigationLink(destination: PhotoGalleryView(room: room)) {
