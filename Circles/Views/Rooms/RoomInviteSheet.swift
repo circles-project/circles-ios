@@ -19,7 +19,20 @@ struct RoomInviteSheet: View {
 
     var inputForm: some View {
         VStack(alignment: .center) {
-            Text(title ?? "Invite New Followers to \(room.name ?? "This Room")")
+            
+            HStack {
+                Button(action: {
+                    self.pending = false
+                    self.presentation.wrappedValue.dismiss()
+                }) {
+                    Text("Cancel")
+                        .font(.subheadline)
+                }
+                //.padding()
+                Spacer()
+            }
+            
+            Text(title ?? "Invite Users to \(room.name ?? "This Room")")
                 .font(.headline)
                 .fontWeight(.bold)
 
@@ -71,21 +84,17 @@ struct RoomInviteSheet: View {
 
                 self.presentation.wrappedValue.dismiss()
             }) {
-                Label("Send Invitation(s)", systemImage: "envelope")
+                Label("Send \(newUsers.count) Invitation(s)", systemImage: "envelope")
+                    .padding()
+                    .frame(width: 300.0, height: 40.0)
+                    .foregroundColor(.white)
+                    .background(Color.accentColor)
+                    .cornerRadius(10)
             }
-            .disabled(pending)
+            .disabled(pending || newUsers.isEmpty)
             .padding()
 
             Spacer()
-
-
-            Button(action: {
-                self.pending = false
-                self.presentation.wrappedValue.dismiss()
-            }) {
-                Text("Cancel")
-            }
-            //.padding()
         }
         .padding()
 
