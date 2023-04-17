@@ -17,6 +17,7 @@ struct PhotoGalleryCreationSheet: View {
     @State private var galleryName: String = ""
     @State private var avatarImage: UIImage? = nil
     @State var showPicker: Bool = false
+    @State var sourceType: UIImagePickerController.SourceType = .photoLibrary
     
     func create() async throws {
         let roomId = try await self.container.createChildRoom(name: self.galleryName,
@@ -37,15 +38,6 @@ struct PhotoGalleryCreationSheet: View {
             }
             
             Spacer()
-            
-            /*
-            AsyncButton(action: {
-                try await create()
-            }) {
-                Text("Create")
-                    .fontWeight(.bold)
-            }
-            */
         }
         .font(.subheadline)
 
@@ -65,13 +57,15 @@ struct PhotoGalleryCreationSheet: View {
                 
                 Menu {
                     Button(action: {
+                        self.sourceType = .photoLibrary
                         self.showPicker = true
                     }) {
                         Label("Cover image from device", systemImage: "photo")
                     }
                     
                     Button(action: {
-                        
+                        self.sourceType = .camera
+                        self.showPicker = true
                     }) {
                         Label("Take new cover image", systemImage: "camera")
                     }
@@ -84,7 +78,7 @@ struct PhotoGalleryCreationSheet: View {
                                 .frame(width: size, height: size)
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
                                 .background(RoundedRectangle(cornerRadius: 10)
-                                            //.stroke(Color.gray, lineWidth: 2)
+                                    //.stroke(Color.gray, lineWidth: 2)
                                     .stroke(Color.gray)
                                     .foregroundColor(.background)
                                 )
@@ -111,7 +105,7 @@ struct PhotoGalleryCreationSheet: View {
                     }
                 }
                 .sheet(isPresented: $showPicker) {
-                    ImagePicker(selectedImage: $avatarImage)
+                    ImagePicker(selectedImage: $avatarImage, sourceType: self.sourceType)
                 }
                 
 
