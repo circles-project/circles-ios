@@ -20,21 +20,13 @@ struct GalleryInviteCard: View {
          HStack {
             Spacer()
             
-            AsyncButton(action: {
+             AsyncButton(role: .destructive, action: {
                 try await room.reject()
             }) {
                 Label("Reject", systemImage: "hand.thumbsdown")
             }
             .padding(2)
             .frame(width: 120.0, height: 40.0)
-            //.foregroundColor(.white)
-            //.background(Color.red.opacity(0.5))
-            .foregroundColor(.red)
-            .background(RoundedRectangle(cornerRadius: 10)
-                .stroke(Color.red, lineWidth: 2)
-                .foregroundColor(.background)
-            )
-            .cornerRadius(10)
             
             Spacer()
             
@@ -47,17 +39,10 @@ struct GalleryInviteCard: View {
             }
             .padding(2)
             .frame(width: 120.0, height: 40.0)
-            //.foregroundColor(.white)
-            //.background(Color.green.opacity(0.5))
-            .foregroundColor(.green)
-            .background(RoundedRectangle(cornerRadius: 10)
-                .stroke(Color.green, lineWidth: 2)
-                .foregroundColor(.background)
-            )
-            .cornerRadius(10)
             
             Spacer()
         }
+         .buttonStyle(.bordered)
     
     }
     
