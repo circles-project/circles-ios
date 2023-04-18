@@ -66,8 +66,7 @@ struct GroupTimelineScreen: View {
     */
     
     var timeline: some View {
-        TimelineView<MessageCard>(room: room,
-                     displayStyle: .timeline)
+        TimelineView<MessageCard>(room: room)
     }
     
     var toolbarMenu: some View {

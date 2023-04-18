@@ -31,11 +31,13 @@ struct PhotoGalleryView: View {
     
     var toolbarMenu: some View {
         Menu {
+            /*
             Button(action: {
                 self.sheetType = .new
             }) {
-                Label("Upload a new photo", systemImage: "photo.fill")
+                Label("New photo", systemImage: "photo.fill")
             }
+            */
             Button(action: {
                 self.sheetType = .avatar
             }) {
@@ -44,7 +46,7 @@ struct PhotoGalleryView: View {
             Button(action: {
                 self.sheetType = .invite
             }) {
-                Label("Share with friends", systemImage: "person.2.circle")
+                Label("Invite", systemImage: "person.2.circle")
             }
         }
         label: {
@@ -52,14 +54,10 @@ struct PhotoGalleryView: View {
         }
     }
     
-    var timeline: some View {
-        TimelineView<PhotoCard>(room: room, displayStyle: .photoGallery)
-    }
-    
     var body: some View {
         ZStack {
-            timeline
-            
+            TimelineView<PhotoCard>(room: room)
+
             VStack {
                 Spacer()
                 HStack {

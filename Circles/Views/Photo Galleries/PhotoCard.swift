@@ -10,15 +10,23 @@ import SwiftUI
 
 import Matrix
 
+enum PhotoSheetType: String, Identifiable {
+    case composer
+    case reactions
+    case reporting
+    
+    var id: String { rawValue }
+}
+
 struct PhotoCard: MessageView {
     
     let photoWidth: CGFloat = 800
-    let buttonSize: CGFloat = 20
     
     @ObservedObject var message: Matrix.Message
     var isLocalEcho: Bool
     @Environment(\.colorScheme) var colorScheme
-    @State var sheetType: MessageSheetType? = nil
+    @State var sheetType: PhotoSheetType? = nil
+    @State var showFullScreen: Bool = false
     private var formatter: DateFormatter
 
     init(message: Matrix.Message, isLocalEcho: Bool) {
@@ -53,8 +61,9 @@ struct PhotoCard: MessageView {
 
     var menuButton: some View {
         Menu {
-        MessageContextMenu(message: message,
-                           sheetType: $sheetType)
+            PhotoContextMenu(message: message,
+                             sheetType: $sheetType,
+                             showDetail: $showFullScreen)
         }
         label: {
             //Label("More", systemImage: "ellipsis.circle")
@@ -114,6 +123,19 @@ struct PhotoCard: MessageView {
                 .foregroundColor(colorScheme == .dark ? .black : .white)
                 .shadow(color: .gray, radius: 2, x: 0, y: 1)
         )
+        .sheet(item: $sheetType) { st in
+            switch st {
+            case .composer:
+                MessageComposerSheet(room: message.room, parentMessage: message)
+            case .reactions:
+                EmojiPicker(message: message)
+            case .reporting:
+                MessageReportingSheet(message: message)
+            }
+        }
+        .fullScreenCover(isPresented: $showFullScreen) {
+            PhotoDetailView(message: message)
+        }
         .onAppear {
             Task {
                 try await message.fetchThumbnail()

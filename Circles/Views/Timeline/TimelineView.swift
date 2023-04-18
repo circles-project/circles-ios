@@ -11,19 +11,10 @@ import Matrix
 
 struct TimelineView<V: MessageView>: View {
     @ObservedObject var room: Matrix.Room
-    var displayStyle: MessageDisplayStyle = .timeline
     @State var debug = false
     @State var loading = false
     @State var selectedMessage: Matrix.Message?
     @State var sheetType: TimelineSheetType?
-
-    /*
-    init(room: MatrixRoom, displayStyle: MessageDisplayStyle = .timeline) {
-        self.room = room
-        self.displayStyle = displayStyle
-        //self.messages = room.getMessages(since: Date() - 3*day)
-    }
-    */
     
     var footer: some View {
         VStack(alignment: .center) {
