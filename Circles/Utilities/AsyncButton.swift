@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct AsyncButton<Label: View>: View {
+    var role: ButtonRole?
     var action: () async throws -> Void
     @ViewBuilder var label: () -> Label
 
@@ -26,6 +27,7 @@ struct AsyncButton<Label: View>: View {
     
     var body: some View {
         Button(
+            role: role,
             action: runAction,
             label: {
                 label()
