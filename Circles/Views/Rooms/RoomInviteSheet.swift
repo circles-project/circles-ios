@@ -103,7 +103,21 @@ struct RoomInviteSheet: View {
                 List {
                     Section(header: Text("Users to Invite:")) {
                         ForEach(newUsers) { user in
-                            MessageAuthorHeader(user: user)
+                            HStack {
+                                MessageAuthorHeader(user: user)
+                                Spacer()
+                                Button(action: {
+                                    let userId = user.userId
+                                    self.newUsers.removeAll(where: {$0.userId == userId})
+                                }) {
+                                    Image(systemName: "xmark.circle")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 20, height: 20)
+                                }
+                                .buttonStyle(.plain)
+                                .foregroundColor(.gray)
+                            }
                         }
                     }
                 }
