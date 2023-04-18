@@ -17,6 +17,7 @@ struct RoomInviteSheet: View {
     @State var newestUserIdString: String = ""
     @State var pending = false
     @State var suggestions = [UserId]()
+    @State var searchTask: Task<Void,Swift.Error>?
 
     var inputForm: some View {
         VStack(alignment: .center) {
@@ -46,13 +47,14 @@ struct RoomInviteSheet: View {
                     .autocapitalization(.none)
                     .autocorrectionDisabled()
                     .onChange(of: newestUserIdString) { searchTerm in
-                        Task {
+                        self.searchTask = self.searchTask ?? Task {
                             let currentUserIds = self.newUsers.map { $0.userId }
                             let suggestedUserIds = try await room.session.searchUserDirectory(term: searchTerm)
                                 .filter { !currentUserIds.contains($0) }
                             print("INVITE:\tGot \(suggestedUserIds.count) search results: \(suggestedUserIds)")
                             await MainActor.run {
                                 self.suggestions = suggestedUserIds
+                                self.searchTask = nil
                             }
                         }
                     }
