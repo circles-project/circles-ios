@@ -16,6 +16,7 @@ struct RoomInviteSheet: View {
     @State var newUsers: [Matrix.User] = []
     @State var newestUserIdString: String = ""
     @State var pending = false
+    @State var suggestions = [UserId]()
 
     var inputForm: some View {
         VStack(alignment: .center) {
@@ -33,7 +34,7 @@ struct RoomInviteSheet: View {
             }
             
             Text(title ?? "Invite Users to \(room.name ?? "This Room")")
-                .font(.headline)
+                .font(.title3)
                 .fontWeight(.bold)
 
             Spacer()
@@ -42,7 +43,20 @@ struct RoomInviteSheet: View {
             HStack {
                 TextField("User ID", text: $newestUserIdString)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
+                    .autocapitalization(.none)
+                    .autocorrectionDisabled()
+                    .onChange(of: newestUserIdString) { searchTerm in
+                        Task {
+                            let currentUserIds = self.newUsers.map { $0.userId }
+                            let suggestedUserIds = try await room.session.searchUserDirectory(term: searchTerm)
+                                .filter { !currentUserIds.contains($0) }
+                            print("INVITE:\tGot \(suggestedUserIds.count) search results: \(suggestedUserIds)")
+                            await MainActor.run {
+                                self.suggestions = suggestedUserIds
+                            }
+                        }
+                    }
+                    .frame(maxWidth: 300)
 
                 AsyncButton(action: {
                     guard let userId = UserId(newestUserIdString)
@@ -62,18 +76,37 @@ struct RoomInviteSheet: View {
             }
             .disabled(pending)
             .padding()
+            
+            if !self.suggestions.isEmpty {
+                List {
+                    Section(header: Text("Search Suggestions")) {
+                        ForEach(suggestions) { userId in
+                            let user = room.session.getUser(userId: userId)
+                            //Text("User \(userId.description)")
+                            Button(action: {
+                                self.newestUserIdString = ""
+                                self.suggestions = []
+                                self.newUsers.append(user)
+                            }) {
+                                MessageAuthorHeader(user: user)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
+            }
+            
 
             VStack(alignment: .leading) {
-                Text("Users to Invite:")
-                VStack(alignment: .leading) {
-                    List {
+                List {
+                    Section(header: Text("Users to Invite:")) {
                         ForEach(newUsers) { user in
                             MessageAuthorHeader(user: user)
                         }
                     }
                 }
-                //.padding(.leading)
             }
+            //.padding(.leading)
             
             Spacer()
 
