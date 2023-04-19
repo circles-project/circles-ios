@@ -365,6 +365,7 @@ struct MessageCard: MessageView {
 
             footer
         }
+        .frame(maxWidth: 800)
         .padding(.all, 3.0)
         .background(
             RoundedRectangle(cornerRadius: 4)

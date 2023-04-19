@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import PhotosUI
 import Matrix
 
 struct PhotoGalleryCreationSheet: View {
@@ -16,8 +17,8 @@ struct PhotoGalleryCreationSheet: View {
     
     @State private var galleryName: String = ""
     @State private var avatarImage: UIImage? = nil
-    @State var showPicker: Bool = false
-    @State var sourceType: UIImagePickerController.SourceType = .photoLibrary
+
+    @State var selectedItem: PhotosPickerItem?
     
     func create() async throws {
         let roomId = try await self.container.createChildRoom(name: self.galleryName,
@@ -55,21 +56,8 @@ struct PhotoGalleryCreationSheet: View {
                 
                 Spacer()
                 
-                Menu {
-                    Button(action: {
-                        self.sourceType = .photoLibrary
-                        self.showPicker = true
-                    }) {
-                        Label("Cover image from device", systemImage: "photo")
-                    }
                     
-                    Button(action: {
-                        self.sourceType = .camera
-                        self.showPicker = true
-                    }) {
-                        Label("Take new cover image", systemImage: "camera")
-                    }
-                } label: {
+                PhotosPicker(selection: $selectedItem, matching: .images) {
                     if let img = avatarImage {
                         ZStack {
                             Image(uiImage: img)
@@ -78,7 +66,7 @@ struct PhotoGalleryCreationSheet: View {
                                 .frame(width: size, height: size)
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
                                 .background(RoundedRectangle(cornerRadius: 10)
-                                    //.stroke(Color.gray, lineWidth: 2)
+                                            //.stroke(Color.gray, lineWidth: 2)
                                     .stroke(Color.gray)
                                     .foregroundColor(.background)
                                 )
@@ -104,9 +92,19 @@ struct PhotoGalleryCreationSheet: View {
                             .padding()
                     }
                 }
-                .sheet(isPresented: $showPicker) {
-                    ImagePicker(selectedImage: $avatarImage, sourceType: self.sourceType)
+                .onChange(of: selectedItem) { newItem in
+                    Task {
+                        print("Handling a new item")
+                        if let data = try? await newItem?.loadTransferable(type: Data.self),
+                           let img = UIImage(data: data)
+                        {
+                            await MainActor.run {
+                                self.avatarImage = img
+                            }
+                        }
+                    }
                 }
+
                 
 
                 

@@ -23,6 +23,7 @@ struct RoomMessageComposer: View {
     @State private var newMessageText = ""
     @State private var newImage: UIImage?
     @State private var showPicker = false
+    @State private var showNewPicker = false
     //@State private var imageSourceType: UIImagePickerController.SourceType = .photoLibrary
     @State private var inProgress = false
     
@@ -36,6 +37,7 @@ struct RoomMessageComposer: View {
     }
     
     @State private var imageSourceType: ImageSourceType = .local(.photoLibrary)
+    @State var selectedItem: PhotosPickerItem?
     
     /*
     init(room: MatrixRoom, onCancel: @escaping () -> Void) {
@@ -72,8 +74,7 @@ struct RoomMessageComposer: View {
             Menu {
                 Button(action: {
                     self.newMessageType = .image
-                    self.imageSourceType = .local(.photoLibrary)
-                    self.showPicker = true
+                    self.showNewPicker = true
                 }) {
                     Label("Upload a photo from device library", systemImage: "photo.fill")
                 }
@@ -201,6 +202,18 @@ struct RoomMessageComposer: View {
                         .scaleEffect(2.5, anchor: .center)
                 }
             }
+            .onChange(of: selectedItem) { newItem in
+                print("Selected item changed")
+                Task {
+                    if let data = try? await newItem?.loadTransferable(type: Data.self),
+                       let img = UIImage(data: data)
+                    {
+                        await MainActor.run {
+                            self.newImage = img
+                        }
+                    }
+                }
+            }
 
             buttonBar
         }
@@ -237,6 +250,7 @@ struct RoomMessageComposer: View {
                 Text("FIXME: CloudImagePicker")
             }
         })
+        .photosPicker(isPresented: $showNewPicker, selection: $selectedItem, matching: .images)
         .alert(isPresented: $showAlert) {
             Alert(title: Text(alertTitle),
                   message: Text(alertMessage),

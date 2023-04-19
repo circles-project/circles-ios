@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct AvatarForm: View {
     var session: SetupSession
@@ -13,7 +14,9 @@ struct AvatarForm: View {
     @State var displayName = ""
     @State var avatarImage: UIImage?
     @State var showPicker = false
-    @State var pickerSourceType: UIImagePickerController.SourceType = .photoLibrary
+    @State var showCamera = false
+    //@State var pickerSourceType: UIImagePickerController.SourceType = .photoLibrary
+    @State var selectedItem: PhotosPickerItem?
 
     @State var pending = false
 
@@ -33,7 +36,7 @@ struct AvatarForm: View {
 
             Spacer()
 
-            Text("Upload a profile photo")
+            Text("Set up your profile")
                 .font(.title)
                 .fontWeight(.bold)
 
@@ -43,21 +46,37 @@ struct AvatarForm: View {
                 .frame(width: 160, height: 160, alignment: .center)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
 
-            Button(action: {
-                self.showPicker = true
-                self.pickerSourceType = .photoLibrary
-            }) {
+            PhotosPicker(selection: $selectedItem, matching: .images) {
                 Label("Choose a photo from my device's library", systemImage: "photo.fill")
+            }
+            .onChange(of: selectedItem) { newItem in
+                Task {
+                    if let data = try? await newItem?.loadTransferable(type: Data.self),
+                       let img = UIImage(data: data)
+                    {
+                        await MainActor.run {
+                            self.avatarImage = img
+                        }
+                    }
+                }
             }
             .padding()
 
             Button(action: {
-                self.showPicker = true
-                self.pickerSourceType = .camera
+                self.showCamera = true
             }) {
                 Label("Take a new photo", systemImage: "camera")
             }
+            .sheet(isPresented: $showCamera) {
+                ImagePicker(selectedImage: $avatarImage, sourceType: .camera)
+            }
             .padding()
+            
+            TextField("First Last", text: $displayName, prompt: Text("Your name"))
+                .autocorrectionDisabled()
+                .textInputAutocapitalization(.words)
+                .frame(width: 300)
+                .padding()
 
             Spacer()
 
@@ -79,10 +98,6 @@ struct AvatarForm: View {
             }
             .disabled(avatarImage == nil)
 
-        }
-        .sheet(isPresented: $showPicker) {
-            ImagePicker(selectedImage: $avatarImage,
-                        sourceType: self.pickerSourceType)
         }
     }
 }

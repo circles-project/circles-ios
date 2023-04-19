@@ -7,13 +7,14 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 enum CircleSheetType: String {
     case settings
     case followers
     case following
     case invite
-    case photo
+    //case photo
     case composer
 }
 extension CircleSheetType: Identifiable {
@@ -26,14 +27,16 @@ struct CircleTimelineScreen: View {
     
     //@State var showComposer = false
     @State var sheetType: CircleSheetType? = nil
-    @State var image: UIImage?
+    @State var showPhotosPicker: Bool = false
+    @State var selectedItem: PhotosPickerItem?
+    //@State var image: UIImage?
     
     var toolbarMenu: some View {
         Menu {
             Menu {
                 
                 Button(action: {
-                    self.sheetType = .photo
+                    self.showPhotosPicker = true
                 }) {
                     Label("New Cover Photo", systemImage: "photo")
                 }
@@ -61,46 +64,6 @@ struct CircleTimelineScreen: View {
             Button(action: {self.sheetType = .composer}) {
                 Label("Post a New Message", systemImage: "plus.bubble")
             }
-            
-            /*
-            Button(action:{
-                circle.matrix.createRoom(name: circle.name,
-                                         with: ROOM_TAG_OUTBOUND,
-                                         insecure: false
-                ) { response1 in
-                    switch response1 {
-                    case .failure( _):
-                        print("OUTBOUND\tFailed to create room")
-                    case .success(let mxroom):
-                        print("OUTBOUND\tSuccess creating room")
-                        
-                        guard let room = circle.matrix.getRoom(roomId: mxroom.roomId) else {
-                            print("OUTBOUND\tFailed to create room from mxroom")
-                            return
-                        }
-                        
-                        room.setRoomType(type: ROOM_TYPE_CIRCLE) { roomtypeResponse in
-                            if roomtypeResponse.isSuccess {
-                                print("OUTBOUND\tSuccessfully set room type")
-                            }
-                            else {
-                                print("OUTBOUND\tFailed to set room type")
-                            }
-                        }
-                        
-                        circle.stream.addRoom(roomId: mxroom.roomId) { response2 in
-                            if response2.isSuccess {
-                                circle.graph.saveCircles() { _ in }
-                            }
-                        }
-                    }
-                }
-            }) {
-                Label("Recreate Outbound Room", systemImage: "stethoscope")
-            }
-            */
-            
-
         }
         label: {
             Label("More", systemImage: "ellipsis.circle")
@@ -133,6 +96,17 @@ struct CircleTimelineScreen: View {
                 .onDisappear {
                     print("DEBUGUI\tStreamTimeline disappeared for Circle \(space.roomId)")
                 }
+                .photosPicker(isPresented: $showPhotosPicker, selection: $selectedItem, matching: .images)
+                .onChange(of: selectedItem) { newItem in
+                    Task {
+                        if let room = self.space.wall,
+                           let data = try? await newItem?.loadTransferable(type: Data.self),
+                           let img = UIImage(data: data)
+                        {
+                            try await room.setAvatarImage(image: img)
+                        }
+                    }
+                }
                 .sheet(item: $sheetType) { st in
                     switch(st) {
                     case .invite:
@@ -141,6 +115,7 @@ struct CircleTimelineScreen: View {
                         RoomMembersSheet(room: space.wall!)
                     case .following:
                         CircleConnectionsSheet(space: space)
+                    /*
                     case .photo:
                         ImagePicker(selectedImage: self.$image, sourceType: .photoLibrary, allowEditing: false) { maybeImage in
                             guard let room = self.space.wall,
@@ -153,6 +128,7 @@ struct CircleTimelineScreen: View {
                                 try await room.setAvatarImage(image: newImage)
                             }
                         }
+                    */
                     case .composer:
                         MessageComposerSheet(room: space.wall!)
                     default:

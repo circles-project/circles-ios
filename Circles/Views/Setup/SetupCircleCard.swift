@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct SetupCircleCard: View {
     var session: SetupSession
@@ -14,7 +15,8 @@ struct SetupCircleCard: View {
     var userDisplayName: String
     
     @Binding var avatar: UIImage?
-    @State var showPicker = false
+    //@State var showPicker = false
+    @State var selectedItem: PhotosPickerItem?
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -28,14 +30,10 @@ struct SetupCircleCard: View {
                             .clipShape(Circle())
                             .frame(width: 120, height: 120, alignment: .center)
                             //.padding()
-                        Button(action: {
-                            self.showPicker = true
-                        }) {
+
+                        PhotosPicker(selection: $selectedItem, matching: .images) {
                             Label("Change", systemImage: "photo")
                                 .font(.subheadline)
-                        }
-                        .sheet(isPresented: $showPicker) {
-                            ImagePicker(selectedImage: self.$avatar)
                         }
                     }
                 }
@@ -50,9 +48,7 @@ struct SetupCircleCard: View {
                             .foregroundColor(.gray)
                             .padding()
                         
-                        Button(action: {
-                            self.showPicker = true
-                        }) {
+                        PhotosPicker(selection: $selectedItem) {
                             Text("Choose a cover photo")
                                 .font(.title3)
                                 .fontWeight(.semibold)
@@ -61,12 +57,9 @@ struct SetupCircleCard: View {
                                 .shadow(color: .black, radius: 3.0, x: 2.0, y: 2.0)
                                 .padding(10)
                         }
-                        .sheet(isPresented: $showPicker) {
-                            ImagePicker(selectedImage: self.$avatar)
-                        }
                     }
                 }
-                
+
                 VStack(alignment: .leading) {
                     Text(self.circleName)
                         .font(.title)
@@ -74,6 +67,17 @@ struct SetupCircleCard: View {
                     Text(self.userDisplayName)
                 }
                 .padding(.leading)
+            }
+            .onChange(of: selectedItem) { newItem in
+                Task {
+                    if let data = try? await newItem?.loadTransferable(type: Data.self),
+                       let img = UIImage(data: data)
+                    {
+                        await MainActor.run {
+                            self.avatar = img
+                        }
+                    }
+                }
             }
         }
     }

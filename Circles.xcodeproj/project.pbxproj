@@ -32,7 +32,6 @@
 		409F42E9265DE06C00690A61 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F42E8265DE06C00690A61 /* WebView.swift */; };
 		409F4315265DE0F400690A61 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4313265DE0F300690A61 /* ImagePicker.swift */; };
 		409F4316265DE0F400690A61 /* ImageSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4314265DE0F400690A61 /* ImageSaver.swift */; };
-		409F4319265DE0FF00690A61 /* EmbeddedImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4318265DE0FF00690A61 /* EmbeddedImagePicker.swift */; };
 		409F431E265DE11000690A61 /* DevicesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F431B265DE10F00690A61 /* DevicesScreen.swift */; };
 		409F431F265DE11000690A61 /* DeviceRemovalSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F431C265DE10F00690A61 /* DeviceRemovalSheet.swift */; };
 		409F4320265DE11000690A61 /* DeviceInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F431D265DE11000690A61 /* DeviceInfoView.swift */; };
@@ -67,7 +66,6 @@
 		409F437F265DE28600690A61 /* RandomizedCircles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F437E265DE28600690A61 /* RandomizedCircles.swift */; };
 		409F4382265DE29600690A61 /* SetupCircleCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4381265DE29600690A61 /* SetupCircleCard.swift */; };
 		409F4385265DE2A400690A61 /* RoomMessageComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4384265DE2A400690A61 /* RoomMessageComposer.swift */; };
-		409F4388265DE2B100690A61 /* TokenSignUpScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4387265DE2B100690A61 /* TokenSignUpScreen.swift */; };
 		409F438C265DE2C200690A61 /* CircleTimeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F438A265DE2C200690A61 /* CircleTimeline.swift */; };
 		409F4390265DE2CE00690A61 /* SystemNoticesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F438F265DE2CE00690A61 /* SystemNoticesView.swift */; };
 		409F4393265DE2DE00690A61 /* TimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4392265DE2DE00690A61 /* TimelineView.swift */; };
@@ -163,7 +161,6 @@
 		409F42E8265DE06C00690A61 /* WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		409F4313265DE0F300690A61 /* ImagePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		409F4314265DE0F400690A61 /* ImageSaver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageSaver.swift; sourceTree = "<group>"; };
-		409F4318265DE0FF00690A61 /* EmbeddedImagePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmbeddedImagePicker.swift; sourceTree = "<group>"; };
 		409F431B265DE10F00690A61 /* DevicesScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DevicesScreen.swift; sourceTree = "<group>"; };
 		409F431C265DE10F00690A61 /* DeviceRemovalSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceRemovalSheet.swift; sourceTree = "<group>"; };
 		409F431D265DE11000690A61 /* DeviceInfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceInfoView.swift; sourceTree = "<group>"; };
@@ -198,7 +195,6 @@
 		409F437E265DE28600690A61 /* RandomizedCircles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RandomizedCircles.swift; sourceTree = "<group>"; };
 		409F4381265DE29600690A61 /* SetupCircleCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetupCircleCard.swift; sourceTree = "<group>"; };
 		409F4384265DE2A400690A61 /* RoomMessageComposer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomMessageComposer.swift; sourceTree = "<group>"; };
-		409F4387265DE2B100690A61 /* TokenSignUpScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenSignUpScreen.swift; sourceTree = "<group>"; };
 		409F438A265DE2C200690A61 /* CircleTimeline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleTimeline.swift; sourceTree = "<group>"; };
 		409F438F265DE2CE00690A61 /* SystemNoticesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemNoticesView.swift; sourceTree = "<group>"; };
 		409F4392265DE2DE00690A61 /* TimelineView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelineView.swift; sourceTree = "<group>"; };
@@ -344,7 +340,6 @@
 				40AEA6722678E24100C9CBD1 /* BlurHashDecode.swift */,
 				40AEA6732678E24200C9CBD1 /* BlurHashEncode.swift */,
 				409F4325265DE12600690A61 /* CloudImagePicker.swift */,
-				409F4318265DE0FF00690A61 /* EmbeddedImagePicker.swift */,
 				4012C54826A752C400BB15E6 /* EmojiPicker.swift */,
 				409F4313265DE0F300690A61 /* ImagePicker.swift */,
 				409F4314265DE0F400690A61 /* ImageSaver.swift */,
@@ -471,7 +466,6 @@
 				403CEAA026E90DE10054DBF4 /* SignupStartForm.swift */,
 				403CEA9226E864160054DBF4 /* TermsOfServiceForm.swift */,
 				403CEA9426E865740054DBF4 /* TokenForm.swift */,
-				409F4387265DE2B100690A61 /* TokenSignUpScreen.swift */,
 				403CEA9626E866B70054DBF4 /* ValidateEmailForm.swift */,
 			);
 			path = Signup;
@@ -694,7 +688,6 @@
 				404C72D3265DDF35000473DF /* ContentView.swift in Sources */,
 				403CEA9F26E86C7F0054DBF4 /* CirclesForm.swift in Sources */,
 				A5E101FA2814FB60000B2C42 /* blf.c in Sources */,
-				409F4388265DE2B100690A61 /* TokenSignUpScreen.swift in Sources */,
 				A5E101FE2814FC9F000B2C42 /* PerfectBCrypt.swift in Sources */,
 				A5FCF64129CC9B30008278B0 /* GroupRoom.swift in Sources */,
 				A509B89E2819B6C90053E5BC /* CirclesError.swift in Sources */,
@@ -752,7 +745,6 @@
 				409F4370265DE24000690A61 /* PersonHeaderRow.swift in Sources */,
 				409F4332265DE15F00690A61 /* CircleCreationSheet.swift in Sources */,
 				40CD7F6F2667E16100DE315F /* VideoPicker.swift in Sources */,
-				409F4319265DE0FF00690A61 /* EmbeddedImagePicker.swift in Sources */,
 				409F435B265DE1EE00690A61 /* LoggedOutScreen.swift in Sources */,
 				A54BA3A22850108300453D5E /* CirclesStore.swift in Sources */,
 				40AEA6742678E24200C9CBD1 /* BlurHashDecode.swift in Sources */,

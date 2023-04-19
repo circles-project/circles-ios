@@ -133,7 +133,7 @@ struct RoomInviteSheet: View {
 
                 self.presentation.wrappedValue.dismiss()
             }) {
-                Label("Send \(newUsers.count) Invitation(s)", systemImage: "envelope")
+                Label("Send \(newUsers.count) Invitation(s)", systemImage: "paperplane")
                     .padding()
                     .frame(width: 300.0, height: 40.0)
                     .foregroundColor(.white)

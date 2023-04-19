@@ -7,12 +7,13 @@
 //
 
 import SwiftUI
+import PhotosUI
 import Matrix
 
 enum GallerySheetType: String {
-    case new
+    //case new
     //case settings
-    case avatar
+    //case avatar
     case invite
 }
 extension GallerySheetType: Identifiable {
@@ -23,23 +24,19 @@ struct PhotoGalleryView: View {
     @ObservedObject var room: Matrix.Room
     //@ObservedObject var gallery: PhotoGallery
     @State var selectedMessage: Matrix.Message?
+    @State var selectedItems: [PhotosPickerItem] = []
+    @State var avatarItem: PhotosPickerItem?
     @Environment(\.presentationMode) var presentation
 
     @State var sheetType: GallerySheetType? = nil
-    @State var newPhoto: UIImage?
-    @State var newAvatar: UIImage?
+    //@State var newPhoto: UIImage?
+    //@State var newAvatar: UIImage?
+    @State var showCoverImagePicker: Bool = false
     
     var toolbarMenu: some View {
         Menu {
-            /*
             Button(action: {
-                self.sheetType = .new
-            }) {
-                Label("New photo", systemImage: "photo.fill")
-            }
-            */
-            Button(action: {
-                self.sheetType = .avatar
+                self.showCoverImagePicker = true
             }) {
                 Label("New cover image", systemImage: "photo")
             }
@@ -62,6 +59,7 @@ struct PhotoGalleryView: View {
                 Spacer()
                 HStack {
                     Spacer()
+                    /*
                     Button(action: {
                         self.sheetType = .new
                     }) {
@@ -70,6 +68,33 @@ struct PhotoGalleryView: View {
                             .scaledToFill()
                             .frame(width: 50, height: 50)
                             .padding()
+                    }
+                    */
+                    PhotosPicker(selection: $selectedItems, matching: .images) {
+                        Image(systemName: "plus.circle.fill")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 50, height: 50)
+                            .padding()
+                    }
+                    .onChange(of: selectedItems) { newItems in
+                        Task {
+                            for newItem in newItems {
+                                if let data = try? await newItem.loadTransferable(type: Data.self),
+                                   let img = UIImage(data: data) {
+                                    try await room.sendImage(image: img)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .onChange(of: avatarItem) { newItem in
+                Task {
+                    if let data = try? await newItem?.loadTransferable(type: Data.self),
+                       let img = UIImage(data: data)
+                    {
+                        try await room.setAvatarImage(image: img)
                     }
                 }
             }
@@ -82,22 +107,11 @@ struct PhotoGalleryView: View {
         }
         .sheet(item: self.$sheetType) { st in
             switch(st) {
-            case .new:
-                ImagePicker(selectedImage: self.$newPhoto, sourceType: .photoLibrary) { maybeImg in
-                    if let img = maybeImg {
-                        let _ = Task { try await room.sendImage(image: img) }
-                    }
-                }
-            case .avatar:
-                ImagePicker(selectedImage: self.$newAvatar, sourceType: .photoLibrary) { maybeImg in
-                    if let img = maybeImg {
-                        let _ = Task { try await room.setAvatarImage(image: img) }
-                    }
-                }
             case .invite:
                 RoomInviteSheet(room: self.room)
             }
         }
+        .photosPicker(isPresented: $showCoverImagePicker, selection: $avatarItem, matching: .images)
     }
 }
 
