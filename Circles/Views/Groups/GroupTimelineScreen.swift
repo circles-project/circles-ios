@@ -31,7 +31,8 @@ struct GroupTimelineScreen: View {
     @ObservedObject var room: Matrix.Room
     //@ObservedObject var group: SocialGroup
     @Environment(\.presentationMode) var presentation
-
+    @EnvironmentObject var galleries: ContainerRoom<GalleryRoom>
+    
     @State var showComposer = false
 
     @State private var sheetType: GroupScreenSheetType? = nil
@@ -134,7 +135,7 @@ struct GroupTimelineScreen: View {
                             RoomSecurityInfoSheet(room: room)
                             
                         case .composer:
-                            MessageComposerSheet(room: room, parentMessage: nilParentMessage)
+                            MessageComposerSheet(room: room, parentMessage: nilParentMessage, galleries: galleries)
                             
                         }
                     }

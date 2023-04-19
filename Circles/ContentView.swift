@@ -57,6 +57,7 @@ struct ContentView: View {
         case .online(let circlesSession):
             TabbedInterface(session: circlesSession)
                 .environmentObject(circlesSession.galleries)
+                //.environmentObject(circlesSession)
             
         default:
             errorView
@@ -80,17 +81,6 @@ struct ContentView: View {
         
         var body: some View {
             TabView(selection: $selection) {
-
-                /*
-                HomeScreen(store: self.store,
-                           user: self.store.me(),
-                           tab: self.$selection)
-                    .tabItem {
-                        Image(systemName: "house.fill")
-                        Text("Home")
-                    }
-                    .tag(Tab.home)
-                */
                 
                 CirclesOverviewScreen(container: self.session.circles)
                     .tabItem {

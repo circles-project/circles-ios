@@ -108,6 +108,7 @@ struct MessageCard: MessageView {
     @ObservedObject var message: Matrix.Message
     var isLocalEcho = false
     @Environment(\.colorScheme) var colorScheme
+    @EnvironmentObject var galleries: ContainerRoom<GalleryRoom>
     //@State var showReplyComposer = false
     @State var reporting = false
     private let debug = false
@@ -387,7 +388,7 @@ struct MessageCard: MessageView {
                 switch(st) {
 
                 case .composer:
-                    MessageComposerSheet(room: message.room, parentMessage: message)
+                    MessageComposerSheet(room: message.room, parentMessage: message, galleries: galleries)
 
                 case .detail:
                     MessageDetailSheet(message: message, displayStyle: .timeline)

@@ -13,9 +13,28 @@ struct GalleryThumbnail: View {
     @ObservedObject var message: Matrix.Message
     
     var body: some View {
-        ZStack {
-            Image(uiImage: message.thumbnail ?? message.blurhashImage ?? UIImage())
+        VStack(alignment: .center) {
+            if let img = message.thumbnail ?? message.thumbhashImage ?? message.blurhashImage {
+                Image(uiImage: img)
+                    .resizable()
+                    //.scaledToFill()
+                    //.clipShape(RoundedRectangle(cornerRadius: 10))
+                    //.frame(width: 100, height: 100)
+            }
+            else {
+                ProgressView()
+                    .scaleEffect(2.0)
+                    //.frame(width: 100, height: 100)
+
+            }
+            /*
+            RoundedRectangle(cornerRadius: 10)
+                .foregroundColor(.blue)
+            */
         }
+        //.frame(width: 90, height: 90)
+        //.border(Color.blue, width: 1)
+        //.padding()
         .onAppear {
             if message.thumbnail == nil && (message.content?.thumbnail_url != nil || message.content?.thumbnail_file != nil) {
                 let _ = Task {
@@ -28,63 +47,119 @@ struct GalleryThumbnail: View {
 
 struct GalleryPicker: View {
     @ObservedObject var room: Matrix.Room
+    @State var loading = false
+    @State var finishing = false
+    
     var completion: (UIImage) -> Void = { _ in }
     
-    var body: some View {
-        let messages = room.timeline.values.filter {
-            $0.type == M_ROOM_MESSAGE && $0.content?.msgtype == .image
+    func downloadImageFromMessage(message: Matrix.Message) async throws {
+        // Download the image
+        guard let content = message.content as? Matrix.mImageContent
+        else {
+            // FIXME: Set error message
+            return
+        }
+        
+        await MainActor.run {
+            self.finishing = true
+        }
+        
+        if let file = content.file {
+            guard let data = try? await message.room.session.downloadAndDecryptData(file),
+                  let img = UIImage(data: data)
+            else {
+                // FIXME: Set error message
+                return
+            }
+            completion(img)
+            return
         }
 
+        if let mxc = content.url {
+            guard let data = try? await message.room.session.downloadData(mxc: mxc),
+                  let img = UIImage(data: data)
+            else {
+                // FIXME: Set error message
+                return
+            }
+            completion(img)
+            return
+        }
         
-        ScrollView {
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
-
+        // Looks like we failed to get the image :(
+        // FIXME: Set error message
+        await MainActor.run {
+            self.finishing = false
+        }
+        return
+    }
+    
+    var body: some View {
+        
+        let messages = room.timeline.values.filter { (message) in
+            message.relatesToId == nil && message.type == M_ROOM_MESSAGE
+        }.sorted(by: {$0.timestamp > $1.timestamp})
+        
+        ZStack {
+            ScrollView {
                 
-                ForEach(messages) { message in
-                    AsyncButton(action: {
-                        // Download the image
-                        guard let content = message.content as? Matrix.mImageContent
-                        else {
-                            // FIXME: Set error message
-                            return
+                let columns = [
+                    GridItem(.adaptive(minimum: 100, maximum: 100)),
+                ]
+                
+                LazyVGrid(columns: columns, alignment: .center) {
+                    ForEach(messages) { message in
+                        AsyncButton(action: {
+                            try await self.downloadImageFromMessage(message: message)
+                        }) {
+                            GalleryThumbnail(message: message)
                         }
+                        .border(Color.red, width: 1)
+                        .frame(width: 100, height: 100)
+                        .border(Color.green, width: 1)
                         
-                        if let file = content.file {
-                            guard let data = try? await message.room.session.downloadAndDecryptData(file),
-                                  let img = UIImage(data: data)
-                            else {
-                                // FIXME: Set error message
-                                return
-                            }
-                            completion(img)
-                            return
-                        }
-
-                        if let mxc = content.url {
-                            guard let data = try? await message.room.session.downloadData(mxc: mxc),
-                                  let img = UIImage(data: data)
-                            else {
-                                // FIXME: Set error message
-                                return
-                            }
-                            completion(img)
-                            return
-                        }
-                        
-                        // Looks like we failed to get the image :(
-                        // FIXME: Set error message
-                        return
-                    }) {
-                        GalleryThumbnail(message: message)
                     }
+                }.padding(.all, 10)
+                
+                HStack(alignment: .bottom) {
+                    Spacer()
+                    if loading {
+                        ProgressView("Loading...")
+                        //.progressViewStyle(LinearProgressViewStyle())
+                    }
+                    else if room.canPaginate {
+                        AsyncButton(action: {
+                            self.loading = true
+                            try await room.paginate()
+                            self.loading = false
+                        }) {
+                            Text("Load More")
+                        }
+                        .onAppear {
+                            // It's a magic self-clicking button.
+                            // If it ever appears, we basically automatically click it for the user
+                            self.loading = true
+                            let _ = Task {
+                                try await room.paginate()
+                                self.loading = false
+                            }
+                        }
+                    }
+                    Spacer()
                 }
+            }
+            
+            if finishing {
+                ProgressView()
+                    .scaleEffect(4.0)
             }
         }
     }
 }
 
 struct CloudImagePicker: View {
-    @EnvironmentObject var galleries: ContainerRoom<GalleryRoom>
+    @ObservedObject var galleries: ContainerRoom<GalleryRoom>
+    //@EnvironmentObject var session: CirclesSession
     
     @Binding var selectedImage: UIImage?
     @Environment(\.presentationMode) private var presentation
@@ -108,13 +183,17 @@ struct CloudImagePicker: View {
     
     var roomList: some View {
         ScrollView {
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
+            LazyVGrid(columns: [
+                                    GridItem(.adaptive(minimum: 300, maximum: 300))
+                               ]
+            ) {
                 ForEach(galleries.rooms) { room in
                     Button(action: {
                         self.selectedRoom = room
                     }) {
                         PhotoGalleryCard(room: room)
                     }
+                    .frame(width: 300)
                 }
             }
         }
@@ -124,10 +203,6 @@ struct CloudImagePicker: View {
     
     var body: some View {
         VStack {
-            topbar
-            
-            Divider()
-            
             if let room = self.selectedRoom {
 
                 HStack {
@@ -143,12 +218,17 @@ struct CloudImagePicker: View {
                 }
                 
                 GalleryPicker(room: room, completion: { image in
-                    self.completion(image)
+                    //self.completion(image)
+                    self.selectedImage = image
                     self.presentation.wrappedValue.dismiss()
                 })
                 
             }
             else {
+                
+                topbar
+                
+                Divider()
             
                 HStack(alignment: .bottom) {
                     Text("My Galleries")

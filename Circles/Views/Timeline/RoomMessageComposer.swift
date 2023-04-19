@@ -12,6 +12,7 @@ import Matrix
 
 struct RoomMessageComposer: View {
     @ObservedObject var room: Matrix.Room
+    @ObservedObject var galleries: ContainerRoom<GalleryRoom>
     //@Binding var isPresented: Bool
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.presentationMode) var presentation
@@ -246,8 +247,8 @@ struct RoomMessageComposer: View {
                     ImagePicker(selectedImage: $newImage, sourceType: localSourceType)
                 }
             case .cloud:
-                //CloudImagePicker(session: room.session, selectedImage: self.$newImage)
-                Text("FIXME: CloudImagePicker")
+                CloudImagePicker(galleries: galleries, selectedImage: self.$newImage)
+                //Text("FIXME: CloudImagePicker")
             }
         })
         .photosPicker(isPresented: $showNewPicker, selection: $selectedItem, matching: .images)

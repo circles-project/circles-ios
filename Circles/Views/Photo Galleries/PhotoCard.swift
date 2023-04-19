@@ -25,6 +25,8 @@ struct PhotoCard: MessageView {
     @ObservedObject var message: Matrix.Message
     var isLocalEcho: Bool
     @Environment(\.colorScheme) var colorScheme
+    @EnvironmentObject var galleries: ContainerRoom<GalleryRoom>
+    
     @State var sheetType: PhotoSheetType? = nil
     @State var showFullScreen: Bool = false
     private var formatter: DateFormatter
@@ -126,7 +128,7 @@ struct PhotoCard: MessageView {
         .sheet(item: $sheetType) { st in
             switch st {
             case .composer:
-                MessageComposerSheet(room: message.room, parentMessage: message)
+                MessageComposerSheet(room: message.room, parentMessage: message, galleries: galleries)
             case .reactions:
                 EmojiPicker(message: message)
             case .reporting:
