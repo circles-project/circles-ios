@@ -23,7 +23,7 @@ struct GalleryInviteCard: View {
              AsyncButton(role: .destructive, action: {
                 try await room.reject()
             }) {
-                Label("Reject", systemImage: "hand.thumbsdown")
+                Label("Reject", systemImage: "xmark.circle")
             }
             .padding(2)
             .frame(width: 120.0, height: 40.0)
@@ -35,7 +35,7 @@ struct GalleryInviteCard: View {
                 try await room.accept()
                 try await container.addChildRoom(roomId)
             }) {
-                Label("Accept", systemImage: "hand.thumbsup")
+                Label("Accept", systemImage: "checkmark.circle")
             }
             .padding(2)
             .frame(width: 120.0, height: 40.0)

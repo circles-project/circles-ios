@@ -24,41 +24,9 @@ struct GroupOverviewRow: View {
     
     var body: some View {
         HStack(alignment: .top) {
-
-            /*
-            Image(uiImage: room.avatar ?? UIImage())
-                .renderingMode(.original)
-                .resizable()
-                .scaledToFill()
-                .frame(width: 120, height: 120)
-                //.clipped()
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .foregroundColor(.gray)
-                .padding(.all, 2)
-                .onAppear {
-                    room.updateAvatarImage()
-                }
-             */
             RoomAvatar(room: room)
-                .frame(width: 120, height: 120)
+                .frame(width: 80, height: 80)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
-                /*
-                .onAppear {
-                    // Dirty nasty hack to test how/when SwiftUI is updating our Views
-                    Task {
-                        while true {
-                            let sec = Int.random(in: 10...30)
-                            try await Task.sleep(for: .seconds(sec))
-                            let imageName = ["diamond.fill", "circle.fill", "square.fill", "seal.fill", "shield.fill"].randomElement()!
-                            let newImage = UIImage(systemName: imageName)
-                            await MainActor.run {
-                                print("Setting avatar for room \(room.roomId)")
-                                room.avatar = newImage
-                            }
-                        }
-                    }
-                }
-                */
             
             VStack(alignment: .leading, spacing: 2) {
                 HStack(alignment: .center, spacing: 3) {
@@ -70,20 +38,18 @@ struct GroupOverviewRow: View {
 
                 VStack(alignment: .leading) {
                     Text("\(room.joinedMembers.count) members")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                    
-                    Text("Topic: \(room.topic ?? "none")")
-                        .font(.subheadline)
+                        .font(.title3)
                         .foregroundColor(.gray)
                     
                     timestamp
-                        .font(.subheadline)
+                        .font(.headline)
                         .foregroundColor(.gray)
                     
-                    Text(room.roomId.description)
-                        .font(.subheadline)
-                        .foregroundColor(.red)
+                    if CIRCLES_DEBUG {
+                        Text(room.roomId.description)
+                            .font(.subheadline)
+                            .foregroundColor(.red)
+                    }
                 }
                 .padding(.leading, 8)
             }
