@@ -30,7 +30,6 @@
 		409F42E3265DE00700690A61 /* Array+Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F42E2265DE00700690A61 /* Array+Sample.swift */; };
 		409F42E6265DE03B00690A61 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F42E5265DE03B00690A61 /* Utils.swift */; };
 		409F42E9265DE06C00690A61 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F42E8265DE06C00690A61 /* WebView.swift */; };
-		409F4310265DE0E700690A61 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F430E265DE0E600690A61 /* HomeScreen.swift */; };
 		409F4315265DE0F400690A61 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4313265DE0F300690A61 /* ImagePicker.swift */; };
 		409F4316265DE0F400690A61 /* ImageSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4314265DE0F400690A61 /* ImageSaver.swift */; };
 		409F4319265DE0FF00690A61 /* EmbeddedImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4318265DE0FF00690A61 /* EmbeddedImagePicker.swift */; };
@@ -52,7 +51,6 @@
 		409F4343265DE17500690A61 /* GroupOverviewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F433D265DE17400690A61 /* GroupOverviewRow.swift */; };
 		409F4344265DE17500690A61 /* GroupConfigSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F433E265DE17500690A61 /* GroupConfigSheet.swift */; };
 		409F4345265DE17500690A61 /* GroupsOverviewScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F433F265DE17500690A61 /* GroupsOverviewScreen.swift */; };
-		409F434B265DE18A00690A61 /* InvitationAcceptSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4348265DE18900690A61 /* InvitationAcceptSheet.swift */; };
 		409F435B265DE1EE00690A61 /* LoggedOutScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4359265DE1EE00690A61 /* LoggedOutScreen.swift */; };
 		409F435C265DE1EE00690A61 /* LoginScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F435A265DE1EE00690A61 /* LoginScreen.swift */; };
 		409F4362265DE21A00690A61 /* MessageCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F435F265DE21900690A61 /* MessageCard.swift */; };
@@ -66,7 +64,6 @@
 		409F4377265DE25000690A61 /* PhotoGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4373265DE24F00690A61 /* PhotoGalleryView.swift */; };
 		409F4378265DE25000690A61 /* PhotosOverviewScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4374265DE25000690A61 /* PhotosOverviewScreen.swift */; };
 		409F4379265DE25000690A61 /* PhotoGalleryCreationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4375265DE25000690A61 /* PhotoGalleryCreationSheet.swift */; };
-		409F437C265DE27F00690A61 /* RecentActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F437B265DE27F00690A61 /* RecentActivityView.swift */; };
 		409F437F265DE28600690A61 /* RandomizedCircles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F437E265DE28600690A61 /* RandomizedCircles.swift */; };
 		409F4382265DE29600690A61 /* SetupCircleCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4381265DE29600690A61 /* SetupCircleCard.swift */; };
 		409F4385265DE2A400690A61 /* RoomMessageComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4384265DE2A400690A61 /* RoomMessageComposer.swift */; };
@@ -74,13 +71,9 @@
 		409F438C265DE2C200690A61 /* CircleTimeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F438A265DE2C200690A61 /* CircleTimeline.swift */; };
 		409F4390265DE2CE00690A61 /* SystemNoticesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F438F265DE2CE00690A61 /* SystemNoticesView.swift */; };
 		409F4393265DE2DE00690A61 /* TimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4392265DE2DE00690A61 /* TimelineView.swift */; };
-		409F4396265DE2E900690A61 /* TermsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4395265DE2E900690A61 /* TermsScreen.swift */; };
-		409F4399265DE34700690A61 /* AccountScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4398265DE34700690A61 /* AccountScreen.swift */; };
 		409F439C265DE38200690A61 /* ProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F439B265DE38200690A61 /* ProfileImageView.swift */; };
-		409F43A2265DE3C800690A61 /* ProfileScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F43A1265DE3C800690A61 /* ProfileScreen.swift */; };
 		409F43A7265DE43B00690A61 /* RoomMembersSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F43A5265DE43B00690A61 /* RoomMembersSheet.swift */; };
 		409F43A8265DE43B00690A61 /* RoomSecurityInfoSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F43A6265DE43B00690A61 /* RoomSecurityInfoSheet.swift */; };
-		409F43B4265DE4C800690A61 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F43B3265DE4C800690A61 /* ProfileView.swift */; };
 		409F43BA265DE51C00690A61 /* RoomInviteSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F43B9265DE51C00690A61 /* RoomInviteSheet.swift */; };
 		40AEA6742678E24200C9CBD1 /* BlurHashDecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AEA6722678E24100C9CBD1 /* BlurHashDecode.swift */; };
 		40AEA6752678E24200C9CBD1 /* BlurHashEncode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AEA6732678E24200C9CBD1 /* BlurHashEncode.swift */; };
@@ -168,7 +161,6 @@
 		409F42E2265DE00700690A61 /* Array+Sample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Sample.swift"; sourceTree = "<group>"; };
 		409F42E5265DE03B00690A61 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		409F42E8265DE06C00690A61 /* WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
-		409F430E265DE0E600690A61 /* HomeScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 		409F4313265DE0F300690A61 /* ImagePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		409F4314265DE0F400690A61 /* ImageSaver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageSaver.swift; sourceTree = "<group>"; };
 		409F4318265DE0FF00690A61 /* EmbeddedImagePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmbeddedImagePicker.swift; sourceTree = "<group>"; };
@@ -190,7 +182,6 @@
 		409F433D265DE17400690A61 /* GroupOverviewRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupOverviewRow.swift; sourceTree = "<group>"; };
 		409F433E265DE17500690A61 /* GroupConfigSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupConfigSheet.swift; sourceTree = "<group>"; };
 		409F433F265DE17500690A61 /* GroupsOverviewScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupsOverviewScreen.swift; sourceTree = "<group>"; };
-		409F4348265DE18900690A61 /* InvitationAcceptSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InvitationAcceptSheet.swift; sourceTree = "<group>"; };
 		409F4359265DE1EE00690A61 /* LoggedOutScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggedOutScreen.swift; sourceTree = "<group>"; };
 		409F435A265DE1EE00690A61 /* LoginScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginScreen.swift; sourceTree = "<group>"; };
 		409F435F265DE21900690A61 /* MessageCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageCard.swift; sourceTree = "<group>"; };
@@ -204,7 +195,6 @@
 		409F4373265DE24F00690A61 /* PhotoGalleryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoGalleryView.swift; sourceTree = "<group>"; };
 		409F4374265DE25000690A61 /* PhotosOverviewScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotosOverviewScreen.swift; sourceTree = "<group>"; };
 		409F4375265DE25000690A61 /* PhotoGalleryCreationSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoGalleryCreationSheet.swift; sourceTree = "<group>"; };
-		409F437B265DE27F00690A61 /* RecentActivityView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentActivityView.swift; sourceTree = "<group>"; };
 		409F437E265DE28600690A61 /* RandomizedCircles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RandomizedCircles.swift; sourceTree = "<group>"; };
 		409F4381265DE29600690A61 /* SetupCircleCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetupCircleCard.swift; sourceTree = "<group>"; };
 		409F4384265DE2A400690A61 /* RoomMessageComposer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomMessageComposer.swift; sourceTree = "<group>"; };
@@ -212,13 +202,9 @@
 		409F438A265DE2C200690A61 /* CircleTimeline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleTimeline.swift; sourceTree = "<group>"; };
 		409F438F265DE2CE00690A61 /* SystemNoticesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemNoticesView.swift; sourceTree = "<group>"; };
 		409F4392265DE2DE00690A61 /* TimelineView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelineView.swift; sourceTree = "<group>"; };
-		409F4395265DE2E900690A61 /* TermsScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TermsScreen.swift; sourceTree = "<group>"; };
-		409F4398265DE34700690A61 /* AccountScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountScreen.swift; sourceTree = "<group>"; };
 		409F439B265DE38200690A61 /* ProfileImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileImageView.swift; sourceTree = "<group>"; };
-		409F43A1265DE3C800690A61 /* ProfileScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileScreen.swift; sourceTree = "<group>"; };
 		409F43A5265DE43B00690A61 /* RoomMembersSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomMembersSheet.swift; sourceTree = "<group>"; };
 		409F43A6265DE43B00690A61 /* RoomSecurityInfoSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomSecurityInfoSheet.swift; sourceTree = "<group>"; };
-		409F43B3265DE4C800690A61 /* ProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		409F43B9265DE51C00690A61 /* RoomInviteSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomInviteSheet.swift; sourceTree = "<group>"; };
 		40AEA6722678E24100C9CBD1 /* BlurHashDecode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlurHashDecode.swift; sourceTree = "<group>"; };
 		40AEA6732678E24200C9CBD1 /* BlurHashEncode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlurHashEncode.swift; sourceTree = "<group>"; };
@@ -414,18 +400,11 @@
 		409F430D265DE0D500690A61 /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				409F4398265DE34700690A61 /* AccountScreen.swift */,
 				40BC0E4426B45FE600137A92 /* AcknowledgementsSheet.swift */,
 				409F431D265DE11000690A61 /* DeviceInfoView.swift */,
 				409F431C265DE10F00690A61 /* DeviceRemovalSheet.swift */,
 				409F431B265DE10F00690A61 /* DevicesScreen.swift */,
-				409F430E265DE0E600690A61 /* HomeScreen.swift */,
-				409F4348265DE18900690A61 /* InvitationAcceptSheet.swift */,
-				409F43A1265DE3C800690A61 /* ProfileScreen.swift */,
-				409F43B3265DE4C800690A61 /* ProfileView.swift */,
-				409F437B265DE27F00690A61 /* RecentActivityView.swift */,
 				409F438F265DE2CE00690A61 /* SystemNoticesView.swift */,
-				409F4395265DE2E900690A61 /* TermsScreen.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -733,7 +712,6 @@
 				A5F0148229D72371000D57B3 /* EmailEnrollRequestTokenForm.swift in Sources */,
 				A54BA3A928529BE500453D5E /* SetupScreen.swift in Sources */,
 				A5CC0ACE29DB6E26005935F0 /* BsspekeLoginOprfForm.swift in Sources */,
-				409F4310265DE0E700690A61 /* HomeScreen.swift in Sources */,
 				A54BA3AB28592D2000453D5E /* SetupSession.swift in Sources */,
 				409F43A8265DE43B00690A61 /* RoomSecurityInfoSheet.swift in Sources */,
 				A52DF69029E8AB52008860C3 /* Color+background.swift in Sources */,
@@ -753,7 +731,6 @@
 				409F4334265DE15F00690A61 /* CircleOverviewCard.swift in Sources */,
 				403CEA9926E868F30054DBF4 /* AccountInfoForm.swift in Sources */,
 				409F4342265DE17500690A61 /* GroupHeader.swift in Sources */,
-				409F437C265DE27F00690A61 /* RecentActivityView.swift in Sources */,
 				409F4362265DE21A00690A61 /* MessageCard.swift in Sources */,
 				A5F0148429D7436E000D57B3 /* EmailEnrollSubmitTokenForm.swift in Sources */,
 				409F42E3265DE00700690A61 /* Array+Sample.swift in Sources */,
@@ -766,7 +743,6 @@
 				A504DA7328120AF100EFF42E /* AsyncButton.swift in Sources */,
 				403CEA9526E865740054DBF4 /* TokenForm.swift in Sources */,
 				409F438C265DE2C200690A61 /* CircleTimeline.swift in Sources */,
-				409F43A2265DE3C800690A61 /* ProfileScreen.swift in Sources */,
 				409F4337265DE15F00690A61 /* CirclesOverviewScreen.swift in Sources */,
 				40E4D887268A76070055968A /* AppStoreSubscriptionForm.swift in Sources */,
 				A52DF68E29E88B3C008860C3 /* MessageDetailView.swift in Sources */,
@@ -777,7 +753,6 @@
 				409F4332265DE15F00690A61 /* CircleCreationSheet.swift in Sources */,
 				40CD7F6F2667E16100DE315F /* VideoPicker.swift in Sources */,
 				409F4319265DE0FF00690A61 /* EmbeddedImagePicker.swift in Sources */,
-				409F43B4265DE4C800690A61 /* ProfileView.swift in Sources */,
 				409F435B265DE1EE00690A61 /* LoggedOutScreen.swift in Sources */,
 				A54BA3A22850108300453D5E /* CirclesStore.swift in Sources */,
 				40AEA6742678E24200C9CBD1 /* BlurHashDecode.swift in Sources */,
@@ -803,12 +778,10 @@
 				40CEFCD426780D8300857D4D /* MessageDetailSheet.swift in Sources */,
 				409F4385265DE2A400690A61 /* RoomMessageComposer.swift in Sources */,
 				A5FCF63F29CC9AF8008278B0 /* CircleSpace.swift in Sources */,
-				409F4399265DE34700690A61 /* AccountScreen.swift in Sources */,
 				A5A40B6629D608C7009A17EE /* UiaInProgressView.swift in Sources */,
 				A52DF68329E59C32008860C3 /* StateEventView.swift in Sources */,
 				A509B89C2818A1F80053E5BC /* Array+Extension.swift in Sources */,
 				409F439C265DE38200690A61 /* ProfileImageView.swift in Sources */,
-				409F434B265DE18A00690A61 /* InvitationAcceptSheet.swift in Sources */,
 				409F4316265DE0F400690A61 /* ImageSaver.swift in Sources */,
 				409F4344265DE17500690A61 /* GroupConfigSheet.swift in Sources */,
 				409F4376265DE25000690A61 /* PhotoGalleryCard.swift in Sources */,
@@ -816,7 +789,6 @@
 				40CD7F6C2667D3B600DE315F /* PhotoPicker.swift in Sources */,
 				A5F0148829D789B3000D57B3 /* BsspekeEnrollSaveForm.swift in Sources */,
 				A5FCF63D29CC9ABE008278B0 /* PersonRoom.swift in Sources */,
-				409F4396265DE2E900690A61 /* TermsScreen.swift in Sources */,
 				A52DF68829E732AC008860C3 /* SettingsScreen.swift in Sources */,
 				409F42E6265DE03B00690A61 /* Utils.swift in Sources */,
 				409F4363265DE21A00690A61 /* MessageAuthorHeader.swift in Sources */,
