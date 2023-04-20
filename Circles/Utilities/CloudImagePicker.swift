@@ -114,9 +114,9 @@ struct GalleryPicker: View {
                         }) {
                             GalleryThumbnail(message: message)
                         }
-                        .border(Color.red, width: 1)
+                        //.border(Color.red, width: 1)
                         .frame(width: 100, height: 100)
-                        .border(Color.green, width: 1)
+                        //.border(Color.green, width: 1)
                         
                     }
                 }.padding(.all, 10)
@@ -167,6 +167,33 @@ struct CloudImagePicker: View {
     @State var selectedRoom: Matrix.Room? = nil
     var completion: (UIImage) -> Void = { _ in }
     
+    struct GalleryCard: View {
+        @ObservedObject var room: Matrix.Room
+        var body: some View {
+            ZStack {
+                if let img = room.avatar {
+                    Image(uiImage: img)
+                        .resizable()
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                } else {
+                    ProgressView()
+                        .scaleEffect(4.0)
+                        .foregroundColor(.gray)
+                        .onAppear {
+                            room.updateAvatarImage()
+                        }
+                }
+                
+                Text(room.name ?? "")
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .shadow(color: .black, radius: 10)
+            }
+        }
+    }
+    
     var topbar: some View {
         HStack {
             Button(action: {
@@ -183,17 +210,17 @@ struct CloudImagePicker: View {
     
     var roomList: some View {
         ScrollView {
-            LazyVGrid(columns: [
-                                    GridItem(.adaptive(minimum: 300, maximum: 300))
-                               ]
-            ) {
+            let columns = [
+                GridItem(.adaptive(minimum: 300, maximum: 300))
+           ]
+            LazyVGrid(columns: columns, alignment: .center) {
                 ForEach(galleries.rooms) { room in
                     Button(action: {
                         self.selectedRoom = room
                     }) {
-                        PhotoGalleryCard(room: room)
+                        GalleryCard(room: room)
                     }
-                    .frame(width: 300)
+                    .frame(width: 300, height: 225)
                 }
             }
         }
