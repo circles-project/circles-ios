@@ -14,7 +14,7 @@ struct GalleryThumbnail: View {
     
     var body: some View {
         VStack(alignment: .center) {
-            if let img = message.thumbnail ?? message.thumbhashImage ?? message.blurhashImage {
+            if let img = message.thumbnail {
                 Image(uiImage: img)
                     .resizable()
                     //.scaledToFill()
@@ -36,7 +36,10 @@ struct GalleryThumbnail: View {
         //.border(Color.blue, width: 1)
         //.padding()
         .onAppear {
-            if message.thumbnail == nil && (message.content?.thumbnail_url != nil || message.content?.thumbnail_file != nil) {
+            if message.thumbnail == nil,
+               let content = message.content as? Matrix.MessageContent,
+               content.thumbnail_url != nil || content.thumbnail_file != nil
+            {
                 let _ = Task {
                     try await message.fetchThumbnail()
                 }
@@ -97,7 +100,7 @@ struct GalleryPicker: View {
     var body: some View {
         
         let messages = room.timeline.values.filter { (message) in
-            message.relatesToId == nil && message.type == M_ROOM_MESSAGE
+            message.relatedEventId == nil && message.type == M_ROOM_MESSAGE
         }.sorted(by: {$0.timestamp > $1.timestamp})
         
         ZStack {

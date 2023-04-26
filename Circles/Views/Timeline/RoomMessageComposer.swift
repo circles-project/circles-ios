@@ -77,7 +77,7 @@ struct RoomMessageComposer: View {
                     self.newMessageType = .image
                     self.showNewPicker = true
                 }) {
-                    Label("Upload a photo from device library", systemImage: "photo.fill")
+                    Label("Upload a photo", systemImage: "photo.fill")
                 }
                 Button(action: {
                     self.newMessageType = .image
@@ -100,7 +100,7 @@ struct RoomMessageComposer: View {
             .disabled(newMessageType == .image)
 
             Spacer()
-            Button(action: {
+            Button(role: .destructive, action: {
                 //self.isPresented = false
                 self.presentation.wrappedValue.dismiss()
                 self.newMessageText = ""
@@ -109,11 +109,13 @@ struct RoomMessageComposer: View {
                 //Image(systemName: "xmark")
                 //Text("Cancel")
                 Label("Cancel", systemImage: "xmark")
-                    .foregroundColor(.red)
+                    //.foregroundColor(.red)
                     .padding(.vertical, 2)
                     .padding(.horizontal, 5)
                     //.background(RoundedRectangle(cornerRadius: 4).stroke(Color.red, lineWidth: 1))
             }
+            .buttonStyle(.bordered)
+            .padding()
 
             AsyncButton(action: {
                 switch(self.newMessageType) {
@@ -121,7 +123,7 @@ struct RoomMessageComposer: View {
                 case .text:
                     if let parentMessage = self.inReplyTo {
                         print("REPLY\tSending reply")
-                        try await parentMessage.room.sendReply(to: parentMessage.eventId, text: self.newMessageText)
+                        try await parentMessage.room.sendReply(to: parentMessage.event, text: self.newMessageText, threaded: false)
                         self.presentation.wrappedValue.dismiss()
                     } else {
                         try await self.room.sendText(text: self.newMessageText)
@@ -149,6 +151,8 @@ struct RoomMessageComposer: View {
                     .padding(.horizontal, 5)
                     //.background(RoundedRectangle(cornerRadius: 4).stroke(Color.blue, lineWidth: 1))
             }
+            .buttonStyle(.bordered)
+            .padding()
 
         }
         //.padding([.leading, .trailing])
@@ -161,6 +165,7 @@ struct RoomMessageComposer: View {
             let myUserId = room.session.creds.userId
             let myUser = room.session.getUser(userId: myUserId)
             MessageAuthorHeader(user: myUser)
+                .padding()
 
             ZStack {
                 switch(newMessageType) {
@@ -212,6 +217,13 @@ struct RoomMessageComposer: View {
                         await MainActor.run {
                             self.newImage = img
                         }
+                    } else {
+                        // We didn't get a new image
+                        if self.newImage == nil {
+                            await MainActor.run {
+                                self.newMessageType = .text
+                            }
+                        }
                     }
                 }
             }
@@ -226,7 +238,7 @@ struct RoomMessageComposer: View {
         //.padding([.top, .leading, .trailing], 5)
         .background(
             RoundedRectangle(cornerRadius: 4)
-                .foregroundColor(colorScheme == .dark ? .black : .white)
+                .foregroundColor(.background)
                 .shadow(color: .gray, radius: 2, x: 0, y: 1)
         )
         //.border(Color.red, width: 1)

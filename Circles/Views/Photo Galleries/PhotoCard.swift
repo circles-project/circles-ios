@@ -79,7 +79,7 @@ struct PhotoCard: MessageView {
     @ViewBuilder
     var mainCard: some View {
         ZStack {
-            if let img = message.thumbnail ?? message.thumbhashImage ?? message.blurhashImage {
+            if let img = message.thumbnail {
                 Image(uiImage: img)
                     .resizable()
                     .scaledToFill()

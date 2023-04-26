@@ -55,7 +55,7 @@ struct ContentView: View {
             LoginScreen(session: loginSession, store: store)
 
         case .online(let circlesSession):
-            TabbedInterface(session: circlesSession)
+            TabbedInterface(store: store, session: circlesSession)
                 .environmentObject(circlesSession.galleries)
                 //.environmentObject(circlesSession)
             
@@ -74,7 +74,13 @@ struct ContentView: View {
     }
     
     struct TabbedInterface: View {
+        @ObservedObject var store: CirclesStore
         @ObservedObject var session: CirclesSession
+        
+        init(store: CirclesStore, session: CirclesSession) {
+            self.store = store
+            self.session = session
+        }
         
         @State private var selection: Tab = .home
 
@@ -110,7 +116,7 @@ struct ContentView: View {
                     }
                     .tag(Tab.photos)
                 
-                SettingsScreen(session: session)
+                SettingsScreen(store: store, session: session)
                     .tabItem {
                         Image(systemName: "gearshape")
                         Text("Settings")

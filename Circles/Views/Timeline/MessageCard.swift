@@ -74,7 +74,7 @@ struct MessageThumbnail: View {
     @ObservedObject var message: Matrix.Message
     
     var thumbnail: Image {
-        Image(uiImage: message.thumbnail ?? message.blurhashImage ?? UIImage())
+        Image(uiImage: message.thumbnail ?? UIImage())
     }
     
     var body: some View {
@@ -151,88 +151,92 @@ struct MessageCard: MessageView {
     
     var content: some View {
         VStack {
-            switch(message.content?.msgtype) {
-            case .text:
-                if let textContent = message.content as? Matrix.mTextContent {
-                    MessageText(textContent.body)
-                    //Markdown(Document(textContent.body))
-                    //NativeMarkText(textContent.body)
+            if let content = message.content as? Matrix.MessageContent {
+                switch(content.msgtype) {
+                case .text:
+                    if let textContent = content as? Matrix.mTextContent {
+                        MessageText(textContent.body)
+                        //Markdown(Document(textContent.body))
+                        //NativeMarkText(textContent.body)
                         //.frame(minHeight: 30, maxHeight:400)
-                        .padding(.horizontal, 3)
-                        .padding(.vertical, 5)
-                }
-                else {
-                    EmptyView()
-                }
-
-            case .image:
-                if let imageContent = message.content as? Matrix.mImageContent {
-                    HStack {
-                        Spacer()
-                        VStack(alignment: .center) {
-                            MessageThumbnail(message: message)
+                            .padding(.horizontal, 3)
+                            .padding(.vertical, 5)
+                    }
+                    else {
+                        EmptyView()
+                    }
+                    
+                case .image:
+                    if let imageContent = content as? Matrix.mImageContent {
+                        HStack {
+                            Spacer()
+                            VStack(alignment: .center) {
+                                MessageThumbnail(message: message)
                                 //.padding(1)
-                            
-                            if let caption = imageContent.caption,
-                               let markdown = MarkdownContent(caption) {
-                                Markdown(markdown)
+                                
+                                if let caption = imageContent.caption,
+                                   let markdown = MarkdownContent(caption) {
+                                    Markdown(markdown)
+                                }
                             }
+                            Spacer()
                         }
-                        Spacer()
+                    } else {
+                        EmptyView()
                     }
-                } else {
-                    EmptyView()
-                }
-            case .video:
-                if let videoContent = message.content as? Matrix.mVideoContent {
-                    ZStack(alignment: .center) {
-                        MessageThumbnail(message: message)
-                        Image(systemName: "play.circle")
-                    }
-                    .frame(minWidth: 200, maxWidth: 400, minHeight: 200, maxHeight: 500, alignment: .center)
-                } else {
-                    EmptyView()
-                }
-            default:
-                if message.type == "m.room.encrypted" {
-                    ZStack {
-                        let bgColor = colorScheme == .dark ? Color.black : Color.white
-                        Image(systemName: "lock.rectangle")
-                            .resizable()
-                            .foregroundColor(Color.gray)
-                            .scaledToFit()
-                            .padding()
-                        VStack {
-                            Text("ERROR")
-                                .font(.title)
-                                .fontWeight(.bold)
-                            Text("Failed to decrypt message")
-                                .font(.title2)
-                                .fontWeight(.semibold)
-                            Text("Message id: \(message.id)")
-                                .font(.footnote)
+                case .video:
+                    if let videoContent = content as? Matrix.mVideoContent {
+                        ZStack(alignment: .center) {
+                            MessageThumbnail(message: message)
+                            Image(systemName: "play.circle")
                         }
+                        .frame(minWidth: 200, maxWidth: 400, minHeight: 200, maxHeight: 500, alignment: .center)
+                    } else {
+                        EmptyView()
+                    }
+                default:
+                    if message.type == "m.room.encrypted" {
+                        ZStack {
+                            let bgColor = colorScheme == .dark ? Color.black : Color.white
+                            Image(systemName: "lock.rectangle")
+                                .resizable()
+                                .foregroundColor(Color.gray)
+                                .scaledToFit()
+                                .padding()
+                            VStack {
+                                Text("ERROR")
+                                    .font(.title)
+                                    .fontWeight(.bold)
+                                Text("Failed to decrypt message")
+                                    .font(.title2)
+                                    .fontWeight(.semibold)
+                                Text("Message id: \(message.id)")
+                                    .font(.footnote)
+                            }
                             .foregroundColor(.red)
                             .multilineTextAlignment(.center)
                             .background(
                                 bgColor
                                     .opacity(0.5)
                             )
-                    }
-                    /*
-                    .onAppear {
-                        print("Trying to decrypt...")
-                        message.matrix.tryToDecrypt(message: message) { response in
-                            if response.isSuccess {
-                                message.objectWillChange.send()
-                            }
                         }
+                        /*
+                         .onAppear {
+                         print("Trying to decrypt...")
+                         message.matrix.tryToDecrypt(message: message) { response in
+                         if response.isSuccess {
+                         message.objectWillChange.send()
+                         }
+                         }
+                         }
+                         */
                     }
-                    */
+                    else {
+                        Text("This version of Circles can't display this message yet (\"\(message.type)\")")
+                    }
                 }
-                else {
-                    Text("This version of Circles can't display this message yet (\"\(message.type)\")")
-                }
+            } else {
+                Text("Something went wrong")
             }
         }
     }
@@ -291,12 +295,18 @@ struct MessageCard: MessageView {
     var reactions: some View {
         HStack {
             //Spacer()
-            let sortedReactions = self.message.reactions.keys.sorted(by: { k1,k2 in
-                message.reactions[k1]! > message.reactions[k2]!
+            let sortedReactions = self.message.reactions.sorted(by: { t1, t2 in
+                let (emoji1, users1) = t1
+                let (emoji2, users2) = t2
+                return users1.count > users2.count
             })
-            ForEach(sortedReactions.prefix(7), id: \.self) { reaction in
-                Text(reaction)
-                //Text("\(emoji)\(count) ")
+            let reactionCounts = self.message.reactions.mapValues {
+                $0.count
+            }.sorted(by: >)
+            
+            ForEach(reactionCounts.prefix(7), id: \.key) { emoji, count in
+                //Text(emoji)
+                Text("\(emoji) \(count) ")
             }
             if sortedReactions.count > 7 {
                 Text("...")
@@ -317,7 +327,7 @@ struct MessageCard: MessageView {
                     shield
                     Spacer()
                     likeButton
-                    if message.relatesToId == nil {
+                    if message.relatedEventId == nil {
                         replyButton
                     }
                     menuButton
@@ -332,12 +342,17 @@ struct MessageCard: MessageView {
     }
 
     var details: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("EventId: \(message.eventId)")
             Text("Type: \(message.type)")
-            Text("Related: \(message.relatesToId ?? "none")")
-            if let blurImage = message.blurhashImage {
-                Text("BlurHash is \(Int(blurImage.size.width))x\(Int(blurImage.size.height))")
+            Text("Related to: \(message.relatedEventId ?? "none")")
+            Text("Reply to: \(message.replyToEventId ?? "none")")
+            if let content = message.content as? RelatedEventContent {
+                Text("relType: \(content.relationType ?? "n/a")")
+                Text("related event_id: \(content.relatedEventId ?? "n/a")")
+                Text("m.in_reply_to: \(content.replyToEventId ?? "n/a")")
             }
+            Text("Reactions: \(message.reactions.keys.count) Distinct reactions")
         }
     }
     

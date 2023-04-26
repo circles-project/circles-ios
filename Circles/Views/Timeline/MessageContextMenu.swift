@@ -31,7 +31,9 @@ struct MessageContextMenu: View {
         }
         */
 
-        if message.content?.msgtype == .image {
+        if let content = message.content as? Matrix.MessageContent,
+           content.msgtype == .image
+        {
             Button(action: saveImage) {
                 Label("Save image", systemImage: "square.and.arrow.down")
             }

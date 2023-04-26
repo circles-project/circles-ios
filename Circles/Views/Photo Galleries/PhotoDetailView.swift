@@ -40,7 +40,7 @@ struct PhotoDetailView: View {
                     )
             } else {
                 ZStack {
-                    let thumb = message.thumbhashImage ?? message.blurhashImage ?? UIImage()
+                    let thumb = message.thumbnail ?? UIImage()
                     Image(uiImage: thumb)
                         .resizable()
                         .scaledToFit()

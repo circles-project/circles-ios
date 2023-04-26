@@ -11,10 +11,12 @@ import SwiftUI
 import Matrix
 
 struct SettingsScreen: View {
+    @ObservedObject var store: CirclesStore
     @ObservedObject var session: CirclesSession
     var user: Matrix.User
     
-    init(session: CirclesSession) {
+    init(store: CirclesStore, session: CirclesSession) {
+        self.store = store
         self.session = session
         self.user = session.matrix.getUser(userId: session.matrix.creds.userId)
     }
@@ -45,6 +47,13 @@ struct SettingsScreen: View {
                         .badge("1.0.0")
                 }
                 Section(header: Label("Danger Zone", systemImage: "exclamationmark.triangle")) {
+                    /*
+                    AsyncButton(action:{
+                        try await session.logout()
+                    }) {
+                        Label("Log Out", systemImage: "power")
+                    }
+                    */
                     Text("Deactivate Account")
                 }
             }

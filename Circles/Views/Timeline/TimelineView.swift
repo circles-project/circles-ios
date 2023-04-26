@@ -71,7 +71,7 @@ struct TimelineView<V: MessageView>: View {
     var body: some View {
         // Get all the top-level messages (ie not the replies etc)
         let messages = room.timeline.values.filter { (message) in
-            message.relatesToId == nil
+            message.relatedEventId == nil && message.replyToEventId == nil
         }.sorted(by: {$0.timestamp > $1.timestamp})
 
         ScrollView {

@@ -96,7 +96,7 @@ struct AvatarForm: View {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
-            .disabled(avatarImage == nil)
+            .disabled(avatarImage == nil || displayName.isEmpty)
 
         }
     }
