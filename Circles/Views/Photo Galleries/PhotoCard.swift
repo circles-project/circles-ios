@@ -98,8 +98,28 @@ struct PhotoCard: MessageView {
                 
                 GeometryReader { geometry in
                     let size: CGFloat = geometry.size.width > 500 ? 30 : 20
-                    let pad: CGFloat = geometry.size.width > 500 ? 2 : 1
+                    let pad: CGFloat = geometry.size.width > 500 ? 5 : 2
                     HStack {
+                        
+                        HStack(spacing: 2) {
+                            let reactionCounts = message.reactions.mapValues {
+                                $0.count
+                            }
+                                .sorted(by: >)
+                                .prefix(5)
+                            
+                            ForEach(reactionCounts, id: \.key) { emoji, count in
+                                Text("\(emoji) \(count)")
+                                    .padding(2)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 6)
+                                            .foregroundColor(.gray)
+                                            .opacity(0.5)
+                                    )
+                            }
+                            .font(.title2)
+                        }
+                        
                         Spacer()
                         
                         likeButton.frame(width: size, height: size)
