@@ -9,38 +9,46 @@ import SwiftUI
 import Matrix
 
 struct RepliesView: View {
-    @ObservedObject var room: Matrix.Room
-    var parent: Matrix.Message
+    var room: Matrix.Room
+    @ObservedObject var parent: Matrix.Message
     @State var expanded = false
     @State var showReplyComposer = false
 
     var body: some View {
         VStack(alignment: .leading) {
             let messages = parent.replies
-            if !expanded && !messages.isEmpty {
+            
+            if messages.isEmpty {
                 HStack {
                     Spacer()
-                    Button(action: {
-                        self.expanded = true
-                        room.objectWillChange.send()
-                    }) {
-                        Text("Show \(messages.count) replies")
-                            .font(.footnote)
-                    }
+                    Text("No replies")
                 }
             }
-            if expanded {
-                ForEach(messages) { message in
-                    MessageCard(message: message)
-                }
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        self.expanded = false
-                        room.objectWillChange.send()
-                    }) {
-                        Text("Hide replies")
-                            .font(.footnote)
+            else {
+                if !expanded {
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            self.expanded = true
+                            room.objectWillChange.send()
+                        }) {
+                            Text("Show \(messages.count) replies")
+                                .font(.footnote)
+                        }
+                    }
+                } else {
+                    ForEach(messages) { message in
+                        MessageCard(message: message)
+                    }
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            self.expanded = false
+                            room.objectWillChange.send()
+                        }) {
+                            Text("Hide replies")
+                                .font(.footnote)
+                        }
                     }
                 }
             }
