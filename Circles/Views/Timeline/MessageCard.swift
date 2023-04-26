@@ -295,20 +295,15 @@ struct MessageCard: MessageView {
     var reactions: some View {
         HStack {
             //Spacer()
-            let sortedReactions = self.message.reactions.sorted(by: { t1, t2 in
-                let (emoji1, users1) = t1
-                let (emoji2, users2) = t2
-                return users1.count > users2.count
-            })
-            let reactionCounts = self.message.reactions.mapValues {
+            let reactionCounts = self.message.reactions?.mapValues {
                 $0.count
-            }.sorted(by: >)
+            }.sorted(by: >) ?? []
             
-            ForEach(reactionCounts.prefix(7), id: \.key) { emoji, count in
+            ForEach(reactionCounts.prefix(5), id: \.key) { emoji, count in
                 //Text(emoji)
                 Text("\(emoji) \(count) ")
             }
-            if sortedReactions.count > 7 {
+            if reactionCounts.count > 5 {
                 Text("...")
             }
         }
@@ -318,7 +313,9 @@ struct MessageCard: MessageView {
         VStack(alignment: .leading) {
             Divider()
 
-            if !message.reactions.isEmpty {
+            if let r = message.reactions,
+               !r.isEmpty
+            {
                 reactions
             }
             
@@ -352,7 +349,7 @@ struct MessageCard: MessageView {
                 Text("related event_id: \(content.relatedEventId ?? "n/a")")
                 Text("m.in_reply_to: \(content.replyToEventId ?? "n/a")")
             }
-            Text("Reactions: \(message.reactions.keys.count) Distinct reactions")
+            Text("Reactions: \(message.reactions?.keys.count ?? 0) Distinct reactions")
         }
     }
     

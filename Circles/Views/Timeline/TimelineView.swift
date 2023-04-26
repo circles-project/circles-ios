@@ -108,6 +108,9 @@ struct TimelineView<V: MessageView>: View {
                                 RepliesView(room: room, parent: message)
 
                             }
+                            .onAppear {
+                                message.loadReactions()
+                            }
                         } else {
                             StateEventView(message: message)
                         }

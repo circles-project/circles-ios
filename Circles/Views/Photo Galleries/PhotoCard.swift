@@ -102,11 +102,9 @@ struct PhotoCard: MessageView {
                     HStack {
                         
                         HStack(spacing: 2) {
-                            let reactionCounts = message.reactions.mapValues {
+                            let reactionCounts = message.reactions?.mapValues {
                                 $0.count
-                            }
-                                .sorted(by: >)
-                                .prefix(5)
+                            }.sorted(by: >).prefix(5) ?? []
                             
                             ForEach(reactionCounts, id: \.key) { emoji, count in
                                 Text("\(emoji) \(count)")

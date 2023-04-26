@@ -16,12 +16,16 @@ struct RepliesView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            let messages = parent.replies
+            let messages = parent.replies ?? []
             
             if messages.isEmpty {
-                HStack {
-                    Spacer()
-                    Text("No replies")
+                if CIRCLES_DEBUG {
+                    HStack {
+                        Spacer()
+                        Text("No replies")
+                    }
+                } else {
+                    EmptyView()
                 }
             }
             else {
