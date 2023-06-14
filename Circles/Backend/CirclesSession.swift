@@ -44,7 +44,10 @@ class CirclesSession: ObservableObject {
         
         logger.debug("Loading config from Matrix")
         let configStart = Date()
-        let config = try await matrix.getAccountData(for: EVENT_TYPE_CIRCLES_CONFIG, of: CirclesConfigContent.self)
+        guard let config = try await matrix.getAccountData(for: EVENT_TYPE_CIRCLES_CONFIG, of: CirclesConfigContent.self)
+        else {
+            throw Matrix.Error("Could not load Circles config")
+        }
         let configEnd = Date()
         let configTime = configEnd.timeIntervalSince(configStart)
         logger.debug("\(configTime) sec to load config from the server")

@@ -61,6 +61,14 @@ struct LoginScreen: View {
                 if let creds = codableCreds as? Matrix.Credentials {
                     Text("Success!")
                         .onAppear {
+                            /*
+                            // Moving this stuff into the callback that we provide when we create the session in the `CirclesStore`
+                            var keys = [String: Data]()
+                            if let bsspeke = session.getBSSpekeClient() {
+                                let ssssKey = bsspeke.generateHashedKey(label: "matrix_ssss")
+                                keys["0x1234"] = Data(ssssKey)
+                            }
+                            */
                             print("LoginScreen:\tLogin success - Telling the Store to connect()")
                             Task {
                                 try await store.connect(creds: creds)

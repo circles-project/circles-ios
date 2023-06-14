@@ -8,8 +8,13 @@
 import Foundation
 import os
 import StoreKit
+import LocalAuthentication
+
 
 import CryptoKit
+import IDZSwiftCommonCrypto
+import KeychainAccess
+import BlindSaltSpeke
 import Matrix
 
 
@@ -22,7 +27,7 @@ public class CirclesStore: ObservableObject {
         case haveCreds(Matrix.Credentials)
         case online(CirclesSession)
         case signingUp(SignupSession)
-        case settingUp(SetupSession) // or should this be (MatrixInterface) ???
+        case settingUp(SetupSession)
     }
     @Published var state: State
     
@@ -45,13 +50,13 @@ public class CirclesStore: ObservableObject {
             guard let creds = loadCredentials()
             else {
                 // Apparently we're offline, waiting for (valid) credentials to log in
-                print("STORE\tDidn't find valid login credentials - Setting state to .nothing")
+                logger.info("Didn't find valid login credentials - Setting state to .nothing")
                 await MainActor.run {
                     self.state = .nothing(nil)
                 }
                 return
             }
-         
+                     
             // Woo we have credentials
             await MainActor.run {
                 self.state = .haveCreds(creds)
@@ -93,6 +98,14 @@ public class CirclesStore: ObservableObject {
         UserDefaults.standard.set(creds.accessToken, forKey: "access_token[\(creds.userId)]")
     }
     
+    private func saveS4Key(key: Data, keyId: String, for userId: UserId) async throws {
+        UserDefaults.standard.set(keyId, forKey: "bsspeke_ssss_keyid[\(userId)]")
+        
+        let keychainStore = Matrix.KeychainSecretStore(userId: userId)
+        try await keychainStore.saveKey(key: key, keyId: keyId)
+    }
+    
+    
     func connect(creds: Matrix.Credentials) async throws {
         logger.debug("connect()")
         let token = loadSyncToken(userId: creds.userId, deviceId: creds.deviceId)
@@ -107,11 +120,32 @@ public class CirclesStore: ObservableObject {
         logger.debug("Set state to .online")
     }
 
+    private func computeKeyId(key: Data) throws -> String {
+        guard let keyHash = Digest(algorithm: .sha256).update(data: key)?.final()
+        else {
+            throw Matrix.Error("Failed to hash key")
+        }
+        let keyId = Data(keyHash[0..<16]).base64EncodedString()
+        return keyId
+    }
+    
+    private func generateS4Key(bsspeke: BlindSaltSpeke.ClientSession) throws -> (String, Data) {
+        let ssssKey = Data(bsspeke.generateHashedKey(label: MATRIX_SSSS_KEY_LABEL))
+        let ssssKeyId = try computeKeyId(key: ssssKey)
+        return (ssssKeyId, ssssKey)
+    }
     
     func login(userId: UserId) async throws {
-        let loginSession = try await LoginSession(userId: userId, completion: { creds in
+        let loginSession = try await LoginSession(userId: userId, completion: { session, creds in
             self.saveCredentials(creds: creds)
             //try await self.connect(creds: creds)
+            
+            // Check for a BS-SPEKE session, and if we have one, use it to generate our SSSS key
+            if let bsspeke = session.getBSSpekeClient() {
+                let keys = try self.generateS4Key(bsspeke: bsspeke)
+                // Save the keys into our device Keychain, so they will be available to our Matrix session
+            }
+            
             await MainActor.run {
                 self.state = .haveCreds(creds)
             }
@@ -132,9 +166,13 @@ public class CirclesStore: ObservableObject {
         }
 
         let deviceModel = await UIDevice.current.model
-        let signupSession = try await SignupSession(domain: domain, initialDeviceDisplayName: "Circles (\(deviceModel))", completion: { creds in
+        let signupSession = try await SignupSession(domain: domain, initialDeviceDisplayName: "Circles (\(deviceModel))", completion: { session,creds in
             self.saveCredentials(creds: creds)
             //try await self.connect(creds: creds)
+            
+            // FIXME: Don't we also need to re-set our state now?
+            // * We can go back to .nothing if we want to force the user to immediately recall their password
+            // * Or we can just go to .haveCreds and the UI will trigger a new session
         })
         await MainActor.run {
             self.state = .signingUp(signupSession)

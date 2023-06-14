@@ -96,6 +96,14 @@ struct PhotoCard: MessageView {
             VStack {
                 Spacer()
                 
+                if CIRCLES_DEBUG {
+                    if let content = message.content as? Matrix.mImageContent {
+                        Text(content.file?.url.mediaId ?? "none")
+                            .font(.title)
+                            .fontWeight(.bold)
+                    }
+                }
+                
                 GeometryReader { geometry in
                     let size: CGFloat = geometry.size.width > 500 ? 30 : 20
                     let pad: CGFloat = geometry.size.width > 500 ? 5 : 2

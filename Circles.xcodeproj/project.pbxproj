@@ -96,6 +96,7 @@
 		A52DF69029E8AB52008860C3 /* Color+background.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68F29E8AB52008860C3 /* Color+background.swift */; };
 		A52DF69229EB8820008860C3 /* GroupInviteCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF69129EB8820008860C3 /* GroupInviteCard.swift */; };
 		A52FEBFD2862521F00AE4E3A /* CirclesSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52FEBFC2862521F00AE4E3A /* CirclesSession.swift */; };
+		A54346C12A1D485D0025D147 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = A54346C02A1D485D0025D147 /* KeychainAccess */; };
 		A5481C2528108DC7006F782F /* AnyCodable in Frameworks */ = {isa = PBXBuildFile; productRef = A5481C2428108DC7006F782F /* AnyCodable */; };
 		A54BA3A22850108300453D5E /* CirclesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3A12850108300453D5E /* CirclesStore.swift */; };
 		A54BA3A62851222200453D5E /* WelcomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3A52851222200453D5E /* WelcomeScreen.swift */; };
@@ -267,6 +268,7 @@
 				A5A40B6129D468C3009A17EE /* MarkdownUI in Frameworks */,
 				A5D2A3EC29BA643C00428C45 /* Matrix in Frameworks */,
 				4069F79826729DD200FB6090 /* StoreKit.framework in Frameworks */,
+				A54346C12A1D485D0025D147 /* KeychainAccess in Frameworks */,
 				A5BECC35280F7A1100B1FCC6 /* TPInAppReceipt in Frameworks */,
 				A5481C2528108DC7006F782F /* AnyCodable in Frameworks */,
 				A509B89A28189E950053E5BC /* BlindSaltSpeke in Frameworks */,
@@ -613,6 +615,7 @@
 				A509B89928189E950053E5BC /* BlindSaltSpeke */,
 				A5D2A3EB29BA643C00428C45 /* Matrix */,
 				A5A40B6029D468C3009A17EE /* MarkdownUI */,
+				A54346C02A1D485D0025D147 /* KeychainAccess */,
 			);
 			productName = Circles;
 			productReference = 404C72CD265DDF35000473DF /* Circles.app */;
@@ -649,6 +652,7 @@
 				A509B89828189E950053E5BC /* XCRemoteSwiftPackageReference "BlindSaltSpeke" */,
 				A5D2A3EA29BA643C00428C45 /* XCRemoteSwiftPackageReference "matrix.swift" */,
 				A5A40B5F29D468C3009A17EE /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
+				A54346BF2A1D485D0025D147 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 			);
 			productRefGroup = 404C72CE265DDF35000473DF /* Products */;
 			projectDirPath = "";
@@ -1009,7 +1013,15 @@
 			repositoryURL = "https://gitlab.futo.org/cvwright/BlindSaltSpeke.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.1.2;
+				minimumVersion = 0.4.1;
+			};
+		};
+		A54346BF2A1D485D0025D147 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.2.2;
 			};
 		};
 		A5481C2328108DC7006F782F /* XCRemoteSwiftPackageReference "AnyCodable" */ = {
@@ -1048,7 +1060,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://gitlab.futo.org/circles/matrix.swift.git";
 			requirement = {
-				branch = main;
+				branch = "feat/cross-signing";
 				kind = branch;
 			};
 		};
@@ -1059,6 +1071,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A509B89828189E950053E5BC /* XCRemoteSwiftPackageReference "BlindSaltSpeke" */;
 			productName = BlindSaltSpeke;
+		};
+		A54346C02A1D485D0025D147 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A54346BF2A1D485D0025D147 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
 		};
 		A5481C2428108DC7006F782F /* AnyCodable */ = {
 			isa = XCSwiftPackageProductDependency;
