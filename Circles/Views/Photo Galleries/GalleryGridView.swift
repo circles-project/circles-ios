@@ -97,22 +97,7 @@ struct GalleryGridView: View {
             
             LazyVGrid(columns: columns, spacing: 4) {
                 ForEach(messages) { msg in
-                    if let img = msg.thumbnail {
-                        Image(uiImage: img)
-                            .renderingMode(.original)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: thumbnailSize, height: thumbnailSize, alignment: .center)
-                            .clipped()
-                        
-                    } else {
-                        Color.gray
-                            .onAppear {
-                                let task = Task {
-                                    try await msg.fetchThumbnail()
-                                }
-                            }
-                    }
+                    PhotoThumbnailCard(message: msg, height: thumbnailSize, width: thumbnailSize)
                 }
             }
         }
