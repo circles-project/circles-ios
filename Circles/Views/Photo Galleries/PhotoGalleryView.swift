@@ -53,7 +53,8 @@ struct PhotoGalleryView: View {
     
     var body: some View {
         ZStack {
-            TimelineView<PhotoCard>(room: room)
+            //TimelineView<PhotoCard>(room: room)
+            GalleryGridView(room: room)
 
             VStack {
                 Spacer()
