@@ -97,6 +97,8 @@
 		A52DF69229EB8820008860C3 /* GroupInviteCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF69129EB8820008860C3 /* GroupInviteCard.swift */; };
 		A52FEBFD2862521F00AE4E3A /* CirclesSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52FEBFC2862521F00AE4E3A /* CirclesSession.swift */; };
 		A54346C12A1D485D0025D147 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = A54346C02A1D485D0025D147 /* KeychainAccess */; };
+		A54346C32A3B785A0025D147 /* GalleryGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54346C22A3B785A0025D147 /* GalleryGridView.swift */; };
+		A54346C52A3B84900025D147 /* LogoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54346C42A3B84900025D147 /* LogoutView.swift */; };
 		A5481C2528108DC7006F782F /* AnyCodable in Frameworks */ = {isa = PBXBuildFile; productRef = A5481C2428108DC7006F782F /* AnyCodable */; };
 		A54BA3A22850108300453D5E /* CirclesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3A12850108300453D5E /* CirclesStore.swift */; };
 		A54BA3A62851222200453D5E /* WelcomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3A52851222200453D5E /* WelcomeScreen.swift */; };
@@ -225,6 +227,8 @@
 		A52DF68F29E8AB52008860C3 /* Color+background.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+background.swift"; sourceTree = "<group>"; };
 		A52DF69129EB8820008860C3 /* GroupInviteCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInviteCard.swift; sourceTree = "<group>"; };
 		A52FEBFC2862521F00AE4E3A /* CirclesSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesSession.swift; sourceTree = "<group>"; };
+		A54346C22A3B785A0025D147 /* GalleryGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryGridView.swift; sourceTree = "<group>"; };
+		A54346C42A3B84900025D147 /* LogoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoutView.swift; sourceTree = "<group>"; };
 		A54BA3A12850108300453D5E /* CirclesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesStore.swift; sourceTree = "<group>"; };
 		A54BA3A52851222200453D5E /* WelcomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreen.swift; sourceTree = "<group>"; };
 		A54BA3A828529BE500453D5E /* SetupScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupScreen.swift; sourceTree = "<group>"; };
@@ -445,6 +449,7 @@
 				A55F367229EDB66300F46971 /* GalleryInviteCard.swift */,
 				A55F367429EEE7EA00F46971 /* PhotoDetailView.swift */,
 				A55F367629EEFB6900F46971 /* PhotoContextMenu.swift */,
+				A54346C22A3B785A0025D147 /* GalleryGridView.swift */,
 			);
 			path = "Photo Galleries";
 			sourceTree = "<group>";
@@ -529,6 +534,7 @@
 			isa = PBXGroup;
 			children = (
 				A52DF68729E732AC008860C3 /* SettingsScreen.swift */,
+				A54346C42A3B84900025D147 /* LogoutView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -705,6 +711,7 @@
 				409F4340265DE17500690A61 /* GroupCreationSheet.swift in Sources */,
 				409F4364265DE21A00690A61 /* MessageReportingSheet.swift in Sources */,
 				40F906BB269DF96100287B27 /* MessageSheetType.swift in Sources */,
+				A54346C32A3B785A0025D147 /* GalleryGridView.swift in Sources */,
 				409F43A7265DE43B00690A61 /* RoomMembersSheet.swift in Sources */,
 				A5F0148229D72371000D57B3 /* EmailEnrollRequestTokenForm.swift in Sources */,
 				A54BA3A928529BE500453D5E /* SetupScreen.swift in Sources */,
@@ -776,6 +783,7 @@
 				A5FCF63F29CC9AF8008278B0 /* CircleSpace.swift in Sources */,
 				A5A40B6629D608C7009A17EE /* UiaInProgressView.swift in Sources */,
 				A52DF68329E59C32008860C3 /* StateEventView.swift in Sources */,
+				A54346C52A3B84900025D147 /* LogoutView.swift in Sources */,
 				A509B89C2818A1F80053E5BC /* Array+Extension.swift in Sources */,
 				409F439C265DE38200690A61 /* ProfileImageView.swift in Sources */,
 				409F4316265DE0F400690A61 /* ImageSaver.swift in Sources */,
