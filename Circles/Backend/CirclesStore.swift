@@ -110,14 +110,20 @@ public class CirclesStore: ObservableObject {
         logger.debug("connect()")
         let token = loadSyncToken(userId: creds.userId, deviceId: creds.deviceId)
         logger.debug("Got token = \(token ?? "none")")
-        let matrix = try await Matrix.Session(creds: creds, syncToken: token, startSyncing: false)
-        logger.debug("Set up Matrix")
-        let session = try await CirclesSession(matrix: matrix)
-        logger.debug("Set up CirclesSession")
-        await MainActor.run {
-            self.state = .online(session)
+        if let matrix = try? await Matrix.Session(creds: creds, syncToken: token, startSyncing: false) {
+                logger.debug("Set up Matrix")
+                let session = try await CirclesSession(matrix: matrix)
+                logger.debug("Set up CirclesSession")
+                await MainActor.run {
+                    self.state = .online(session)
+                }
+            logger.debug("Set state to .online")
+        } else {
+            let err = CirclesError("Failed to connect as \(creds.userId)")
+            await MainActor.run {
+                self.state = .nothing(err)
+            }
         }
-        logger.debug("Set state to .online")
     }
 
     private func computeKeyId(key: Data) throws -> String {
