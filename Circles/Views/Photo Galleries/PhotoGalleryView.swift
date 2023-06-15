@@ -33,6 +33,9 @@ struct PhotoGalleryView: View {
     //@State var newAvatar: UIImage?
     @State var showCoverImagePicker: Bool = false
     
+    @State var uploadItems: [PhotosPickerItem] = []
+    @State var totalUploadItems: Int = 0
+    
     var toolbarMenu: some View {
         Menu {
             Button(action: {
@@ -52,67 +55,76 @@ struct PhotoGalleryView: View {
     }
     
     var body: some View {
-        ZStack {
-            //TimelineView<PhotoCard>(room: room)
-            GalleryGridView(room: room)
-
-            VStack {
-                Spacer()
-                HStack {
+        if uploadItems.isEmpty {
+            
+            ZStack {
+                //TimelineView<PhotoCard>(room: room)
+                GalleryGridView(room: room)
+                
+                VStack {
                     Spacer()
-                    /*
-                    Button(action: {
-                        self.sheetType = .new
-                    }) {
-                        Image(systemName: "plus.circle.fill")
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 50, height: 50)
-                            .padding()
-                    }
-                    */
-                    PhotosPicker(selection: $selectedItems, matching: .images) {
-                        Image(systemName: "plus.circle.fill")
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 50, height: 50)
-                            .padding()
-                    }
-                    .onChange(of: selectedItems) { newItems in
-                        Task {
-                            for newItem in newItems {
-                                if let data = try? await newItem.loadTransferable(type: Data.self),
-                                   let img = UIImage(data: data) {
-                                    try await room.sendImage(image: img)
+                    HStack {
+                        Spacer()
+                        /*
+                         Button(action: {
+                         self.sheetType = .new
+                         }) {
+                         Image(systemName: "plus.circle.fill")
+                         .resizable()
+                         .scaledToFill()
+                         .frame(width: 50, height: 50)
+                         .padding()
+                         }
+                         */
+                        PhotosPicker(selection: $selectedItems, matching: .images) {
+                            Image(systemName: "plus.circle.fill")
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .padding()
+                        }
+                        .onChange(of: selectedItems) { newItems in
+                            /*
+                            Task {
+                                for newItem in newItems {
+                                    if let data = try? await newItem.loadTransferable(type: Data.self),
+                                       let img = UIImage(data: data) {
+                                        try await room.sendImage(image: img)
+                                    }
                                 }
                             }
+                            */
+                            uploadItems.append(contentsOf: newItems)
+                            totalUploadItems += uploadItems.count
+                        }
+                    }
+                }
+                .onChange(of: avatarItem) { newItem in
+                    Task {
+                        if let data = try? await newItem?.loadTransferable(type: Data.self),
+                           let img = UIImage(data: data)
+                        {
+                            try await room.setAvatarImage(image: img)
                         }
                     }
                 }
             }
-            .onChange(of: avatarItem) { newItem in
-                Task {
-                    if let data = try? await newItem?.loadTransferable(type: Data.self),
-                       let img = UIImage(data: data)
-                    {
-                        try await room.setAvatarImage(image: img)
-                    }
+            .navigationBarTitle(room.name ?? "Untitled gallery")
+            .toolbar {
+                ToolbarItemGroup(placement: .automatic) {
+                    toolbarMenu
                 }
             }
-        }
-        .navigationBarTitle(room.name ?? "Untitled gallery")
-        .toolbar {
-            ToolbarItemGroup(placement: .automatic) {
-                toolbarMenu
+            .sheet(item: self.$sheetType) { st in
+                switch(st) {
+                case .invite:
+                    RoomInviteSheet(room: self.room)
+                }
             }
+            .photosPicker(isPresented: $showCoverImagePicker, selection: $avatarItem, matching: .images)
+        } else {
+            PhotosUploadView(room: room, items: $uploadItems, total: $totalUploadItems)
         }
-        .sheet(item: self.$sheetType) { st in
-            switch(st) {
-            case .invite:
-                RoomInviteSheet(room: self.room)
-            }
-        }
-        .photosPicker(isPresented: $showCoverImagePicker, selection: $avatarItem, matching: .images)
     }
 }
 
