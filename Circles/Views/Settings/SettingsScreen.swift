@@ -47,13 +47,11 @@ struct SettingsScreen: View {
                         .badge("1.0.0")
                 }
                 Section(header: Label("Danger Zone", systemImage: "exclamationmark.triangle")) {
-                    /*
-                    AsyncButton(action:{
-                        try await session.logout()
-                    }) {
-                        Label("Log Out", systemImage: "power")
+
+                    NavigationLink(destination: LogoutView(user: user)) {
+                        Text("Log Out")
                     }
-                    */
+                    
                     Text("Deactivate Account")
                 }
             }
