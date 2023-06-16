@@ -15,7 +15,7 @@ struct GalleryGridView: View {
     
     let supportedMessageTypes = [M_IMAGE, M_VIDEO]
     
-    let thumbnailSize = CGFloat(240)
+    
     
     var footer: some View {
         VStack(alignment: .center) {
@@ -85,27 +85,32 @@ struct GalleryGridView: View {
             return true
 
         }.sorted(by: {$0.timestamp > $1.timestamp})
-                
-        let columns = [
-            GridItem(.fixed(thumbnailSize), spacing: 8),
-            GridItem(.fixed(thumbnailSize), spacing: 8),
-            GridItem(.fixed(thumbnailSize), spacing: 8),
-            GridItem(.fixed(thumbnailSize), spacing: 8),
-        ]
         
-        ScrollView {
+        GeometryReader { geometry in
             
-            LazyVGrid(columns: columns, spacing: 4) {
-                ForEach(messages) { msg in
-                    PhotoThumbnailCard(message: msg, height: thumbnailSize, width: thumbnailSize)
+            let thumbnailSize = geometry.size.width > 300 ? CGFloat(240) : CGFloat(96)
+            let hSpacing = geometry.size.width > 300 ? 8.0 : 4.0
+            let vSpacing = hSpacing
+            
+            let numCols = Int(geometry.size.width) / Int(thumbnailSize+hSpacing)
+            
+            let columns = Array<GridItem>(repeating: GridItem(.fixed(thumbnailSize), spacing: vSpacing), count: numCols)
+            
+            ScrollView {
+                
+                LazyVGrid(columns: columns, spacing: hSpacing) {
+                    ForEach(messages) { msg in
+                        PhotoThumbnailCard(message: msg, height: thumbnailSize, width: thumbnailSize)
+                    }
                 }
             }
-        }
-        .onAppear {
-            print("GalleryGridView: Found \(messages.count) image/video messages")
+            .onAppear {
+                print("GalleryGridView: Found \(messages.count) image/video messages")
+            }
+            
+            footer
         }
         
-        footer
     }
 }
 
