@@ -22,6 +22,39 @@ struct UiaView: View {
             
             Spacer()
             
+            // cvw: Based on the SignupScreen
+            switch uia.state {
+            case .notConnected:
+                AsyncButton(action: {
+                    try await uia.connect()
+                }) {
+                    Text("Tap to Authenticate")
+                }
+
+            case .connected(let uiaaState):
+                ProgressView()
+                    .onAppear {
+                        // Choose a flow
+                        // FIXME: Just go with the first one for now
+                        if let flow = uiaaState.flows.first {
+                            _ = Task { await uia.selectFlow(flow: flow) }
+                        }
+                    }
+
+            case .inProgress(let uiaaState, let stages):
+                UiaInProgressView(session: uia, state: uiaaState, stages: stages)
+                
+            case .finished(let data):
+                Text("Success!")
+                    .onAppear {
+                        _ = Task {
+                            try await session.cancelUIA()
+                        }
+                    }
+            }
+            
+            Divider()
+            
             AsyncButton(action: {
                 try await session.cancelUIA()
             }) {
