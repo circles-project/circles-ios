@@ -141,7 +141,9 @@ struct ContentView: View {
             ZStack {
                 tabview
                 
-                if let uia = session.matrix.uiaSession {
+                if let uia = session.matrix.uiaSession,
+                   !uia.isFinished
+                {
                     Color.gray.opacity(0.5)
                     UiaView(session: session, uia: uia)
                         .frame(width: 300, height: 700, alignment: .center)
