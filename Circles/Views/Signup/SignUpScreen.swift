@@ -106,8 +106,10 @@ struct SignupScreen: View {
             case .inProgress(let uiaaState, let stages):
                 UiaInProgressView(session: session, state: uiaaState, stages: stages)
                 
-            case .finished(let codableCreds):
-                if let creds = codableCreds as? Matrix.Credentials {
+            case .finished(let data):
+                let decoder = JSONDecoder()
+                
+                if let creds = try? decoder.decode(Matrix.Credentials.self, from: data) {
                     SignupFinishedView(store: store, creds: creds)
                 } else {
                     Text("There was a problem")

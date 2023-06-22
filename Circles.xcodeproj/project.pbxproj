@@ -129,6 +129,7 @@
 		A5F0148429D7436E000D57B3 /* EmailEnrollSubmitTokenForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F0148329D7436E000D57B3 /* EmailEnrollSubmitTokenForm.swift */; };
 		A5F0148629D75899000D57B3 /* UsernameEnrollForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F0148529D75899000D57B3 /* UsernameEnrollForm.swift */; };
 		A5F0148829D789B3000D57B3 /* BsspekeEnrollSaveForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F0148729D789B3000D57B3 /* BsspekeEnrollSaveForm.swift */; };
+		A5F2E95C2A4497E30097DBF8 /* UiaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F2E95B2A4497E30097DBF8 /* UiaView.swift */; };
 		A5FCF63B29CB8C95008278B0 /* ContainerRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FCF63A29CB8C95008278B0 /* ContainerRoom.swift */; };
 		A5FCF63D29CC9ABE008278B0 /* PersonRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FCF63C29CC9ABE008278B0 /* PersonRoom.swift */; };
 		A5FCF63F29CC9AF8008278B0 /* CircleSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FCF63E29CC9AF8008278B0 /* CircleSpace.swift */; };
@@ -260,6 +261,7 @@
 		A5F0148329D7436E000D57B3 /* EmailEnrollSubmitTokenForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailEnrollSubmitTokenForm.swift; sourceTree = "<group>"; };
 		A5F0148529D75899000D57B3 /* UsernameEnrollForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsernameEnrollForm.swift; sourceTree = "<group>"; };
 		A5F0148729D789B3000D57B3 /* BsspekeEnrollSaveForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BsspekeEnrollSaveForm.swift; sourceTree = "<group>"; };
+		A5F2E95B2A4497E30097DBF8 /* UiaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiaView.swift; sourceTree = "<group>"; };
 		A5FCF63A29CB8C95008278B0 /* ContainerRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerRoom.swift; sourceTree = "<group>"; };
 		A5FCF63C29CC9ABE008278B0 /* PersonRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonRoom.swift; sourceTree = "<group>"; };
 		A5FCF63E29CC9AF8008278B0 /* CircleSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleSpace.swift; sourceTree = "<group>"; };
@@ -568,6 +570,7 @@
 				A5A40B6529D608C7009A17EE /* UiaInProgressView.swift */,
 				A5F0148529D75899000D57B3 /* UsernameEnrollForm.swift */,
 				A5CC0ACF29DB7001005935F0 /* BsspekeLoginVerifyForm.swift */,
+				A5F2E95B2A4497E30097DBF8 /* UiaView.swift */,
 			);
 			path = UIA;
 			sourceTree = "<group>";
@@ -750,6 +753,7 @@
 				A5D2A3F629C0EED700428C45 /* Sequence+asyncMap.swift in Sources */,
 				40878FBC268E4D9000A66EF0 /* AppStoreInterface.swift in Sources */,
 				409F4382265DE29600690A61 /* SetupCircleCard.swift in Sources */,
+				A5F2E95C2A4497E30097DBF8 /* UiaView.swift in Sources */,
 				409F4390265DE2CE00690A61 /* SystemNoticesView.swift in Sources */,
 				A504DA7328120AF100EFF42E /* AsyncButton.swift in Sources */,
 				403CEA9526E865740054DBF4 /* TokenForm.swift in Sources */,

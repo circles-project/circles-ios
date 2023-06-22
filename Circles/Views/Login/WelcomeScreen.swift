@@ -34,9 +34,11 @@ struct WelcomeScreen: View {
             Text("Circles")
                 .font(.largeTitle)
                 .fontWeight(.bold)
+            /*
             Text("by FUTO Labs")
                 .font(.headline)
                 .fontWeight(.bold)
+            */
             
             TextField("@user:example.com", text: $username)
                 .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
@@ -93,7 +95,7 @@ struct WelcomeScreen: View {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
-            .padding(.bottom)
+            .padding(.bottom, 50)
 
 
         }

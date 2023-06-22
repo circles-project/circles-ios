@@ -55,11 +55,14 @@ struct LoginScreen: View {
         case .inProgress(let uiaaState, let stages):
             UiaInProgressView(session: session, state: uiaaState, stages: stages)
             
-        case .finished(let codableCreds):
+        case .finished(let data):
             VStack {
                 Spacer()
-                if let creds = codableCreds as? Matrix.Credentials {
+                
+                if let creds = try? JSONDecoder().decode(Matrix.Credentials.self, from: data) {
                     Text("Success!")
+                    ProgressView()
+                        /*
                         .onAppear {
                             /*
                             // Moving this stuff into the callback that we provide when we create the session in the `CirclesStore`
@@ -74,6 +77,7 @@ struct LoginScreen: View {
                                 try await store.connect(creds: creds)
                             }
                         }
+                        */
                 } else {
                     Text("Login success, but there was a problem...")
                 }

@@ -10,7 +10,7 @@ import SwiftUI
 import Matrix
 
 struct BsspekeLoginOprfForm: View {
-    var session: UIASession
+    var session: any UIASession
     
     @State var password: String = ""
 

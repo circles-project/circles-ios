@@ -106,54 +106,89 @@ public class CirclesStore: ObservableObject {
     }
     
     
-    func connect(creds: Matrix.Credentials) async throws {
+    func connect(creds: Matrix.Credentials, s4KeyInfo: (String,Data)? = nil) async throws {
         logger.debug("connect()")
         let token = loadSyncToken(userId: creds.userId, deviceId: creds.deviceId)
         logger.debug("Got token = \(token ?? "none")")
-        if let matrix = try? await Matrix.Session(creds: creds, syncToken: token, startSyncing: false) {
-                logger.debug("Set up Matrix")
-                let session = try await CirclesSession(matrix: matrix)
-                logger.debug("Set up CirclesSession")
-                await MainActor.run {
-                    self.state = .online(session)
-                }
-            logger.debug("Set state to .online")
+        
+        if let keyInfo = s4KeyInfo {
+            let (keyId, key) = keyInfo
+            logger.debug("Connecting with s4 keyId [\(keyId)]")
         } else {
+            logger.debug("No s4 key / keyId")
+        }
+        
+        guard let matrix = try? await Matrix.Session(creds: creds,
+                                                     syncToken: token,
+                                                     startSyncing: false,
+                                                     secretStorageKeyInfo: s4KeyInfo),
+              let session = try? await CirclesSession(matrix: matrix)
+        else {
             let err = CirclesError("Failed to connect as \(creds.userId)")
             await MainActor.run {
                 self.state = .nothing(err)
             }
+            return
         }
+        
+        logger.debug("Set up Matrix+CirclesSession")
+        await MainActor.run {
+            self.state = .online(session)
+        }
+        logger.debug("Set state to .online")
     }
 
+    /*
     private func computeKeyId(key: Data) throws -> String {
         guard let keyHash = Digest(algorithm: .sha256).update(data: key)?.final()
         else {
             throw Matrix.Error("Failed to hash key")
         }
-        let keyId = Data(keyHash[0..<16]).base64EncodedString()
+        let keyId = "m.secret_storage.key." + Data(keyHash[0..<16]).base64EncodedString().trimmingCharacters(in: CharacterSet(charactersIn: "="))
         return keyId
     }
+    */
     
     private func generateS4Key(bsspeke: BlindSaltSpeke.ClientSession) throws -> (String, Data) {
         let ssssKey = Data(bsspeke.generateHashedKey(label: MATRIX_SSSS_KEY_LABEL))
-        let ssssKeyId = try computeKeyId(key: ssssKey)
+        let ssssKeyId = try Matrix.SecretStore.computeKeyId(key: ssssKey)
         return (ssssKeyId, ssssKey)
     }
     
     func login(userId: UserId) async throws {
-        let loginSession = try await LoginSession(userId: userId, completion: { session, creds in
+        logger.debug("Logging in as \(userId)")
+        let loginSession = try await LoginSession(userId: userId, completion: { session, data in
+            self.logger.debug("Login was successful")
+            
+            let decoder = JSONDecoder()
+            guard let creds = try? decoder.decode(Matrix.Credentials.self, from: data)
+            else {
+                self.logger.error("Failed to decode credentials")
+                await MainActor.run {
+                    self.state = .nothing(CirclesError("Failed to decode credentials"))
+                }
+                return
+            }
             self.saveCredentials(creds: creds)
             //try await self.connect(creds: creds)
             
             // Check for a BS-SPEKE session, and if we have one, use it to generate our SSSS key
             if let bsspeke = session.getBSSpekeClient() {
-                let keys = try self.generateS4Key(bsspeke: bsspeke)
-                // Save the keys into our device Keychain, so they will be available to our Matrix session
-            }
-            
-            await MainActor.run {
-                self.state = .haveCreds(creds)
+                self.logger.debug("Got BS-SPEKE client")
+                let (keyId, key) = try self.generateS4Key(bsspeke: bsspeke)
+                self.logger.debug("BS-SPEKE key: id = \(keyId), key = \(key.base64EncodedString())")
+                let keyInfo = (keyId, key)
+                /*
+                // Save the keys into our device Keychain, so they will be available to future Matrix sessions where we load creds and connect, without logging in
+                let store = Matrix.KeychainSecretStore(userId: creds.userId)
+                try await store.saveKey(key: key, keyId: keyId)
+                */
+
+                self.logger.debug("Connecting with keyId [\(keyId)]")
+                try await self.connect(creds: creds, s4KeyInfo: keyInfo)
+            } else {
+                self.logger.warning("Could not find BS-SPEKE client")
+                try await self.connect(creds: creds)
             }
         })
         await MainActor.run {
@@ -172,13 +207,22 @@ public class CirclesStore: ObservableObject {
         }
 
         let deviceModel = await UIDevice.current.model
-        let signupSession = try await SignupSession(domain: domain, initialDeviceDisplayName: "Circles (\(deviceModel))", completion: { session,creds in
+        let signupSession = try await SignupSession(domain: domain, initialDeviceDisplayName: "Circles (\(deviceModel))", completion: { session,data in
+            self.logger.debug("Signup was successful")
+            
+            let decoder = JSONDecoder()
+            guard let creds = try? decoder.decode(Matrix.Credentials.self, from: data)
+            else {
+                self.logger.error("Failed to decode credentials")
+                await MainActor.run {
+                    self.state = .nothing(CirclesError("Failed to decode credentials"))
+                }
+                return
+            }
             self.saveCredentials(creds: creds)
             //try await self.connect(creds: creds)
             
-            // FIXME: Don't we also need to re-set our state now?
-            // * We can go back to .nothing if we want to force the user to immediately recall their password
-            // * Or we can just go to .haveCreds and the UI will trigger a new session
+            // The UI will show the user their new user id, and give them a button to tap to log out and go back to the login screen
         })
         await MainActor.run {
             self.state = .signingUp(signupSession)
@@ -197,6 +241,52 @@ public class CirclesStore: ObservableObject {
         let session = try await SetupSession(creds: fullCreds, store: self)
         await MainActor.run {
             self.state = .settingUp(session)
+        }
+    }
+    
+    private func removeCredentials(for userId: UserId) {
+        UserDefaults.standard.removeObject(forKey: "user_id")
+        UserDefaults.standard.removeObject(forKey: "device_id[\(userId)]")
+        UserDefaults.standard.removeObject(forKey: "access_token[\(userId)]")
+    }
+    
+    func logout() async throws {
+        switch state {
+        case .online(let session):
+            let creds = session.matrix.creds
+            logger.info("Logging out active session for \(creds.userId)")
+            //try await disconnect()
+            try await session.matrix.logout()
+            removeCredentials(for: creds.userId)
+            
+            await MainActor.run {
+                self.state = .nothing(nil)
+            }
+            
+        case .haveCreds(let creds):
+            logger.info("Logging out offline session for \(creds.userId)")
+            if let client = try? await Matrix.Client(creds: creds) {
+                try await client.logout()
+            }
+            removeCredentials(for: creds.userId)
+            
+            await MainActor.run {
+                self.state = .nothing(nil)
+            }
+            
+        case .settingUp(let session):
+            let creds = session.creds
+            if let client = try? await Matrix.Client(creds: creds) {
+                try await client.logout()
+            }
+            removeCredentials(for: creds.userId)
+            
+            await MainActor.run {
+                self.state = .nothing(nil)
+            }
+            
+        default:
+            logger.warning("Can't log out because we are not online")
         }
     }
     

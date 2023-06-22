@@ -97,6 +97,7 @@ struct AvatarForm: View {
                     .cornerRadius(10)
             }
             .disabled(avatarImage == nil || displayName.isEmpty)
+            .padding()
 
         }
     }

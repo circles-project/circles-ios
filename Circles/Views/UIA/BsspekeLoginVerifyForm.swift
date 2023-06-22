@@ -10,7 +10,7 @@ import SwiftUI
 import Matrix
 
 struct BsspekeLoginVerifyForm: View {
-    var session: UIASession
+    var session: any UIASession
     
     var body: some View {
         VStack {

@@ -9,11 +9,12 @@ import SwiftUI
 import Matrix
 
 struct LogoutView: View {
-    @ObservedObject var user: Matrix.User
+    @ObservedObject var store: CirclesStore
+    //@ObservedObject var user: Matrix.User
     
     var body: some View {
         AsyncButton(action:{
-            try await user.session.logout()
+            try await store.logout()
         }) {
             Label("Log Out", systemImage: "power")
         }

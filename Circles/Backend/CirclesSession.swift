@@ -129,6 +129,15 @@ class CirclesSession: ObservableObject {
         }
         */
     }
+    
+    func cancelUIA() async throws {
+        // Cancel any current Matrix UIA session that we may have
+        try await matrix.cancelUIA()
+        // And tell any SwiftUI views (eg the main ContentView) that they should re-draw
+        await MainActor.run {
+            self.objectWillChange.send()
+        }
+    }
 
     
     func close() async throws {

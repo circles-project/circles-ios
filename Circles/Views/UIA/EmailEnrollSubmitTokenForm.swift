@@ -10,7 +10,7 @@ import SwiftUI
 import Matrix
 
 struct EmailEnrollSubmitTokenForm: View {
-    var session: UIAuthSession<Matrix.Credentials>
+    var session: any UIASession
     var secret: String
 
     @State var token = ""

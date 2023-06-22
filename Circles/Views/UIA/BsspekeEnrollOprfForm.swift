@@ -10,7 +10,7 @@ import SwiftUI
 import Matrix
 
 struct BsspekeEnrollOprfForm: View {
-    var session: UIAuthSession<Matrix.Credentials>
+    var session: UIAuthSession
     @State var password: String = ""
     @State var repeatPassword: String = ""
     

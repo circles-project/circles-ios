@@ -10,7 +10,7 @@ import SwiftUI
 import Matrix
 
 struct BsspekeEnrollSaveForm: View {
-    var session: UIASession
+    var session: any UIASession
     
     var body: some View {
         VStack {

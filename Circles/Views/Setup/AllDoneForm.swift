@@ -34,7 +34,7 @@ struct AllDoneForm: View {
 
             AsyncButton(action: {
                 do {
-                    try await store.disconnect()
+                    try await store.logout()
                 } catch {
                     
                 }

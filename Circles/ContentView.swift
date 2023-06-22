@@ -11,6 +11,7 @@ import Matrix
 
 struct ContentView: View {
     @ObservedObject var store: CirclesStore
+    @State var showUIA = false
     
     var errorView: some View {
         VStack {
@@ -84,8 +85,8 @@ struct ContentView: View {
         
         @State private var selection: Tab = .home
 
-        
-        var body: some View {
+        @ViewBuilder
+        var tabview: some View {
             TabView(selection: $selection) {
                 
                 CirclesOverviewScreen(container: self.session.circles)
@@ -132,14 +133,22 @@ struct ContentView: View {
                     }
                     .tag(5)
                 */
-                
-
             }
-            //.accentColor(.green)
-
 
         }
 
+        var body: some View {
+            ZStack {
+                tabview
+                
+                if let uia = session.matrix.uiaSession {
+                    Color.gray.opacity(0.5)
+                    UiaView(session: session, uia: uia)
+                        .frame(width: 300, height: 700, alignment: .center)
+                        .background(in: RoundedRectangle(cornerRadius: 10))
+                }
+            }
+        }
     }
     
 }

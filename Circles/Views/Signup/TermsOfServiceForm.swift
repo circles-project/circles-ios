@@ -12,7 +12,7 @@ import MarkdownUI
 struct TermsOfServiceForm: View {
     //var matrix: MatrixInterface
     var params: TermsParams
-    var session: UIAuthSession<Matrix.Credentials>
+    var session: UIAuthSession
     //@Binding var selectedScreen: LoggedOutScreen.Screen
     //@Binding var authFlow: UIAA.Flow?
     @State var policies: [TermsParams.Policy]
@@ -22,18 +22,17 @@ struct TermsOfServiceForm: View {
     
     private var urlSession: URLSession
     
-    
-
     @State var showAlert = false
     @State var alertTitle = ""
     @State var alertMessage = ""
     
     let stage = AUTH_TYPE_TERMS
     
-    init(params: TermsParams, session: UIAuthSession<Matrix.Credentials>) {
+    init(params: TermsParams, session: UIAuthSession) {
         self.params = params
-        self.policies = params.policies
         self.session = session
+        
+        self.policies = params.policies
         self.urlSession = URLSession(configuration: .default)
         self.accepted = []
     }

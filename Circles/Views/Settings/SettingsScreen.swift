@@ -48,7 +48,7 @@ struct SettingsScreen: View {
                 }
                 Section(header: Label("Danger Zone", systemImage: "exclamationmark.triangle")) {
 
-                    NavigationLink(destination: LogoutView(user: user)) {
+                    NavigationLink(destination: LogoutView(store: store)) {
                         Text("Log Out")
                     }
                     

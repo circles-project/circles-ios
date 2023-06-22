@@ -10,7 +10,7 @@ import SwiftUI
 import Matrix
 
 struct UiaInProgressView: View {
-    @ObservedObject var session: UIAuthSession<Matrix.Credentials>
+    @ObservedObject var session: UIAuthSession
     var state: UIAA.SessionState
     var stages: [String]
     
