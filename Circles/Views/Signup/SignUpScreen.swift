@@ -29,9 +29,11 @@ struct SignupFinishedView: View {
             Spacer()
             Text("Successfully signed up!")
                 .font(.headline)
+            
             AsyncButton(action: {
                 do {
-                    try await store.beginSetup(creds: creds)
+                    print("Doing nothing because we don't have the SSSS key here")
+                    //try await store.beginSetup(creds: creds)
                 } catch {
                     
                 }

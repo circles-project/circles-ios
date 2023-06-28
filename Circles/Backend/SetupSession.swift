@@ -22,11 +22,11 @@ class SetupSession: ObservableObject {
     }
     @Published var state: State
     
-    init(creds: Matrix.Credentials, store: CirclesStore) async throws {
+    init(creds: Matrix.Credentials, s4keyInfo: (String, Data), store: CirclesStore) async throws {
         self.creds = creds
         self.store = store
         //self.client = try Matrix.Client(creds: creds)
-        self.client = try await Matrix.Session(creds: creds, startSyncing: false)
+        self.client = try await Matrix.Session(creds: creds, startSyncing: false, secretStorageKeyInfo: s4keyInfo)
         self.state = .profile
     }
     

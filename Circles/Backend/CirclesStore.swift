@@ -220,16 +220,31 @@ public class CirclesStore: ObservableObject {
                 return
             }
             self.saveCredentials(creds: creds)
-            //try await self.connect(creds: creds)
             
-            // The UI will show the user their new user id, and give them a button to tap to log out and go back to the login screen
+            // Check for a BS-SPEKE session, and if we have one, use it to generate our SSSS key
+            if let bsspeke = session.getBSSpekeClient() {
+                self.logger.debug("Got BS-SPEKE client")
+                let (keyId, key) = try self.generateS4Key(bsspeke: bsspeke)
+                self.logger.debug("BS-SPEKE key: id = \(keyId), key = \(key.base64EncodedString())")
+                let keyInfo = (keyId, key)
+                /*
+                // Save the keys into our device Keychain, so they will be available to future Matrix sessions where we load creds and connect, without logging in
+                let store = Matrix.KeychainSecretStore(userId: creds.userId)
+                try await store.saveKey(key: key, keyId: keyId)
+                */
+
+                self.logger.debug("Configuring with keyId [\(keyId)]")
+                try await self.beginSetup(creds: creds, s4KeyInfo: keyInfo)
+            } else {
+                self.logger.warning("Could not find BS-SPEKE client")
+            }
         })
         await MainActor.run {
             self.state = .signingUp(signupSession)
         }
     }
     
-    func beginSetup(creds: Matrix.Credentials) async throws {
+    func beginSetup(creds: Matrix.Credentials, s4KeyInfo: (String,Data)) async throws {
         
         var fullCreds = creds
         
@@ -238,7 +253,7 @@ public class CirclesStore: ObservableObject {
             fullCreds.wellKnown = try await Matrix.fetchWellKnown(for: domain)
         }
         
-        let session = try await SetupSession(creds: fullCreds, store: self)
+        let session = try await SetupSession(creds: fullCreds, s4keyInfo: s4KeyInfo, store: self)
         await MainActor.run {
             self.state = .settingUp(session)
         }
