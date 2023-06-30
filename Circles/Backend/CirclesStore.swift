@@ -178,11 +178,10 @@ public class CirclesStore: ObservableObject {
                 let (keyId, key) = try self.generateS4Key(bsspeke: bsspeke)
                 self.logger.debug("BS-SPEKE key: id = \(keyId), key = \(key.base64EncodedString())")
                 let keyInfo = (keyId, key)
-                /*
+
                 // Save the keys into our device Keychain, so they will be available to future Matrix sessions where we load creds and connect, without logging in
                 let store = Matrix.KeychainSecretStore(userId: creds.userId)
                 try await store.saveKey(key: key, keyId: keyId)
-                */
 
                 self.logger.debug("Connecting with keyId [\(keyId)]")
                 try await self.connect(creds: creds, s4KeyInfo: keyInfo)
@@ -227,11 +226,10 @@ public class CirclesStore: ObservableObject {
                 let (keyId, key) = try self.generateS4Key(bsspeke: bsspeke)
                 self.logger.debug("BS-SPEKE key: id = \(keyId), key = \(key.base64EncodedString())")
                 let keyInfo = (keyId, key)
-                /*
+
                 // Save the keys into our device Keychain, so they will be available to future Matrix sessions where we load creds and connect, without logging in
                 let store = Matrix.KeychainSecretStore(userId: creds.userId)
                 try await store.saveKey(key: key, keyId: keyId)
-                */
 
                 self.logger.debug("Configuring with keyId [\(keyId)]")
                 try await self.beginSetup(creds: creds, s4KeyInfo: keyInfo)
