@@ -15,6 +15,9 @@ struct SettingsScreen: View {
     @ObservedObject var session: CirclesSession
     var user: Matrix.User
     
+    @AppStorage("developerMode") var developerMode: Bool = false
+    @AppStorage("debugMode") var debugMode: Bool = false
+    
     init(store: CirclesStore, session: CirclesSession) {
         self.store = store
         self.session = session
@@ -23,36 +26,55 @@ struct SettingsScreen: View {
     
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Form {
-                Section(header: Label("Public Profile", systemImage: "person.crop.circle.fill")) {
-                    MessageAuthorHeader(user: user)
-                    Text("Status Message")
-                    Text("Neopass")
+
+                NavigationLink(destination: ProfileSettingsView(session: session.matrix)) {
+                    Label("Public Profile", systemImage: "person.circle.fill")
                 }
-                Section(header: Label("Account Security", systemImage: "lock.fill")) {
-                    Text("Password")
-                    Text("Email")
-                    Text("Login Sessions")
+
+                NavigationLink(destination: SecuritySettingsView(session: session.matrix)) {
+                    Label("Account Security", systemImage: "lock.fill")
                 }
+                
+                NavigationLink(destination: NotificationsSettingsView(store: store)) {
+                    Label("Notifications", systemImage: "bell.fill")
+                }
+                
+                let version = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as? String ?? "???"
+                Label("Version", systemImage: "123.rectangle.fill")
+                    .badge(version)
+                    .onTapGesture(count: 7){
+                        print("Setting developerMode = true")
+                        developerMode = true
+                    }
+                
+                if developerMode {
+                    Section("Developer Mode") {
+                        Toggle("Developer Mode", isOn: $developerMode)
+                        
+                        Toggle("Debug Mode", isOn: $debugMode)
+                    }
+                }
+                
+                /*
                 Section(header: Text("Subscription")) {
                     Text("Expiration Date")
                         .badge("Tomorrow")
                     Text("Cloud Storage")
                         .badge(Text("10GB"))
                 }
-                Section(header: Text("Other Stuff")) {
-                    Text("Notifications")
-                    Text("Version")
-                        .badge("1.0.0")
-                }
+                */
+                
                 Section(header: Label("Danger Zone", systemImage: "exclamationmark.triangle")) {
 
                     NavigationLink(destination: LogoutView(store: store)) {
-                        Text("Log Out")
+                        Label("Log Out", systemImage: "power")
                     }
                     
-                    Text("Deactivate Account")
+                    NavigationLink(destination: DeactivateAccountView(store: store)) {
+                        Label("Deactivate Account", systemImage: "person.fill.xmark")
+                    }
                 }
             }
             .navigationTitle("Settings")

@@ -96,6 +96,12 @@
 		A52DF69029E8AB52008860C3 /* Color+background.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68F29E8AB52008860C3 /* Color+background.swift */; };
 		A52DF69229EB8820008860C3 /* GroupInviteCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF69129EB8820008860C3 /* GroupInviteCard.swift */; };
 		A52FEBFD2862521F00AE4E3A /* CirclesSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52FEBFC2862521F00AE4E3A /* CirclesSession.swift */; };
+		A53E91222A5623F9007B0196 /* ProfileSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53E91212A5623F9007B0196 /* ProfileSettingsView.swift */; };
+		A53E91242A5624E5007B0196 /* SecuritySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53E91232A5624E5007B0196 /* SecuritySettingsView.swift */; };
+		A53E91262A5710C5007B0196 /* UpdateDisplaynameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53E91252A5710C5007B0196 /* UpdateDisplaynameView.swift */; };
+		A53E91282A572E8D007B0196 /* UpdateStatusMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53E91272A572E8D007B0196 /* UpdateStatusMessageView.swift */; };
+		A53E912A2A573838007B0196 /* NotificationsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53E91292A573838007B0196 /* NotificationsSettingsView.swift */; };
+		A53E912C2A57416B007B0196 /* DeactivateAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53E912B2A57416B007B0196 /* DeactivateAccountView.swift */; };
 		A54346C12A1D485D0025D147 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = A54346C02A1D485D0025D147 /* KeychainAccess */; };
 		A54346C32A3B785A0025D147 /* GalleryGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54346C22A3B785A0025D147 /* GalleryGridView.swift */; };
 		A54346C52A3B84900025D147 /* LogoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54346C42A3B84900025D147 /* LogoutView.swift */; };
@@ -230,6 +236,12 @@
 		A52DF68F29E8AB52008860C3 /* Color+background.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+background.swift"; sourceTree = "<group>"; };
 		A52DF69129EB8820008860C3 /* GroupInviteCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInviteCard.swift; sourceTree = "<group>"; };
 		A52FEBFC2862521F00AE4E3A /* CirclesSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesSession.swift; sourceTree = "<group>"; };
+		A53E91212A5623F9007B0196 /* ProfileSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSettingsView.swift; sourceTree = "<group>"; };
+		A53E91232A5624E5007B0196 /* SecuritySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecuritySettingsView.swift; sourceTree = "<group>"; };
+		A53E91252A5710C5007B0196 /* UpdateDisplaynameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateDisplaynameView.swift; sourceTree = "<group>"; };
+		A53E91272A572E8D007B0196 /* UpdateStatusMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateStatusMessageView.swift; sourceTree = "<group>"; };
+		A53E91292A573838007B0196 /* NotificationsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsSettingsView.swift; sourceTree = "<group>"; };
+		A53E912B2A57416B007B0196 /* DeactivateAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeactivateAccountView.swift; sourceTree = "<group>"; };
 		A54346C22A3B785A0025D147 /* GalleryGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryGridView.swift; sourceTree = "<group>"; };
 		A54346C42A3B84900025D147 /* LogoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoutView.swift; sourceTree = "<group>"; };
 		A54346C62A3BA7110025D147 /* PhotosUploadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosUploadView.swift; sourceTree = "<group>"; };
@@ -543,6 +555,12 @@
 			children = (
 				A52DF68729E732AC008860C3 /* SettingsScreen.swift */,
 				A54346C42A3B84900025D147 /* LogoutView.swift */,
+				A53E91212A5623F9007B0196 /* ProfileSettingsView.swift */,
+				A53E91232A5624E5007B0196 /* SecuritySettingsView.swift */,
+				A53E91252A5710C5007B0196 /* UpdateDisplaynameView.swift */,
+				A53E91272A572E8D007B0196 /* UpdateStatusMessageView.swift */,
+				A53E91292A573838007B0196 /* NotificationsSettingsView.swift */,
+				A53E912B2A57416B007B0196 /* DeactivateAccountView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -704,12 +722,14 @@
 				409F4379265DE25000690A61 /* PhotoGalleryCreationSheet.swift in Sources */,
 				403CEA9D26E86B920054DBF4 /* AvatarForm.swift in Sources */,
 				A5CC0ACC29D91F7C005935F0 /* Zxcvbn.swift in Sources */,
+				A53E91282A572E8D007B0196 /* UpdateStatusMessageView.swift in Sources */,
 				404C72D3265DDF35000473DF /* ContentView.swift in Sources */,
 				403CEA9F26E86C7F0054DBF4 /* CirclesForm.swift in Sources */,
 				A5E101FA2814FB60000B2C42 /* blf.c in Sources */,
 				A5E101FE2814FC9F000B2C42 /* PerfectBCrypt.swift in Sources */,
 				A5FCF64129CC9B30008278B0 /* GroupRoom.swift in Sources */,
 				A509B89E2819B6C90053E5BC /* CirclesError.swift in Sources */,
+				A53E912C2A57416B007B0196 /* DeactivateAccountView.swift in Sources */,
 				40BC0E4526B45FE600137A92 /* AcknowledgementsSheet.swift in Sources */,
 				A5E101F82814FAFD000B2C42 /* bcrypt.c in Sources */,
 				403CEA9326E864160054DBF4 /* TermsOfServiceForm.swift in Sources */,
@@ -785,12 +805,14 @@
 				409F43BA265DE51C00690A61 /* RoomInviteSheet.swift in Sources */,
 				A52FEBFD2862521F00AE4E3A /* CirclesSession.swift in Sources */,
 				A52DF68C29E88940008860C3 /* PhotoCard.swift in Sources */,
+				A53E91222A5623F9007B0196 /* ProfileSettingsView.swift in Sources */,
 				409F4315265DE0F400690A61 /* ImagePicker.swift in Sources */,
 				409F4338265DE15F00690A61 /* CircleConnectionsSheet.swift in Sources */,
 				A52DF68129E59A81008860C3 /* RoomAvatar.swift in Sources */,
 				A52DF68A29E8868C008860C3 /* MessageView.swift in Sources */,
 				40CEFCD426780D8300857D4D /* MessageDetailSheet.swift in Sources */,
 				409F4385265DE2A400690A61 /* RoomMessageComposer.swift in Sources */,
+				A53E91262A5710C5007B0196 /* UpdateDisplaynameView.swift in Sources */,
 				A54346C72A3BA7110025D147 /* PhotosUploadView.swift in Sources */,
 				A5FCF63F29CC9AF8008278B0 /* CircleSpace.swift in Sources */,
 				A5A40B6629D608C7009A17EE /* UiaInProgressView.swift in Sources */,
@@ -800,6 +822,7 @@
 				409F439C265DE38200690A61 /* ProfileImageView.swift in Sources */,
 				409F4316265DE0F400690A61 /* ImageSaver.swift in Sources */,
 				409F4344265DE17500690A61 /* GroupConfigSheet.swift in Sources */,
+				A53E912A2A573838007B0196 /* NotificationsSettingsView.swift in Sources */,
 				409F4376265DE25000690A61 /* PhotoGalleryCard.swift in Sources */,
 				A5FCF63B29CB8C95008278B0 /* ContainerRoom.swift in Sources */,
 				40CD7F6C2667D3B600DE315F /* PhotoPicker.swift in Sources */,
@@ -807,6 +830,7 @@
 				A5FCF63D29CC9ABE008278B0 /* PersonRoom.swift in Sources */,
 				A52DF68829E732AC008860C3 /* SettingsScreen.swift in Sources */,
 				409F42E6265DE03B00690A61 /* Utils.swift in Sources */,
+				A53E91242A5624E5007B0196 /* SecuritySettingsView.swift in Sources */,
 				409F4363265DE21A00690A61 /* MessageAuthorHeader.swift in Sources */,
 				409F436C265DE24000690A61 /* PersonsCircleRow.swift in Sources */,
 				A54BA3A62851222200453D5E /* WelcomeScreen.swift in Sources */,
@@ -944,7 +968,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Circles/Circles.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"Circles/Preview Content\"";
@@ -978,7 +1002,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Circles/Circles.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"Circles/Preview Content\"";

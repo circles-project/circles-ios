@@ -18,6 +18,7 @@ struct ProfileImageView: View {
     
     var body: some View {
         image
-        .resizable()
+            .resizable()
+            .scaledToFit()
     }
 }

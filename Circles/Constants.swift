@@ -21,7 +21,7 @@ let ROOM_TYPE_CIRCLE = APP_PREFIX+".social.timeline"
 let ROOM_TYPE_GROUP = APP_PREFIX+".social.group"
 let ROOM_TYPE_PHOTOS = APP_PREFIX+".social.gallery"
 
-let CIRCLES_DEBUG = false
+var CIRCLES_DEBUG = false
 
 let PLAINTEXT_CACHE_FOLDER: String? = nil
 let DECRYPTED_CACHE_FOLDER: String = "decrypted"
