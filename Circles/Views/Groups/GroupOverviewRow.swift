@@ -11,6 +11,7 @@ import Matrix
 
 struct GroupOverviewRow: View {
     @ObservedObject var room: Matrix.Room
+    @AppStorage("debugMode") var debugMode: Bool = false
     
     var timestamp: some View {
         let formatter = RelativeDateTimeFormatter()
@@ -45,7 +46,7 @@ struct GroupOverviewRow: View {
                         .font(.headline)
                         .foregroundColor(.gray)
                     
-                    if CIRCLES_DEBUG {
+                    if debugMode {
                         Text(room.roomId.description)
                             .font(.subheadline)
                             .foregroundColor(.red)

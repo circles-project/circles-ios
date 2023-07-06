@@ -12,6 +12,7 @@ struct GalleryGridView: View {
     @ObservedObject var room: GalleryRoom
     @State var debug = false
     @State var loading = false
+    @AppStorage("debugMode") var debugMode: Bool = false
     
     let supportedMessageTypes = [M_IMAGE, M_VIDEO]
     
@@ -47,7 +48,7 @@ struct GalleryGridView: View {
                 Spacer()
             }
             
-            if CIRCLES_DEBUG {
+            if debugMode {
                 VStack(alignment: .leading) {
                     if self.debug {
                         Text("Room has \(room.timeline.count) total messages")

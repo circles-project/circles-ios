@@ -12,6 +12,7 @@ import Matrix
 struct SignupStartForm: View {
     //var matrix: MatrixInterface
     @ObservedObject var session: SignupSession
+    @AppStorage("debugMode") var debugMode: Bool = false
     var store: CirclesStore
     //@Binding var selectedScreen: LoggedOutScreen.Screen
     var state: UIAA.SessionState
@@ -75,7 +76,7 @@ struct SignupStartForm: View {
 
             Spacer()
             
-            if CIRCLES_DEBUG {
+            if debugMode {
                 VStack {
                     if let flows = state.flows {
                         ForEach(flows, id: \.self) { flow in

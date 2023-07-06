@@ -107,6 +107,7 @@ struct MessageTimestamp: View {
 struct MessageCard: MessageView {
     @ObservedObject var message: Matrix.Message
     var isLocalEcho = false
+    @AppStorage("debugMode") var debugMode: Bool = false
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var galleries: ContainerRoom<GalleryRoom>
     //@State var showReplyComposer = false
@@ -359,14 +360,14 @@ struct MessageCard: MessageView {
             
             MessageAuthorHeader(user: message.sender)
 
-            if CIRCLES_DEBUG && self.debug {
+            if debugMode && self.debug {
                 Text(message.eventId)
                     .font(.caption)
             }
 
             content
             
-            if CIRCLES_DEBUG {
+            if debugMode {
                 details
                     .font(.caption)
             }

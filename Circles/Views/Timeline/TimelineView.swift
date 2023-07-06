@@ -11,6 +11,7 @@ import Matrix
 
 struct TimelineView<V: MessageView>: View {
     @ObservedObject var room: Matrix.Room
+    @AppStorage("debugMode") var debugMode: Bool = false
     @State var debug = false
     @State var loading = false
     @State var selectedMessage: Matrix.Message?
@@ -46,7 +47,7 @@ struct TimelineView<V: MessageView>: View {
                 Spacer()
             }
             
-            if CIRCLES_DEBUG {
+            if debugMode {
                 VStack(alignment: .leading) {
                     if self.debug {
                         Text("Room has \(room.timeline.count) total messages")

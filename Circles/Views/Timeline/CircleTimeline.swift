@@ -12,6 +12,7 @@ import Matrix
 
 struct CircleTimeline: View {
     @ObservedObject var space: CircleSpace
+    @AppStorage("debugMode") var debugMode: Bool = false
     private var formatter: DateFormatter
     @State private var showDebug = false
     @State private var loading = false
@@ -68,7 +69,7 @@ struct CircleTimeline: View {
                         VStack(alignment: .leading) {
                             HStack {
                                 let index: Int = messages.firstIndex(of: msg)!
-                                if CIRCLES_DEBUG && showDebug {
+                                if debugMode && showDebug {
                                     Text("\(index)")
                                 }
                                 MessageCard(message: msg)
@@ -105,7 +106,7 @@ struct CircleTimeline: View {
 
 
 
-            if CIRCLES_DEBUG {
+            if debugMode {
                 if showDebug {
                     debugFooter
                 } else {

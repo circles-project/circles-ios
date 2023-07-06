@@ -11,6 +11,7 @@ import Matrix
 
 struct PhotoGalleryCard: View {
     @ObservedObject var room: Matrix.Room
+    @AppStorage("debugMode") var debugMode: Bool = false
     
     var avatar: Image {
         
@@ -61,7 +62,7 @@ struct PhotoGalleryCard: View {
                     .font(.title)
                     .fontWeight(.bold)
 
-                if CIRCLES_DEBUG {
+                if debugMode {
                     Text(room.roomId.description)
                         .font(.subheadline)
                     timestamp

@@ -27,6 +27,8 @@ struct PhotoCard: MessageView {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var galleries: ContainerRoom<GalleryRoom>
     
+    @AppStorage("debugMode") var debugMode: Bool = false
+    
     @State var sheetType: PhotoSheetType? = nil
     @State var showFullScreen: Bool = false
     private var formatter: DateFormatter
@@ -96,7 +98,7 @@ struct PhotoCard: MessageView {
             VStack {
                 Spacer()
                 
-                if CIRCLES_DEBUG {
+                if debugMode {
                     if let content = message.content as? Matrix.mImageContent {
                         Text(content.file?.url.mediaId ?? "none")
                             .font(.title)
