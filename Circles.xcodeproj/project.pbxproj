@@ -103,6 +103,7 @@
 		A53E912A2A573838007B0196 /* NotificationsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53E91292A573838007B0196 /* NotificationsSettingsView.swift */; };
 		A53E912C2A57416B007B0196 /* DeactivateAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53E912B2A57416B007B0196 /* DeactivateAccountView.swift */; };
 		A53E912E2A5C95DC007B0196 /* UiaOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53E912D2A5C95DC007B0196 /* UiaOverlayView.swift */; };
+		A53E91302A5C9DEE007B0196 /* IgnoredUsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53E912F2A5C9DEE007B0196 /* IgnoredUsersView.swift */; };
 		A54346C12A1D485D0025D147 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = A54346C02A1D485D0025D147 /* KeychainAccess */; };
 		A54346C32A3B785A0025D147 /* GalleryGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54346C22A3B785A0025D147 /* GalleryGridView.swift */; };
 		A54346C52A3B84900025D147 /* LogoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54346C42A3B84900025D147 /* LogoutView.swift */; };
@@ -244,6 +245,7 @@
 		A53E91292A573838007B0196 /* NotificationsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsSettingsView.swift; sourceTree = "<group>"; };
 		A53E912B2A57416B007B0196 /* DeactivateAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeactivateAccountView.swift; sourceTree = "<group>"; };
 		A53E912D2A5C95DC007B0196 /* UiaOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiaOverlayView.swift; sourceTree = "<group>"; };
+		A53E912F2A5C9DEE007B0196 /* IgnoredUsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IgnoredUsersView.swift; sourceTree = "<group>"; };
 		A54346C22A3B785A0025D147 /* GalleryGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryGridView.swift; sourceTree = "<group>"; };
 		A54346C42A3B84900025D147 /* LogoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoutView.swift; sourceTree = "<group>"; };
 		A54346C62A3BA7110025D147 /* PhotosUploadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosUploadView.swift; sourceTree = "<group>"; };
@@ -563,6 +565,7 @@
 				A53E91272A572E8D007B0196 /* UpdateStatusMessageView.swift */,
 				A53E91292A573838007B0196 /* NotificationsSettingsView.swift */,
 				A53E912B2A57416B007B0196 /* DeactivateAccountView.swift */,
+				A53E912F2A5C9DEE007B0196 /* IgnoredUsersView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -808,6 +811,7 @@
 				A5F0148629D75899000D57B3 /* UsernameEnrollForm.swift in Sources */,
 				409F43BA265DE51C00690A61 /* RoomInviteSheet.swift in Sources */,
 				A52FEBFD2862521F00AE4E3A /* CirclesSession.swift in Sources */,
+				A53E91302A5C9DEE007B0196 /* IgnoredUsersView.swift in Sources */,
 				A52DF68C29E88940008860C3 /* PhotoCard.swift in Sources */,
 				A53E91222A5623F9007B0196 /* ProfileSettingsView.swift in Sources */,
 				409F4315265DE0F400690A61 /* ImagePicker.swift in Sources */,

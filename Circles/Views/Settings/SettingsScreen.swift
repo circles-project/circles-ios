@@ -41,6 +41,10 @@ struct SettingsScreen: View {
                     Label("Notifications", systemImage: "bell.fill")
                 }
                 
+                NavigationLink(destination: IgnoredUsersView(session: session.matrix)) {
+                    Label("Ignored Users", systemImage: "person.2.slash.fill")
+                }
+                
                 let version = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as? String ?? "???"
                 Label("Version", systemImage: "123.rectangle.fill")
                     .badge(version)
