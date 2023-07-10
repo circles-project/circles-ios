@@ -141,19 +141,13 @@ struct ContentView: View {
             ZStack {
                 tabview
                 
-                if let uia = session.matrix.uiaSession,
-                   !uia.isFinished
-                {
-                    Color.gray.opacity(0.5)
-                    UiaView(session: session, uia: uia)
-                        .frame(width: 300, height: 700, alignment: .center)
-                        .background(in: RoundedRectangle(cornerRadius: 10))
-                }
+                UiaOverlayView(circles: session, matrix: session.matrix)
             }
         }
     }
     
 }
+
 
 /*
 struct ContentView_Previews: PreviewProvider {

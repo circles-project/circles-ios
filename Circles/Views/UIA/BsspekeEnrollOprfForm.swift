@@ -14,6 +14,23 @@ struct BsspekeEnrollOprfForm: View {
     @State var password: String = ""
     @State var repeatPassword: String = ""
     
+    private func getUserId() -> UserId? {
+        if let userId = session.creds?.userId {
+            return userId
+        }
+        
+        if let username = session.storage["username"] as? String,
+              let domain = session.storage["domain"] as? String,
+              let userId = UserId("@\(username):\(domain)")
+        {
+            return userId
+        }
+        else {
+            print("ERROR:\tCouldn't find username and/or domain")
+            return nil
+        }
+    }
+    
     var body: some View {
         VStack {
             Spacer()
@@ -29,11 +46,9 @@ struct BsspekeEnrollOprfForm: View {
                 SecureField("correct horse battery staple", text: $repeatPassword, prompt: Text("Repeat passphrase"))
                     .frame(width: 300.0, height: 40.0)
                 AsyncButton(action: {
-                    guard let username = session.storage["username"] as? String,
-                          let domain = session.storage["domain"] as? String,
-                          let userId = UserId("@\(username):\(domain)")
+                    guard let userId = getUserId()
                     else {
-                        print("ERROR:\tCouldn't find username and/or domain")
+                        print("Couldn't get user id")
                         return
                     }
                     try await session.doBSSpekeEnrollOprfStage(userId: userId, password: password)
