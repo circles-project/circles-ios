@@ -16,7 +16,12 @@ struct SecuritySettingsView: View {
         VStack {
             Form {
                 NavigationLink {
-                    Text("Password")
+                    AsyncButton(action: {
+                        // FIXME: Add a SDK function to change password
+                        try await session.setBsSpekePassword()
+                    }) {
+                        Text("Change Password")
+                    }
                 }
                 label: {
                     Label("Change Password", systemImage: "entry.lever.keypad")
