@@ -11,21 +11,45 @@ import Matrix
 struct SecuritySettingsView: View {
     var session: Matrix.Session
     
+    @ViewBuilder
+    var passwordButton: some View {
+        AsyncButton(action: {
+            try await session.setBsSpekePassword() { (uiaSession, data) in
+                
+                if let store = session.secretStore {
+                    guard let bsspeke = uiaSession.getBSSpekeClient()
+                    else {
+                        print("Error: Failed to get BS-SPEKE client after changing password")
+                        return
+                    }
+                    
+                    let key = Data(bsspeke.generateHashedKey(label: MATRIX_SSSS_KEY_LABEL))
+                    let keyId = try Matrix.SecretStore.computeKeyId(key: key)
+                    
+                    // Set the key as our new default key for Secret Storage - This automatically encrypts and saves the old key on the server
+                    try await store.addNewDefaultKey(key: key, keyId: keyId)
+                    
+                    // Save the keys into our device Keychain, so they will be available to future Matrix sessions where we load creds and connect, without logging in
+                    let keychain = Matrix.KeychainSecretStore(userId: session.creds.userId)
+                    try await keychain.saveKey(key: key, keyId: keyId)
+                }
+                else {
+                    print("No secret storage - Not computing new BS-SPEKE-based SSSS key")
+                }
+            }
+        }) {
+            //Text("Change Password")
+            Label("Change Password", systemImage: "entry.lever.keypad")
+        }
+        .buttonStyle(.plain)
+    }
+    
     var body: some View {
         //NavigationView {
         VStack {
             Form {
-                NavigationLink {
-                    AsyncButton(action: {
-                        // FIXME: Add a SDK function to change password
-                        try await session.setBsSpekePassword()
-                    }) {
-                        Text("Change Password")
-                    }
-                }
-                label: {
-                    Label("Change Password", systemImage: "entry.lever.keypad")
-                }
+                passwordButton
+                
                 Label("Login Sessions", systemImage: "iphone")
                 Label("Change Email Address", systemImage: "envelope")
             }
