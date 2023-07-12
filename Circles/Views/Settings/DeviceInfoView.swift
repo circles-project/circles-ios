@@ -18,6 +18,19 @@ struct DeviceInfoView: View {
     @State var showRemoveDialog = false
     
     var icon: Image {
+        if device.userId == session.creds.userId.stringValue && device.deviceId == session.device?.deviceId {
+            // This is us
+            let model = UIDevice().model
+            if model.contains("iPhone") {
+                return Image(systemName: "iphone")
+            }
+            else if model.contains("iPad") {
+                return Image(systemName: "ipad")
+            }
+            else {
+                return Image(systemName: "desktopcomputer")
+            }
+        }
         if let name = device.displayName {
             if name.contains("iPhone") {
                 return Image(systemName: "iphone")
@@ -141,6 +154,9 @@ struct DeviceInfoView: View {
                         }
                         Text("Local Verification")
                     }
+                    
+                    keys
+                    
                     /*
                     VStack(alignment: .leading) {
                         Text("MXOlm Sessions")
@@ -158,6 +174,35 @@ struct DeviceInfoView: View {
         }
     }
     
+    var name: String {
+        if device.userId == session.creds.userId.stringValue && device.deviceId == session.device?.deviceId {
+            return "This \(UIDevice().model)"
+        }
+        if let displayName = device.displayName {
+            return displayName
+        }
+        return "(Unnamed Session)"
+    }
+    
+    var keys: some View {
+        VStack(alignment: .leading) {
+            Text("Public Keys")
+                .font(.headline)
+                .padding(.vertical)
+            
+            Grid(verticalSpacing: 10) {
+                ForEach(device.keys.sorted(by: >), id: \.key) { (keyId,publicKey) in
+                    if let algo = keyId.split(separator: ":").first {
+                        GridRow {
+                            Text(algo)
+                            Text(publicKey)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
@@ -166,7 +211,7 @@ struct DeviceInfoView: View {
                     .scaledToFit()
                     .frame(width: 40, height: 40, alignment: .center)
                 VStack(alignment: .leading) {
-                    Text(device.displayName ?? "(Unnamed Session)")
+                    Text(name)
                     Text(device.deviceId)
                         .fontWeight(.bold)
                 }
@@ -174,46 +219,42 @@ struct DeviceInfoView: View {
                 verificationStatus
             }
             
-            VStack(alignment: .leading) {
-                details
-
-                verifyButtons
-                
-                /*
-                Text("Olm Sessions")
-                VStack(alignment: .leading) {
-                    ForEach(device.sessions) { session in
-                        OlmSessionView(session: session)
-                        //Text("Foo")
-                    }
-                }
-                .padding(.leading)
-                */
-                
-            }
-            .padding(.leading, 25)
         }
+        .padding()
         .contextMenu(menuItems: {
-            /*
-            if let user = device.user {
-                if user != device.matrix.me() {
-                    Button(action: { user.verify() }) {
-                        Label("Verify User", systemImage: "person.fill.checkmark")
+            
+            if device.userId == session.creds.userId.stringValue {
+                if device.deviceId != session.creds.deviceId {
+                    // Can't remove our own session, but we can remove others
+                    AsyncButton(role: .destructive, action: {
+                        //throw CirclesError("Not implemented")
+                    }) {
+                        Label("Remove Session", systemImage: "xmark.circle")
                     }
-                    /*  // Apparently this isn't a thing... :-(
-                    Button(action: {user.unverify()}) {
-                        Label("Unverify User", systemImage: "person.fill.xmark")
-                    }
-                    */
                 }
+            } else {
+                AsyncButton(action: {
+                    //throw CirclesError("Not implemented")
+                }) {
+                    Label("Verify User", systemImage: "person.fill.checkmark")
+                }
+                .disabled(true)
             }
-            */
+            
             Button(action: {
-                // FIXME: Re-implement all this junk...
-                //device.verify()
+                //throw CirclesError("Not implemented")
             }) {
-                Label("Verify Session", systemImage: "checkmark.shield")
-            }.disabled(true)
+                Label("Show Details", systemImage: "info.circle")
+            }
+            
+            if !device.crossSigningTrusted && !device.locallyTrusted {
+                Button(action: {
+                    // FIXME: Re-implement all this junk...
+                    //device.verify()
+                }) {
+                    Label("Verify Session", systemImage: "checkmark.shield")
+                }.disabled(true)
+            }
         })
     }
     

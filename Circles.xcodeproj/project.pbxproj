@@ -131,6 +131,8 @@
 		A5E101F82814FAFD000B2C42 /* bcrypt.c in Sources */ = {isa = PBXBuildFile; fileRef = A5E101F72814FAFD000B2C42 /* bcrypt.c */; };
 		A5E101FA2814FB60000B2C42 /* blf.c in Sources */ = {isa = PBXBuildFile; fileRef = A5E101F92814FB60000B2C42 /* blf.c */; };
 		A5E101FE2814FC9F000B2C42 /* PerfectBCrypt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E101FD2814FC9F000B2C42 /* PerfectBCrypt.swift */; };
+		A5EE59C42A5F21C2007C24C7 /* DevicesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5EE59C22A5F21C2007C24C7 /* DevicesScreen.swift */; };
+		A5EE59C52A5F21C2007C24C7 /* DeviceInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5EE59C32A5F21C2007C24C7 /* DeviceInfoView.swift */; };
 		A5F0148229D72371000D57B3 /* EmailEnrollRequestTokenForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F0148129D72371000D57B3 /* EmailEnrollRequestTokenForm.swift */; };
 		A5F0148429D7436E000D57B3 /* EmailEnrollSubmitTokenForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F0148329D7436E000D57B3 /* EmailEnrollSubmitTokenForm.swift */; };
 		A5F0148629D75899000D57B3 /* UsernameEnrollForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F0148529D75899000D57B3 /* UsernameEnrollForm.swift */; };
@@ -269,6 +271,8 @@
 		A5E101FC2814FBE3000B2C42 /* pycabcrypt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pycabcrypt.h; sourceTree = "<group>"; };
 		A5E101FD2814FC9F000B2C42 /* PerfectBCrypt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerfectBCrypt.swift; sourceTree = "<group>"; };
 		A5E101FF2814FD6D000B2C42 /* portable_endian.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = portable_endian.h; sourceTree = "<group>"; };
+		A5EE59C22A5F21C2007C24C7 /* DevicesScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DevicesScreen.swift; sourceTree = "<group>"; };
+		A5EE59C32A5F21C2007C24C7 /* DeviceInfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceInfoView.swift; sourceTree = "<group>"; };
 		A5F0148129D72371000D57B3 /* EmailEnrollRequestTokenForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailEnrollRequestTokenForm.swift; sourceTree = "<group>"; };
 		A5F0148329D7436E000D57B3 /* EmailEnrollSubmitTokenForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailEnrollSubmitTokenForm.swift; sourceTree = "<group>"; };
 		A5F0148529D75899000D57B3 /* UsernameEnrollForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsernameEnrollForm.swift; sourceTree = "<group>"; };
@@ -550,16 +554,18 @@
 		A52DF68629E73299008860C3 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				A52DF68729E732AC008860C3 /* SettingsScreen.swift */,
-				A54346C42A3B84900025D147 /* LogoutView.swift */,
-				A53E91212A5623F9007B0196 /* ProfileSettingsView.swift */,
-				A53E91232A5624E5007B0196 /* SecuritySettingsView.swift */,
-				A53E91252A5710C5007B0196 /* UpdateDisplaynameView.swift */,
-				A53E91272A572E8D007B0196 /* UpdateStatusMessageView.swift */,
-				A53E91292A573838007B0196 /* NotificationsSettingsView.swift */,
+				A5EE59C32A5F21C2007C24C7 /* DeviceInfoView.swift */,
+				A5EE59C22A5F21C2007C24C7 /* DevicesScreen.swift */,
+				A53E91312A5F152D007B0196 /* AcknowledgementsView.swift */,
 				A53E912B2A57416B007B0196 /* DeactivateAccountView.swift */,
 				A53E912F2A5C9DEE007B0196 /* IgnoredUsersView.swift */,
-				A53E91312A5F152D007B0196 /* AcknowledgementsView.swift */,
+				A54346C42A3B84900025D147 /* LogoutView.swift */,
+				A53E91292A573838007B0196 /* NotificationsSettingsView.swift */,
+				A53E91212A5623F9007B0196 /* ProfileSettingsView.swift */,
+				A53E91232A5624E5007B0196 /* SecuritySettingsView.swift */,
+				A52DF68729E732AC008860C3 /* SettingsScreen.swift */,
+				A53E91252A5710C5007B0196 /* UpdateDisplaynameView.swift */,
+				A53E91272A572E8D007B0196 /* UpdateStatusMessageView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -714,6 +720,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				409F4378265DE25000690A61 /* PhotosOverviewScreen.swift in Sources */,
+				A5EE59C42A5F21C2007C24C7 /* DevicesScreen.swift in Sources */,
 				A5A40B6829D60EF3009A17EE /* CirclesConfig.swift in Sources */,
 				A5CC0AD029DB7001005935F0 /* BsspekeLoginVerifyForm.swift in Sources */,
 				A52DF68529E72CC1008860C3 /* Keychain.swift in Sources */,
@@ -750,6 +757,7 @@
 				409F437F265DE28600690A61 /* RandomizedCircles.swift in Sources */,
 				A55F367329EDB66300F46971 /* GalleryInviteCard.swift in Sources */,
 				409F4323265DE11900690A61 /* Constants.swift in Sources */,
+				A5EE59C52A5F21C2007C24C7 /* DeviceInfoView.swift in Sources */,
 				40AEA6752678E24200C9CBD1 /* BlurHashEncode.swift in Sources */,
 				409F435C265DE1EE00690A61 /* LoginScreen.swift in Sources */,
 				409F4335265DE15F00690A61 /* CirclePicker.swift in Sources */,

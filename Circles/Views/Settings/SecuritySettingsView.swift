@@ -59,7 +59,9 @@ struct SecuritySettingsView: View {
         //NavigationView {
         VStack {
             Form {
-                Label("Login Sessions", systemImage: "iphone")
+                NavigationLink(destination: DevicesScreen(session: session)) {
+                    Label("Login Sessions", systemImage: "iphone")
+                }
 
                 passwordButton
 
