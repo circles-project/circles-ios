@@ -75,7 +75,6 @@
 		409F43BA265DE51C00690A61 /* RoomInviteSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F43B9265DE51C00690A61 /* RoomInviteSheet.swift */; };
 		40AEA6742678E24200C9CBD1 /* BlurHashDecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AEA6722678E24100C9CBD1 /* BlurHashDecode.swift */; };
 		40AEA6752678E24200C9CBD1 /* BlurHashEncode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AEA6732678E24200C9CBD1 /* BlurHashEncode.swift */; };
-		40BC0E4526B45FE600137A92 /* AcknowledgementsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40BC0E4426B45FE600137A92 /* AcknowledgementsSheet.swift */; };
 		40CD7F6C2667D3B600DE315F /* PhotoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40CD7F6B2667D3B600DE315F /* PhotoPicker.swift */; };
 		40CD7F6F2667E16100DE315F /* VideoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40CD7F6E2667E16100DE315F /* VideoPicker.swift */; };
 		40CEFCD426780D8300857D4D /* MessageDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40CEFCD326780D8300857D4D /* MessageDetailSheet.swift */; };
@@ -104,6 +103,7 @@
 		A53E912C2A57416B007B0196 /* DeactivateAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53E912B2A57416B007B0196 /* DeactivateAccountView.swift */; };
 		A53E912E2A5C95DC007B0196 /* UiaOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53E912D2A5C95DC007B0196 /* UiaOverlayView.swift */; };
 		A53E91302A5C9DEE007B0196 /* IgnoredUsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53E912F2A5C9DEE007B0196 /* IgnoredUsersView.swift */; };
+		A53E91322A5F152D007B0196 /* AcknowledgementsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53E91312A5F152D007B0196 /* AcknowledgementsView.swift */; };
 		A54346C12A1D485D0025D147 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = A54346C02A1D485D0025D147 /* KeychainAccess */; };
 		A54346C32A3B785A0025D147 /* GalleryGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54346C22A3B785A0025D147 /* GalleryGridView.swift */; };
 		A54346C52A3B84900025D147 /* LogoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54346C42A3B84900025D147 /* LogoutView.swift */; };
@@ -218,7 +218,6 @@
 		409F43B9265DE51C00690A61 /* RoomInviteSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomInviteSheet.swift; sourceTree = "<group>"; };
 		40AEA6722678E24100C9CBD1 /* BlurHashDecode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlurHashDecode.swift; sourceTree = "<group>"; };
 		40AEA6732678E24200C9CBD1 /* BlurHashEncode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlurHashEncode.swift; sourceTree = "<group>"; };
-		40BC0E4426B45FE600137A92 /* AcknowledgementsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcknowledgementsSheet.swift; sourceTree = "<group>"; };
 		40CD7F6B2667D3B600DE315F /* PhotoPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPicker.swift; sourceTree = "<group>"; };
 		40CD7F6E2667E16100DE315F /* VideoPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPicker.swift; sourceTree = "<group>"; };
 		40CEFCD326780D8300857D4D /* MessageDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageDetailSheet.swift; sourceTree = "<group>"; };
@@ -246,6 +245,7 @@
 		A53E912B2A57416B007B0196 /* DeactivateAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeactivateAccountView.swift; sourceTree = "<group>"; };
 		A53E912D2A5C95DC007B0196 /* UiaOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiaOverlayView.swift; sourceTree = "<group>"; };
 		A53E912F2A5C9DEE007B0196 /* IgnoredUsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IgnoredUsersView.swift; sourceTree = "<group>"; };
+		A53E91312A5F152D007B0196 /* AcknowledgementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcknowledgementsView.swift; sourceTree = "<group>"; };
 		A54346C22A3B785A0025D147 /* GalleryGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryGridView.swift; sourceTree = "<group>"; };
 		A54346C42A3B84900025D147 /* LogoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoutView.swift; sourceTree = "<group>"; };
 		A54346C62A3BA7110025D147 /* PhotosUploadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosUploadView.swift; sourceTree = "<group>"; };
@@ -423,7 +423,6 @@
 		409F430D265DE0D500690A61 /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				40BC0E4426B45FE600137A92 /* AcknowledgementsSheet.swift */,
 				409F431D265DE11000690A61 /* DeviceInfoView.swift */,
 				409F431C265DE10F00690A61 /* DeviceRemovalSheet.swift */,
 				409F431B265DE10F00690A61 /* DevicesScreen.swift */,
@@ -566,6 +565,7 @@
 				A53E91292A573838007B0196 /* NotificationsSettingsView.swift */,
 				A53E912B2A57416B007B0196 /* DeactivateAccountView.swift */,
 				A53E912F2A5C9DEE007B0196 /* IgnoredUsersView.swift */,
+				A53E91312A5F152D007B0196 /* AcknowledgementsView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -736,7 +736,6 @@
 				A5FCF64129CC9B30008278B0 /* GroupRoom.swift in Sources */,
 				A509B89E2819B6C90053E5BC /* CirclesError.swift in Sources */,
 				A53E912C2A57416B007B0196 /* DeactivateAccountView.swift in Sources */,
-				40BC0E4526B45FE600137A92 /* AcknowledgementsSheet.swift in Sources */,
 				A5E101F82814FAFD000B2C42 /* bcrypt.c in Sources */,
 				403CEA9326E864160054DBF4 /* TermsOfServiceForm.swift in Sources */,
 				40878FCA2694DBC400A66EF0 /* MessageComposerSheet.swift in Sources */,
@@ -794,6 +793,7 @@
 				409F4332265DE15F00690A61 /* CircleCreationSheet.swift in Sources */,
 				40CD7F6F2667E16100DE315F /* VideoPicker.swift in Sources */,
 				409F435B265DE1EE00690A61 /* LoggedOutScreen.swift in Sources */,
+				A53E91322A5F152D007B0196 /* AcknowledgementsView.swift in Sources */,
 				A53E912E2A5C95DC007B0196 /* UiaOverlayView.swift in Sources */,
 				A54BA3A22850108300453D5E /* CirclesStore.swift in Sources */,
 				40AEA6742678E24200C9CBD1 /* BlurHashDecode.swift in Sources */,

@@ -29,29 +29,38 @@ struct SettingsScreen: View {
         NavigationStack {
             Form {
 
-                NavigationLink(destination: ProfileSettingsView(session: session.matrix)) {
-                    Label("Public Profile", systemImage: "person.circle.fill")
+                Section("General") {
+                    NavigationLink(destination: ProfileSettingsView(session: session.matrix)) {
+                        Label("Public Profile", systemImage: "person.circle.fill")
+                    }
+                    
+                    NavigationLink(destination: SecuritySettingsView(session: session.matrix)) {
+                        Label("Account Security", systemImage: "lock.fill")
+                    }
+                    
+                    NavigationLink(destination: NotificationsSettingsView(store: store)) {
+                        Label("Notifications", systemImage: "bell.fill")
+                    }
+                    
+                    NavigationLink(destination: IgnoredUsersView(session: session.matrix)) {
+                        Label("Ignored Users", systemImage: "person.2.slash.fill")
+                    }
+                }
+                
+                Section("About") {
+                    let version = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as? String ?? "???"
+                    Label("Version", systemImage: "123.rectangle.fill")
+                        .badge(version)
+                        .onTapGesture(count: 7){
+                            print("Setting developerMode = true")
+                            developerMode = true
+                        }
+                    
+                    NavigationLink(destination: AcknowledgementsView()) {
+                        Label("Acknowledgements", systemImage: "hands.clap.fill")
+                    }
                 }
 
-                NavigationLink(destination: SecuritySettingsView(session: session.matrix)) {
-                    Label("Account Security", systemImage: "lock.fill")
-                }
-                
-                NavigationLink(destination: NotificationsSettingsView(store: store)) {
-                    Label("Notifications", systemImage: "bell.fill")
-                }
-                
-                NavigationLink(destination: IgnoredUsersView(session: session.matrix)) {
-                    Label("Ignored Users", systemImage: "person.2.slash.fill")
-                }
-                
-                let version = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as? String ?? "???"
-                Label("Version", systemImage: "123.rectangle.fill")
-                    .badge(version)
-                    .onTapGesture(count: 7){
-                        print("Setting developerMode = true")
-                        developerMode = true
-                    }
                 
                 if developerMode {
                     Section("Developer Mode") {
