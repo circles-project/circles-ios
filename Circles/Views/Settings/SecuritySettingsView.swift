@@ -44,14 +44,26 @@ struct SecuritySettingsView: View {
         .buttonStyle(.plain)
     }
     
+    @ViewBuilder
+    var enrollEmailButton: some View {
+        AsyncButton(action: {
+            try await session.updateAuth(filter: { $0.stages.contains(AUTH_TYPE_ENROLL_EMAIL_SUBMIT_TOKEN)})
+        }) {
+            //Text("Change Password")
+            Label("Change Email Address", systemImage: "envelope")
+        }
+        .buttonStyle(.plain)
+    }
+    
     var body: some View {
         //NavigationView {
         VStack {
             Form {
-                passwordButton
-                
                 Label("Login Sessions", systemImage: "iphone")
-                Label("Change Email Address", systemImage: "envelope")
+
+                passwordButton
+
+                enrollEmailButton
             }
             .navigationTitle("Account Security")
         }
