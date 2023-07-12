@@ -32,9 +32,7 @@
 		409F42E9265DE06C00690A61 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F42E8265DE06C00690A61 /* WebView.swift */; };
 		409F4315265DE0F400690A61 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4313265DE0F300690A61 /* ImagePicker.swift */; };
 		409F4316265DE0F400690A61 /* ImageSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4314265DE0F400690A61 /* ImageSaver.swift */; };
-		409F431E265DE11000690A61 /* DevicesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F431B265DE10F00690A61 /* DevicesScreen.swift */; };
 		409F431F265DE11000690A61 /* DeviceRemovalSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F431C265DE10F00690A61 /* DeviceRemovalSheet.swift */; };
-		409F4320265DE11000690A61 /* DeviceInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F431D265DE11000690A61 /* DeviceInfoView.swift */; };
 		409F4323265DE11900690A61 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4322265DE11900690A61 /* Constants.swift */; };
 		409F4326265DE12600690A61 /* CloudImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4325265DE12600690A61 /* CloudImagePicker.swift */; };
 		409F4332265DE15F00690A61 /* CircleCreationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F432B265DE15C00690A61 /* CircleCreationSheet.swift */; };
@@ -175,9 +173,7 @@
 		409F42E8265DE06C00690A61 /* WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		409F4313265DE0F300690A61 /* ImagePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		409F4314265DE0F400690A61 /* ImageSaver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageSaver.swift; sourceTree = "<group>"; };
-		409F431B265DE10F00690A61 /* DevicesScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DevicesScreen.swift; sourceTree = "<group>"; };
 		409F431C265DE10F00690A61 /* DeviceRemovalSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceRemovalSheet.swift; sourceTree = "<group>"; };
-		409F431D265DE11000690A61 /* DeviceInfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceInfoView.swift; sourceTree = "<group>"; };
 		409F4322265DE11900690A61 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		409F4325265DE12600690A61 /* CloudImagePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudImagePicker.swift; sourceTree = "<group>"; };
 		409F432B265DE15C00690A61 /* CircleCreationSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleCreationSheet.swift; sourceTree = "<group>"; };
@@ -423,9 +419,7 @@
 		409F430D265DE0D500690A61 /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				409F431D265DE11000690A61 /* DeviceInfoView.swift */,
 				409F431C265DE10F00690A61 /* DeviceRemovalSheet.swift */,
-				409F431B265DE10F00690A61 /* DevicesScreen.swift */,
 				409F438F265DE2CE00690A61 /* SystemNoticesView.swift */,
 			);
 			path = Home;
@@ -757,9 +751,7 @@
 				A55F367329EDB66300F46971 /* GalleryInviteCard.swift in Sources */,
 				409F4323265DE11900690A61 /* Constants.swift in Sources */,
 				40AEA6752678E24200C9CBD1 /* BlurHashEncode.swift in Sources */,
-				409F4320265DE11000690A61 /* DeviceInfoView.swift in Sources */,
 				409F435C265DE1EE00690A61 /* LoginScreen.swift in Sources */,
-				409F431E265DE11000690A61 /* DevicesScreen.swift in Sources */,
 				409F4335265DE15F00690A61 /* CirclePicker.swift in Sources */,
 				409F42E9265DE06C00690A61 /* WebView.swift in Sources */,
 				40878FC72694C00000A66EF0 /* MessageContextMenu.swift in Sources */,
