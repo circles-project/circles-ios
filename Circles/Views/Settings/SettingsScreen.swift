@@ -64,9 +64,13 @@ struct SettingsScreen: View {
                 
                 if developerMode {
                     Section("Developer Mode") {
-                        Toggle("Developer Mode", isOn: $developerMode)
+                        Toggle(isOn: $developerMode) {
+                            Label("Developer Mode", systemImage: "wrench.and.screwdriver.fill")
+                        }
                         
-                        Toggle("Debug Mode", isOn: $debugMode)
+                        Toggle(isOn: $debugMode) {
+                            Label("Debug Mode", systemImage: "ladybug.fill")
+                        }
                     }
                 }
                 
