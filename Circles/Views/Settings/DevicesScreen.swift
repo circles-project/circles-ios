@@ -29,21 +29,14 @@ struct DevicesScreen: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 15) {
-            
-            ScrollView {
-
-                //currentDeviceView
-
-                ForEach(session.devices, id: \.deviceId) { device in
+        Form {
+            ForEach(session.devices, id: \.deviceId) { device in
+                NavigationLink(destination: DeviceDetailsView(session: session, device: device)) {
                     DeviceInfoView(session: session, device: device)
                 }
-
-                Spacer()
+                .buttonStyle(.plain)
             }
-            //.navigationBarTitle(Text("Login Sessions"))
         }
-        .padding()
         .navigationTitle(Text("Active Login Sessions"))
     }
 }

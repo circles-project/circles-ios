@@ -133,6 +133,7 @@
 		A5E101FE2814FC9F000B2C42 /* PerfectBCrypt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E101FD2814FC9F000B2C42 /* PerfectBCrypt.swift */; };
 		A5EE59C42A5F21C2007C24C7 /* DevicesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5EE59C22A5F21C2007C24C7 /* DevicesScreen.swift */; };
 		A5EE59C52A5F21C2007C24C7 /* DeviceInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5EE59C32A5F21C2007C24C7 /* DeviceInfoView.swift */; };
+		A5EE59C72A5F3A59007C24C7 /* DeviceDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5EE59C62A5F3A59007C24C7 /* DeviceDetailsView.swift */; };
 		A5F0148229D72371000D57B3 /* EmailEnrollRequestTokenForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F0148129D72371000D57B3 /* EmailEnrollRequestTokenForm.swift */; };
 		A5F0148429D7436E000D57B3 /* EmailEnrollSubmitTokenForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F0148329D7436E000D57B3 /* EmailEnrollSubmitTokenForm.swift */; };
 		A5F0148629D75899000D57B3 /* UsernameEnrollForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F0148529D75899000D57B3 /* UsernameEnrollForm.swift */; };
@@ -273,6 +274,7 @@
 		A5E101FF2814FD6D000B2C42 /* portable_endian.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = portable_endian.h; sourceTree = "<group>"; };
 		A5EE59C22A5F21C2007C24C7 /* DevicesScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DevicesScreen.swift; sourceTree = "<group>"; };
 		A5EE59C32A5F21C2007C24C7 /* DeviceInfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceInfoView.swift; sourceTree = "<group>"; };
+		A5EE59C62A5F3A59007C24C7 /* DeviceDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDetailsView.swift; sourceTree = "<group>"; };
 		A5F0148129D72371000D57B3 /* EmailEnrollRequestTokenForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailEnrollRequestTokenForm.swift; sourceTree = "<group>"; };
 		A5F0148329D7436E000D57B3 /* EmailEnrollSubmitTokenForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailEnrollSubmitTokenForm.swift; sourceTree = "<group>"; };
 		A5F0148529D75899000D57B3 /* UsernameEnrollForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsernameEnrollForm.swift; sourceTree = "<group>"; };
@@ -554,10 +556,11 @@
 		A52DF68629E73299008860C3 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				A5EE59C32A5F21C2007C24C7 /* DeviceInfoView.swift */,
-				A5EE59C22A5F21C2007C24C7 /* DevicesScreen.swift */,
 				A53E91312A5F152D007B0196 /* AcknowledgementsView.swift */,
 				A53E912B2A57416B007B0196 /* DeactivateAccountView.swift */,
+				A5EE59C62A5F3A59007C24C7 /* DeviceDetailsView.swift */,
+				A5EE59C32A5F21C2007C24C7 /* DeviceInfoView.swift */,
+				A5EE59C22A5F21C2007C24C7 /* DevicesScreen.swift */,
 				A53E912F2A5C9DEE007B0196 /* IgnoredUsersView.swift */,
 				A54346C42A3B84900025D147 /* LogoutView.swift */,
 				A53E91292A573838007B0196 /* NotificationsSettingsView.swift */,
@@ -839,6 +842,7 @@
 				A52DF68829E732AC008860C3 /* SettingsScreen.swift in Sources */,
 				409F42E6265DE03B00690A61 /* Utils.swift in Sources */,
 				A53E91242A5624E5007B0196 /* SecuritySettingsView.swift in Sources */,
+				A5EE59C72A5F3A59007C24C7 /* DeviceDetailsView.swift in Sources */,
 				409F4363265DE21A00690A61 /* MessageAuthorHeader.swift in Sources */,
 				409F436C265DE24000690A61 /* PersonsCircleRow.swift in Sources */,
 				A54BA3A62851222200453D5E /* WelcomeScreen.swift in Sources */,
