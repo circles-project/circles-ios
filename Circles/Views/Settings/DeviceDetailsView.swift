@@ -143,6 +143,7 @@ struct DeviceDetailsView: View {
                          Spacer()
                          Text(publicKey)
                              .lineLimit(4)
+                             .textSelection(.enabled)
                      }
                  }
                  
@@ -159,6 +160,7 @@ struct DeviceDetailsView: View {
                     .badge(device.displayName ?? "(none)")
                 Text("Session ID")
                     .badge(device.deviceId)
+                    .textSelection(.enabled)
                 Text("Status")
                     .badge(verificationStatusDescription)
             }
