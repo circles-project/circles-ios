@@ -12,9 +12,12 @@ import Matrix
 struct DeviceDetailsView: View {
     var session: Matrix.Session
     var device: Matrix.CryptoDevice
+    @Environment(\.presentationMode) var presentation
     
     @State var lastSeenIP: String?
     @State var lastSeenTS: Date?
+    
+    @State var isConfirmingDelete: Bool = false
     
     private var formatter: DateFormatter
     
@@ -109,6 +112,7 @@ struct DeviceDetailsView: View {
                 Text("Status")
                     .badge(verificationStatusDescription)
             }
+            
             Section("Last Seen Online") {
                 if let ts = lastSeenTS {
                     Text("Date & Time")
@@ -138,6 +142,31 @@ struct DeviceDetailsView: View {
             }
             
             keysSection
+            
+            Section("Delete") {
+                Button(role: .destructive, action: {
+                    isConfirmingDelete = true
+                }) {
+                    Text("Delete Session")
+                }
+                .confirmationDialog(
+                    "Are you sure you want to delete this session?",
+                    isPresented: $isConfirmingDelete,
+                    presenting: device.displayName ?? device.deviceId,
+                    actions: { deviceName in
+                        AsyncButton(role: .destructive, action: {
+                            try await session.deleteDevice(deviceId: device.deviceId) { (_,_) in
+                                self.presentation.wrappedValue.dismiss()
+                            }
+                        }) {
+                            Text("Delete session \(deviceName)")
+                        }
+                    },
+                    message: { deviceName in
+                    
+                    })
+                
+            }
         }
         .navigationTitle(Text("Session Details"))
 
