@@ -13,15 +13,20 @@ struct DeviceDetailsView: View {
     var session: Matrix.Session
     var device: Matrix.CryptoDevice
     
-    /*
+    @State var lastSeenIP: String?
+    @State var lastSeenTS: Date?
+    
+    private var formatter: DateFormatter
+    
     //var publicKeys: OrderedDictionary<String,String>
     
     init(session: Matrix.Session, device: Matrix.CryptoDevice) {
         self.session = session
         self.device = device
-        self.publicKeys = .init(uniqueKeys: device.keys.keys, values: device.keys.values)
+        self.formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .short
     }
-    */
     
     var verifyButtons: some View {
         HStack(alignment: .center, spacing: 20){
@@ -60,66 +65,6 @@ struct DeviceDetailsView: View {
             //}
 
         }
-    }
-    
-    var oldbody: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            //ScrollView {
-                
-                DeviceInfoView(session: session, device: device)
-                    .padding()
-                
-                VStack(alignment: .leading) {
-                    Text("Verification Status")
-                        .font(.headline)
-                        .padding(.vertical)
-                    
-                    HStack {
-                        if device.crossSigningTrusted {
-                            Image(systemName: "checkmark.shield")
-                                .foregroundColor(Color.green)
-                        }
-                        else {
-                            Image(systemName: "xmark.shield")
-                                .foregroundColor(Color.red)
-                        }
-                        Text("Cross Signing")
-                    }
-                    HStack {
-                        if device.locallyTrusted {
-                            Image(systemName: "checkmark.shield")
-                                .foregroundColor(Color.green)
-                        }
-                        else {
-                            Image(systemName: "xmark.shield")
-                                .foregroundColor(Color.red)
-                        }
-                        Text("Local Verification")
-                    }
-                }
-                
-                VStack(alignment: .leading) {
-                    Text("Public Keys")
-                        .font(.headline)
-                        .padding(.vertical)
-                    
-                    Grid(verticalSpacing: 10) {
-                        ForEach(device.keys.sorted(by: >), id: \.key) { (keyId,publicKey) in
-                            if let algo = keyId.split(separator: ":").first {
-                                GridRow {
-                                    Text(algo)
-                                    Text(publicKey)
-                                }
-                            }
-                        }
-                    }
-                }
-            
-            Spacer()
-            //}
-        }
-        .padding(.leading)
-        .navigationTitle(Text("Session Details"))
     }
     
     var verificationStatusDescription: String {
@@ -163,6 +108,26 @@ struct DeviceDetailsView: View {
                     .textSelection(.enabled)
                 Text("Status")
                     .badge(verificationStatusDescription)
+            }
+            Section("Last Seen Online") {
+                if let ts = lastSeenTS {
+                    Text("Date & Time")
+                        .badge("\(self.formatter.string(from: ts))")
+                }
+                if let ip = lastSeenIP {
+                    Text("IP Address")
+                        .badge(ip)
+                }
+            }
+            .onAppear() {
+                let _ = Task {
+                    if let basicDevice = try? await session.getDevice(deviceId: device.deviceId) {
+                        await MainActor.run {
+                            self.lastSeenTS = basicDevice.lastSeenTs
+                            self.lastSeenIP = basicDevice.lastSeenIp
+                        }
+                    }
+                }
             }
             
             Section("Verification Details") {
