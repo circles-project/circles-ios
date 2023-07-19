@@ -32,7 +32,6 @@
 		409F42E9265DE06C00690A61 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F42E8265DE06C00690A61 /* WebView.swift */; };
 		409F4315265DE0F400690A61 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4313265DE0F300690A61 /* ImagePicker.swift */; };
 		409F4316265DE0F400690A61 /* ImageSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4314265DE0F400690A61 /* ImageSaver.swift */; };
-		409F431F265DE11000690A61 /* DeviceRemovalSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F431C265DE10F00690A61 /* DeviceRemovalSheet.swift */; };
 		409F4323265DE11900690A61 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4322265DE11900690A61 /* Constants.swift */; };
 		409F4326265DE12600690A61 /* CloudImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4325265DE12600690A61 /* CloudImagePicker.swift */; };
 		409F4332265DE15F00690A61 /* CircleCreationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F432B265DE15C00690A61 /* CircleCreationSheet.swift */; };
@@ -83,6 +82,7 @@
 		A509B89A28189E950053E5BC /* BlindSaltSpeke in Frameworks */ = {isa = PBXBuildFile; productRef = A509B89928189E950053E5BC /* BlindSaltSpeke */; };
 		A509B89C2818A1F80053E5BC /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A509B89B2818A1F80053E5BC /* Array+Extension.swift */; };
 		A509B89E2819B6C90053E5BC /* CirclesError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A509B89D2819B6C90053E5BC /* CirclesError.swift */; };
+		A521C3F52A6889C00051ED88 /* InvitedCircleDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A521C3F42A6889C00051ED88 /* InvitedCircleDetailView.swift */; };
 		A52DF68129E59A81008860C3 /* RoomAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68029E59A81008860C3 /* RoomAvatar.swift */; };
 		A52DF68329E59C32008860C3 /* StateEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68229E59C32008860C3 /* StateEventView.swift */; };
 		A52DF68529E72CC1008860C3 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68429E72CC1008860C3 /* Keychain.swift */; };
@@ -139,6 +139,8 @@
 		A5F0148629D75899000D57B3 /* UsernameEnrollForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F0148529D75899000D57B3 /* UsernameEnrollForm.swift */; };
 		A5F0148829D789B3000D57B3 /* BsspekeEnrollSaveForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F0148729D789B3000D57B3 /* BsspekeEnrollSaveForm.swift */; };
 		A5F2E95C2A4497E30097DBF8 /* UiaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F2E95B2A4497E30097DBF8 /* UiaView.swift */; };
+		A5FB06E32A681079002C5B88 /* CircleInvitationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FB06E22A681079002C5B88 /* CircleInvitationsView.swift */; };
+		A5FB06E52A6814A8002C5B88 /* InvitedCircleCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FB06E42A6814A8002C5B88 /* InvitedCircleCard.swift */; };
 		A5FCF63B29CB8C95008278B0 /* ContainerRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FCF63A29CB8C95008278B0 /* ContainerRoom.swift */; };
 		A5FCF63D29CC9ABE008278B0 /* PersonRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FCF63C29CC9ABE008278B0 /* PersonRoom.swift */; };
 		A5FCF63F29CC9AF8008278B0 /* CircleSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FCF63E29CC9AF8008278B0 /* CircleSpace.swift */; };
@@ -176,7 +178,6 @@
 		409F42E8265DE06C00690A61 /* WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		409F4313265DE0F300690A61 /* ImagePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		409F4314265DE0F400690A61 /* ImageSaver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageSaver.swift; sourceTree = "<group>"; };
-		409F431C265DE10F00690A61 /* DeviceRemovalSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceRemovalSheet.swift; sourceTree = "<group>"; };
 		409F4322265DE11900690A61 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		409F4325265DE12600690A61 /* CloudImagePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudImagePicker.swift; sourceTree = "<group>"; };
 		409F432B265DE15C00690A61 /* CircleCreationSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleCreationSheet.swift; sourceTree = "<group>"; };
@@ -226,6 +227,7 @@
 		A504DA7228120AF100EFF42E /* AsyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncButton.swift; sourceTree = "<group>"; };
 		A509B89B2818A1F80053E5BC /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
 		A509B89D2819B6C90053E5BC /* CirclesError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesError.swift; sourceTree = "<group>"; };
+		A521C3F42A6889C00051ED88 /* InvitedCircleDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitedCircleDetailView.swift; sourceTree = "<group>"; };
 		A52DF68029E59A81008860C3 /* RoomAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomAvatar.swift; sourceTree = "<group>"; };
 		A52DF68229E59C32008860C3 /* StateEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateEventView.swift; sourceTree = "<group>"; };
 		A52DF68429E72CC1008860C3 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
@@ -280,6 +282,8 @@
 		A5F0148529D75899000D57B3 /* UsernameEnrollForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsernameEnrollForm.swift; sourceTree = "<group>"; };
 		A5F0148729D789B3000D57B3 /* BsspekeEnrollSaveForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BsspekeEnrollSaveForm.swift; sourceTree = "<group>"; };
 		A5F2E95B2A4497E30097DBF8 /* UiaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiaView.swift; sourceTree = "<group>"; };
+		A5FB06E22A681079002C5B88 /* CircleInvitationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleInvitationsView.swift; sourceTree = "<group>"; };
+		A5FB06E42A6814A8002C5B88 /* InvitedCircleCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitedCircleCard.swift; sourceTree = "<group>"; };
 		A5FCF63A29CB8C95008278B0 /* ContainerRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerRoom.swift; sourceTree = "<group>"; };
 		A5FCF63C29CC9ABE008278B0 /* PersonRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonRoom.swift; sourceTree = "<group>"; };
 		A5FCF63E29CC9AF8008278B0 /* CircleSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleSpace.swift; sourceTree = "<group>"; };
@@ -425,7 +429,6 @@
 		409F430D265DE0D500690A61 /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				409F431C265DE10F00690A61 /* DeviceRemovalSheet.swift */,
 				409F438F265DE2CE00690A61 /* SystemNoticesView.swift */,
 			);
 			path = Home;
@@ -441,6 +444,9 @@
 				409F432E265DE15E00690A61 /* CirclePicker.swift */,
 				409F4330265DE15F00690A61 /* CirclesOverviewScreen.swift */,
 				409F432F265DE15E00690A61 /* CircleTimelineScreen.swift */,
+				A5FB06E22A681079002C5B88 /* CircleInvitationsView.swift */,
+				A5FB06E42A6814A8002C5B88 /* InvitedCircleCard.swift */,
+				A521C3F42A6889C00051ED88 /* InvitedCircleDetailView.swift */,
 			);
 			path = Circles;
 			sourceTree = "<group>";
@@ -739,6 +745,7 @@
 				A5E101FE2814FC9F000B2C42 /* PerfectBCrypt.swift in Sources */,
 				A5FCF64129CC9B30008278B0 /* GroupRoom.swift in Sources */,
 				A509B89E2819B6C90053E5BC /* CirclesError.swift in Sources */,
+				A5FB06E52A6814A8002C5B88 /* InvitedCircleCard.swift in Sources */,
 				A53E912C2A57416B007B0196 /* DeactivateAccountView.swift in Sources */,
 				A5E101F82814FAFD000B2C42 /* bcrypt.c in Sources */,
 				403CEA9326E864160054DBF4 /* TermsOfServiceForm.swift in Sources */,
@@ -755,6 +762,7 @@
 				A54BA3A928529BE500453D5E /* SetupScreen.swift in Sources */,
 				A5CC0ACE29DB6E26005935F0 /* BsspekeLoginOprfForm.swift in Sources */,
 				A54BA3AB28592D2000453D5E /* SetupSession.swift in Sources */,
+				A521C3F52A6889C00051ED88 /* InvitedCircleDetailView.swift in Sources */,
 				409F43A8265DE43B00690A61 /* RoomSecurityInfoSheet.swift in Sources */,
 				A52DF69029E8AB52008860C3 /* Color+background.swift in Sources */,
 				409F437F265DE28600690A61 /* RandomizedCircles.swift in Sources */,
@@ -834,6 +842,7 @@
 				409F4316265DE0F400690A61 /* ImageSaver.swift in Sources */,
 				409F4344265DE17500690A61 /* GroupConfigSheet.swift in Sources */,
 				A53E912A2A573838007B0196 /* NotificationsSettingsView.swift in Sources */,
+				A5FB06E32A681079002C5B88 /* CircleInvitationsView.swift in Sources */,
 				409F4376265DE25000690A61 /* PhotoGalleryCard.swift in Sources */,
 				A5FCF63B29CB8C95008278B0 /* ContainerRoom.swift in Sources */,
 				40CD7F6C2667D3B600DE315F /* PhotoPicker.swift in Sources */,
@@ -846,7 +855,6 @@
 				409F4363265DE21A00690A61 /* MessageAuthorHeader.swift in Sources */,
 				409F436C265DE24000690A61 /* PersonsCircleRow.swift in Sources */,
 				A54BA3A62851222200453D5E /* WelcomeScreen.swift in Sources */,
-				409F431F265DE11000690A61 /* DeviceRemovalSheet.swift in Sources */,
 				4012C54926A752C400BB15E6 /* EmojiPicker.swift in Sources */,
 				409F4393265DE2DE00690A61 /* TimelineView.swift in Sources */,
 			);
@@ -982,9 +990,9 @@
 				CODE_SIGN_ENTITLEMENTS = Circles/Circles.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"Circles/Preview Content\"";
-				DEVELOPMENT_TEAM = Y5CK8529S5;
+				DEVELOPMENT_TEAM = 2W7AC6T8T5;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Circles/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
@@ -993,8 +1001,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.99.1;
-				PRODUCT_BUNDLE_IDENTIFIER = social.kombucha.circles;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = org.futo.circles;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1014,11 +1022,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Circles/Circles.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"Circles/Preview Content\"";
-				DEVELOPMENT_TEAM = Y5CK8529S5;
+				DEVELOPMENT_TEAM = 2W7AC6T8T5;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Circles/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
@@ -1027,8 +1035,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.99.1;
-				PRODUCT_BUNDLE_IDENTIFIER = social.kombucha.circles;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = org.futo.circles;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
