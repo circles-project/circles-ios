@@ -125,7 +125,7 @@ class ContainerRoom<T: Matrix.Room>: Matrix.Room {
         // NOTE: We don't have to do anything to the `rooms` object here.
         //       If everything works as it should, Matrix will give us the
         //       m.space.child event on our next sync, and then we will
-        //       automatically create the Room object and add it to our list.
+        //       automatically process that event and null out the child entry.
     }
     
     public func addChildRoom(_ childRoomId: RoomId) async throws {
