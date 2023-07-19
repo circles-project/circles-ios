@@ -86,16 +86,16 @@ struct CircleTimeline: View {
                         ProgressView("Loading...")
                             .progressViewStyle(LinearProgressViewStyle())
                     }
-                    else if space.canPaginate {
+                    else if space.canPaginateRooms {
                         AsyncButton(action: {
-                            try await space.paginate()
+                            try await space.paginateRooms()
                         }) {
                             Text("Load More")
                         }
                         .onAppear {
                             // Basically it's like we automatically click "Load More" for the user
                             let _ = Task {
-                                try await space.paginate()
+                                try await space.paginateRooms()
                             }
                         }
                     }
