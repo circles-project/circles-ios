@@ -6,17 +6,23 @@
 //
 
 import Foundation
+import Combine
 import os
 import Matrix
 
 class ContainerRoom<T: Matrix.Room>: Matrix.Room {
-    @Published public var rooms: [T]
+    @Published private(set) public var rooms: [T]
     var logger: os.Logger
+    var sinks: [RoomId: Cancellable]
+
     
     public required init(roomId: RoomId, session: Matrix.Session, initialState: [ClientEventWithoutRoomId], initialTimeline: [ClientEventWithoutRoomId] = []) throws {
         self.rooms = []
         self.logger = Logger(subsystem: "container", category: roomId.description)
+        self.sinks = [:]
+        
         try super.init(roomId: roomId, session: session, initialState: initialState, initialTimeline: initialTimeline)
+        // Swift Phase 1 init is complete.  Now we can use `self`.
         
         // Now let's look to see what (if any) child rooms we have
         
@@ -41,6 +47,11 @@ class ContainerRoom<T: Matrix.Room>: Matrix.Room {
                         continue
                     }
                     tmpRooms.append(room)
+                    
+                    // Also re-publish changes from this child room
+                    self.sinks[room.roomId] = room.objectWillChange.sink { _ in
+                        self.objectWillChange.send()
+                    }
                 }
                 let newRooms = tmpRooms
                 logger.debug("Found a total of \(newRooms.count) child rooms")
@@ -80,6 +91,13 @@ class ContainerRoom<T: Matrix.Room>: Matrix.Room {
             await MainActor.run {
                 self.rooms.removeAll(where: { $0.roomId == childRoomId })
             }
+            
+            // And stop publishing changes from the child room
+            if let sink = self.sinks.removeValue(forKey: childRoomId)
+            {
+                sink.cancel()
+            }
+            
             return
 
         } else {
@@ -97,6 +115,11 @@ class ContainerRoom<T: Matrix.Room>: Matrix.Room {
             }
             await MainActor.run {
                 self.rooms.append(room)
+            }
+            
+            // Re-publish changes from the child room
+            self.sinks[room.roomId] = room.objectWillChange.sink { _ in
+                self.objectWillChange.send()
             }
         }
     }
