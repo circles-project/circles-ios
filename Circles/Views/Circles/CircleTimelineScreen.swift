@@ -77,12 +77,9 @@ struct CircleTimelineScreen: View {
     }
     
     var body: some View {
-        //VStack {
-            /*
-            composer
-                .layoutPriority(1)
-            */
-        let foo = self.stupidSwiftUiTrick
+        ZStack {
+
+            let foo = self.stupidSwiftUiTrick
             
             CircleTimeline(space: space)
                 .navigationBarTitle(space.name ?? "Circle", displayMode: .inline)
@@ -136,7 +133,25 @@ struct CircleTimelineScreen: View {
                         Text("Coming soon!")
                     }
                 }
-        //}
+            
+            if let wall = space.wall {
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            self.sheetType = .composer
+                        }) {
+                            Image(systemName: "plus.bubble.fill")
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .padding()
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

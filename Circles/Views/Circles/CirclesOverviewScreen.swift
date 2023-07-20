@@ -35,21 +35,40 @@ struct CirclesOverviewScreen: View {
     
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading, spacing: 0) {
+            ZStack {
+                
                 ScrollView {
-                    
-                    CircleInvitationsIndicator(session: container.session, container: container)
-                    
-                    ForEach(container.rooms) { circle in
-                        NavigationLink(destination: CircleTimelineScreen(space: circle)) {
-                            CircleOverviewCard(space: circle)
+                    VStack(alignment: .leading, spacing: 0) {
+                        
+                        CircleInvitationsIndicator(session: container.session, container: container)
+                        
+                        ForEach(container.rooms) { circle in
+                            NavigationLink(destination: CircleTimelineScreen(space: circle)) {
+                                CircleOverviewCard(space: circle)
                                 //.padding(.top)
+                            }
+                            .onTapGesture {
+                                print("DEBUGUI\tNavigationLink tapped for Circle \(circle.id)")
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            Divider()
                         }
-                        .onTapGesture {
-                            print("DEBUGUI\tNavigationLink tapped for Circle \(circle.id)")
+                    }
+                }
+                
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            self.sheetType = .create
+                        }) {
+                            Image(systemName: "plus.circle.fill")
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .padding()
                         }
-                        .buttonStyle(PlainButtonStyle())
-                        Divider()
                     }
                 }
                 
