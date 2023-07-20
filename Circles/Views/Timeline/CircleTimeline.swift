@@ -57,11 +57,10 @@ struct CircleTimeline: View {
     }
     
     var body: some View {
-        //let messages = stream.getTopLevelMessages()
-        // FIXME: Hacky kludgy version
-        let messages = space.rooms.reduce([], { (messages, room) -> [Matrix.Message] in
-            messages + room.messages
-        })
+        let messages: [Matrix.Message] = space.getCollatedTimeline(filter: {
+            [M_ROOM_MESSAGE, M_ROOM_ENCRYPTED].contains($0.type)
+        }).reversed()
+        
         VStack(alignment: .leading) {
             ScrollView {
                 LazyVStack(alignment: .leading) {
@@ -101,6 +100,11 @@ struct CircleTimeline: View {
                     }
                     
                     Spacer()
+                }
+            }
+            .onAppear {
+                _ = Task {
+                    try await space.paginateEmptyTimelines(limit: 25)
                 }
             }
 
