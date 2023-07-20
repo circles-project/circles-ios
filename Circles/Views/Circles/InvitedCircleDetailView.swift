@@ -17,7 +17,7 @@ struct InvitedCircleDetailView: View {
         ScrollView {
             VStack {
                 
-                Text("You have been invited to follow:")
+                Text("You have been invited to:")
                     .padding()
                 
                 Image(uiImage: room.avatar ?? UIImage())

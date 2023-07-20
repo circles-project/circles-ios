@@ -20,7 +20,6 @@ struct CirclesOverviewScreen: View {
     @ObservedObject var container: ContainerRoom<CircleSpace>
     @State var selection: String = ""
     
-    @State var invitations: [Matrix.InvitedRoom] = []
     @State private var sheetType: CirclesOverviewSheetType? = nil
     
     var toolbarMenu: some View {
@@ -39,9 +38,7 @@ struct CirclesOverviewScreen: View {
             VStack(alignment: .leading, spacing: 0) {
                 ScrollView {
                     
-                    NavigationLink(destination: CircleInvitationsView(invitations: $invitations)) {
-                        Text("You have \(invitations.count) pending invitation(s)")
-                    }
+                    CircleInvitationsIndicator(session: container.session, container: container)
                     
                     ForEach(container.rooms) { circle in
                         NavigationLink(destination: CircleTimelineScreen(space: circle)) {
@@ -59,11 +56,6 @@ struct CirclesOverviewScreen: View {
             }
             .padding(.top)
             .navigationBarTitle("My Circles", displayMode: .inline)
-            .onAppear {
-                self.invitations = container.session.invitations.values.filter {
-                    $0.type == ROOM_TYPE_CIRCLE
-                }
-            }
             .sheet(item: $sheetType) { st in
                 switch(st) {
                 case .create:

@@ -11,6 +11,10 @@ import Matrix
 struct InvitedCircleCard: View {
     @ObservedObject var room: Matrix.InvitedRoom
     @ObservedObject var user: Matrix.User
+    @ObservedObject var container: ContainerRoom<CircleSpace>
+    
+    @State var showAcceptSheet = false
+    @State var selectedCircles: Set<CircleSpace> = []
     
     var body: some View {
         HStack(spacing: 1) {
@@ -50,10 +54,32 @@ struct InvitedCircleCard: View {
                     
                     Spacer()
                     
-                    AsyncButton(action: {
-                        try await room.accept()
+                    Button(action: {
+                        self.showAcceptSheet = true
                     }) {
                         Label("Accept", systemImage: "hand.thumbsup.fill")
+                    }
+                    .sheet(isPresented: $showAcceptSheet) {
+                        ScrollView {
+                            VStack {
+                                Text("Where would you like to follow updates from \(room.name ?? "this friend's timeline")?")
+                                
+                                Text("You can choose one or more of your circles")
+                                
+                                CirclePicker(container: container, selected: $selectedCircles)
+                                
+                                AsyncButton(action: {
+                                    try await room.accept()
+                                    for circle in selectedCircles {
+                                        try await circle.addChildRoom(room.roomId)
+                                    }
+                                }) {
+                                    Label("Accept invite and follow", systemImage: "thumbsup")
+                                }
+                                .disabled(selectedCircles.isEmpty)
+                            }
+                            .padding()
+                        }
                     }
                     
                     Spacer()
@@ -64,7 +90,8 @@ struct InvitedCircleCard: View {
 
                     }
                 }
-                .padding()
+                .padding(.top, 5)
+                .padding(.trailing, 10)
             }
         }
         .onAppear {
