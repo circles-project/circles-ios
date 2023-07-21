@@ -31,11 +31,11 @@ struct PersonHeaderRow: View {
         guard let msg = user.statusMessage else {
             return ""
         }
-        return "\"" + msg + "\""
+        return "Status: \"\(msg)\""
     }
     
     var body: some View {
-        HStack(alignment: .top) {
+        HStack(alignment: .center) {
             image
                 .resizable()
                 .scaledToFill()
@@ -66,8 +66,9 @@ struct PersonHeaderRow: View {
             
             Image(systemName: "chevron.right")
                 .padding(.trailing, 2)
+                .foregroundColor(.gray)
         }
-        .padding([.leading, .top], 5)
+        //.padding([.leading, .top], 5)
     }
 }
 

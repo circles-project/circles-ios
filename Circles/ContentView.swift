@@ -96,7 +96,9 @@ struct ContentView: View {
                     }
                     .tag(Tab.circles)
                 
-                PeopleOverviewScreen(container: self.session.people)
+                PeopleOverviewScreen(people: self.session.people,
+                                     circles: self.session.circles,
+                                     groups: self.session.groups)
                     .tabItem {
                         Image(systemName: "rectangle.stack.person.crop")
                         Text("People")
