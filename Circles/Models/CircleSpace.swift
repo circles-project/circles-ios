@@ -16,7 +16,9 @@ class CircleSpace: ContainerRoom<Matrix.Room> {
     }
     
     var followers: [UserId] {
-        self.wall?.joinedMembers ?? []
+        self.wall?.joinedMembers.filter( {
+            $0 != self.session.creds.userId // Not a "Yes, sir", not a follower...  Have a seat in the foyer.  Take a number.
+        }) ?? []
     }
     
     var following: [UserId] {
