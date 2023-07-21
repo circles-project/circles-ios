@@ -7,99 +7,33 @@
 //
 
 import SwiftUI
-
-struct PersonsDummyCircleRow: View {
-    @ObservedObject var user: MatrixUser
-    
-    var image: Image {
-        guard let img = user.avatarImage else {
-            return Image(uiImage: UIImage())
-        }
-        return Image(uiImage: img)
-    }
-    
-    var userName: String {
-        guard let displayName = user.displayName else {
-            return user.id.components(separatedBy: ":").first ?? user.id
-        }
-        return displayName
-    }
-    
-    var body: some View {
-        HStack(alignment: .center) {
-            
-            image
-                .resizable()
-                .scaledToFill()
-                .clipShape(Circle())
-                .frame(width: 40, height: 40)
-                .clipped()
-
-            VStack(alignment: .leading) {
-                /*
-                Text(userName)
-                    .font(.headline)
-                    .fontWeight(.semibold)
-                */
-                
-                Text("All Circles")
-                    .font(.headline)
-                    .fontWeight(.semibold)
-
-                /*
-                timestamp
-                    .font(.caption)
-                    .foregroundColor(Color.gray)
-                */
-            }
-            
-            //Image(systemName: "chevron.right")
-            
-            Spacer()
-
-        }
-        .padding(.leading, 5)
-    }
-}
+import Matrix
 
 struct PersonsCircleRow: View {
-    @ObservedObject var room: MatrixRoom
-    var showOwners = false
+    @ObservedObject var room: Matrix.SpaceChildRoom
+    @ObservedObject var user: Matrix.User
+    
+    init(room: Matrix.SpaceChildRoom) {
+        self.room = room
+        self.user = room.session.getUser(userId: room.creator)
+    }
     
     var image: Image {
-        guard let img = room.avatarImage else {
-            return Image(uiImage: UIImage())
-        }
+        let img = room.avatar ?? UIImage()
         return Image(uiImage: img)
     }
     
     var roomName: String {
-        guard let displayName = room.displayName else {
-            return room.id
-        }
-        return displayName
+        room.name ?? ""
     }
     
     var userName: String {
-        guard let user = room.creator ?? room.owners.first else {
-            return "(unknown)"
-        }
-        guard let displayName = user.displayName else {
-            return user.id.components(separatedBy: ":").first ?? user.id
-        }
-        return displayName
-    }
-    
-    var timestamp: Text {
-        let formatter = RelativeDateTimeFormatter()
-        let ts = room.timestamp
-        
-        return Text("Last updated \(ts, formatter: formatter)")
+        return user.displayName ?? "\(user.userId)"
     }
     
     var body: some View {
         HStack(alignment: .center) {
-            let frameSize: CGFloat = showOwners ? 60 : 40
+            let frameSize: CGFloat = 40
             
             image
                 .resizable()
@@ -109,11 +43,6 @@ struct PersonsCircleRow: View {
                 .clipped()
 
             VStack(alignment: .leading) {
-                if showOwners {
-                    Text(userName)
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                }
                 
                 Text(roomName)
                     .font(.headline)
@@ -125,9 +54,6 @@ struct PersonsCircleRow: View {
                     .foregroundColor(Color.gray)
                 */
 
-                timestamp
-                    .font(.caption)
-                    .foregroundColor(Color.gray)
             }
             
             //Image(systemName: "chevron.right")

@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Matrix
 
 enum PhotosSheetType: String {
     case create
@@ -18,8 +19,14 @@ extension PhotosSheetType: Identifiable {
 
 struct PhotosOverviewScreen: View {
     //@ObservedObject var store: KSStore
-    @ObservedObject var container: PhotoGalleriesContainer
+    @ObservedObject var container: ContainerRoom<GalleryRoom>
     //@State var showCreationSheet = false
+    var room: Matrix.Room?
+    
+    init(container: ContainerRoom<GalleryRoom>) {
+        self.container = container
+        self.room = container.rooms.first
+    }
     
     @State private var sheetType: PhotosSheetType? = nil
     
@@ -43,16 +50,40 @@ struct PhotosOverviewScreen: View {
     
     var body: some View {
         NavigationView {
-            ScrollView {
-                ForEach(container.galleries) { gallery in
-                    //Text("Found room \(room.roomId.string)")
-                    NavigationLink(destination: PhotoGalleryView(gallery: gallery)) {
-                        PhotoGalleryCard(room: gallery.room)
-                        // FIXME Add a longPress gesture
-                        //       for setting/changing the
-                        //       avatar image for the gallery
+            ZStack {
+                ScrollView {
+                        let invitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_PHOTOS }
+                        ForEach(invitations) { invitation in
+                            let user = container.session.getUser(userId: invitation.sender)
+                            GalleryInviteCard(room: invitation, user: user, container: container)
+                        }
+                    
+                    ForEach(container.rooms) { room in
+                        //Text("Found room \(room.roomId.string)")
+                        NavigationLink(destination: PhotoGalleryView(room: room)) {
+                            PhotoGalleryCard(room: room)
+                            // FIXME Add a longPress gesture
+                            //       for setting/changing the
+                            //       avatar image for the gallery
+                        }
+                        .padding(1)
                     }
-                    .padding(1)
+                }
+                
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            self.sheetType = .create
+                        }) {
+                            Image(systemName: "plus.circle.fill")
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .padding()
+                        }
+                    }
                 }
             }
             .navigationBarTitle("Photo Galleries", displayMode: .inline)
@@ -69,8 +100,8 @@ struct PhotosOverviewScreen: View {
                     toolbarMenu
                 }
             }
+            .navigationViewStyle(StackNavigationViewStyle())
         }
-        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

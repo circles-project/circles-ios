@@ -8,21 +8,27 @@
 import SwiftUI
 
 struct AsyncButton<Label: View>: View {
-    var action: () async -> Void
+    var role: ButtonRole?
+    var action: () async throws -> Void
     @ViewBuilder var label: () -> Label
 
     @State private var pending = false
 
+    func runAction() {
+        pending = true
+    
+        Task {
+            try await action()
+            await MainActor.run {
+                pending = false
+            }
+        }
+    }
+    
     var body: some View {
         Button(
-            action: {
-                pending = true
-            
-                Task {
-                    await action()
-                    pending = false
-                }
-            },
+            role: role,
+            action: runAction,
             label: {
                 label()
             }

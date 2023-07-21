@@ -8,32 +8,33 @@
 import Foundation
 import UIKit
 
+import Matrix
+
 class SetupSession: ObservableObject {
-    var creds: MatrixCredentials
+    var creds: Matrix.Credentials
     var store: CirclesStore
-    var api: MatrixAPI
-    var displayName: String
+    var client: Matrix.Client
     
     enum State {
         case profile
-        case circles
+        case circles(String)
         case allDone
     }
     @Published var state: State
     
-    init(creds: MatrixCredentials, store: CirclesStore, displayName: String) throws {
+    init(creds: Matrix.Credentials, s4keyInfo: (String, Data), store: CirclesStore) async throws {
         self.creds = creds
         self.store = store
-        self.api = try MatrixAPI(creds: creds)
-        self.displayName = displayName
+        //self.client = try Matrix.Client(creds: creds)
+        self.client = try await Matrix.Session(creds: creds, startSyncing: false, secretStorageKeyInfo: s4keyInfo)
         self.state = .profile
     }
     
     func setupProfile(name: String, avatar: UIImage) async throws {
-        try await api.setMyDisplayName(name)
-        try await api.setMyAvatarImage(avatar)
+        try await client.setMyDisplayName(name)
+        try await client.setMyAvatarImage(avatar)
         await MainActor.run {
-            self.state = .circles
+            self.state = .circles(name)
         }
     }
     
@@ -45,26 +46,35 @@ class SetupSession: ObservableObject {
     func setupCircles(_ circles: [CircleInfo]) async throws {
         print("Creating Spaces hierarchy for Circles rooms")
         print("- Creating Space rooms")
-        let topLevelSpace = try await api.createSpace(name: "Circles")
-        let myCircles = try await api.createSpace(name: "My Circles")
-        let myGroups = try await api.createSpace(name: "My Groups")
-        let myGalleries = try await api.createSpace(name: "My Photo Galleries")
+        let topLevelSpace = try await client.createSpace(name: "Circles")
+        let myCircles = try await client.createSpace(name: "My Circles")
+        let myGroups = try await client.createSpace(name: "My Groups")
+        let myGalleries = try await client.createSpace(name: "My Photo Galleries")
+        let myPeople = try await client.createSpace(name: "My People")
         
         print("- Adding Space child relationships")
         
-        try await api.addSpaceChild(myCircles, to: topLevelSpace)
-        try await api.addSpaceChild(myGroups, to: topLevelSpace)
-        try await api.addSpaceChild(myGalleries, to: topLevelSpace)
+        try await client.addSpaceChild(myCircles, to: topLevelSpace)
+        try await client.addSpaceChild(myGroups, to: topLevelSpace)
+        try await client.addSpaceChild(myGalleries, to: topLevelSpace)
+        try await client.addSpaceChild(myPeople, to: topLevelSpace)
         
         print("- Adding tag to top-level space")
-        try await api.addTag(roomId: topLevelSpace, tag: ROOM_TAG_CIRCLES_SPACE_ROOT)
+        try await client.addTag(roomId: topLevelSpace, tag: ROOM_TAG_CIRCLES_SPACE_ROOT)
+        
+        print("- Uploading Circles config to account data")
+        let config = CirclesConfigContent(root: topLevelSpace, circles: myCircles, groups: myGroups, galleries: myGalleries, people: myPeople)
+        try await client.putAccountData(config, for: EVENT_TYPE_CIRCLES_CONFIG)
         
         for circle in circles {
-            print("Creating circle [\(circle.name)]")
-            let circleRoom = try await api.createSpace(name: circle.name)
-            let wallRoom = try await api.createRoom(name: circle.name, type: ROOM_TYPE_CIRCLE)
-            try await api.addSpaceChild(wallRoom, to: circleRoom)
-            try await api.addSpaceChild(circleRoom, to: myCircles)
+            print("- Creating circle [\(circle.name)]")
+            let circleRoomId = try await client.createSpace(name: circle.name)
+            let wallRoomId = try await client.createRoom(name: circle.name, type: ROOM_TYPE_CIRCLE)
+            if let avatar = circle.avatar {
+                try await client.setAvatarImage(roomId: wallRoomId, image: avatar)
+            }
+            try await client.addSpaceChild(wallRoomId, to: circleRoomId)
+            try await client.addSpaceChild(circleRoomId, to: myCircles)
         }
         
         await MainActor.run {

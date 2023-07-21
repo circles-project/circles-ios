@@ -6,40 +6,54 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct RepliesView: View {
-    @ObservedObject var room: MatrixRoom
-    var parent: MatrixMessage
+    var room: Matrix.Room
+    @ObservedObject var parent: Matrix.Message
+    @AppStorage("debugMode") var debugMode: Bool = false
     @State var expanded = false
     @State var showReplyComposer = false
 
     var body: some View {
         VStack(alignment: .leading) {
-            let messages = room.getReplies(to: parent.id)
-            if !expanded && !messages.isEmpty {
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        self.expanded = true
-                        room.objectWillChange.send()
-                    }) {
-                        Text("Show \(messages.count) replies")
-                            .font(.footnote)
+            let messages = parent.replies ?? []
+            
+            if messages.isEmpty {
+                if debugMode {
+                    HStack {
+                        Spacer()
+                        Text("No replies")
                     }
+                } else {
+                    EmptyView()
                 }
             }
-            if expanded {
-                ForEach(messages) { message in
-                    MessageCard(message: message, displayStyle: .timeline)
-                }
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        self.expanded = false
-                        room.objectWillChange.send()
-                    }) {
-                        Text("Hide replies")
-                            .font(.footnote)
+            else {
+                if !expanded {
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            self.expanded = true
+                            room.objectWillChange.send()
+                        }) {
+                            Text("Show \(messages.count) replies")
+                                .font(.footnote)
+                        }
+                    }
+                } else {
+                    ForEach(messages) { message in
+                        MessageCard(message: message)
+                    }
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            self.expanded = false
+                            room.objectWillChange.send()
+                        }) {
+                            Text("Hide replies")
+                                .font(.footnote)
+                        }
                     }
                 }
             }

@@ -7,9 +7,10 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct RoomCircleAvatar: View {
-    @ObservedObject var room: MatrixRoom
+    @ObservedObject var room: Matrix.Room
     @Environment(\.colorScheme) var colorScheme
     //var position: CGPoint
     var location: CGPoint
@@ -29,7 +30,7 @@ struct RoomCircleAvatar: View {
             
             ZStack {
 
-                if let img = room.avatarImage {
+                if let img = room.avatar {
                     Image(uiImage: img)
                         .resizable()
                         .scaledToFill()
@@ -44,16 +45,21 @@ struct RoomCircleAvatar: View {
                 }
                 else {
                     let color = [Color.blue, Color.purple, Color.orange, Color.yellow, Color.red, Color.pink, Color.green].randomElement() ?? Color.green
-                    let owner = room.owners.first
+                    let userId = room.creator
+                    let user = room.session.getUser(userId: userId)
                     
                     Circle()
                         .foregroundColor(color)
                         .scaleEffect(scale)
                         .position(x: location.x,
                                   y: location.y)
+                        .onAppear {
+                            room.updateAvatarImage()
+                        }
                     
-                    if let user = owner {
-                        Text(user.initials)
+                    if let displayName = user.displayName {
+                        let initials = displayName.split(whereSeparator: { $0.isWhitespace }).joined().capitalized
+                        Text(initials)
                             .fontWeight(.bold)
                             .foregroundColor(outlineColor)
                             .position(x: location.x,
@@ -76,7 +82,7 @@ struct RoomCircleAvatar: View {
 }
 
 struct CircleAvatar: View {
-    @ObservedObject var socialcircle: SocialCircle
+    @ObservedObject var space: CircleSpace
     @Environment(\.colorScheme) var colorScheme
 
     var outlineColor: Color {
@@ -86,9 +92,11 @@ struct CircleAvatar: View {
     }
     
     var body: some View {
-        let mainRoom: MatrixRoom? = socialcircle.outbound
-        let otherRooms = socialcircle.stream.rooms.filter { room in
-            !room.tags.contains(ROOM_TAG_OUTBOUND)
+        let mainRoom: Matrix.Room? = space.rooms.first {
+            $0.creator == space.session.creds.userId
+        }
+        let otherRooms = space.rooms.filter {
+            $0.creator != space.session.creds.userId
         }
         let N_MAX = 9
         let n = min(otherRooms.count, N_MAX)

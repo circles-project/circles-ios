@@ -6,10 +6,11 @@
 //
 
 import SwiftUI
+import Matrix
 import KeyboardKit
 
 struct EmojiPicker: View {
-    var message: MatrixMessage
+    var message: Matrix.Message
     @Environment(\.presentationMode) var presentation
 
     //let categories: [EmojiCategory] = [.smileys, .animals, .foods, .activities, .travels, .objects, .symbols, .flags] // Everything but "recent" and "frequent"
@@ -54,18 +55,18 @@ struct EmojiPicker: View {
 
                     ForEach(reactions, id: \.self) { reaction in
                         //let reaction: String = emoji.char
-                        Button(action: {
-                            self.message.addReaction(reaction: reaction) { response in
-                                // Does it make any difference whether the request
-                                // succeeded or failed?
-                                // Can we do anything about it either way?
-
-                                // Log that we've used this emoji
-                                let provider = MostRecentEmojiProvider()
-                                provider.registerEmoji(Emoji(reaction))
-
-                                self.presentation.wrappedValue.dismiss()
+                        AsyncButton(action: {
+                            guard let reactionEventId = try? await self.message.sendReaction(reaction)
+                            else {
+                                // FIXME: Set some error message
+                                return
                             }
+                            
+                            // Log that we've used this emoji
+                            let provider = MostRecentEmojiProvider()
+                            provider.registerEmoji(Emoji(reaction))
+
+                            self.presentation.wrappedValue.dismiss()
                         }) {
                             Text(reaction)
                                 .font(.title)

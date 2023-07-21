@@ -8,6 +8,7 @@
 //
 
 import SwiftUI
+import Matrix
 
 enum GroupScreenSheetType: String {
     case members
@@ -27,10 +28,11 @@ extension GroupScreenSheetType: Identifiable {
 }
 
 struct GroupTimelineScreen: View {
-    //@ObservedObject var room: MatrixRoom
-    @ObservedObject var group: SocialGroup
+    @ObservedObject var room: Matrix.Room
+    //@ObservedObject var group: SocialGroup
     @Environment(\.presentationMode) var presentation
-
+    @EnvironmentObject var galleries: ContainerRoom<GalleryRoom>
+    
     @State var showComposer = false
 
     @State private var sheetType: GroupScreenSheetType? = nil
@@ -45,10 +47,8 @@ struct GroupTimelineScreen: View {
     @State private var newTopic = ""
     @State private var showTopicPopover = false
 
-    @State var nilParentMessage: MatrixMessage? = nil
+    @State var nilParentMessage: Matrix.Message? = nil
     
-    @State private var confirmLeaveGroup = false
-
     /*
     var composer: some View {
         HStack {
@@ -67,8 +67,7 @@ struct GroupTimelineScreen: View {
     */
     
     var timeline: some View {
-        TimelineView(room: group.room,
-                     displayStyle: .timeline)
+        TimelineView<MessageCard>(room: room)
     }
     
     var toolbarMenu: some View {
@@ -91,37 +90,11 @@ struct GroupTimelineScreen: View {
             }
             
             Button(action: {
-                /*
-                self.group.container.leave(group: self.group, completion: { _ in })
-                self.presentation.wrappedValue.dismiss()
-                */
-                self.confirmLeaveGroup = true
-            }) {
-                Label("Leave group", systemImage: "xmark")
-            }
-            
-            Button(action: {
                 self.sheetType = .security
             }) {
                 Label("Security", systemImage: "shield.fill")
             }
-
-            Button(action: {
-                self.sheetType = .composer
-            }) {
-                Label("Post a new message", systemImage: "rectangle.badge.plus")
-            }
             
-            /*
-            Button(action: {
-                group.room.matrix.discardCryptoSession(roomId: group.room.id) {
-                    print("Deleted outgoing crypto session for room \(group.room.displayName ?? "???") [\(group.room.id))] ")
-                }
-            }) {
-                Label("Reset encryption", systemImage: "clear")
-            }
-            */
-
         }
         label: {
             Label("More", systemImage: "ellipsis.circle")
@@ -129,41 +102,60 @@ struct GroupTimelineScreen: View {
     }
     
     var title: Text {
-        Text(group.room.displayName ?? "(Unnamed Group)")
+        Text(room.name ?? "(Unnamed Group)")
     }
     
     var body: some View {
-        VStack(alignment: .center) {
-
-            /*
-            VStack(alignment: .leading) {
-                Text("Debug Info")
-                Text("roomId: \(group.room.id)")
-                Text("type: \(group.room.type ?? "(none)")")
+        
+        ZStack {
+            
+            VStack(alignment: .center) {
+                
+                /*
+                 VStack(alignment: .leading) {
+                 Text("Debug Info")
+                 Text("roomId: \(group.room.id)")
+                 Text("type: \(group.room.type ?? "(none)")")
+                 }
+                 .font(.footnote)
+                 */
+                
+                timeline
+                    .sheet(item: $sheetType) { st in
+                        switch(st) {
+                        case .members:
+                            RoomMembersSheet(room: room, title: "Group members for \(room.name ?? "(unnamed group)")")
+                        case .invite:
+                            RoomInviteSheet(room: room, title: "Invite new members to \(room.name ?? "(unnamed group)")")
+                            
+                        case .configure:
+                            GroupConfigSheet(room: room)
+                            
+                        case .security:
+                            RoomSecurityInfoSheet(room: room)
+                            
+                        case .composer:
+                            MessageComposerSheet(room: room, parentMessage: nilParentMessage, galleries: galleries)
+                            
+                        }
+                    }
             }
-            .font(.footnote)
-            */
-
-            timeline
-                .sheet(item: $sheetType) { st in
-                    let room = group.room
-                    switch(st) {
-                    case .members:
-                        RoomMembersSheet(room: room, title: "Group members for \(room.displayName ?? "(unnamed group)")")
-                    case .invite:
-                        RoomInviteSheet(room: room, title: "Invite new members to \(room.displayName ?? "(unnamed group)")")
-                        
-                    case .configure:
-                        GroupConfigSheet(room: room)
-                        
-                    case .security:
-                        RoomSecurityInfoSheet(room: room)
-
-                    case .composer:
-                        MessageComposerSheet(room: room, parentMessage: nilParentMessage)
-
+            
+            VStack {
+                Spacer()
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        self.sheetType = .composer
+                    }) {
+                        Image(systemName: "plus.bubble.fill")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 50, height: 50)
+                            .padding()
                     }
                 }
+            }
         }
         .toolbar {
             ToolbarItemGroup(placement: .automatic) {
@@ -171,24 +163,15 @@ struct GroupTimelineScreen: View {
             }
         }
         .navigationBarTitle(title, displayMode: .inline)
-        .actionSheet(isPresented: $confirmLeaveGroup) {
-            ActionSheet(title: Text("Confirm leaving group"),
-                        message: Text("Do you really want to leave \(group.name ?? "this group")?\nYou will not be able to re-join the group unless another member invites you again."),
-                        buttons: [
-                            .cancel(),
-                            .destructive(
-                                Text("Leave Group"),
-                                action: {
-                                    let _ = Task {
-                                        try await self.group.leave()
-                                        self.presentation.wrappedValue.dismiss()
-                                    }
-                                }
-                            )
-                        ]
-            )
+        .onAppear {
+            // Hack kludge to make this @$%*# thing *&#$%ing update
+            Task {
+                try await Task.sleep(for: .milliseconds(500))
+                await MainActor.run {
+                    room.objectWillChange.send()
+                }
+            }
         }
-
     }
 }
 

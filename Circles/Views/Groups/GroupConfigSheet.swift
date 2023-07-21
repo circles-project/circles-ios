@@ -7,23 +7,24 @@
 //
 
 import SwiftUI
+import PhotosUI
+import Matrix
 
 struct GroupConfigSheet: View {
-    @ObservedObject var room: MatrixRoom
+    @ObservedObject var room: Matrix.Room
     @Environment(\.presentationMode) var presentation
 
     @State var groupName: String = ""
     @State var groupTopic: String = ""
     
     @State var headerImage: UIImage? = nil
-    @State var showPicker = false
+    //@State var showPicker = false
+    @State var selectedItem: PhotosPickerItem?
     
-    var picker: some View {
-        EmbeddedImagePicker(selectedImage: $headerImage, isEnabled: $showPicker) { image in
-            let _ = Task {
-                try await room.setAvatarImage(image: image)
-            }
-        }
+    init(room: Matrix.Room) {
+        self.room = room
+        self.groupName = room.name ?? ""
+        self.headerImage = room.avatar
     }
     
     var buttonbar: some View {
@@ -36,85 +37,62 @@ struct GroupConfigSheet: View {
             {
                 Text("Done")
                     .fontWeight(.bold)
+                    .padding()
             }
         }
     }
     
     var image: Image {
-        (self.headerImage != nil)
-            ? Image(uiImage: self.headerImage!)
+        if let img = self.headerImage ?? room.avatar {
+            return Image(uiImage: img)
+        } else {
             //: Image(systemName: "photo")
-            : Image(uiImage: UIImage())
-    }
-    
-    var dialog: some View {
-        VStack {
-            buttonbar
-            
-            Text("Configure Group")
-                .font(.headline)
-                .fontWeight(.bold)
-            
-            GroupHeader(room: room) { }
-                .padding(.bottom)
-            
-            //Spacer()
-            
-            HStack {
-                TextField("Group name", text: $groupName)
-                
-                AsyncButton(action: {
-                    do {
-                        try await room.setDisplayName(self.groupName)
-                        self.groupName = ""
-                    } catch {
-                        
-                    }
-                    
-                }) {
-                    Label("Set", systemImage: "square.and.arrow.up")
-                }
-            }
-            
-            HStack {
-                TextField("Status message", text: $groupTopic)
-                
-                Button(action: {
-                    room.setTopic(topic: self.groupTopic) { response in
-                        self.groupTopic = ""
-                    }
-                }) {
-                    Label("Set", systemImage: "square.and.arrow.up")
-                }
-                
-            }
-            
-            image
-                .resizable()
-                .scaledToFit()
-                .frame(width: 240, height: 240, alignment: .center)
-                .clipShape(RoundedRectangle(cornerRadius: 18))
-            
-            Button(action: {self.showPicker = true}) {
-                Label("Choose header picture", systemImage: "photo")
-            }
-            
-            Spacer()
-            
+            return Image(uiImage: UIImage())
         }
-        .padding()
     }
     
     var body: some View {
-        VStack {
-            if self.showPicker {
-                picker
+        buttonbar
+
+        NavigationView {
+            Form {
+                Section(header: Text("Cover Image")) {
+                    PhotosPicker(selection: $selectedItem, matching: .images) {
+                        //Label("Choose header picture", systemImage: "photo")
+                        image
+                            .resizable()
+                            .scaledToFit()
+                        //.frame(width: 240, height: 240, alignment: .center)
+                            .clipShape(RoundedRectangle(cornerRadius: 18))
+                    }
+                    .onChange(of: selectedItem) { newItem in
+                        Task {
+                            if let data = try? await newItem?.loadTransferable(type: Data.self),
+                               let img = UIImage(data: data)
+                            {
+                                await MainActor.run {
+                                    self.headerImage = img
+                                }
+                                try await room.setAvatarImage(image: img)
+                            }
+                        }
+                    }
+                }
+                Section(header: Text("Group name")) {
+                    TextField(room.name ?? "Name", text: $groupName)
+                        .onSubmit {
+                            Task {
+                                try await room.setName(newName: groupName)
+                                self.groupName = ""
+                            }
+                        }
+                }
             }
-            else {
-                dialog
-            }
+            .navigationTitle(Text("Settings for group \(room.name ?? "")"))
+            .padding()
         }
     }
+    
 }
 
 /*

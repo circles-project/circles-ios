@@ -8,6 +8,8 @@
 import UIKit
 import SwiftUI
 
+// Apple has deprecated this approach, so we must switch to the new `PhotosPicker`
+
 // Inspired by https://www.appcoda.com/swiftui-camera-photo-library/
 
 struct ImagePicker: UIViewControllerRepresentable {

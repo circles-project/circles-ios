@@ -7,16 +7,17 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct CircleCreationSheet: View {
-    @ObservedObject var store: LegacyStore
+    @ObservedObject var container: ContainerRoom<CircleSpace>
     @Environment(\.presentationMode) var presentation
     
     @State private var circleName: String = ""
-    @State private var rooms: Set<MatrixRoom> = []
+    @State private var rooms: Set<Matrix.Room> = []
     @State private var avatarImage: UIImage? = nil
     
-    @State var newUserIds: [String] = []
+    @State var users: [Matrix.User] = []
     @State var newestUserId: String = ""
     
     var buttonBar: some View {
@@ -30,23 +31,21 @@ struct CircleCreationSheet: View {
             
             Spacer()
             
-            Button(action: {
+            AsyncButton(action: {
                 /*
                 print("Creating a Stream with \(self.rooms.count) channels:")
                 for room in self.rooms {
                     print("\t\(room.displayName ?? room.id)")
                 }
                  */
-                store.createCircle(name: circleName, rooms: Array(rooms)) { response in
-                    switch(response) {
-                    case .failure(let err):
-                        print("Failed to create Circle: \(err)")
-                    case .success(let circle):
-                        print("Created stream \(circle.name)")
-                        store.saveCircles() { _ in }
-                        self.presentation.wrappedValue.dismiss()
-                    }
+                
+                let childRoomId = try await container.createChildRoom(name: circleName, type: ROOM_TYPE_CIRCLE, encrypted: true, avatar: avatarImage)
+                
+                for user in users {
+                    try await container.session.inviteUser(roomId: childRoomId, userId: user.userId)
                 }
+                
+                self.presentation.wrappedValue.dismiss()
 
             }) {
                 //Text("Create stream \"\(streamName)\" with \(rooms.count) channels")
@@ -83,8 +82,8 @@ struct CircleCreationSheet: View {
             }
             
             VStack(alignment: .leading) {
-                let user = store.me()
-                Text(user.displayName ?? user.id)
+                let myUser = container.session.getUser(userId: container.session.creds.userId)
+                Text(myUser.displayName ?? "\(myUser.userId)")
                     .font(.title2)
                     .fontWeight(.bold)
                 
@@ -122,28 +121,17 @@ struct CircleCreationSheet: View {
                         .autocapitalization(.none)
                     
                     Button(action: {
-                        if let canonicalUserId = store.canonicalizeUserId(userId: newestUserId) {
-                            self.newUserIds.append(canonicalUserId)
+                        if let userId = UserId(newestUserId) {
+                            let user = container.session.getUser(userId: userId)
+                            users.append(user)
                         }
-                        self.newestUserId = ""
                     }) {
                         Text("Add")
                     }
                 }
                 
-                List {
-                    ForEach(newUserIds, id: \.self) { userId in
-                        if let user = store.getUser(userId: userId) {
-                            MessageAuthorHeader(user: user)
-                        }
-                        else {
-                            //Text(userId)
-                            DummyMessageAuthorHeader(userId: userId)
-                        }
-                    }
-                    .onDelete(perform: { indexSet in
-                        self.newUserIds.remove(atOffsets: indexSet)
-                    })
+                List($users, editActions: .delete) { $user in
+                    MessageAuthorHeader(user: user)
                 }
                 
             }

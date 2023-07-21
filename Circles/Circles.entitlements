@@ -10,5 +10,10 @@
 	<true/>
 	<key>com.apple.security.personal-information.photos-library</key>
 	<true/>
+	<key>keychain-access-groups</key>
+	<array>
+		<string>$(AppIdentifierPrefix)social.kombucha.circles</string>
+		<string>$(AppIdentifierPrefix)social.kombucha.apps</string>
+	</array>
 </dict>
 </plist>

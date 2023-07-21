@@ -7,15 +7,17 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct CirclePicker: View {
-    @ObservedObject var store: LegacyStore
-    @Binding var selected: Set<SocialCircle>
+    @ObservedObject var container: ContainerRoom<CircleSpace>
+    @Binding var selected: Set<CircleSpace>
     
     var body: some View {
         VStack {
-            List {
-                ForEach(store.circles) { circle in
+            //List {
+                ForEach(container.rooms) { circle in
+                    //Text(circle.roomId.stringValue)
                     Button(action: {
                         if selected.contains(circle) {
                             selected.remove(circle)
@@ -47,7 +49,7 @@ struct CirclePicker: View {
                         }
 
                     }
-                }
+                //}
             }
             .padding(.horizontal)
         }

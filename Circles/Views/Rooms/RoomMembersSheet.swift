@@ -7,10 +7,11 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct RoomMemberRow: View {
-    @ObservedObject var user: MatrixUser
-    @ObservedObject var room: MatrixRoom
+    @ObservedObject var user: Matrix.User
+    @ObservedObject var room: Matrix.Room
     var editable: Bool = false
     //var initialAccess: Int = 0
     
@@ -75,7 +76,7 @@ struct RoomMemberRow: View {
     // FIXME: Alternatively, screw this Picker crap.  Just use the context menu.
     
     var accessLevel: Int {
-        let power = room.getPowerLevel(userId: user.id)
+        let power = room.getPowerLevel(userId: user.userId)
         //return power
         
         let maybeAccess = powerLevels.lastIndex { level in
@@ -101,67 +102,65 @@ struct RoomMemberRow: View {
                 //Text("\(accessLevel)")
                     .font(.subheadline)
             }
-        }
-        .contextMenu /*@START_MENU_TOKEN@*/{
-            Menu("Set Access Level") {
-                ForEach(0 ..< roles.count) { index in
-                    Button(action: {
-                        //self.selection = index
-                        // FIXME Actually make the Matrix API call to change the access level
-                        room.setPowerLevel(userId: user.id, power: powerLevels[index]) { response in
-                            // There's really nothing we can do here, either way...
+            .contextMenu(menuItems: {
+                Menu("Set Access Level") {
+                    ForEach(0 ..< roles.count) { index in
+                        AsyncButton(action: {
+                            //self.selection = index
+                            // FIXME Actually make the Matrix API call to change the access level
+                            try await room.setPowerLevel(userId: user.userId, power: powerLevels[index])
+                        }) {
+                            Text(roles[index])
                         }
+                    }
+                }
+                Menu("Moderation") {
+
+                    // Philosophical question: What does it mean to "mute" a user here???
+                    //  * Does it mean just removing their ability to post in my room? (If this is a Circle, and we're following them, we'll still see their posts in their own Room.  But our other followers will no longer have to see anything from them.  Maybe that's what we want.  But then why not just change their access to "Can View" above?
+                    //  * Does it mean allowing them to post, but hiding their posts from *me*?  (This version makes no sense when I'm the room owner.)
+                    // In any case, it probably makes sense to do this somewhere else, ie the context menu on a post
+                    AsyncButton(action: {
+                        try await room.mute(userId: user.userId)
                     }) {
-                        Text(roles[index])
+                        Text("Mute this user")
+                        Image(systemName: "speaker.slash")
+                    }
+                    
+                    AsyncButton(action: {
+                        try await room.kick(userId: user.userId)
+                    }) {
+                        Text("Remove this user")
+                        Image(systemName: "person.fill.xmark")
+                    }
+                    AsyncButton(action: {
+                        try await room.ban(userId: user.userId)
+                    }) {
+                        Text("Ban this user forever")
+                        Image(systemName: "xmark.shield")
                     }
                 }
-            }
-            Menu("Moderation") {
-                /*
-                // Philosophical question: What does it mean to "mute" a user here???
-                //  * Does it mean just removing their ability to post in my room? (If this is a Circle, and we're following them, we'll still see their posts in their own Room.  But our other followers will no longer have to see anything from them.  Maybe that's what we want.  But then why not just change their access to "Can View" above?
-                //  * Does it mean allowing them to post, but hiding their posts from *me*?  (This version makes no sense when I'm the room owner.)
-                // In any case, it probably makes sense to do this somewhere else, ie the context menu on a post
-                Button(action: {}) {
-                    Text("Mute this user")
-                    Image(systemName: "speaker.slash")
-                }
-                */
-                Button(action: {
-                    let today = Date()
-                    let formatter = DateFormatter()
-                    formatter.dateStyle = .short
-                    room.kick(userId: user.id, reason: "Kicked by \(room.matrix.whoAmI()) on \(formatter.string(from: today))") { response in
-                        // FIXME Not sure what to do here...
-                    }
-                }) {
-                    Text("Remove this user")
-                    Image(systemName: "person.fill.xmark")
-                }
-                Button(action: {}) {
-                    Text("Ban this user forever")
-                    Image(systemName: "xmark.shield")
-                }
-            }
-        }/*@END_MENU_TOKEN@*/
+            })
+        }
+
     }
 }
 
 
 
 struct RoomMembersSheet: View {
-    @ObservedObject var room: MatrixRoom
+    @ObservedObject var room: Matrix.Room
     var title: String? = nil
     @Environment(\.presentationMode) var presentation
 
-    @State var members: [MatrixUser] = []
+    @State var members: [Matrix.User] = []
 
     @State var showInviteSheet = false
-    @State var currentToBeRemoved: Set<MatrixUser> = []
+    @State var currentToBeRemoved: [Matrix.User] = []
     @State var showConfirmRemove = false
     
-    @State var currentMembers: [MatrixUser] = []
-    @State var invitedMembers: [MatrixUser] = []
+    @State var currentMembers: [Matrix.User] = []
+    @State var invitedMembers: [Matrix.User] = []
     
     /*
     init(room: MatrixRoom) {
@@ -193,55 +192,28 @@ struct RoomMembersSheet: View {
         }
     }
     
-    func kickUsers() {
-        let dgroup = DispatchGroup()
-        
+    func kickUsers() async throws {
         for user in self.currentToBeRemoved {
-            dgroup.enter()
-            room.kick(userId: user.id, reason: "Removed by \(room.matrix.whoAmI())") { response in
-                if response.isSuccess {
-                    //self.currentToBeRemoved.remove(user)
-                }
-                dgroup.leave()
-            }
-        }
-        
-        dgroup.notify(queue: .main) {
-            // Nothing else to do really
+            try await room.kick(userId: user.userId)
         }
     }
     
-    func banUsers() {
-        let dgroup = DispatchGroup()
-        
+    func banUsers() async throws {
         for user in self.currentToBeRemoved {
-            dgroup.enter()
-            room.ban(userId: user.id, reason: "Removed by \(room.matrix.whoAmI())") { response in
-                if response.isSuccess {
-                    //self.currentToBeRemoved.remove(user)
-                }
-                dgroup.leave()
-            }
-        }
-        
-        dgroup.notify(queue: .main) {
-            // Nothing else to do really
+            try await room.ban(userId: user.userId)
         }
     }
     
     var currentMemberSection: some View {
         Section(header: Text("Current")) {
-            ForEach(room.joinedMembers) { member in
-                RoomMemberRow(user: member, room: room)
+            ForEach(room.joinedMembers) { userId in
+                let user = room.session.getUser(userId: userId)
+                RoomMemberRow(user: user, room: room)
                     .actionSheet(isPresented: $showConfirmRemove) {
-                        let userList: [String] = self.currentToBeRemoved.map { user in
-                            user.displayName ?? user.id
-                        }
-                        let msg = "Are you sure you want to remove the following user(s)?  \(userList.joined(separator: ", "))"
                         return ActionSheet(title: Text("Remove Users?"),
-                                    message: Text(msg),
+                                    message: Text("Are you sure you want to remove \(currentToBeRemoved.count) user(s)?"),
                                     buttons: [
-                                        .default(Text("Remove Temporarily")) {
+                                        .default(Text("Kick Them Out")) {
                                             //kickUsers()
                                             currentMembers.removeAll(where: {u in
                                                 self.currentToBeRemoved.contains(u)
@@ -249,20 +221,22 @@ struct RoomMembersSheet: View {
                                             //current = room.joinedMembers
                                             self.currentToBeRemoved.removeAll()
                                         },
-                                        .default(Text("Remove Permanently")) {
+                                        .default(Text("Ban Them")) {
                                             //banUsers()
                                             currentMembers.removeAll(where: {u in
                                                 self.currentToBeRemoved.contains(u)
                                             })
                                             self.currentToBeRemoved.removeAll()
                                         },
-                                        .cancel() { self.currentToBeRemoved.removeAll() }
+                                        .cancel() {
+                                            self.currentToBeRemoved.removeAll()
+                                        }
                                     ])
                     }
             }
             .onDelete { indexes in
                 for index in indexes {
-                    self.currentToBeRemoved.insert(currentMembers[index])
+                    self.currentToBeRemoved.append(currentMembers[index])
                 }
                 //self.showConfirmRemove = true
                 currentMembers.remove(atOffsets: indexes)
@@ -272,16 +246,18 @@ struct RoomMembersSheet: View {
     
     var invitedMemberSection: some View {
         Section(header: Text("Invited")) {
-            ForEach(room.invitedMembers) { member in
-                RoomMemberRow(user: member, room: room)
+            ForEach(room.invitedMembers) { userId in
+                let user = room.session.getUser(userId: userId)
+                RoomMemberRow(user: user, room: room)
             }
         }
     }
     
     var bannedMemberSection: some View {
         Section(header: Text("Banned")) {
-            ForEach(room.bannedMembers) { member in
-                RoomMemberRow(user: member, room: room)
+            ForEach(room.bannedMembers) { userId in
+                let user = room.session.getUser(userId: userId)
+                RoomMemberRow(user: user, room: room)
             }
         }
     }
@@ -306,7 +282,7 @@ struct RoomMembersSheet: View {
             }
             */
             
-            Text(title ?? "Followers for \(room.displayName ?? room.id)")
+            Text(title ?? "Followers for \(room.name ?? "this room")")
                 .font(.headline)
                 .fontWeight(.bold)
                 .padding(.top, 10)

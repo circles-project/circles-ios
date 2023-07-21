@@ -7,22 +7,15 @@
 //
 
 import SwiftUI
+import Matrix
 
-struct TimelineView: View {
-    @ObservedObject var room: MatrixRoom
-    var displayStyle: MessageDisplayStyle = .timeline
+struct TimelineView<V: MessageView>: View {
+    @ObservedObject var room: Matrix.Room
+    @AppStorage("debugMode") var debugMode: Bool = false
     @State var debug = false
     @State var loading = false
-    @State var selectedMessage: MatrixMessage?
+    @State var selectedMessage: Matrix.Message?
     @State var sheetType: TimelineSheetType?
-
-    /*
-    init(room: MatrixRoom, displayStyle: MessageDisplayStyle = .timeline) {
-        self.room = room
-        self.displayStyle = displayStyle
-        //self.messages = room.getMessages(since: Date() - 3*day)
-    }
-    */
     
     var footer: some View {
         VStack(alignment: .center) {
@@ -33,12 +26,11 @@ struct TimelineView: View {
                     ProgressView("Loading...")
                         .progressViewStyle(LinearProgressViewStyle())
                 }
-                else if room.canPaginate() {
-                    Button(action: {
+                else if room.canPaginate {
+                    AsyncButton(action: {
                         self.loading = true
-                        room.paginate() { response in
-                            self.loading = false
-                        }
+                        try await room.paginate()
+                        self.loading = false
                     }) {
                         Text("Load More")
                     }
@@ -46,7 +38,8 @@ struct TimelineView: View {
                         // It's a magic self-clicking button.
                         // If it ever appears, we basically automatically click it for the user
                         self.loading = true
-                        room.paginate() { response in
+                        let _ = Task {
+                            try await room.paginate()
                             self.loading = false
                         }
                     }
@@ -54,10 +47,10 @@ struct TimelineView: View {
                 Spacer()
             }
             
-            if CIRCLES_DEBUG {
+            if debugMode {
                 VStack(alignment: .leading) {
                     if self.debug {
-                        Text("Room has \(room.messages.count) total messages")
+                        Text("Room has \(room.timeline.count) total messages")
                             .font(.caption)
                         Button(action: {self.debug = false}) {
                             Label("Hide debug info", systemImage: "eye.slash")
@@ -75,11 +68,12 @@ struct TimelineView: View {
         }
     }
     
+    @ViewBuilder
     var body: some View {
         // Get all the top-level messages (ie not the replies etc)
-        let messages = room.getMessages().filter { (message) in
-            message.relatesToId == nil
-        }
+        let messages = room.timeline.values.filter { (message) in
+            message.relatedEventId == nil && message.replyToEventId == nil
+        }.sorted(by: {$0.timestamp > $1.timestamp})
 
         ScrollView {
             LazyVStack(alignment: .center) {
@@ -88,33 +82,38 @@ struct TimelineView: View {
                 
 
                     if let msg = room.localEchoMessage {
-                        MessageCard(message: msg, displayStyle: displayStyle)
+                        V(message: msg, isLocalEcho: true)
                             .border(Color.red)
                             .padding([.top, .leading, .trailing], 3)
                     }
                     
-                    ForEach(messages) { msg in
-                        VStack(alignment: .leading) {
-                            HStack {
-                                if CIRCLES_DEBUG && self.debug {
-                                    Text("\(messages.firstIndex(of: msg) ?? -1)")
-                                }
-                                MessageCard(message: msg, displayStyle: displayStyle)
+                    ForEach(messages) { message in
+                        if message.type == M_ROOM_MESSAGE {
+
+                            VStack(alignment: .leading) {
+
+                                V(message: message, isLocalEcho: false)
                                     .padding(.top, 5)
                                     /*
-                                    .onAppear {
-                                        //print("INFINITE_SCROLL\tChecking to see if we need to paginate")
-                                        if msg == messages.last {
-                                            print("INFINITE_SCROLL\tPaginating room \(room.displayName ?? "Unnamed room") [\(room.id)]")
-                                            loading = true
-                                            room.paginate() { _ in
-                                                loading = false
-                                            }
-                                        }
-                                    }
-                                    */
+                                     .onAppear {
+                                     //print("INFINITE_SCROLL\tChecking to see if we need to paginate")
+                                     if msg == messages.last {
+                                     print("INFINITE_SCROLL\tPaginating room \(room.displayName ?? "Unnamed room") [\(room.id)]")
+                                     loading = true
+                                     room.paginate() { _ in
+                                     loading = false
+                                     }
+                                     }
+                                     }
+                                     */
+                                RepliesView(room: room, parent: message)
+
                             }
-                            RepliesView(room: room, parent: msg)
+                            .onAppear {
+                                message.loadReactions()
+                            }
+                        } else {
+                            StateEventView(message: message)
                         }
                     }
                     .padding([.leading, .trailing], 3)

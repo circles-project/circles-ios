@@ -7,16 +7,11 @@
 //
 
 import SwiftUI
-import MatrixSDK
+import Matrix
 
-extension MXOlmInboundGroupSession: Identifiable {
-    public var id: String {
-        session.sessionIdentifier()
-    }
-}
 
 struct RoomSecurityInfoSheet: View {
-    @ObservedObject var room: MatrixRoom
+    @ObservedObject var room: Matrix.Room
     @Environment(\.presentationMode) var presentation
 
     var buttonBar: some View {
@@ -38,10 +33,11 @@ struct RoomSecurityInfoSheet: View {
                 .font(.title2)
                 .fontWeight(.bold)
             VStack(alignment: .leading, spacing: 10) {
-                Text("Algorithm: \(room.cryptoAlgorithm)")
+                Text("Algorithm: \(room.encryptionParams?.algorithm.rawValue ?? "None")")
 
                 Text("Inbound Sessions:")
                     .fontWeight(.bold)
+                /*
                 ForEach(room.inboundOlmSessions) { inbound in
                     HStack(alignment: .top) {
                         Image(systemName: "key.fill")
@@ -55,9 +51,11 @@ struct RoomSecurityInfoSheet: View {
                         }
                     }
                 }
+                */
 
                 Text("Outbound Sessions:")
                     .fontWeight(.bold)
+                /*
                 ForEach(room.outboundOlmSessions, id: \.sessionId) { session in
                     HStack(alignment: .top) {
                         Image(systemName: "key.fill")
@@ -71,6 +69,7 @@ struct RoomSecurityInfoSheet: View {
                         }
                     }
                 }
+                */
             }
             .padding(.leading)
         }
@@ -82,7 +81,7 @@ struct RoomSecurityInfoSheet: View {
         VStack {
             buttonBar
             
-            Text(room.displayName ?? "(untitled)")
+            Text(room.name ?? "(untitled)")
                 .font(.title)
                 .fontWeight(.bold)
             
@@ -96,7 +95,8 @@ struct RoomSecurityInfoSheet: View {
                         .fontWeight(.bold)
                     //VStack {
                     //    List {
-                            ForEach(room.joinedMembers) { user in
+                            ForEach(room.joinedMembers) { userId in
+                                let user = room.session.getUser(userId: userId)
                                 VStack(alignment: .leading) {
                                     //HStack {
                                     MessageAuthorHeader(user: user)
@@ -104,8 +104,8 @@ struct RoomSecurityInfoSheet: View {
                                     //}
                                     //Divider()
                                     
-                                    ForEach(user.devices) { device in
-                                        DeviceInfoView(device: device)
+                                    ForEach(user.devices, id: \.deviceId) { device in
+                                        DeviceInfoView(session: room.session, device: device)
                                             .padding(.leading)
                                     }
                                     

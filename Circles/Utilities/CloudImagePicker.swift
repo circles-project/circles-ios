@@ -7,14 +7,195 @@
 //
 
 import SwiftUI
+import Matrix
+
+struct GalleryThumbnail: View {
+    @ObservedObject var message: Matrix.Message
+    
+    var body: some View {
+        VStack(alignment: .center) {
+            if let img = message.thumbnail {
+                Image(uiImage: img)
+                    .resizable()
+                    //.scaledToFill()
+                    //.clipShape(RoundedRectangle(cornerRadius: 10))
+                    //.frame(width: 100, height: 100)
+            }
+            else {
+                ProgressView()
+                    .scaleEffect(2.0)
+                    //.frame(width: 100, height: 100)
+
+            }
+            /*
+            RoundedRectangle(cornerRadius: 10)
+                .foregroundColor(.blue)
+            */
+        }
+        //.frame(width: 90, height: 90)
+        //.border(Color.blue, width: 1)
+        //.padding()
+        .onAppear {
+            if message.thumbnail == nil,
+               let content = message.content as? Matrix.MessageContent,
+               content.thumbnail_url != nil || content.thumbnail_file != nil
+            {
+                let _ = Task {
+                    try await message.fetchThumbnail()
+                }
+            }
+        }
+    }
+}
+
+struct GalleryPicker: View {
+    @ObservedObject var room: Matrix.Room
+    @State var loading = false
+    @State var finishing = false
+    
+    var completion: (UIImage) -> Void = { _ in }
+    
+    func downloadImageFromMessage(message: Matrix.Message) async throws {
+        // Download the image
+        guard let content = message.content as? Matrix.mImageContent
+        else {
+            // FIXME: Set error message
+            return
+        }
+        
+        await MainActor.run {
+            self.finishing = true
+        }
+        
+        if let file = content.file {
+            guard let data = try? await message.room.session.downloadAndDecryptData(file),
+                  let img = UIImage(data: data)
+            else {
+                // FIXME: Set error message
+                return
+            }
+            completion(img)
+            return
+        }
+
+        if let mxc = content.url {
+            guard let data = try? await message.room.session.downloadData(mxc: mxc),
+                  let img = UIImage(data: data)
+            else {
+                // FIXME: Set error message
+                return
+            }
+            completion(img)
+            return
+        }
+        
+        // Looks like we failed to get the image :(
+        // FIXME: Set error message
+        await MainActor.run {
+            self.finishing = false
+        }
+        return
+    }
+    
+    var body: some View {
+        
+        let messages = room.timeline.values.filter { (message) in
+            message.relatedEventId == nil && message.type == M_ROOM_MESSAGE
+        }.sorted(by: {$0.timestamp > $1.timestamp})
+        
+        ZStack {
+            ScrollView {
+                
+                let columns = [
+                    GridItem(.adaptive(minimum: 100, maximum: 100)),
+                ]
+                
+                LazyVGrid(columns: columns, alignment: .center) {
+                    ForEach(messages) { message in
+                        AsyncButton(action: {
+                            try await self.downloadImageFromMessage(message: message)
+                        }) {
+                            GalleryThumbnail(message: message)
+                        }
+                        //.border(Color.red, width: 1)
+                        .frame(width: 100, height: 100)
+                        //.border(Color.green, width: 1)
+                        
+                    }
+                }.padding(.all, 10)
+                
+                HStack(alignment: .bottom) {
+                    Spacer()
+                    if loading {
+                        ProgressView("Loading...")
+                        //.progressViewStyle(LinearProgressViewStyle())
+                    }
+                    else if room.canPaginate {
+                        AsyncButton(action: {
+                            self.loading = true
+                            try await room.paginate()
+                            self.loading = false
+                        }) {
+                            Text("Load More")
+                        }
+                        .onAppear {
+                            // It's a magic self-clicking button.
+                            // If it ever appears, we basically automatically click it for the user
+                            self.loading = true
+                            let _ = Task {
+                                try await room.paginate()
+                                self.loading = false
+                            }
+                        }
+                    }
+                    Spacer()
+                }
+            }
+            
+            if finishing {
+                ProgressView()
+                    .scaleEffect(4.0)
+            }
+        }
+    }
+}
 
 struct CloudImagePicker: View {
-    var matrix: MatrixInterface
+    @ObservedObject var galleries: ContainerRoom<GalleryRoom>
+    //@EnvironmentObject var session: CirclesSession
+    
     @Binding var selectedImage: UIImage?
     @Environment(\.presentationMode) private var presentation
     
-    @State var selectedRoom: MatrixRoom? = nil
+    @State var selectedRoom: Matrix.Room? = nil
     var completion: (UIImage) -> Void = { _ in }
+    
+    struct GalleryCard: View {
+        @ObservedObject var room: Matrix.Room
+        var body: some View {
+            ZStack {
+                if let img = room.avatar {
+                    Image(uiImage: img)
+                        .resizable()
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                } else {
+                    ProgressView()
+                        .scaleEffect(4.0)
+                        .foregroundColor(.gray)
+                        .onAppear {
+                            room.updateAvatarImage()
+                        }
+                }
+                
+                Text(room.name ?? "")
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .shadow(color: .black, radius: 10)
+            }
+        }
+    }
     
     var topbar: some View {
         HStack {
@@ -32,28 +213,30 @@ struct CloudImagePicker: View {
     
     var roomList: some View {
         ScrollView {
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
-                ForEach(matrix.getRooms(for: ROOM_TAG_PHOTOS)) { room in
+            let columns = [
+                GridItem(.adaptive(minimum: 300, maximum: 300))
+           ]
+            LazyVGrid(columns: columns, alignment: .center) {
+                ForEach(galleries.rooms) { room in
                     Button(action: {
                         self.selectedRoom = room
                     }) {
-                        PhotoGalleryCard(room: room)
+                        GalleryCard(room: room)
                     }
+                    .frame(width: 300, height: 225)
                 }
             }
         }
     }
     
+    
+    
     var body: some View {
         VStack {
-            topbar
-            
-            Divider()
-            
             if let room = self.selectedRoom {
 
                 HStack {
-                    Text(room.displayName ?? "(Untitled gallery)")
+                    Text(room.name ?? "(Untitled gallery)")
                         .font(.title2)
                         .fontWeight(.bold)
                     Spacer()
@@ -64,87 +247,29 @@ struct CloudImagePicker: View {
                     }
                 }
                 
-                ScrollView {
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
-                        ForEach(
-                            room.messages.values
-                                .filter { msg in
-                                    switch(msg.content) {
-                                    case .image( _):
-                                        return true
-                                    default:
-                                        return false
-                                    }
-                                }
-                                .sorted(by: { $0.timestamp > $1.timestamp })
-                        ) { message in
-                            switch(message.content) {
-                            case .image(let content):
-                                Button(action: {
-                                    print("CLOUDPICKER\tUser tapped image [\(message.id)]")
-                                    // Get the image
-                                    // Set self.selectedImage to it
-                                    // Dismiss the sheet?
-                                    if let url = content.url {
-                                        matrix.downloadImage(mxURI: url.absoluteString) { image in
-                                            self.selectedImage = image
-                                            self.presentation.wrappedValue.dismiss()
-                                        }
-                                    } else if let file = content.info.file {
-                                        matrix.downloadEncryptedImage(fileinfo: file, mimetype: content.info.mimetype) { response in
-                                            switch response {
-                                            case .failure:
-                                                print("CLOUDPICKER\tFailed to download encrypted image for [\(message.id)]")
-                                            case .success(let image):
-                                                self.selectedImage = image
-                                                self.presentation.wrappedValue.dismiss()
-                                            }
-                                        }
-                                    } else {
-                                        print("CLOUDPICKER\tError: no URL or encrypted file for [\(message.id)]")
-                                        print("\t\tURL  = \(content.url?.absoluteString ?? "")")
-                                        print("\t\tfile = \(content.info.file?.url.absoluteString ?? "")")
-                                        print("\t\tthumbnail_file = \(content.info.thumbnail_file?.url.absoluteString ?? "")")
-                                    }
-                                }) {
-                                    VStack(alignment: .center) {
-                                        MessageThumbnail(message: message)
-                                        MessageTimestamp(message: message)
-                                    }
-                                }
-                                .padding()
-                                /*
-                                if let img = message.thumbnailImage {
-                                    Image(uiImage: img)
-                                        .resizable()
-                                        .scaledToFill()
-                                        .clipShape(RoundedRectangle(cornerRadius: 6))
-                                }
-                                else {
-                                    Image(systemName: "photo")
-                                        .resizable()
-                                        .scaledToFill()
-                                        .clipShape(RoundedRectangle(cornerRadius: 6))
-                                    
-                                }
-                                */
-                            default:
-                                EmptyView()
-                            }
-                        }
-                    }
-                }
+                GalleryPicker(room: room, completion: { image in
+                    //self.completion(image)
+                    self.selectedImage = image
+                    self.presentation.wrappedValue.dismiss()
+                })
+                
             }
             else {
+                
+                topbar
+                
+                Divider()
             
                 HStack(alignment: .bottom) {
-                    Text("My Albums")
+                    Text("My Galleries")
                         .font(.title2)
                         .fontWeight(.bold)
                 
                     Spacer()
                 
-                    Button(action: {}) {
+                    Button(action: {
+                        // FIXME: Implement this?
+                    }) {
                         Text("See All")
                     }
                 }

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct TokenForm: View {
     let tokenType: String

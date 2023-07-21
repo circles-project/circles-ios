@@ -7,15 +7,15 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct SystemNoticesView: View {
-    var store: LegacyStore
-    @State var selectedMessage: MatrixMessage?
+    var session: CirclesSession
     
     var body: some View {
         VStack(alignment: .leading) {
-            if let room = store.getSystemNoticesRoom() {
-                TimelineView(room: room)
+            if let room = session.matrix.systemNoticesRoom {
+                TimelineView<MessageCard>(room: room)
                     .padding(.leading)
             } else {
                 Text("No current notices")
@@ -26,7 +26,7 @@ struct SystemNoticesView: View {
 }
 
 struct SystemNoticesScreen: View {
-    var store: LegacyStore
+    var session: CirclesSession
     
     var body: some View {
         VStack {
@@ -34,7 +34,7 @@ struct SystemNoticesScreen: View {
                 .font(.title2)
                 .padding()
 
-            SystemNoticesView(store: store)
+            SystemNoticesView(session: session)
                 .navigationBarTitle(Text("System Notices"))
                 .padding()
         }

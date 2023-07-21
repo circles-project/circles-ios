@@ -6,13 +6,14 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct MessageDetailSheet: View {
-    @ObservedObject var message: MatrixMessage
+    @ObservedObject var message: Matrix.Message
     @Environment(\.presentationMode) var presentation
     var displayStyle: MessageDisplayStyle = .timeline
 
-    @State var selectedMessage: MatrixMessage? = nil
+    @State var selectedMessage: Matrix.Message? = nil
     @State var sheetType: TimelineSheetType? = nil
 
     var buttonBar: some View {
@@ -34,7 +35,7 @@ struct MessageDetailSheet: View {
 
             ScrollView {
                 LazyVStack {
-                    MessageCard(message: message, displayStyle: .detail)
+                    MessageDetailView(message: message, isLocalEcho: false)
                         .padding(.top, 3)
 
                     RepliesView(room: message.room, parent: message,

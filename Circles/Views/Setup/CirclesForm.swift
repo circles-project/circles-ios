@@ -6,21 +6,16 @@
 //
 
 import SwiftUI
-import MatrixSDK
+import PhotosUI
+import Matrix
 
 struct CirclesForm: View {
     var session: SetupSession
     let displayName: String
 
-
     @State var friendsAvatar: UIImage?
     @State var familyAvatar: UIImage?
     @State var communityAvatar: UIImage?
-
-    @State var showPicker = false
-    @State var pickerSourceType: UIImagePickerController.SourceType = .photoLibrary
-
-    @State var pending = false
 
     let stage = "circles"
 

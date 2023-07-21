@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Matrix
 
 enum CirclesOverviewSheetType: String {
     case create
@@ -16,7 +17,7 @@ extension CirclesOverviewSheetType: Identifiable {
 }
 
 struct CirclesOverviewScreen: View {
-    @ObservedObject var store: LegacyStore
+    @ObservedObject var container: ContainerRoom<CircleSpace>
     @State var selection: String = ""
     
     @State private var sheetType: CirclesOverviewSheetType? = nil
@@ -33,29 +34,51 @@ struct CirclesOverviewScreen: View {
     }
     
     var body: some View {
-        NavigationView {
-            VStack(alignment: .leading, spacing: 0) {
+        NavigationStack {
+            ZStack {
+                
                 ScrollView {
-                    ForEach(store.circles) { circle in
-                        NavigationLink(destination: CircleTimelineScreen(circle: circle)) {
-                            CircleOverviewCard(circle: circle)
+                    VStack(alignment: .leading, spacing: 0) {
+                        
+                        CircleInvitationsIndicator(session: container.session, container: container)
+                        
+                        ForEach(container.rooms) { circle in
+                            NavigationLink(destination: CircleTimelineScreen(space: circle)) {
+                                CircleOverviewCard(space: circle)
                                 //.padding(.top)
+                            }
+                            .onTapGesture {
+                                print("DEBUGUI\tNavigationLink tapped for Circle \(circle.id)")
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            Divider()
                         }
-                        .onTapGesture {
-                            print("DEBUGUI\tNavigationLink tapped for Circle \(circle.id)")
+                    }
+                }
+                
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            self.sheetType = .create
+                        }) {
+                            Image(systemName: "plus.circle.fill")
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .padding()
                         }
-                        .buttonStyle(PlainButtonStyle())
-                        Divider()
                     }
                 }
                 
             }
             .padding(.top)
-            .navigationBarTitle("My Circles", displayMode: .inline)
+            .navigationBarTitle("Circles", displayMode: .inline)
             .sheet(item: $sheetType) { st in
                 switch(st) {
                 case .create:
-                    CircleCreationSheet(store: store)
+                    CircleCreationSheet(container: container)
                 }
             }
             .toolbar {
@@ -64,7 +87,6 @@ struct CirclesOverviewScreen: View {
                 }
             }
         }
-        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

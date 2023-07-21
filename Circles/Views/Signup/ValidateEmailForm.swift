@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import MatrixSDK
+import Matrix
 
 struct ValidateEmailForm: View {
     //var matrix: MatrixInterface
@@ -16,7 +16,7 @@ struct ValidateEmailForm: View {
     //@Binding var emailSid: String?
     @Binding var emailSessionInfo: SignupSession.LegacyEmailRequestTokenResponse?
     //@Binding var accountInfo: SignupAccountInfo
-    @Binding var creds: MXCredentials?
+    @Binding var creds: Matrix.Credentials?
 
     @State var emailToken = ""
 
@@ -37,7 +37,7 @@ struct ValidateEmailForm: View {
     Enter the code here to verify that this address belongs to you.
     """
 
-    let stage = LOGIN_STAGE_VERIFY_EMAIL
+    let stage = AUTH_TYPE_ENROLL_EMAIL_SUBMIT_TOKEN
 
     var body: some View {
         VStack {

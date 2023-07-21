@@ -7,43 +7,46 @@
 //
 
 import SwiftUI
+import PhotosUI
+import Matrix
 
 enum GallerySheetType: String {
-    case new
+    //case new
     //case settings
-    case avatar
+    //case avatar
+    case invite
 }
 extension GallerySheetType: Identifiable {
     var id: String { rawValue }
 }
 
 struct PhotoGalleryView: View {
-    //@ObservedObject var room: MatrixRoom
-    @ObservedObject var gallery: PhotoGallery
-    @State var selectedMessage: MatrixMessage?
+    @ObservedObject var room: Matrix.Room
+    //@ObservedObject var gallery: PhotoGallery
+    @State var selectedMessage: Matrix.Message?
+    @State var selectedItems: [PhotosPickerItem] = []
+    @State var avatarItem: PhotosPickerItem?
     @Environment(\.presentationMode) var presentation
 
     @State var sheetType: GallerySheetType? = nil
-    @State var newPhoto: UIImage?
-    @State var newAvatar: UIImage?
+    //@State var newPhoto: UIImage?
+    //@State var newAvatar: UIImage?
+    @State var showCoverImagePicker: Bool = false
+    
+    @State var uploadItems: [PhotosPickerItem] = []
+    @State var totalUploadItems: Int = 0
     
     var toolbarMenu: some View {
         Menu {
             Button(action: {
-                self.sheetType = .new
-            }) {
-                Label("Upload a new photo", systemImage: "photo.fill")
-            }
-            Button(action: {
-                self.sheetType = .avatar
+                self.showCoverImagePicker = true
             }) {
                 Label("New cover image", systemImage: "photo")
             }
             Button(action: {
-                self.gallery.leave() { _ in }
-                self.presentation.wrappedValue.dismiss()
+                self.sheetType = .invite
             }) {
-                Label("Remove this gallery", systemImage: "xmark.bin")
+                Label("Invite", systemImage: "person.2.circle")
             }
         }
         label: {
@@ -51,46 +54,76 @@ struct PhotoGalleryView: View {
         }
     }
     
-    var timeline: some View {
-        TimelineView(room: gallery.room, displayStyle: .photoGallery)
-    }
-    
     var body: some View {
-        VStack {
-            timeline
-        }
-        .navigationBarTitle(gallery.room.displayName ?? "Untitled gallery")
-        .toolbar {
-            ToolbarItemGroup(placement: .automatic) {
-                toolbarMenu
-            }
-        }
-        .sheet(item: self.$sheetType) { st in
-            switch(st) {
-            case .new:
-                ImagePicker(selectedImage: self.$newPhoto, sourceType: .photoLibrary) { maybeImg in
-                    if let img = maybeImg {
-                        gallery.room.postImage(image: img) { response in
-                            switch(response) {
-                            case .failure(let err):
-                                break
-                            case .success(let msg):
-                                break
+        if uploadItems.isEmpty {
+            
+            ZStack {
+                //TimelineView<PhotoCard>(room: room)
+                GalleryGridView(room: room)
+                
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        /*
+                         Button(action: {
+                         self.sheetType = .new
+                         }) {
+                         Image(systemName: "plus.circle.fill")
+                         .resizable()
+                         .scaledToFill()
+                         .frame(width: 50, height: 50)
+                         .padding()
+                         }
+                         */
+                        PhotosPicker(selection: $selectedItems, matching: .images) {
+                            Image(systemName: "plus.circle.fill")
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .padding()
+                        }
+                        .onChange(of: selectedItems) { newItems in
+                            /*
+                            Task {
+                                for newItem in newItems {
+                                    if let data = try? await newItem.loadTransferable(type: Data.self),
+                                       let img = UIImage(data: data) {
+                                        try await room.sendImage(image: img)
+                                    }
+                                }
                             }
+                            */
+                            uploadItems.append(contentsOf: newItems)
+                            totalUploadItems += uploadItems.count
                         }
                     }
                 }
-            case .avatar:
-                ImagePicker(selectedImage: self.$newAvatar, sourceType: .photoLibrary) { maybeImg in
-                    if let img = maybeImg {
-                        gallery.room.setAvatarImage(image: img) { response in
-                            if response.isSuccess {
-                                gallery.room.objectWillChange.send()
-                            }
+                .onChange(of: avatarItem) { newItem in
+                    Task {
+                        if let data = try? await newItem?.loadTransferable(type: Data.self),
+                           let img = UIImage(data: data)
+                        {
+                            try await room.setAvatarImage(image: img)
                         }
                     }
                 }
             }
+            .navigationBarTitle(room.name ?? "Untitled gallery")
+            .toolbar {
+                ToolbarItemGroup(placement: .automatic) {
+                    toolbarMenu
+                }
+            }
+            .sheet(item: self.$sheetType) { st in
+                switch(st) {
+                case .invite:
+                    RoomInviteSheet(room: self.room)
+                }
+            }
+            .photosPicker(isPresented: $showCoverImagePicker, selection: $avatarItem, matching: .images)
+        } else {
+            PhotosUploadView(room: room, items: $uploadItems, total: $totalUploadItems)
         }
     }
 }

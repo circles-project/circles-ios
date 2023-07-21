@@ -8,6 +8,7 @@
 
 import SwiftUI
 import StoreKit
+import Matrix
 
 @main
 struct CirclesApp: App {
@@ -15,14 +16,21 @@ struct CirclesApp: App {
     @StateObject private var iapObserver = AppStoreInterface()
     private var paymentQueue = SKPaymentQueue.default()
     private var countryCode = SKPaymentQueue.default().storefront?.countryCode
+    
+    init() {
+        // We need to register all of our custom types with the Matrix library, so it can decode them for us
+        Matrix.registerAccountDataType(EVENT_TYPE_CIRCLES_CONFIG, CirclesConfigContent.self)
+    }
 
     var body: some Scene {
         WindowGroup {
             ContentView(store: store)
                 .environmentObject(store)
+                /*
                 .environmentObject(iapObserver)
                 .onAppear {
 
+                    
                     // For some strange reason, I'm getting nil for the storefront on the first run of the app.
                     // What if we just do some thing really stupid here and ask for it here well before we actually need it?
                     if let storefront = SKPaymentQueue.default().storefront {
@@ -38,6 +46,7 @@ struct CirclesApp: App {
                 .onDisappear {
                     SKPaymentQueue.default().remove(iapObserver)
                 }
+                */
         }
     }
 }

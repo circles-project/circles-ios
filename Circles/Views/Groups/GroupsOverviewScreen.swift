@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Matrix
 
 enum GroupsSheetType: String {
     case create
@@ -18,26 +19,50 @@ extension GroupsSheetType: Identifiable {
 }
 
 struct GroupsOverviewScreen: View {
-    @ObservedObject var container: GroupsContainer
+    @ObservedObject var container: ContainerRoom<GroupRoom>
     @State var sheetType: GroupsSheetType?
     
     var body: some View {
         //let groups = container.groups
         NavigationView {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    ForEach(container.groups) { group in
-                        NavigationLink(destination: GroupTimelineScreen(group: group)) {
-                            GroupOverviewRow(room: group.room)
+            ZStack {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 0) {
+                        let invitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_GROUP }
+                        ForEach(invitations) { invitation in
+                            let user = container.session.getUser(userId: invitation.sender)
+                            GroupInviteCard(room: invitation, user: user, container: container)
                         }
-                        .buttonStyle(PlainButtonStyle())
-                        .padding(.vertical, 2)
-                        Divider()
+                        
+                        ForEach(container.rooms) { room in
+                            NavigationLink(destination: GroupTimelineScreen(room: room)) {
+                                GroupOverviewRow(room: room)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            .padding(.vertical, 2)
+                            Divider()
+                        }
+                    }
+                }
+                
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            self.sheetType = .create
+                        }) {
+                            Image(systemName: "plus.circle.fill")
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .padding()
+                        }
                     }
                 }
             }
             .padding(.top)
-            .navigationBarTitle(Text("My Groups"), displayMode: .inline)
+            .navigationBarTitle(Text("Groups"), displayMode: .inline)
             .toolbar {
                 ToolbarItemGroup(placement: .automatic) {
                     Menu {
@@ -63,7 +88,6 @@ struct GroupsOverviewScreen: View {
                 }
             }
         }
-        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

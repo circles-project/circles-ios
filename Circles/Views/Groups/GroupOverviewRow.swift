@@ -7,65 +7,50 @@
 //
 
 import SwiftUI
-import MatrixSDK
+import Matrix
 
 struct GroupOverviewRow: View {
-    @ObservedObject var room: MatrixRoom
+    @ObservedObject var room: Matrix.Room
+    @AppStorage("debugMode") var debugMode: Bool = false
     
     var timestamp: some View {
         let formatter = RelativeDateTimeFormatter()
-        
-        return Text("Last updated \(room.timestamp, formatter: formatter)")
-    }
-    
-    var shield: some View {
-        VStack(alignment: .leading) {
-            if room.isEncrypted {
-                Image(systemName: "lock.shield")
-                    .foregroundColor(Color.accentColor)
-            }
-            else {
-                Image(systemName: "xmark.shield")
-                    .foregroundColor(Color.red)
-            }
+        if let date = room.latestMessage?.timestamp {
+            return Text("Last updated \(date, formatter: formatter)")
+        } else {
+            return Text("")
         }
     }
     
+    
     var body: some View {
         HStack(alignment: .top) {
-
-            Image(uiImage: room.avatarImage ?? UIImage())
-                .renderingMode(.original)
-                .resizable()
-                .scaledToFill()
-                .frame(width: 120, height: 120)
-                //.clipped()
+            RoomAvatar(room: room)
+                .frame(width: 80, height: 80)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
-                .foregroundColor(.gray)
-                .padding(.all, 2)
             
             VStack(alignment: .leading, spacing: 2) {
                 HStack(alignment: .center, spacing: 3) {
-                    shield
-                    Text(room.displayName ?? room.id)
+                    Text(room.name ?? room.id)
                         .fontWeight(.bold)
                     Spacer()
-                    Image(systemName: "chevron.right")
                 }
                 .font(.title2)
 
                 VStack(alignment: .leading) {
-                    Text("\(room.membersCount) members")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                    
-                    Text("Topic: \(room.topic ?? "none")")
-                        .font(.subheadline)
+                    Text("\(room.joinedMembers.count) members")
+                        .font(.title3)
                         .foregroundColor(.gray)
                     
                     timestamp
-                        .font(.subheadline)
+                        .font(.headline)
                         .foregroundColor(.gray)
+                    
+                    if debugMode {
+                        Text(room.roomId.description)
+                            .font(.subheadline)
+                            .foregroundColor(.red)
+                    }
                 }
                 .padding(.leading, 8)
             }

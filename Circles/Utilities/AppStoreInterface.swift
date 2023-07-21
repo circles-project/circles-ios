@@ -9,7 +9,7 @@ import Foundation
 import StoreKit
 
 import TPInAppReceipt
-import MatrixSDK
+import Matrix
 
 // See Apple docs at https://developer.apple.com/documentation/storekit/original_api_for_in-app_purchase/setting_up_the_transaction_observer_for_the_payment_queue?changes=latest_minor
 // and https://developer.apple.com/documentation/storekit/original_api_for_in-app_purchase/offering_completing_and_restoring_in-app_purchases?changes=latest_minor
@@ -25,7 +25,7 @@ class AppStoreInterface: NSObject, SKPaymentTransactionObserver, ObservableObjec
     @Published var transactionState: SKPaymentTransactionState?
 
 
-    typealias PurchaseCallback = (MXResponse<String>) -> Void
+    typealias PurchaseCallback = (String?) -> Void
     var callbacks: [String:PurchaseCallback] = [:]
 
     //Initialize the store observer.
@@ -122,7 +122,7 @@ class AppStoreInterface: NSObject, SKPaymentTransactionObserver, ObservableObjec
                     self.purchased.append(productId)
 
                     if let callback = callbacks[productId] {
-                        callback(.success(productId))
+                        callback(productId)
                         callbacks[productId] = nil
                     }
                 } else {
@@ -130,8 +130,8 @@ class AppStoreInterface: NSObject, SKPaymentTransactionObserver, ObservableObjec
                     print("APPSTORE\t\(msg)")
                     
                     if let callback = callbacks[productId] {
-                        let err = KSError(message: msg)
-                        callback(.failure(err))
+                        let err = CirclesError(msg)
+                        callback(nil)
                         callbacks[productId] = nil
                     }
                 }
@@ -146,9 +146,9 @@ class AppStoreInterface: NSObject, SKPaymentTransactionObserver, ObservableObjec
 
                 let msg = "Transaction failed"
                 print("APPSTORE\t\(msg)")
-                let err = KSError(message: msg)
+                let err = CirclesError(msg)
                 if let callback = callbacks[productId] {
-                    callback(.failure(err))
+                    callback(nil)
                     callbacks[productId] = nil
                 }
                 SKPaymentQueue.default().finishTransaction(transaction)
@@ -188,7 +188,7 @@ class AppStoreInterface: NSObject, SKPaymentTransactionObserver, ObservableObjec
         productRequest.start()
     }
 
-    func purchaseProduct(product: SKProduct, completion: @escaping (MXResponse<String>)->Void) {
+    func purchaseProduct(product: SKProduct, completion: @escaping (String?)->Void) {
         print("APPSTORE\tTrying to purchase product \(product.productIdentifier)")
         if SKPaymentQueue.canMakePayments() {
             let payment = SKPayment(product: product)
@@ -198,8 +198,8 @@ class AppStoreInterface: NSObject, SKPaymentTransactionObserver, ObservableObjec
         } else {
             let msg = "User can't make payment."
             print("APPSTORE\tError: \(msg)")
-            let err = KSError(message: msg)
-            completion(.failure(err))
+            let err = CirclesError(msg)
+            completion(nil)
         }
     }
 

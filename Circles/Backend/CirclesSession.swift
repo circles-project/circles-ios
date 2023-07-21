@@ -6,109 +6,141 @@
 //
 
 import Foundation
-import XCTest
+import Matrix
+import os
+
+#if os(macOS)
+import AppKit
+#else
+import UIKit
+#endif
+
 
 class CirclesSession: ObservableObject {
+    var logger: os.Logger
     
-    var matrix: MatrixSession
-    private var rootSpaceRoomId: RoomId
-    private var circlesSpaceRoomId: RoomId
-    private var groupsSpaceRoomId: RoomId
-    private var galleriesSpaceRoomId: RoomId
     
-    @Published var circles: Set<SocialCircle>
-    @Published var groups: Set<SocialGroup>
-    @Published var galleries: Set<PhotoGallery>
+    var matrix: Matrix.Session
     
-    init(matrix: MatrixSession, root: RoomId, circles: RoomId, groups: RoomId, galleries: RoomId) {
+    // We don't actually use the "Circles" root space room very much
+    // Mostly it's just there to hide our stuff from cluttering up the rooms list in other clients
+    // But here we hold on to its roomid in case we need it for anything
+    // IDEA: We could store any Circles-specific configuration info in our account data in this room
+    var rootRoomId: RoomId
+    
+    //typealias CircleRoom = ContainerRoom<Matrix.Room> // Each circle is a space, where we know we are joined in every child room
+    //typealias PersonRoom = Matrix.SpaceRoom // Each person's profile room is a space, where we may or may not be members of the child rooms
+    
+    var circles: ContainerRoom<CircleSpace>     // Our top-level circles space contains the spaces for each of our circles
+    var groups: ContainerRoom<GroupRoom>        // Top-level groups space contains the individual rooms for each of our groups
+    var galleries: ContainerRoom<GalleryRoom>   // Top-level galleries space contains the individual rooms for each of our galleries
+    var people: ContainerRoom<PersonRoom>       // Top-level people space contains the space rooms for each of our contacts
+    
+    init(matrix: Matrix.Session) async throws {
+        self.logger = Logger(subsystem: "Circles", category: "Session")
         self.matrix = matrix
         
-        self.circles = []
-        self.groups = []
-        self.galleries = []
+        let startTS = Date()
         
-        self.rootSpaceRoomId = root
-        self.circlesSpaceRoomId = circles
-        self.groupsSpaceRoomId = groups
-        self.galleriesSpaceRoomId = galleries
-    }
-    
-    class func factory(matrix: MatrixSession) async throws -> CirclesSession {
-        let EVENT_TYPE_CIRCLES_CONFIG = "org.futo.circles.config"
-        struct CirclesConfig: Codable {
-            var root: RoomId
-            var circles: RoomId
-            var groups: RoomId
-            var galleries: RoomId
+        logger.debug("Loading config from Matrix")
+        let configStart = Date()
+        guard let config = try await matrix.getAccountData(for: EVENT_TYPE_CIRCLES_CONFIG, of: CirclesConfigContent.self)
+        else {
+            throw Matrix.Error("Could not load Circles config")
         }
-        let config = try await matrix.getAccountData(for: EVENT_TYPE_CIRCLES_CONFIG, of: CirclesConfig.self)
+        let configEnd = Date()
+        let configTime = configEnd.timeIntervalSince(configStart)
+        logger.debug("\(configTime) sec to load config from the server")
 
-        return CirclesSession(matrix: matrix, root: config.root, circles: config.circles, groups: config.groups, galleries: config.galleries)
+        logger.debug("Loading Matrix spaces")
+        
+        
+        let groupsStart = Date()
+        guard let groups = try await matrix.getRoom(roomId: config.groups, as: ContainerRoom<GroupRoom>.self)
+        else {
+            logger.error("Failed to load Groups space")
+            throw CirclesError("Failed to load Groups space")
+        }
+        let groupsEnd = Date()
+        let groupsTime = groupsEnd.timeIntervalSince(groupsStart)
+        logger.debug("\(groupsTime) sec to load Groups space")
+        
+        
+        let galleriesStart = Date()
+        guard let galleries = try await matrix.getRoom(roomId: config.galleries, as: ContainerRoom<GalleryRoom>.self)
+        else {
+            logger.error("Failed to load Galleries space")
+            throw CirclesError("Failed to load Galleries space")
+        }
+        let galleriesEnd = Date()
+        let galleriesTime = galleriesEnd.timeIntervalSince(galleriesStart)
+        logger.debug("\(galleriesTime) sec to load Galleries space")
+        
+        
+        let circlesStart = Date()
+        guard let circles = try await matrix.getRoom(roomId: config.circles, as: ContainerRoom<CircleSpace>.self)
+        else {
+            logger.error("Failed to load Circles space")
+            throw CirclesError("Failed to load Circles space")
+        }
+        let circlesEnd = Date()
+        let circlesTime = circlesEnd.timeIntervalSince(circlesStart)
+        logger.debug("\(circlesTime) sec to load Circles space")
+        
+        
+        let peopleStart = Date()
+        guard let people = try await matrix.getRoom(roomId: config.people, as: ContainerRoom<PersonRoom>.self)
+        else {
+            logger.error("Failed to load People space")
+            throw CirclesError("Failed to load People space")
+        }
+        let peopleEnd = Date()
+        let peopleTime = peopleEnd.timeIntervalSince(peopleStart)
+        logger.debug("\(peopleTime) sec to load People space")
+        
+        self.rootRoomId = config.root
+        
+        self.groups = groups
+        self.galleries = galleries
+        self.circles = circles
+        self.people = people
+        
+        let endTS = Date()
+        
+        let totalTime = endTS.timeIntervalSince(startTS)
+        logger.debug("\(totalTime) sec to initialize Circles Session")
+        
+        try await matrix.startBackgroundSync()
+        
+        /*
+        // FIXME: CRAZY DEBUGGING
+        Task {
+            while true {
+                if let (roomId, room) = self.matrix.rooms.randomElement() {
+                    let imageName = ["diamond.fill", "circle.fill", "square.fill", "seal.fill", "shield.fill"].randomElement()!
+                    let image = UIImage(systemName: imageName)
+                    await MainActor.run {
+                        print("Randomizing avatar for room \(roomId.opaqueId) / \(room.roomId.opaqueId) to be \(imageName)")
+                        room.avatar = image
+                    }
+                }
+                try await Task.sleep(for: .seconds(2))
+            }
+        }
+        */
     }
     
+    func cancelUIA() async throws {
+        // Cancel any current Matrix UIA session that we may have
+        try await matrix.cancelUIA()
+        // And tell any SwiftUI views (eg the main ContentView) that they should re-draw
+        await MainActor.run {
+            self.objectWillChange.send()
+        }
+    }
 
     
-    private func loadCircles() async throws {
-        
-        let circleIds = try await matrix.getSpaceChildren(circlesSpaceRoomId)
-        var newCircles = [SocialCircle]()
-        for circleId in circleIds {
-            let newCircle = try await SocialCircle.factory(roomId: circleId, session: self)
-            newCircles.append(newCircle)
-        }
-        let newSet = Set(newCircles) // We can't use a var in the MainActor code below.  Has to be a let constant.
-        await MainActor.run {
-            self.circles = self.circles.union(newSet)
-        }
-    }
-    
-    private func loadGroups() async throws {
-        let groupIds = try await matrix.getSpaceChildren(groupsSpaceRoomId)
-        var newGroups = [SocialGroup]()
-        for groupId in groupIds {
-            if let room = try await matrix.getRoom(roomId: groupId) {
-                let newGroup = SocialGroup(room: room, session: self)
-                newGroups.append(newGroup)
-            }
-        }
-        let newSet = Set(newGroups)
-        await MainActor.run {
-            self.groups = self.groups.union(newSet)
-        }
-    }
-    
-    private func loadGalleries() async throws {
-        let galleryIds = try await matrix.getSpaceChildren(galleriesSpaceRoomId)
-        var newGalleries = [PhotoGallery]()
-        for galleryId in galleryIds {
-            if let room = try await matrix.getRoom(roomId: galleryId) {
-                let newGallery = PhotoGallery(room: room, session: self)
-                newGalleries.append(newGallery)
-            }
-        }
-        let newSet = Set(newGalleries)
-        await MainActor.run {
-            self.galleries = self.galleries.union(newSet)
-        }
-    }
-    
-    func leaveGroup(groupId: RoomId, reason: String? = nil) async throws {
-        try await matrix.leave(roomId: groupId, reason: reason)
-        
-        await MainActor.run {
-            self.groups = self.groups.filter {
-                $0.groupId != groupId
-            }
-        }
-    }
-    
-    func leaveGallery(galleryId: RoomId, reason: String? = nil) async throws {
-        try await matrix.leave(roomId: galleryId, reason: reason)
-        
-        await MainActor.run {
-            self.galleries = self.galleries.filter {
-                $0.galleryId != galleryId
-            }
-        }
+    func close() async throws {
+        try await matrix.close()
     }
 }

@@ -8,101 +8,91 @@
 
 import SwiftUI
 import StoreKit
+import Matrix
 
 struct LoginScreen: View {
     @ObservedObject var session: LoginSession
+    var store: CirclesStore
     @State var password = ""
     
     var body: some View {
-        VStack {
-            switch session.state {
-            case .notConnected:
+
+        switch session.state {
+            
+        case .notConnected:
+            VStack {
                 ProgressView()
                 Text("Connecting to server")
-            case .connected(let authTypes, let errorMessage):
-                if authTypes.contains("m.login.password") {
-                    RandomizedCircles()
-                        .clipped()
-                        .frame(minWidth: 100,
-                               idealWidth: 200,
-                               maxWidth: 300,
-                               minHeight: 100,
-                               idealHeight: 200,
-                               maxHeight: 300,
-                               alignment: .center)
-                    
-                    Text("Logging in as \(session.username)")
-
-                    SecureFieldWithEye(label: "Password", text: $password)
-                        .disableAutocorrection(true)
-                        .frame(width: 300.0, height: 40.0)
-                    
-                    AsyncButton(action: {
-                        guard !password.isEmpty else {
-                            return
-                        }
-                        do {
-                            try await session.passwordLogin(password)
-                        } catch {
-                            
-                        }
-                    }) {
-                        Text("Submit password")
-                            .padding()
-                            .frame(width: 300.0, height: 40.0)
-                            .foregroundColor(.white)
-                            .background(Color.accentColor)
-                            .cornerRadius(10)
-                    }
-                    
-                    if let errMsg = errorMessage {
-                        Text("Error: \(errMsg)")
-                            .foregroundColor(Color.red)
-                            .padding()
-                    }
-                    
-                    Spacer()
-                    
-                    AsyncButton(action: {
-                        do {
-                            try await session.store.disconnect()
-                        } catch {
-                            
-                        }
-                    }) {
-                        Text("Cancel")
-                            .padding()
-                            .frame(width: 300.0, height: 40.0)
-                            .foregroundColor(.red)
-                            .cornerRadius(10)
-                    }
-                    
-                    
-                } else {
-                    Text("Password login is not supported")
-                }
-                
-            case .inProgress(let authType):
-                Text("Login in progress: [\(authType)]")
-            
-            case .failed(let errorMsg):
-                Text("Login failed: \(errorMsg)")
-            
-            case .succeeded(let creds, let password):
-                Text("Login success!")
-                ProgressView()
                     .onAppear {
                         let _ = Task {
-                            try await session.store.connectNewDevice(creds: creds, password: password)
+                            try await session.connect()
                         }
                     }
-            /*
-            default:
-                Text("Something else")
-            */
+            }
+            
+        case .connected(let uiaaState):
+            VStack {
+                ProgressView()
+            }
+            .onAppear {
+                if uiaaState.flows.count == 1,
+                   let flow = uiaaState.flows.first
+                {
+                    Task {
+                        await session.selectFlow(flow: flow)
+                    }
+                } else {
+                    if let flow = uiaaState.flows.first(where: {
+                        $0.stages.contains(AUTH_TYPE_LOGIN_BSSPEKE_OPRF) && $0.stages.contains(AUTH_TYPE_LOGIN_BSSPEKE_VERIFY)
+                    }) {
+                        Task {
+                            await session.selectFlow(flow: flow)
+                        }
+                    }
+                }
+            }
+            
+        case .inProgress(let uiaaState, let stages):
+            UiaInProgressView(session: session, state: uiaaState, stages: stages)
+            
+        case .finished(let data):
+            VStack {
+                Spacer()
+                
+                if let creds = try? JSONDecoder().decode(Matrix.Credentials.self, from: data) {
+                    Text("Success!")
+                    ProgressView()
+                        /*
+                        .onAppear {
+                            /*
+                            // Moving this stuff into the callback that we provide when we create the session in the `CirclesStore`
+                            var keys = [String: Data]()
+                            if let bsspeke = session.getBSSpekeClient() {
+                                let ssssKey = bsspeke.generateHashedKey(label: "matrix_ssss")
+                                keys["0x1234"] = Data(ssssKey)
+                            }
+                            */
+                            print("LoginScreen:\tLogin success - Telling the Store to connect()")
+                            Task {
+                                try await store.connect(creds: creds)
+                            }
+                        }
+                        */
+                } else {
+                    Text("Login success, but there was a problem...")
+                }
+                Spacer()
+            }
+            
+        default:
+            VStack {
+                Spacer()
+                Text("Something went wrong")
+                Spacer()
             }
         }
-    }
+  
+     }
 
 }
 

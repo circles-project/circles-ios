@@ -7,58 +7,26 @@
 //
 
 import SwiftUI
+import PhotosUI
+import Matrix
 
 struct PhotoGalleryCreationSheet: View {
     //@ObservedObject var store: KSStore
-    @ObservedObject var container: PhotoGalleriesContainer
+    var container: ContainerRoom<GalleryRoom>
     @Environment(\.presentationMode) var presentation
     
     @State private var galleryName: String = ""
     @State private var avatarImage: UIImage? = nil
+
+    @State var selectedItem: PhotosPickerItem?
     
-    func create() {
-        let dgroup = DispatchGroup()
-        var errors: Error? = nil
-        
-        if galleryName.isEmpty {
-            return
-        }
-        
-        dgroup.enter()
-        container.create(name: self.galleryName) { response1 in
-            switch(response1) {
-            case .failure(let err):
-                let msg = "Failed to create room \(self.galleryName)"
-                errors = errors ?? KSError(message: msg)
-                print(msg)
-                dgroup.leave()
-            case .success(let newGallery):
-                let room = newGallery.room
-                if let image = self.avatarImage {
-                    room.setAvatarImage(image: image) { response2 in
-                        switch(response2) {
-                        case .failure(let err):
-                            let msg = "Failed to set avatar image for gallery [\(self.galleryName)]"
-                            errors = errors ?? KSError(message: msg)
-                            print(msg)
-                        case .success:
-                            // Nothing else to do
-                            break
-                        }
-                        dgroup.leave()
-                    }
-                }
-                else {
-                    dgroup.leave()
-                }
-            }
-        }
-        
-        dgroup.notify(queue: .main) {
-            if errors == nil {
-                self.presentation.wrappedValue.dismiss()
-            }
-        }
+    func create() async throws {
+        let roomId = try await self.container.createChildRoom(name: self.galleryName,
+                                                              type: ROOM_TYPE_PHOTOS,
+                                                              encrypted: true,
+                                                              avatar: self.avatarImage)
+
+        self.presentation.wrappedValue.dismiss()
     }
     
     var buttonBar: some View {
@@ -71,33 +39,98 @@ struct PhotoGalleryCreationSheet: View {
             }
             
             Spacer()
-            
-            Button(action: {
-                create()
-            }) {
-                Text("Create")
-                    .fontWeight(.bold)
-            }
         }
         .font(.subheadline)
 
     }
     
     var body: some View {
-        VStack {
-            buttonBar
-            
-            Text("New Gallery")
-                .font(.headline)
-                .fontWeight(.bold)
-            
-            TextField("Gallery name", text: $galleryName)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-            
-            Spacer()
-        }
-        .padding()
+        GeometryReader { geometry in
+            let size: CGFloat = geometry.size.width > 600 ? 500 : 300
+            VStack {
+                buttonBar
+                
+                Text("New Photo Gallery")
+                    .font(.headline)
+                    .fontWeight(.bold)
+                
+                Spacer()
+                
+                    
+                PhotosPicker(selection: $selectedItem, matching: .images) {
+                    if let img = avatarImage {
+                        ZStack {
+                            Image(uiImage: img)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: size, height: size)
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                                .background(RoundedRectangle(cornerRadius: 10)
+                                            //.stroke(Color.gray, lineWidth: 2)
+                                    .stroke(Color.gray)
+                                    .foregroundColor(.background)
+                                )
+                                .padding()
+                            
+                            Text(galleryName)
+                                .font(.title)
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                                .shadow(color: .black, radius: 10)
+                        }
+                    } else {
+                        Image(systemName: "camera.on.rectangle")
+                            .resizable()
+                            .scaledToFit()
+                            .padding()
+                            .frame(width: size, height: size)
+                            .background(RoundedRectangle(cornerRadius: 10)
+                                        //.stroke(Color.gray, lineWidth: 2)
+                                .stroke(Color.gray, style: StrokeStyle(lineWidth: 5, dash: [10, 10]))
+                                .foregroundColor(.background)
+                            )
+                            .padding()
+                    }
+                }
+                .onChange(of: selectedItem) { newItem in
+                    Task {
+                        print("Handling a new item")
+                        if let data = try? await newItem?.loadTransferable(type: Data.self),
+                           let img = UIImage(data: data)
+                        {
+                            await MainActor.run {
+                                self.avatarImage = img
+                            }
+                        }
+                    }
+                }
 
+                
+
+                
+                TextField("Gallery name", text: $galleryName)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .frame(width: 300)
+                
+                Spacer()
+                
+                AsyncButton(action: {
+                    try await create()
+                }) {
+                    Text("Create gallery \(galleryName)")
+                        .padding()
+                        .frame(width: 300.0, height: 40.0)
+                        .foregroundColor(.white)
+                        .background(Color.accentColor)
+                        .cornerRadius(10)
+                }
+                .disabled(galleryName.isEmpty)
+                
+                Spacer()
+            }
+            .padding()
+            
+        }
     }
 }
 

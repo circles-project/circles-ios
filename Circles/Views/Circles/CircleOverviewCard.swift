@@ -10,12 +10,12 @@ import SwiftUI
 
 
 struct CircleOverviewCard: View {
-    @ObservedObject var circle: SocialCircle
+    @ObservedObject var space: CircleSpace
     
     var timestamp: Text {
         let formatter = RelativeDateTimeFormatter()
         
-        guard let ts = circle.stream.timestamp else {
+        guard let ts = space.timestamp else {
             return Text("")
         }
         
@@ -23,7 +23,7 @@ struct CircleOverviewCard: View {
     }
     
     var avatar: some View {
-        CircleAvatar(socialcircle: circle)
+        CircleAvatar(space: space)
     }
     
     var body: some View {
@@ -35,18 +35,16 @@ struct CircleOverviewCard: View {
                 
                 VStack(alignment: .leading) {
                     HStack {
-                        Text(circle.name ?? "(unnamed circle)")
+                        Text(space.name ?? "(unnamed circle)")
                             .font(.title2)
                             .fontWeight(.bold)
                         Spacer()
-                        Image(systemName: "chevron.right")
-                            .font(.title2)
                     }
-                    Text("Following \(circle.stream.rooms.count)")
+                    Text("Following \(space.rooms.count)")
                         .font(.subheadline)
                         .foregroundColor(Color.gray)
 
-                    Text("Followed by \(circle.followers.count)")
+                    Text("Followed by \(space.followers.count)")
                         .font(.subheadline)
                         .foregroundColor(Color.gray)
 

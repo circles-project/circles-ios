@@ -7,18 +7,19 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct GroupHeader<Content: View>: View {
-    @ObservedObject var room: MatrixRoom
+    @ObservedObject var room: Matrix.Room
     let content: Content
     
-    init(room: MatrixRoom, @ViewBuilder content: () -> Content) {
+    init(room: Matrix.Room, @ViewBuilder content: () -> Content) {
         self.room = room
         self.content = content()
     }
     
     var title: some View {
-        Text(room.displayName ?? room.id)
+        Text(room.name ?? room.id)
             .font(.title)
             .fontWeight(.bold)
     }
@@ -30,7 +31,7 @@ struct GroupHeader<Content: View>: View {
     }
     
     var avatar: some View {
-        Image(uiImage: room.avatarImage ?? UIImage())
+        Image(uiImage: room.avatar ?? UIImage())
             .resizable()
             .scaledToFill()
             .frame(maxWidth: 150, minHeight: 120, maxHeight: 120)

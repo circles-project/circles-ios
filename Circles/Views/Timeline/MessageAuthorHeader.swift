@@ -7,43 +7,49 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct MessageAuthorHeader: View {
-    @ObservedObject var user: MatrixUser
+    @ObservedObject var user: Matrix.User
     //@ObservedObject var room: MatrixRoom
     
+    @ViewBuilder
     var shield: some View {
-        user.isVerified
-            ? Image(systemName: "checkmark.shield")
+        if user.isVerified {
+            Image(systemName: "checkmark.shield")
                 .foregroundColor(Color.green)
-            : Image(systemName: "xmark.shield")
+        } else {
+            Image(systemName: "xmark.shield")
                 .foregroundColor(Color.red)
+        }
     }
     
     var body: some View {
-        HStack(alignment: .center) {
+        HStack(alignment: .top) {
             
             //profileImage
             ProfileImageView(user: user)
                 //.resizable()
                 .scaledToFill()
-                .frame(width: 40, height: 40)
+                .frame(width: 60, height: 60)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
+                //.padding(3)
 
             
             VStack(alignment: .leading) {
                 VStack(alignment: .leading) {
-                    Text(user.displayName ?? user.id)
-                        .font(.headline)
+                    Text(user.displayName ?? user.userId.username)
+                        .font(.title3)
                         .fontWeight(.semibold)
                         .lineLimit(1)
-                    HStack(alignment: .center, spacing: 0) {
-                        //shield
-                        Text(user.id)
-                            .font(.subheadline)
-                            .foregroundColor(Color.gray)
-                            .lineLimit(1)
-                    }
+                        .padding(1)
+
+                    Text(user.id)
+                        .font(.headline)
+                        .foregroundColor(Color.gray)
+                        .lineLimit(1)
+                        .padding(.leading, 1)
+
                 }
             }
             
@@ -57,7 +63,15 @@ struct MessageAuthorHeader: View {
             }
         }
         */
-        .padding(.leading, 2)
+        //.padding(.leading, 2)
+        .onAppear {
+            if user.avatarUrl == nil || user.displayName == nil {
+                user.refreshProfile()
+            }
+            if user.avatar == nil && user.avatarUrl != nil {
+                user.fetchAvatarImage()
+            }
+        }
     }
 }
 

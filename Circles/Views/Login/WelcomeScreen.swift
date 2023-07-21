@@ -7,6 +7,7 @@
 
 import SwiftUI
 import StoreKit
+import Matrix
 
 struct WelcomeScreen: View {
     var store: CirclesStore
@@ -33,11 +34,13 @@ struct WelcomeScreen: View {
             Text("Circles")
                 .font(.largeTitle)
                 .fontWeight(.bold)
+            /*
             Text("by FUTO Labs")
                 .font(.headline)
                 .fontWeight(.bold)
+            */
             
-            TextField("User ID e.g. @user:example.com", text: $username)
+            TextField("@user:example.com", text: $username)
                 .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
                 .disableAutocorrection(true)
                 .frame(width: 300.0, height: 40.0)
@@ -45,8 +48,14 @@ struct WelcomeScreen: View {
 
             AsyncButton(action: {
                 if !username.isEmpty {
+                    guard let userId = UserId(username)
+                    else {
+                        // Set error message
+                        return
+                    }
+
                     do {
-                        try await store.login(username: username)
+                        try await store.login(userId: userId)
                     } catch {
                         
                     }
@@ -86,7 +95,7 @@ struct WelcomeScreen: View {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
-            .padding(.bottom)
+            .padding(.bottom, 50)
 
 
         }

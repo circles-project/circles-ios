@@ -8,20 +8,23 @@
 
 import SwiftUI
 import PhotosUI
+import Matrix
 
 struct RoomMessageComposer: View {
-    @ObservedObject var room: MatrixRoom
+    @ObservedObject var room: Matrix.Room
+    @ObservedObject var galleries: ContainerRoom<GalleryRoom>
     //@Binding var isPresented: Bool
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.presentationMode) var presentation
-    var inReplyTo: MatrixMessage?
+    var inReplyTo: Matrix.Message?
 
     
     //var onCancel: () -> Void
-    @State private var newMessageType: MatrixMsgType = .text
+    @State private var newMessageType: Matrix.MessageType = .text
     @State private var newMessageText = ""
     @State private var newImage: UIImage?
     @State private var showPicker = false
+    @State private var showNewPicker = false
     //@State private var imageSourceType: UIImagePickerController.SourceType = .photoLibrary
     @State private var inProgress = false
     
@@ -35,6 +38,7 @@ struct RoomMessageComposer: View {
     }
     
     @State private var imageSourceType: ImageSourceType = .local(.photoLibrary)
+    @State var selectedItem: PhotosPickerItem?
     
     /*
     init(room: MatrixRoom, onCancel: @escaping () -> Void) {
@@ -71,10 +75,9 @@ struct RoomMessageComposer: View {
             Menu {
                 Button(action: {
                     self.newMessageType = .image
-                    self.imageSourceType = .local(.photoLibrary)
-                    self.showPicker = true
+                    self.showNewPicker = true
                 }) {
-                    Label("Upload a photo from device library", systemImage: "photo.fill")
+                    Label("Upload a photo", systemImage: "photo.fill")
                 }
                 Button(action: {
                     self.newMessageType = .image
@@ -97,7 +100,7 @@ struct RoomMessageComposer: View {
             .disabled(newMessageType == .image)
 
             Spacer()
-            Button(action: {
+            Button(role: .destructive, action: {
                 //self.isPresented = false
                 self.presentation.wrappedValue.dismiss()
                 self.newMessageText = ""
@@ -106,59 +109,36 @@ struct RoomMessageComposer: View {
                 //Image(systemName: "xmark")
                 //Text("Cancel")
                 Label("Cancel", systemImage: "xmark")
-                    .foregroundColor(.red)
+                    //.foregroundColor(.red)
                     .padding(.vertical, 2)
                     .padding(.horizontal, 5)
                     //.background(RoundedRectangle(cornerRadius: 4).stroke(Color.red, lineWidth: 1))
             }
+            .buttonStyle(.bordered)
+            .padding()
 
-            Button(action: {
+            AsyncButton(action: {
                 switch(self.newMessageType) {
+                    
                 case .text:
-                    self.inProgress = true
                     if let parentMessage = self.inReplyTo {
                         print("REPLY\tSending reply")
-                        parentMessage.postReply(text: self.newMessageText) { response in
-                            if response.isSuccess {
-                                //self.isPresented = false
-                                self.presentation.wrappedValue.dismiss()
-                            }
-                            self.inProgress = false
-                        }
+                        try await parentMessage.room.sendReply(to: parentMessage.event, text: self.newMessageText, threaded: false)
+                        self.presentation.wrappedValue.dismiss()
                     } else {
-                        self.room.postText(text: self.newMessageText) { response in
-                            switch(response) {
-                            case .failure(let error):
-                                print("COMPOSER Failed to post text message: \(error)")
-                                // FIXME Set a Bool to show an Alert
-                            case .success(let str):
-                                print("COMPOSER Successfully posted text message")
-                                if let eventId = str {
-                                      print("COMPOSER Got event id \(eventId)")
-                                }
-                                //self.isPresented = false
-                                self.presentation.wrappedValue.dismiss()
-                            }
-                            self.inProgress = false
-                        }
+                        try await self.room.sendText(text: self.newMessageText)
+                        self.presentation.wrappedValue.dismiss()
                     }
+                    
                 case .image:
                     guard let img = self.newImage else {
                         print("COMPOSER Trying to post an image without actually selecting an image")
                         return
                     }
-                    self.inProgress = true
-                    room.postImage(image: img, caption: newMessageText) { response in
-                        switch(response) {
-                        case .failure(let err):
-                            print("COMPOSER Failed to post image: \(err)")
-                        case .success(let maybeMsg):
-                            print("COMPOSER Successfully posted image.  Got response [\(maybeMsg ?? "(No message)")].")
-                            //self.isPresented = false
-                            self.presentation.wrappedValue.dismiss()
-                        }
-                        self.inProgress = false
-                    }
+                    
+                    try await self.room.sendImage(image: img)
+                    self.presentation.wrappedValue.dismiss()
+                    
                 default:
                     print("COMPOSER Doing nothing for now...")
                 }
@@ -171,6 +151,8 @@ struct RoomMessageComposer: View {
                     .padding(.horizontal, 5)
                     //.background(RoundedRectangle(cornerRadius: 4).stroke(Color.blue, lineWidth: 1))
             }
+            .buttonStyle(.bordered)
+            .padding()
 
         }
         //.padding([.leading, .trailing])
@@ -180,7 +162,10 @@ struct RoomMessageComposer: View {
     var body: some View {
         GeometryReader { proxy in
         VStack(alignment: .leading, spacing: 2) {
-            MessageAuthorHeader(user: room.matrix.me())
+            let myUserId = room.session.creds.userId
+            let myUser = room.session.getUser(userId: myUserId)
+            MessageAuthorHeader(user: myUser)
+                .padding()
 
             ZStack {
                 switch(newMessageType) {
@@ -223,6 +208,25 @@ struct RoomMessageComposer: View {
                         .scaleEffect(2.5, anchor: .center)
                 }
             }
+            .onChange(of: selectedItem) { newItem in
+                print("Selected item changed")
+                Task {
+                    if let data = try? await newItem?.loadTransferable(type: Data.self),
+                       let img = UIImage(data: data)
+                    {
+                        await MainActor.run {
+                            self.newImage = img
+                        }
+                    } else {
+                        // We didn't get a new image
+                        if self.newImage == nil {
+                            await MainActor.run {
+                                self.newMessageType = .text
+                            }
+                        }
+                    }
+                }
+            }
 
             buttonBar
         }
@@ -234,7 +238,7 @@ struct RoomMessageComposer: View {
         //.padding([.top, .leading, .trailing], 5)
         .background(
             RoundedRectangle(cornerRadius: 4)
-                .foregroundColor(colorScheme == .dark ? .black : .white)
+                .foregroundColor(.background)
                 .shadow(color: .gray, radius: 2, x: 0, y: 1)
         )
         //.border(Color.red, width: 1)
@@ -251,29 +255,15 @@ struct RoomMessageComposer: View {
                     ImagePicker(selectedImage: self.$newImage, sourceType: localSourceType)
                 case .camera:
                     ImagePicker(selectedImage: $newImage, sourceType: .camera)
+                default:
+                    ImagePicker(selectedImage: $newImage, sourceType: localSourceType)
                 }
             case .cloud:
-                CloudImagePicker(matrix: room.matrix, selectedImage: self.$newImage)
+                CloudImagePicker(galleries: galleries, selectedImage: self.$newImage)
+                //Text("FIXME: CloudImagePicker")
             }
         })
-        .onAppear() {
-            room.matrix.ensureEncryption(roomId: room.id) { response in
-                // Nothing we can really do here anyway
-                switch response {
-                case .success:
-                    // Yay it worked
-                    //self.alertTitle = "Encryption Success"
-                    //self.alertMessage = "All systems go for a new encrypted post"
-                    //self.showAlert = true
-                    return
-                case .failure(let error):
-                    print("Error: Failed to ensure encryption in room [\(room.displayName ?? room.id)]")
-                    self.alertTitle = "Failed to ensure encryption"
-                    self.alertMessage = "Circles could not ensure that all recipients will be able to receive decryption keys for this post"
-                    self.showAlert = true
-                }
-            }
-        }
+        .photosPicker(isPresented: $showNewPicker, selection: $selectedItem, matching: .images)
         .alert(isPresented: $showAlert) {
             Alert(title: Text(alertTitle),
                   message: Text(alertMessage),

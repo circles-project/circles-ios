@@ -7,13 +7,14 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 enum CircleSheetType: String {
     case settings
     case followers
     case following
     case invite
-    case photo
+    //case photo
     case composer
 }
 extension CircleSheetType: Identifiable {
@@ -21,25 +22,22 @@ extension CircleSheetType: Identifiable {
 }
 
 struct CircleTimelineScreen: View {
-    @ObservedObject var circle: SocialCircle
+    @ObservedObject var space: CircleSpace
     @Environment(\.presentationMode) var presentation
+    @EnvironmentObject var galleries: ContainerRoom<GalleryRoom>
     
     //@State var showComposer = false
     @State var sheetType: CircleSheetType? = nil
-    @State var image: UIImage?
+    @State var showPhotosPicker: Bool = false
+    @State var selectedItem: PhotosPickerItem?
+    //@State var image: UIImage?
     
     var toolbarMenu: some View {
         Menu {
             Menu {
-                Button(action: {
-                    circle.graph.removeCircle(circle: circle)
-                    self.presentation.wrappedValue.dismiss()
-                }) {
-                    Label("Delete this Circle", systemImage: "trash")
-                }
                 
                 Button(action: {
-                    self.sheetType = .photo
+                    self.showPhotosPicker = true
                 }) {
                     Label("New Cover Photo", systemImage: "photo")
                 }
@@ -67,46 +65,6 @@ struct CircleTimelineScreen: View {
             Button(action: {self.sheetType = .composer}) {
                 Label("Post a New Message", systemImage: "plus.bubble")
             }
-            
-            /*
-            Button(action:{
-                circle.matrix.createRoom(name: circle.name,
-                                         with: ROOM_TAG_OUTBOUND,
-                                         insecure: false
-                ) { response1 in
-                    switch response1 {
-                    case .failure( _):
-                        print("OUTBOUND\tFailed to create room")
-                    case .success(let mxroom):
-                        print("OUTBOUND\tSuccess creating room")
-                        
-                        guard let room = circle.matrix.getRoom(roomId: mxroom.roomId) else {
-                            print("OUTBOUND\tFailed to create room from mxroom")
-                            return
-                        }
-                        
-                        room.setRoomType(type: ROOM_TYPE_CIRCLE) { roomtypeResponse in
-                            if roomtypeResponse.isSuccess {
-                                print("OUTBOUND\tSuccessfully set room type")
-                            }
-                            else {
-                                print("OUTBOUND\tFailed to set room type")
-                            }
-                        }
-                        
-                        circle.stream.addRoom(roomId: mxroom.roomId) { response2 in
-                            if response2.isSuccess {
-                                circle.graph.saveCircles() { _ in }
-                            }
-                        }
-                    }
-                }
-            }) {
-                Label("Recreate Outbound Room", systemImage: "stethoscope")
-            }
-            */
-            
-
         }
         label: {
             Label("More", systemImage: "ellipsis.circle")
@@ -114,57 +72,86 @@ struct CircleTimelineScreen: View {
     }
 
     var stupidSwiftUiTrick: Int {
-        print("DEBUGUI\tStreamTimeline rendering for Circle \(circle.id)")
+        print("DEBUGUI\tStreamTimeline rendering for Circle \(space.roomId)")
         return 0
     }
     
     var body: some View {
-        //VStack {
-            /*
-            composer
-                .layoutPriority(1)
-            */
-        let foo = self.stupidSwiftUiTrick
+        ZStack {
+
+            let foo = self.stupidSwiftUiTrick
             
-            StreamTimeline(stream: circle.stream)
-                .navigationBarTitle(circle.name, displayMode: .inline)
+            CircleTimeline(space: space)
+                .navigationBarTitle(space.name ?? "Circle", displayMode: .inline)
                 .toolbar {
                     ToolbarItemGroup(placement: .automatic) {
                         toolbarMenu
                     }
                 }
                 .onAppear {
-                    print("DEBUGUI\tStreamTimeline appeared for Circle \(circle.id)")
+                    print("DEBUGUI\tStreamTimeline appeared for Circle \(space.roomId)")
                 }
                 .onDisappear {
-                    print("DEBUGUI\tStreamTimeline disappeared for Circle \(circle.id)")
+                    print("DEBUGUI\tStreamTimeline disappeared for Circle \(space.roomId)")
+                }
+                .photosPicker(isPresented: $showPhotosPicker, selection: $selectedItem, matching: .images)
+                .onChange(of: selectedItem) { newItem in
+                    Task {
+                        if let room = self.space.wall,
+                           let data = try? await newItem?.loadTransferable(type: Data.self),
+                           let img = UIImage(data: data)
+                        {
+                            try await room.setAvatarImage(image: img)
+                        }
+                    }
                 }
                 .sheet(item: $sheetType) { st in
                     switch(st) {
                     case .invite:
-                        RoomInviteSheet(room: circle.wall!)
+                        RoomInviteSheet(room: space.wall!)
                     case .followers:
-                        RoomMembersSheet(room: circle.wall!)
+                        RoomMembersSheet(room: space.wall!)
                     case .following:
-                        CircleConnectionsSheet(circle: circle)
+                        CircleConnectionsSheet(space: space)
+                    /*
                     case .photo:
                         ImagePicker(selectedImage: self.$image, sourceType: .photoLibrary, allowEditing: false) { maybeImage in
-                            guard let room = self.circle.outbound,
+                            guard let room = self.space.wall,
                                   let newImage = maybeImage
                             else {
-                                print("CIRCLEIMAGE\tEither we couldn't find an outbound room, or the user didn't pick an image")
+                                print("CIRCLEIMAGE\tEither we couldn't find a room where we can post, or the user didn't pick an image")
                                 return
                             }
-                            room.setAvatarImage(image: newImage)
-                            
+                            let _ = Task {
+                                try await room.setAvatarImage(image: newImage)
+                            }
                         }
+                    */
                     case .composer:
-                        MessageComposerSheet(room: circle.wall!)
+                        MessageComposerSheet(room: space.wall!, galleries: galleries)
                     default:
                         Text("Coming soon!")
                     }
                 }
-        //}
+            
+            if let wall = space.wall {
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            self.sheetType = .composer
+                        }) {
+                            Image(systemName: "plus.bubble.fill")
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .padding()
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
