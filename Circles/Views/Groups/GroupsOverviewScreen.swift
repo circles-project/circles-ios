@@ -62,7 +62,7 @@ struct GroupsOverviewScreen: View {
                 }
             }
             .padding(.top)
-            .navigationBarTitle(Text("My Groups"), displayMode: .inline)
+            .navigationBarTitle(Text("Groups"), displayMode: .inline)
             .toolbar {
                 ToolbarItemGroup(placement: .automatic) {
                     Menu {

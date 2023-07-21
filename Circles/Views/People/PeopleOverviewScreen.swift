@@ -37,7 +37,7 @@ struct PeopleOverviewScreen: View {
                     
                 }
             }
-            .navigationBarTitle("My People", displayMode: .inline)
+            .navigationBarTitle("People", displayMode: .inline)
         }
         .navigationViewStyle(StackNavigationViewStyle())
 

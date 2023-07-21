@@ -74,7 +74,7 @@ struct CirclesOverviewScreen: View {
                 
             }
             .padding(.top)
-            .navigationBarTitle("My Circles", displayMode: .inline)
+            .navigationBarTitle("Circles", displayMode: .inline)
             .sheet(item: $sheetType) { st in
                 switch(st) {
                 case .create:
