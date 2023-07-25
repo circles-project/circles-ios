@@ -95,11 +95,15 @@ class CirclesApplicationSession: ObservableObject {
             throw CirclesError("Failed to find space rooms")
         }
         
-        return CirclesConfigContent(root: rootId,
-                                    circles: circlesId,
-                                    groups: groupsId,
-                                    galleries: photosId,
-                                    people: peopleId)
+        let config = CirclesConfigContent(root: rootId,
+                                          circles: circlesId,
+                                          groups: groupsId,
+                                          galleries: photosId,
+                                          people: peopleId)
+        // Also save this config for future use
+        try await matrix.putAccountData(config, for: EVENT_TYPE_CIRCLES_CONFIG)
+        
+        return config
     }
     
     init(matrix: Matrix.Session) async throws {
