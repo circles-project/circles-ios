@@ -13,7 +13,7 @@ import Matrix
 // This view is used in the main ContentView in the app, to overlay on top of the
 // main tabbed interface for the app's normal operation.
 struct UiaOverlayView: View {
-    @ObservedObject var circles: CirclesSession
+    @ObservedObject var circles: CirclesApplicationSession
     @ObservedObject var matrix: Matrix.Session
     
     var body: some View {

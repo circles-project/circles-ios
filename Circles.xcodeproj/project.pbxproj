@@ -93,7 +93,7 @@
 		A52DF68E29E88B3C008860C3 /* MessageDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68D29E88B3C008860C3 /* MessageDetailView.swift */; };
 		A52DF69029E8AB52008860C3 /* Color+background.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68F29E8AB52008860C3 /* Color+background.swift */; };
 		A52DF69229EB8820008860C3 /* GroupInviteCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF69129EB8820008860C3 /* GroupInviteCard.swift */; };
-		A52FEBFD2862521F00AE4E3A /* CirclesSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52FEBFC2862521F00AE4E3A /* CirclesSession.swift */; };
+		A52FEBFD2862521F00AE4E3A /* CirclesApplicationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52FEBFC2862521F00AE4E3A /* CirclesApplicationSession.swift */; };
 		A53E91222A5623F9007B0196 /* ProfileSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53E91212A5623F9007B0196 /* ProfileSettingsView.swift */; };
 		A53E91242A5624E5007B0196 /* SecuritySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53E91232A5624E5007B0196 /* SecuritySettingsView.swift */; };
 		A53E91262A5710C5007B0196 /* UpdateDisplaynameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53E91252A5710C5007B0196 /* UpdateDisplaynameView.swift */; };
@@ -241,7 +241,7 @@
 		A52DF68D29E88B3C008860C3 /* MessageDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageDetailView.swift; sourceTree = "<group>"; };
 		A52DF68F29E8AB52008860C3 /* Color+background.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+background.swift"; sourceTree = "<group>"; };
 		A52DF69129EB8820008860C3 /* GroupInviteCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInviteCard.swift; sourceTree = "<group>"; };
-		A52FEBFC2862521F00AE4E3A /* CirclesSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesSession.swift; sourceTree = "<group>"; };
+		A52FEBFC2862521F00AE4E3A /* CirclesApplicationSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesApplicationSession.swift; sourceTree = "<group>"; };
 		A53E91212A5623F9007B0196 /* ProfileSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSettingsView.swift; sourceTree = "<group>"; };
 		A53E91232A5624E5007B0196 /* SecuritySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecuritySettingsView.swift; sourceTree = "<group>"; };
 		A53E91252A5710C5007B0196 /* UpdateDisplaynameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateDisplaynameView.swift; sourceTree = "<group>"; };
@@ -622,7 +622,7 @@
 			children = (
 				A54BA3A12850108300453D5E /* CirclesStore.swift */,
 				A54BA3AA28592D2000453D5E /* SetupSession.swift */,
-				A52FEBFC2862521F00AE4E3A /* CirclesSession.swift */,
+				A52FEBFC2862521F00AE4E3A /* CirclesApplicationSession.swift */,
 			);
 			path = Backend;
 			sourceTree = "<group>";
@@ -833,7 +833,7 @@
 				A5FCF64329CC9B4F008278B0 /* GalleryRoom.swift in Sources */,
 				A5F0148629D75899000D57B3 /* UsernameEnrollForm.swift in Sources */,
 				409F43BA265DE51C00690A61 /* RoomInviteSheet.swift in Sources */,
-				A52FEBFD2862521F00AE4E3A /* CirclesSession.swift in Sources */,
+				A52FEBFD2862521F00AE4E3A /* CirclesApplicationSession.swift in Sources */,
 				A53E91302A5C9DEE007B0196 /* IgnoredUsersView.swift in Sources */,
 				A52DF68C29E88940008860C3 /* PhotoCard.swift in Sources */,
 				A53E91222A5623F9007B0196 /* ProfileSettingsView.swift in Sources */,
@@ -1136,7 +1136,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://gitlab.futo.org/circles/matrix.swift.git";
 			requirement = {
-				branch = main;
+				branch = feat/account_data;
 				kind = branch;
 			};
 		};

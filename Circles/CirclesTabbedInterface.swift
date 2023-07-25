@@ -9,12 +9,14 @@ import SwiftUI
 
 struct CirclesTabbedInterface: View {
     @ObservedObject var store: CirclesStore
-    @ObservedObject var session: CirclesSession
+    @ObservedObject var session: CirclesApplicationSession
     
-    init(store: CirclesStore, session: CirclesSession) {
+    /*
+    init(store: CirclesStore, session: CirclesApplicationSession) {
         self.store = store
         self.session = session
     }
+    */
     
     enum Tab: String {
         case home

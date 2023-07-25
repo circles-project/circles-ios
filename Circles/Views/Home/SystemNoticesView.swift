@@ -10,7 +10,7 @@ import SwiftUI
 import Matrix
 
 struct SystemNoticesView: View {
-    var session: CirclesSession
+    var session: CirclesApplicationSession
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -26,7 +26,7 @@ struct SystemNoticesView: View {
 }
 
 struct SystemNoticesScreen: View {
-    var session: CirclesSession
+    var session: CirclesApplicationSession
     
     var body: some View {
         VStack {
