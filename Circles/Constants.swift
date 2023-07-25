@@ -13,8 +13,11 @@ import Foundation
 let APP_PREFIX = "org.futo"
 
 
-let ROOM_TAG_CIRCLES_SPACE_ROOT = "org.futo.circles.space.root"
-
+let ROOM_TAG_CIRCLES_SPACE_ROOT = "org.futo.space.root"
+let ROOM_TAG_MY_CIRCLES = "org.futo.space.circles"
+let ROOM_TAG_MY_GROUPS = "org.futo.space.groups"
+let ROOM_TAG_MY_PEOPLE = "org.futo.space.people"
+let ROOM_TAG_MY_PHOTOS = "org.futo.space.photos"
 
 
 let ROOM_TYPE_CIRCLE = APP_PREFIX+".social.timeline"

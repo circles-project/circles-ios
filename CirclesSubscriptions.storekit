@@ -52,197 +52,28 @@
           "adHocOffers" : [
 
           ],
-          "displayPrice" : "14.99",
-          "familyShareable" : false,
-          "groupNumber" : 2,
-          "internalID" : "6815828B",
-          "introductoryOffer" : null,
-          "localizations" : [
-            {
-              "description" : "1 GB secure storage, 3 month subscription",
-              "displayName" : "3 Months",
-              "locale" : "en_US"
-            }
-          ],
-          "productID" : "social.kombucha.circles.standard03month",
-          "recurringSubscriptionPeriod" : "P3M",
-          "referenceName" : "Standard 3 Month",
-          "subscriptionGroupID" : "9168B5F2",
-          "type" : "RecurringSubscription"
-        },
-        {
-          "adHocOffers" : [
-
-          ],
-          "displayPrice" : "24.99",
-          "familyShareable" : false,
-          "groupNumber" : 2,
-          "internalID" : "E36E940D",
-          "introductoryOffer" : null,
-          "localizations" : [
-            {
-              "description" : "1 GB storage, 6 month subscription",
-              "displayName" : "6 Months",
-              "locale" : "en_US"
-            }
-          ],
-          "productID" : "social.kombucha.circles.standard06month",
-          "recurringSubscriptionPeriod" : "P6M",
-          "referenceName" : "Standard 6 Month",
-          "subscriptionGroupID" : "9168B5F2",
-          "type" : "RecurringSubscription"
-        },
-        {
-          "adHocOffers" : [
-
-          ],
-          "displayPrice" : "9.99",
-          "familyShareable" : false,
-          "groupNumber" : 2,
-          "internalID" : "EC5F0430",
-          "introductoryOffer" : null,
-          "localizations" : [
-            {
-              "description" : "1 GB secure storage, 2 month subscription",
-              "displayName" : "2 months",
-              "locale" : "en_US"
-            }
-          ],
-          "productID" : "social.kombucha.circles.standard02month",
-          "recurringSubscriptionPeriod" : "P2M",
-          "referenceName" : "Standard 2 Month",
-          "subscriptionGroupID" : "9168B5F2",
-          "type" : "RecurringSubscription"
-        },
-        {
-          "adHocOffers" : [
-
-          ],
-          "displayPrice" : "49.99",
-          "familyShareable" : false,
-          "groupNumber" : 2,
-          "internalID" : "66563094",
-          "introductoryOffer" : null,
-          "localizations" : [
-            {
-              "description" : "A standard Circles account on our server",
-              "displayName" : "1 Year",
-              "locale" : "en_US"
-            }
-          ],
-          "productID" : "social.kombucha.circles.standard12month",
-          "recurringSubscriptionPeriod" : "P1Y",
-          "referenceName" : "Standard 12 Month",
-          "subscriptionGroupID" : "9168B5F2",
-          "type" : "RecurringSubscription"
-        },
-        {
-          "adHocOffers" : [
+          "codeOffers" : [
 
           ],
           "displayPrice" : "0.99",
           "familyShareable" : false,
           "groupNumber" : 1,
-          "internalID" : "5CF1C50B",
-          "introductoryOffer" : null,
-          "localizations" : [
-            {
-              "description" : "Use Circles with your own Matrix server",
-              "displayName" : "BYOS Individual Subscription",
-              "locale" : "en_US"
-            }
-          ],
-          "productID" : "social.kombucha.circles.byos01month",
-          "recurringSubscriptionPeriod" : "P1M",
-          "referenceName" : "BYOS 1 Month",
-          "subscriptionGroupID" : "9168B5F2",
-          "type" : "RecurringSubscription"
-        },
-        {
-          "adHocOffers" : [
-
-          ],
-          "displayPrice" : "9.99",
-          "familyShareable" : false,
-          "groupNumber" : 1,
-          "internalID" : "C8E88F07",
-          "introductoryOffer" : null,
-          "localizations" : [
-            {
-              "description" : "Use Circles with your own Matrix server",
-              "displayName" : "BYOS Individual Subscription",
-              "locale" : "en_US"
-            }
-          ],
-          "productID" : "social.kombucha.circles.byos12month",
-          "recurringSubscriptionPeriod" : "P1Y",
-          "referenceName" : "BYOS 12 Month",
-          "subscriptionGroupID" : "9168B5F2",
-          "type" : "RecurringSubscription"
-        },
-        {
-          "adHocOffers" : [
-
-          ],
-          "displayPrice" : "4.99",
-          "familyShareable" : false,
-          "groupNumber" : 1,
           "internalID" : "699D8EAD",
-          "introductoryOffer" : null,
+          "introductoryOffer" : {
+            "internalID" : "4B6B698A",
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1M"
+          },
           "localizations" : [
             {
               "description" : "A standard Circles account on our server",
-              "displayName" : "1 Month",
+              "displayName" : "Standard - 1 Month",
               "locale" : "en_US"
             }
           ],
-          "productID" : "social.kombucha.circles.standard01month",
+          "productID" : "org.futo.circles.standard_01_month",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Standard 1 Month",
-          "subscriptionGroupID" : "9168B5F2",
-          "type" : "RecurringSubscription"
-        },
-        {
-          "adHocOffers" : [
-
-          ],
-          "displayPrice" : "9.99",
-          "familyShareable" : false,
-          "groupNumber" : 1,
-          "internalID" : "DC00B209",
-          "introductoryOffer" : null,
-          "localizations" : [
-            {
-              "description" : "A premium Circles account on our server",
-              "displayName" : "1 Month",
-              "locale" : "en_US"
-            }
-          ],
-          "productID" : "social.kombucha.circles.premium01month",
-          "recurringSubscriptionPeriod" : "P1M",
-          "referenceName" : "Premium 1 Month",
-          "subscriptionGroupID" : "9168B5F2",
-          "type" : "RecurringSubscription"
-        },
-        {
-          "adHocOffers" : [
-
-          ],
-          "displayPrice" : "99.99",
-          "familyShareable" : false,
-          "groupNumber" : 1,
-          "internalID" : "37F31C69",
-          "introductoryOffer" : null,
-          "localizations" : [
-            {
-              "description" : "A premium Circles account on our server",
-              "displayName" : "1 Year",
-              "locale" : "en_US"
-            }
-          ],
-          "productID" : "social.kombucha.circles.premium12month",
-          "recurringSubscriptionPeriod" : "P1Y",
-          "referenceName" : "Premium 12 Month",
           "subscriptionGroupID" : "9168B5F2",
           "type" : "RecurringSubscription"
         }
@@ -250,7 +81,7 @@
     }
   ],
   "version" : {
-    "major" : 1,
-    "minor" : 1
+    "major" : 2,
+    "minor" : 0
   }
 }

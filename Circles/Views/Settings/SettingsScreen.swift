@@ -12,13 +12,13 @@ import Matrix
 
 struct SettingsScreen: View {
     @ObservedObject var store: CirclesStore
-    @ObservedObject var session: CirclesSession
+    @ObservedObject var session: CirclesApplicationSession
     var user: Matrix.User
     
     @AppStorage("developerMode") var developerMode: Bool = false
     @AppStorage("debugMode") var debugMode: Bool = false
     
-    init(store: CirclesStore, session: CirclesSession) {
+    init(store: CirclesStore, session: CirclesApplicationSession) {
         self.store = store
         self.session = session
         self.user = session.matrix.getUser(userId: session.matrix.creds.userId)

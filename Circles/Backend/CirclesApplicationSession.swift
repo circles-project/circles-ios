@@ -16,7 +16,7 @@ import UIKit
 #endif
 
 
-class CirclesSession: ObservableObject {
+class CirclesApplicationSession: ObservableObject {
     var logger: os.Logger
     
     
@@ -36,6 +36,76 @@ class CirclesSession: ObservableObject {
     var galleries: ContainerRoom<GalleryRoom>   // Top-level galleries space contains the individual rooms for each of our galleries
     var people: ContainerRoom<PersonRoom>       // Top-level people space contains the space rooms for each of our contacts
     
+    static func loadConfig(matrix: Matrix.Session) async throws -> CirclesConfigContent? {
+        // Easy mode: Do we have our config saved in the Account Data?
+        if let config = try await matrix.getAccountData(for: EVENT_TYPE_CIRCLES_CONFIG, of: CirclesConfigContent.self) {
+            return config
+        }
+
+        // Not so easy mode: Do we have a room with our special tag?
+        var tags = [RoomId: [String]]()
+        let roomIds = try await matrix.getJoinedRoomIds()
+        for roomId in roomIds {
+            tags[roomId] = try await matrix.getTags(roomId: roomId)
+        }
+        
+        guard let rootId: RoomId = roomIds.filter({
+            if let t = tags[$0] {
+                return t.contains(ROOM_TAG_CIRCLES_SPACE_ROOT)
+            } else {
+                return false
+            }
+        }).first
+        else {
+            return nil
+        }
+        
+        let childRoomIds = try await matrix.getSpaceChildren(rootId)
+        
+        guard
+            let circlesId: RoomId = childRoomIds.filter({
+                if let t = tags[$0] {
+                    return t.contains(ROOM_TAG_MY_CIRCLES)
+                } else {
+                    return false
+                }
+            }).first,
+            let groupsId: RoomId = childRoomIds.filter({
+                if let t = tags[$0] {
+                    return t.contains(ROOM_TAG_MY_GROUPS)
+                } else {
+                    return false
+                }
+            }).first,
+            let peopleId: RoomId = childRoomIds.filter({
+                if let t = tags[$0] {
+                    return t.contains(ROOM_TAG_MY_PEOPLE)
+                } else {
+                    return false
+                }
+            }).first,
+            let photosId: RoomId = childRoomIds.filter({
+                if let t = tags[$0] {
+                    return t.contains(ROOM_TAG_MY_PHOTOS)
+                } else {
+                    return false
+                }
+            }).first
+        else {
+            throw CirclesError("Failed to find space rooms")
+        }
+        
+        let config = CirclesConfigContent(root: rootId,
+                                          circles: circlesId,
+                                          groups: groupsId,
+                                          galleries: photosId,
+                                          people: peopleId)
+        // Also save this config for future use
+        try await matrix.putAccountData(config, for: EVENT_TYPE_CIRCLES_CONFIG)
+        
+        return config
+    }
+    
     init(matrix: Matrix.Session) async throws {
         self.logger = Logger(subsystem: "Circles", category: "Session")
         self.matrix = matrix
@@ -44,7 +114,7 @@ class CirclesSession: ObservableObject {
         
         logger.debug("Loading config from Matrix")
         let configStart = Date()
-        guard let config = try await matrix.getAccountData(for: EVENT_TYPE_CIRCLES_CONFIG, of: CirclesConfigContent.self)
+        guard let config = try await CirclesApplicationSession.loadConfig(matrix: matrix)
         else {
             throw Matrix.Error("Could not load Circles config")
         }

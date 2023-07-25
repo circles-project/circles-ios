@@ -9,7 +9,7 @@ import SwiftUI
 import Matrix
 
 struct UiaView: View {
-    var session: CirclesSession
+    var session: CirclesApplicationSession
     //var matrix: Matrix.Session
     @ObservedObject var uia: UIAuthSession
     
