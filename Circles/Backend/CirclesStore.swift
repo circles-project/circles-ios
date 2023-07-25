@@ -25,7 +25,7 @@ public class CirclesStore: ObservableObject {
         case nothing(CirclesError?)
         case loggingIn(LoginSession) // Because /login can now take more than a simple username/password
         case haveCreds(Matrix.Credentials)
-        case online(CirclesSession)
+        case online(CirclesApplicationSession)
         case signingUp(SignupSession)
         case settingUp(SetupSession)
     }
@@ -122,7 +122,7 @@ public class CirclesStore: ObservableObject {
                                                      syncToken: token,
                                                      startSyncing: false,
                                                      secretStorageKeyInfo: s4KeyInfo),
-              let session = try? await CirclesSession(matrix: matrix)
+              let session = try? await CirclesApplicationSession(matrix: matrix)
         else {
             let err = CirclesError("Failed to connect as \(creds.userId)")
             await MainActor.run {
