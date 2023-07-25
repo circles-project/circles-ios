@@ -16,12 +16,19 @@ class ContainerRoom<T: Matrix.Room>: Matrix.Room {
     var sinks: [RoomId: Cancellable]
 
     
-    public required init(roomId: RoomId, session: Matrix.Session, initialState: [ClientEventWithoutRoomId], initialTimeline: [ClientEventWithoutRoomId] = []) throws {
+    public required init(roomId: RoomId, session: Matrix.Session,
+                         initialState: [ClientEventWithoutRoomId],
+                         initialTimeline: [ClientEventWithoutRoomId] = [],
+                         initialAccountData: [Matrix.AccountDataEvent] = []
+    ) throws {
         self.rooms = []
         self.logger = Logger(subsystem: "container", category: roomId.description)
         self.sinks = [:]
         
-        try super.init(roomId: roomId, session: session, initialState: initialState, initialTimeline: initialTimeline)
+        try super.init(roomId: roomId, session: session,
+                       initialState: initialState,
+                       initialTimeline: initialTimeline,
+                       initialAccountData: initialAccountData)
         // Swift Phase 1 init is complete.  Now we can use `self`.
         
         // Now let's look to see what (if any) child rooms we have
