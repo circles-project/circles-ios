@@ -32,23 +32,27 @@ struct CircleCreationSheet: View {
             Spacer()
             
             AsyncButton(action: {
-                /*
-                print("Creating a Stream with \(self.rooms.count) channels:")
-                for room in self.rooms {
-                    print("\t\(room.displayName ?? room.id)")
+                
+                // First create the Space for the circle
+                let circleRoomId = try await container.createChildRoom(name: circleName, type: M_SPACE, encrypted: false, avatar: avatarImage)
+                
+                guard let circleRoom = try await container.session.getRoom(roomId: circleRoomId, as: CircleSpace.self)
+                else {
+                    print("Failed to get new circle Space room for roomId \(circleRoomId)")
+                    return
                 }
-                 */
                 
-                let childRoomId = try await container.createChildRoom(name: circleName, type: ROOM_TYPE_CIRCLE, encrypted: true, avatar: avatarImage)
-                
+                // Then create the "wall" timeline room
+                let wallRoomId = try await circleRoom.createChildRoom(name: circleName, type: ROOM_TYPE_CIRCLE, encrypted: true, avatar: avatarImage)
+
+                // Invite our followers to join the room where we're going to post
                 for user in users {
-                    try await container.session.inviteUser(roomId: childRoomId, userId: user.userId)
+                    try await container.session.inviteUser(roomId: wallRoomId, userId: user.userId)
                 }
                 
                 self.presentation.wrappedValue.dismiss()
 
             }) {
-                //Text("Create stream \"\(streamName)\" with \(rooms.count) channels")
                 Text("Create")
                     .fontWeight(.bold)
             }
