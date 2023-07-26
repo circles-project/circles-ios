@@ -41,7 +41,7 @@ struct BsspekeEnrollOprfForm: View {
         case 5:
             return .green
         case 4:
-            return .green
+            return .mint
         case 3:
             return .yellow
         case 2:
