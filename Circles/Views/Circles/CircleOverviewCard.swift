@@ -40,7 +40,7 @@ struct CircleOverviewCard: View {
                             .fontWeight(.bold)
                         Spacer()
                     }
-                    Text("Following \(space.rooms.count)")
+                    Text("Following \(space.following.count)")
                         .font(.subheadline)
                         .foregroundColor(Color.gray)
 
