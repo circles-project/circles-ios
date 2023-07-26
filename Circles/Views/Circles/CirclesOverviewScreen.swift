@@ -22,6 +22,9 @@ struct CirclesOverviewScreen: View {
     
     @State private var sheetType: CirclesOverviewSheetType? = nil
     
+    @State var confirmDeleteCircle = false
+    @State var circleToDelete: CircleSpace? = nil
+    
     var toolbarMenu: some View {
         Menu {
             Button(action: {self.sheetType = .create}) {
@@ -31,6 +34,18 @@ struct CirclesOverviewScreen: View {
         label: {
             Label("More", systemImage: "ellipsis.circle")
         }
+    }
+    
+    private func deleteCircle(circle: CircleSpace) async throws {
+        print("Removing circle \(circle.name ?? "??") (\(circle.roomId))")
+        try await container.removeChildRoom(circle.roomId)
+        print("Leaving \(circle.rooms.count) rooms that were in the circle")
+        for room in circle.rooms {
+            print("Leaving timeline room \(room.name ?? "??") (\(room.roomId))")
+            try await room.leave()
+        }
+        print("Leaving circle space \(circle.roomId)")
+        try await circle.leave(reason: "Deleting circle Space room")
     }
     
     var body: some View {
@@ -49,6 +64,15 @@ struct CirclesOverviewScreen: View {
                             }
                             .onTapGesture {
                                 print("DEBUGUI\tNavigationLink tapped for Circle \(circle.id)")
+                            }
+                            .contextMenu {
+                                Button(role: .destructive, action: {
+                                    //try await deleteCircle(circle: circle)
+                                    self.circleToDelete = circle
+                                    self.confirmDeleteCircle = true
+                                }) {
+                                    Label("Delete", systemImage: "xmark.circle")
+                                }
                             }
                             .buttonStyle(PlainButtonStyle())
                             Divider()
@@ -84,6 +108,13 @@ struct CirclesOverviewScreen: View {
             .toolbar {
                 ToolbarItemGroup(placement: .automatic) {
                     toolbarMenu
+                }
+            }
+            .confirmationDialog("Confirm deleting circle", isPresented: $confirmDeleteCircle, presenting: circleToDelete) { circle in
+                AsyncButton(role: .destructive, action: {
+                    try await deleteCircle(circle: circle)
+                }) {
+                    Label("Delete \"\(circle.name ?? "??")\"", systemImage: "xmark.bin")
                 }
             }
         }
