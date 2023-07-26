@@ -13,6 +13,11 @@ struct BsspekeEnrollOprfForm: View {
     var session: UIAuthSession
     @State var password: String = ""
     @State var repeatPassword: String = ""
+    //@State var passwordStrength: Int = 0
+    @State var score: Int = 1
+    @State var passwordStrengthColors: [Color] = []
+    let checker = DBZxcvbn()
+
     
     private func getUserId() -> UserId? {
         if let userId = session.creds?.userId {
@@ -31,6 +36,23 @@ struct BsspekeEnrollOprfForm: View {
         }
     }
     
+    func colorForScore(score: Int) -> Color {
+        switch score {
+        case 5:
+            return .green
+        case 4:
+            return .green
+        case 3:
+            return .yellow
+        case 2:
+            return .orange
+        case 1:
+            return .red
+        default:
+            return .background
+        }
+    }
+    
     var body: some View {
         VStack {
             Spacer()
@@ -40,8 +62,28 @@ struct BsspekeEnrollOprfForm: View {
                     .fontWeight(.bold)
             }
             Spacer()
-            VStack {
+            VStack(alignment: .leading) {
+                HStack {
+                    Text("Strength:")
+                    ForEach(passwordStrengthColors, id: \.self) { color in
+                        //RoundedRectangle(cornerRadius: 8)
+                        Rectangle()
+                            .fill(color)
+                            .frame(width: 20, height: 40)
+                    }
+                }
+
                 SecureField("correct horse battery staple", text: $password, prompt: Text("New passphrase"))
+                    .onChange(of: password) { newPassword in
+                        if let result = checker.passwordStrength(newPassword) {
+                            print("Password score: \(result.score)")
+                            score = Int(min(result.score, 4)) + 1
+                            let color = colorForScore(score: score)
+                            self.passwordStrengthColors = Array<Color>.init(repeating: color, count: score) + Array<Color>.init(repeating: .background, count: 5-score)
+                        } else {
+                            self.passwordStrengthColors = []
+                        }
+                    }
                     .frame(width: 300.0, height: 40.0)
                 SecureField("correct horse battery staple", text: $repeatPassword, prompt: Text("Repeat passphrase"))
                     .frame(width: 300.0, height: 40.0)
@@ -60,7 +102,7 @@ struct BsspekeEnrollOprfForm: View {
                         .background(Color.accentColor)
                         .cornerRadius(10)
                 }
-                .disabled(password.isEmpty || password != repeatPassword)
+                .disabled(password.isEmpty || password != repeatPassword || score < 4)
             }
             Spacer()
             VStack {
