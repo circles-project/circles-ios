@@ -5,6 +5,11 @@
 //  Created by Charles Wright on 4/1/23.
 //
 
+
+
+
+#if false
+
 import Foundation
 
 public struct Match: Comparable {
@@ -183,3 +188,4 @@ public func repeatMatch(password: String,
     return matches
 }
 
+#endif

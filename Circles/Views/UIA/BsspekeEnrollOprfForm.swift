@@ -13,6 +13,8 @@ struct BsspekeEnrollOprfForm: View {
     var session: UIAuthSession
     @State var password: String = ""
     @State var repeatPassword: String = ""
+    //@State var passwordStrength: Int = 0
+    @State var passwordStrengthColors: [Color] = []
     
     private func getUserId() -> UserId? {
         if let userId = session.creds?.userId {
@@ -40,8 +42,19 @@ struct BsspekeEnrollOprfForm: View {
                     .fontWeight(.bold)
             }
             Spacer()
-            VStack {
+            VStack(alignment: .leading) {
+                HStack {
+                    ForEach(passwordStrengthColors, id: \.self) { color in
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(color)
+                            .frame(width: 20, height: 40)
+                    }
+                }
+
                 SecureField("correct horse battery staple", text: $password, prompt: Text("New passphrase"))
+                    .onChange(of: password) { newPassword in
+                        let checker = DBZxcvbn()
+                    }
                     .frame(width: 300.0, height: 40.0)
                 SecureField("correct horse battery staple", text: $repeatPassword, prompt: Text("Repeat passphrase"))
                     .frame(width: 300.0, height: 40.0)

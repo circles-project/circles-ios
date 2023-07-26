@@ -131,6 +131,12 @@
 		A5CC0AD029DB7001005935F0 /* BsspekeLoginVerifyForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CC0ACF29DB7001005935F0 /* BsspekeLoginVerifyForm.swift */; };
 		A5D2A3EC29BA643C00428C45 /* Matrix in Frameworks */ = {isa = PBXBuildFile; productRef = A5D2A3EB29BA643C00428C45 /* Matrix */; };
 		A5D2A3F629C0EED700428C45 /* Sequence+asyncMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2A3F529C0EED700428C45 /* Sequence+asyncMap.swift */; };
+		A5D3C9BE2A708F1300B41CC0 /* adjacency_graphs.json in Resources */ = {isa = PBXBuildFile; fileRef = A5D3C9B42A708F1300B41CC0 /* adjacency_graphs.json */; };
+		A5D3C9BF2A708F1300B41CC0 /* frequency_lists.json in Resources */ = {isa = PBXBuildFile; fileRef = A5D3C9B52A708F1300B41CC0 /* frequency_lists.json */; };
+		A5D3C9C02A708F1300B41CC0 /* DBPasswordStrengthMeterView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D3C9B72A708F1300B41CC0 /* DBPasswordStrengthMeterView.m */; };
+		A5D3C9C12A708F1300B41CC0 /* DBZxcvbn.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D3C9B92A708F1300B41CC0 /* DBZxcvbn.m */; };
+		A5D3C9C22A708F1300B41CC0 /* DBMatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D3C9BA2A708F1300B41CC0 /* DBMatcher.m */; };
+		A5D3C9C32A708F1300B41CC0 /* DBScorer.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D3C9BD2A708F1300B41CC0 /* DBScorer.m */; };
 		A5E101F82814FAFD000B2C42 /* bcrypt.c in Sources */ = {isa = PBXBuildFile; fileRef = A5E101F72814FAFD000B2C42 /* bcrypt.c */; };
 		A5E101FA2814FB60000B2C42 /* blf.c in Sources */ = {isa = PBXBuildFile; fileRef = A5E101F92814FB60000B2C42 /* blf.c */; };
 		A5E101FE2814FC9F000B2C42 /* PerfectBCrypt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E101FD2814FC9F000B2C42 /* PerfectBCrypt.swift */; };
@@ -273,6 +279,17 @@
 		A5CC0ACD29DB6E26005935F0 /* BsspekeLoginOprfForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BsspekeLoginOprfForm.swift; sourceTree = "<group>"; };
 		A5CC0ACF29DB7001005935F0 /* BsspekeLoginVerifyForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BsspekeLoginVerifyForm.swift; sourceTree = "<group>"; };
 		A5D2A3F529C0EED700428C45 /* Sequence+asyncMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sequence+asyncMap.swift"; sourceTree = "<group>"; };
+		A5D3C9B22A708F1300B41CC0 /* DBPasswordStrengthMeterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBPasswordStrengthMeterView.h; sourceTree = "<group>"; };
+		A5D3C9B42A708F1300B41CC0 /* adjacency_graphs.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = adjacency_graphs.json; sourceTree = "<group>"; };
+		A5D3C9B52A708F1300B41CC0 /* frequency_lists.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = frequency_lists.json; sourceTree = "<group>"; };
+		A5D3C9B62A708F1300B41CC0 /* DBZxcvbn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBZxcvbn.h; sourceTree = "<group>"; };
+		A5D3C9B72A708F1300B41CC0 /* DBPasswordStrengthMeterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBPasswordStrengthMeterView.m; sourceTree = "<group>"; };
+		A5D3C9B82A708F1300B41CC0 /* DBScorer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBScorer.h; sourceTree = "<group>"; };
+		A5D3C9B92A708F1300B41CC0 /* DBZxcvbn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBZxcvbn.m; sourceTree = "<group>"; };
+		A5D3C9BA2A708F1300B41CC0 /* DBMatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBMatcher.m; sourceTree = "<group>"; };
+		A5D3C9BB2A708F1300B41CC0 /* DBMatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBMatcher.h; sourceTree = "<group>"; };
+		A5D3C9BC2A708F1300B41CC0 /* Zxcvbn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Zxcvbn.h; sourceTree = "<group>"; };
+		A5D3C9BD2A708F1300B41CC0 /* DBScorer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBScorer.m; sourceTree = "<group>"; };
 		A5E101F62814FAFD000B2C42 /* Circles-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Circles-Bridging-Header.h"; sourceTree = "<group>"; };
 		A5E101F72814FAFD000B2C42 /* bcrypt.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = bcrypt.c; sourceTree = "<group>"; };
 		A5E101F92814FB60000B2C42 /* blf.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = blf.c; sourceTree = "<group>"; };
@@ -353,6 +370,7 @@
 				A53EADA52A6F0EA600EF18B7 /* CirclesTabbedInterface.swift */,
 				409F4322265DE11900690A61 /* Constants.swift */,
 				404C72D2265DDF35000473DF /* ContentView.swift */,
+				A5E101F62814FAFD000B2C42 /* Circles-Bridging-Header.h */,
 				404C72D4265DDF35000473DF /* Assets.xcassets */,
 				A5B32ACA2810E9EF001BB952 /* Backend */,
 				409F42E1265DDFEB00690A61 /* Models */,
@@ -630,16 +648,34 @@
 		A5CC0ACA29D91F3D005935F0 /* zxcvbn */ = {
 			isa = PBXGroup;
 			children = (
+				A5D3C9BB2A708F1300B41CC0 /* DBMatcher.h */,
+				A5D3C9BA2A708F1300B41CC0 /* DBMatcher.m */,
+				A5D3C9B22A708F1300B41CC0 /* DBPasswordStrengthMeterView.h */,
+				A5D3C9B72A708F1300B41CC0 /* DBPasswordStrengthMeterView.m */,
+				A5D3C9B82A708F1300B41CC0 /* DBScorer.h */,
+				A5D3C9BD2A708F1300B41CC0 /* DBScorer.m */,
+				A5D3C9B62A708F1300B41CC0 /* DBZxcvbn.h */,
+				A5D3C9B92A708F1300B41CC0 /* DBZxcvbn.m */,
+				A5D3C9B32A708F1300B41CC0 /* generated */,
+				A5D3C9BC2A708F1300B41CC0 /* Zxcvbn.h */,
 				A5CC0ACB29D91F7C005935F0 /* Zxcvbn.swift */,
 			);
 			path = zxcvbn;
+			sourceTree = "<group>";
+		};
+		A5D3C9B32A708F1300B41CC0 /* generated */ = {
+			isa = PBXGroup;
+			children = (
+				A5D3C9B42A708F1300B41CC0 /* adjacency_graphs.json */,
+				A5D3C9B52A708F1300B41CC0 /* frequency_lists.json */,
+			);
+			path = generated;
 			sourceTree = "<group>";
 		};
 		A5E101F52814FABC000B2C42 /* BCrypt */ = {
 			isa = PBXGroup;
 			children = (
 				A5E101F72814FAFD000B2C42 /* bcrypt.c */,
-				A5E101F62814FAFD000B2C42 /* Circles-Bridging-Header.h */,
 				A5E101F92814FB60000B2C42 /* blf.c */,
 				A5E101FB2814FBA6000B2C42 /* blf.h */,
 				A5E101FC2814FBE3000B2C42 /* pycabcrypt.h */,
@@ -725,7 +761,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5D3C9BF2A708F1300B41CC0 /* frequency_lists.json in Resources */,
 				404C72D8265DDF35000473DF /* Preview Assets.xcassets in Resources */,
+				A5D3C9BE2A708F1300B41CC0 /* adjacency_graphs.json in Resources */,
 				404C72D5265DDF35000473DF /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -777,6 +815,8 @@
 				409F43A8265DE43B00690A61 /* RoomSecurityInfoSheet.swift in Sources */,
 				A52DF69029E8AB52008860C3 /* Color+background.swift in Sources */,
 				409F437F265DE28600690A61 /* RandomizedCircles.swift in Sources */,
+				A5D3C9C12A708F1300B41CC0 /* DBZxcvbn.m in Sources */,
+				A5D3C9C32A708F1300B41CC0 /* DBScorer.m in Sources */,
 				A55F367329EDB66300F46971 /* GalleryInviteCard.swift in Sources */,
 				409F4323265DE11900690A61 /* Constants.swift in Sources */,
 				A5EE59C52A5F21C2007C24C7 /* DeviceInfoView.swift in Sources */,
@@ -796,6 +836,7 @@
 				A5F0148429D7436E000D57B3 /* EmailEnrollSubmitTokenForm.swift in Sources */,
 				A54346C92A3BB5BB0025D147 /* PhotoThumbnailCard.swift in Sources */,
 				409F42E3265DE00700690A61 /* Array+Sample.swift in Sources */,
+				A5D3C9C22A708F1300B41CC0 /* DBMatcher.m in Sources */,
 				40878FCD2696198500A66EF0 /* TimelineSheetType.swift in Sources */,
 				409F436D265DE24000690A61 /* PeopleOverviewScreen.swift in Sources */,
 				A5D2A3F629C0EED700428C45 /* Sequence+asyncMap.swift in Sources */,
@@ -844,6 +885,7 @@
 				40CEFCD426780D8300857D4D /* MessageDetailSheet.swift in Sources */,
 				409F4385265DE2A400690A61 /* RoomMessageComposer.swift in Sources */,
 				A53E91262A5710C5007B0196 /* UpdateDisplaynameView.swift in Sources */,
+				A5D3C9C02A708F1300B41CC0 /* DBPasswordStrengthMeterView.m in Sources */,
 				A54346C72A3BA7110025D147 /* PhotosUploadView.swift in Sources */,
 				A5FCF63F29CC9AF8008278B0 /* CircleSpace.swift in Sources */,
 				A5A40B6629D608C7009A17EE /* UiaInProgressView.swift in Sources */,
@@ -1020,7 +1062,7 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "Circles/Utilities/BCrypt/Circles-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Circles/Circles-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1054,7 +1096,7 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "Circles/Utilities/BCrypt/Circles-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Circles/Circles-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
