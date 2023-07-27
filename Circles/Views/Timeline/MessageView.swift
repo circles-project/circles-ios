@@ -12,6 +12,7 @@ import Matrix
 protocol MessageView: View {
     var message: Matrix.Message { get }
     var isLocalEcho: Bool { get }
+    var isThreaded: Bool { get }
     
-    init(message: Matrix.Message, isLocalEcho: Bool)
+    init(message: Matrix.Message, isLocalEcho: Bool, isThreaded: Bool)
 }

@@ -129,6 +129,7 @@
 		A5CC0ACC29D91F7C005935F0 /* Zxcvbn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CC0ACB29D91F7C005935F0 /* Zxcvbn.swift */; };
 		A5CC0ACE29DB6E26005935F0 /* BsspekeLoginOprfForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CC0ACD29DB6E26005935F0 /* BsspekeLoginOprfForm.swift */; };
 		A5CC0AD029DB7001005935F0 /* BsspekeLoginVerifyForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CC0ACF29DB7001005935F0 /* BsspekeLoginVerifyForm.swift */; };
+		A5CF39D52A73299500134969 /* ThreadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CF39D42A73299500134969 /* ThreadView.swift */; };
 		A5D2A3EC29BA643C00428C45 /* Matrix in Frameworks */ = {isa = PBXBuildFile; productRef = A5D2A3EB29BA643C00428C45 /* Matrix */; };
 		A5D2A3F629C0EED700428C45 /* Sequence+asyncMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2A3F529C0EED700428C45 /* Sequence+asyncMap.swift */; };
 		A5D3C9BE2A708F1300B41CC0 /* adjacency_graphs.json in Resources */ = {isa = PBXBuildFile; fileRef = A5D3C9B42A708F1300B41CC0 /* adjacency_graphs.json */; };
@@ -278,6 +279,7 @@
 		A5CC0ACB29D91F7C005935F0 /* Zxcvbn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zxcvbn.swift; sourceTree = "<group>"; };
 		A5CC0ACD29DB6E26005935F0 /* BsspekeLoginOprfForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BsspekeLoginOprfForm.swift; sourceTree = "<group>"; };
 		A5CC0ACF29DB7001005935F0 /* BsspekeLoginVerifyForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BsspekeLoginVerifyForm.swift; sourceTree = "<group>"; };
+		A5CF39D42A73299500134969 /* ThreadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadView.swift; sourceTree = "<group>"; };
 		A5D2A3F529C0EED700428C45 /* Sequence+asyncMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sequence+asyncMap.swift"; sourceTree = "<group>"; };
 		A5D3C9B22A708F1300B41CC0 /* DBPasswordStrengthMeterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBPasswordStrengthMeterView.h; sourceTree = "<group>"; };
 		A5D3C9B42A708F1300B41CC0 /* adjacency_graphs.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = adjacency_graphs.json; sourceTree = "<group>"; };
@@ -553,6 +555,7 @@
 				A52DF68229E59C32008860C3 /* StateEventView.swift */,
 				A52DF68929E8868C008860C3 /* MessageView.swift */,
 				A52DF68D29E88B3C008860C3 /* MessageDetailView.swift */,
+				A5CF39D42A73299500134969 /* ThreadView.swift */,
 			);
 			path = Timeline;
 			sourceTree = "<group>";
@@ -909,6 +912,7 @@
 				409F4363265DE21A00690A61 /* MessageAuthorHeader.swift in Sources */,
 				409F436C265DE24000690A61 /* PersonsCircleRow.swift in Sources */,
 				A54BA3A62851222200453D5E /* WelcomeScreen.swift in Sources */,
+				A5CF39D52A73299500134969 /* ThreadView.swift in Sources */,
 				4012C54926A752C400BB15E6 /* EmojiPicker.swift in Sources */,
 				409F4393265DE2DE00690A61 /* TimelineView.swift in Sources */,
 			);
@@ -1178,7 +1182,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://gitlab.futo.org/circles/matrix.swift.git";
 			requirement = {
-				branch = main;
+				branch = feat/threads;
 				kind = branch;
 			};
 		};

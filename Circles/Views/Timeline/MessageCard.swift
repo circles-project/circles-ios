@@ -107,6 +107,7 @@ struct MessageTimestamp: View {
 struct MessageCard: MessageView {
     @ObservedObject var message: Matrix.Message
     var isLocalEcho = false
+    var isThreaded = false
     @AppStorage("debugMode") var debugMode: Bool = false
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var galleries: ContainerRoom<GalleryRoom>
@@ -116,9 +117,10 @@ struct MessageCard: MessageView {
     @State var showDetailView = false
     @State var sheetType: MessageSheetType? = nil
     
-    init(message: Matrix.Message, isLocalEcho: Bool = false) {
+    init(message: Matrix.Message, isLocalEcho: Bool = false, isThreaded: Bool = false) {
         self.message = message
         self.isLocalEcho = isLocalEcho
+        self.isThreaded = isThreaded
     }
 
     func getCaption(body: String) -> String? {
@@ -390,9 +392,22 @@ struct MessageCard: MessageView {
 
     }
     
+    var linkWrapper: some View {
+        HStack {
+            if isThreaded {
+                mainCard
+            } else {
+                NavigationLink(destination: ThreadView<MessageCard>(room: message.room, root: message)) {
+                    mainCard
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+    
     var body: some View {
 
-        mainCard
+        linkWrapper
             .contextMenu {
                 MessageContextMenu(message: message,
                                    sheetType: $sheetType)

@@ -82,7 +82,7 @@ struct TimelineView<V: MessageView>: View {
                 
 
                     if let msg = room.localEchoMessage {
-                        V(message: msg, isLocalEcho: true)
+                        V(message: msg, isLocalEcho: true, isThreaded: false)
                             .border(Color.red)
                             .padding([.top, .leading, .trailing], 3)
                     }
@@ -92,7 +92,7 @@ struct TimelineView<V: MessageView>: View {
 
                             VStack(alignment: .leading) {
 
-                                V(message: message, isLocalEcho: false)
+                                V(message: message, isLocalEcho: false, isThreaded: false)
                                     .padding(.top, 5)
                                     /*
                                      .onAppear {

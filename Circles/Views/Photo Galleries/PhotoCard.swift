@@ -24,6 +24,7 @@ struct PhotoCard: MessageView {
     
     @ObservedObject var message: Matrix.Message
     var isLocalEcho: Bool
+    var isThreaded: Bool
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var galleries: ContainerRoom<GalleryRoom>
     
@@ -33,9 +34,10 @@ struct PhotoCard: MessageView {
     @State var showFullScreen: Bool = false
     private var formatter: DateFormatter
 
-    init(message: Matrix.Message, isLocalEcho: Bool) {
+    init(message: Matrix.Message, isLocalEcho: Bool, isThreaded: Bool) {
         self.message = message
         self.isLocalEcho = isLocalEcho
+        self.isThreaded = isThreaded
         self.formatter = DateFormatter()
         self.formatter.dateStyle = .medium
         self.formatter.timeStyle = .medium
