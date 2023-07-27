@@ -34,14 +34,16 @@ struct StateEventView: View {
                 {
                     switch content.membership {
                     case .invite:
-                        Text("*\(sender) invited \(message.stateKey!)*")
+                        Text("*\(sender) invited \(message.stateKey ?? "ERROR Unknown user")*")
                     case .ban:
-                        Text("*\(sender) banned \(message.stateKey!)*")
+                        Text("*\(sender) banned \(message.stateKey ?? "ERROR Unknown user")*")
                     case .join:
                         if message.sender.userId.description == message.stateKey {
                             Text("*\(sender) joined*")
+                        } else if let otherUser = message.stateKey {
+                            Text("*\(sender) added \(otherUser)*")
                         } else {
-                            Text("*\(sender) added \(message.stateKey!)*")
+                            Text("*\(sender) updated their public profile*")
                         }
                     case .knock:
                         Text("*\(sender) knocked*")
@@ -49,13 +51,14 @@ struct StateEventView: View {
                         if message.sender.userId.description == message.stateKey {
                             Text("*\(sender) left*")
                         } else {
-                            Text("*\(sender) kicked \(message.stateKey!)*")
+                            Text("*\(sender) kicked \(message.stateKey ?? "ERROR Unknown user")*")
                         }
                     }
                 } else {
                     Text("*\(sender) updated the \(roomType) state*")
                 }
-                
+            case M_ROOM_ENCRYPTION:
+                Text("*\(sender) set the room encryption parameters*")
                 
             default:
                 if message.stateKey != nil {
