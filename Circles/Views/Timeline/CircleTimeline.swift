@@ -57,9 +57,7 @@ struct CircleTimeline: View {
     }
     
     var body: some View {
-        let messages: [Matrix.Message] = space.getCollatedTimeline(filter: {
-            [M_ROOM_MESSAGE, M_ROOM_ENCRYPTED].contains($0.type)
-        }).reversed()
+        let messages: [Matrix.Message] = space.getCollatedTimeline(filter: { $0.relatedEventId == nil }).reversed()
         
         VStack(alignment: .leading) {
             ScrollView {
