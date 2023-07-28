@@ -16,7 +16,7 @@ struct RoomMessageComposer: View {
     //@Binding var isPresented: Bool
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.presentationMode) var presentation
-    var inReplyTo: Matrix.Message?
+    var parent: Matrix.Message?
 
     
     //var onCancel: () -> Void
@@ -121,9 +121,10 @@ struct RoomMessageComposer: View {
                 switch(self.newMessageType) {
                     
                 case .text:
-                    if let parentMessage = self.inReplyTo {
-                        print("REPLY\tSending reply")
-                        try await parentMessage.room.sendReply(to: parentMessage.event, text: self.newMessageText, threaded: false)
+                    if let parentMessage = self.parent {
+                        print("REPLY\tSending threaded reply")
+                        let replyEventId = try await parentMessage.room.sendReply(to: parentMessage.event, text: self.newMessageText, threaded: true)
+                        print("REPLY\tSent eventId = \(replyEventId)")
                         self.presentation.wrappedValue.dismiss()
                     } else {
                         try await self.room.sendText(text: self.newMessageText)

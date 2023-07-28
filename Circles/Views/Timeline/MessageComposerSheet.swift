@@ -25,7 +25,7 @@ struct MessageComposerSheet: View {
                     .padding(3)
             }
             let pad: CGFloat = parentMessage == nil ? 0 : 10
-            RoomMessageComposer(room: room, galleries: galleries, inReplyTo: parentMessage)
+            RoomMessageComposer(room: room, galleries: galleries, parent: parentMessage)
                 .padding(.horizontal, 3)
                 .padding(.leading, pad)
         }
