@@ -12,7 +12,7 @@ import Matrix
 struct CircleConnectionsSheet: View {
     @ObservedObject var space: CircleSpace
     @Environment(\.presentationMode) var presentation
-    @State var roomsToLeave: [Matrix.Room] = []
+    @State var roomToLeave: Matrix.Room? = nil
     @State var showConfirmLeave = false
     
     var buttonBar: some View {
@@ -32,48 +32,70 @@ struct CircleConnectionsSheet: View {
         }
     }
     
-    func leaveRooms() async throws {
-        for room in roomsToLeave {
+    func leaveRoom() async throws {
+        if let room = roomToLeave {
             try await space.leaveChildRoom(room.roomId)
+            roomToLeave = nil
         }
-    }
-    
-    var confirmationString: String {
-        let roomNames = roomsToLeave.map { room in
-            "\(room.creator): \(room.name ?? "(untitled)")"
-        }
-            .sorted {
-                $0 < $1
-            }
-        return "Do you really want to remove \(roomNames.joined(separator: ", "))?"
     }
     
     var body: some View {
         VStack() {
-            buttonBar
+            //buttonBar
             
             Text("People I am following")
                 .font(.title2)
                 .fontWeight(.bold)
             
             List {
-                ForEach(space.rooms) { room in
+                let rooms = space.rooms.filter { $0.roomId != space.wall?.roomId }
+                ForEach(rooms) { room in
                     let user = space.session.getUser(userId: room.creator)
                     //PersonsCircleRow(room: room)
-                    VStack {
-                        Text("User: \(room.creator.description)")
-                        Text("Room: \(room.name ?? room.roomId.description)")
+                    HStack {
+                        Image(uiImage: room.avatar ?? UIImage())
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 80, height: 80)
+                            .clipShape(Circle())
+                            .onAppear {
+                                room.updateAvatarImage()
+                            }
+
+                        VStack(alignment: .leading) {
+                            Text(user.displayName ?? user.userId.username)
+                                .font(.title)
+                                .fontWeight(.bold)
+                            
+                            Text(room.name ?? "(unnamed)")
+
+                        }
                     }
-                    .padding()
-                }
-                .onDelete { indexes in
-                    for index in indexes {
-                        roomsToLeave.append(space.rooms[index])
+                    //.padding()
+                    .contextMenu {
+                        Button(role: .destructive, action: {
+                            showConfirmLeave = true
+                            roomToLeave = room
+                        }) {
+                            Label("Unfollow", systemImage: "xmark.bin")
+                        }
                     }
-                    self.showConfirmLeave = true
                 }
+
             }
             // FIXME: Show a confirmation dialog
+            .confirmationDialog("Confirm Unfollow",
+                                isPresented: $showConfirmLeave,
+                                presenting: roomToLeave,
+                                actions: {room in
+                                    AsyncButton(role: .destructive, action: {
+                                        try await space.leaveChildRoom(room.roomId)
+                                    }) {
+                                        Label("Yes, unfollow them", systemImage: "xmark.bin")
+                                    }
+                                }, message: {room in
+                                    Text("Do you really want to unfollow \(room.name ?? "this timeline")?")
+                                })
             
             Spacer()
 
