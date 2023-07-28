@@ -96,7 +96,7 @@ class CircleSpace: ContainerRoom<Matrix.Room> {
         let logger = os.Logger(subsystem: "circles", category: "timeline")
         logger.debug("Getting collated timeline for circle \(self.name ?? "??") (\(self.roomId.stringValue))")
         let unsorted: [Matrix.Message] = self.rooms.reduce([], { (curr,room) in
-            curr + room.timeline.values.filter(filter).filter {
+            curr + room.messages.filter(filter).filter {
                 $0.timestamp >= since
             }
         })
