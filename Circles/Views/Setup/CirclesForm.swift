@@ -16,10 +16,12 @@ struct CirclesForm: View {
     @State var friendsAvatar: UIImage?
     @State var familyAvatar: UIImage?
     @State var communityAvatar: UIImage?
+    @State var status: String = "Waiting for input"
+    @State var pending = false
 
     let stage = "circles"
 
-    var body: some View {
+    var mainForm: some View {
         VStack(alignment: .center) {
             //let currentStage: SignupStage = .setupCircles
 
@@ -51,18 +53,20 @@ struct CirclesForm: View {
             Spacer()
 
             AsyncButton(action: {
-                let circlesInfo: [SetupSession.CircleInfo] = [
-                    SetupSession.CircleInfo(name: "Friends", avatar: friendsAvatar),
-                    SetupSession.CircleInfo(name: "Family", avatar: familyAvatar),
-                    SetupSession.CircleInfo(name: "Community", avatar: communityAvatar),
+                let circlesInfo: [CircleInfo] = [
+                    CircleInfo(name: "Friends", avatar: friendsAvatar),
+                    CircleInfo(name: "Family", avatar: familyAvatar),
+                    CircleInfo(name: "Community", avatar: communityAvatar),
                 ]
                 
+                pending = true
                 do {
-                    try await session.setupCircles(circlesInfo)
+                    try await setupCircles(circlesInfo)
                 } catch {
                     
                 }
-
+                pending = false
+                
             }) {
                 Text("Next")
                     .padding()
@@ -74,6 +78,70 @@ struct CirclesForm: View {
 
         }
         .padding()
+    }
+    
+    struct CircleInfo {
+        var name: String
+        var avatar: UIImage?
+    }
+    
+    func setupCircles(_ circles: [CircleInfo]) async throws {
+        print("Creating Spaces hierarchy for Circles rooms")
+        let client = session.client
+        print("- Creating Space rooms")
+        status = "Creating Matrix Spaces"
+        let topLevelSpace = try await client.createSpace(name: "Circles")
+        let myCircles = try await client.createSpace(name: "My Circles")
+        let myGroups = try await client.createSpace(name: "My Groups")
+        let myGalleries = try await client.createSpace(name: "My Photo Galleries")
+        let myPeople = try await client.createSpace(name: "My People")
+        
+        print("- Adding Space child relationships")
+        status = "Initializing spaces"
+        try await client.addSpaceChild(myCircles, to: topLevelSpace)
+        try await client.addSpaceChild(myGroups, to: topLevelSpace)
+        try await client.addSpaceChild(myGalleries, to: topLevelSpace)
+        try await client.addSpaceChild(myPeople, to: topLevelSpace)
+        
+        print("- Adding tag to top-level space")
+        try await client.addTag(roomId: topLevelSpace, tag: ROOM_TAG_CIRCLES_SPACE_ROOT)
+        
+        print("- Uploading Circles config to account data")
+        status = "Saving configuration"
+        let config = CirclesConfigContent(root: topLevelSpace, circles: myCircles, groups: myGroups, galleries: myGalleries, people: myPeople)
+        try await client.putAccountData(config, for: EVENT_TYPE_CIRCLES_CONFIG)
+        
+        for circle in circles {
+            print("- Creating circle [\(circle.name)]")
+            status = "Creating circle \"\(circle.name)\""
+            let circleRoomId = try await client.createSpace(name: circle.name)
+            let wallRoomId = try await client.createRoom(name: circle.name, type: ROOM_TYPE_CIRCLE)
+            if let avatar = circle.avatar {
+                try await client.setAvatarImage(roomId: wallRoomId, image: avatar)
+            }
+            try await client.addSpaceChild(wallRoomId, to: circleRoomId)
+            try await client.addSpaceChild(circleRoomId, to: myCircles)
+        }
+        
+        status = "All done!"
+        await session.setAllDone()
+    }
+    
+    var body: some View {
+        ZStack {
+            mainForm
+            
+            if pending {
+                Color.gray.opacity(0.5)
+                
+                ProgressView {
+                    Text("\(status)...")
+                        .font(.headline)
+                }
+                .padding(20)
+                .background(in: RoundedRectangle(cornerRadius: 10))
+            }
+        }
     }
 
 }

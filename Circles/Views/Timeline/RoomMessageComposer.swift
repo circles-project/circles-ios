@@ -48,7 +48,7 @@ struct RoomMessageComposer: View {
     */
     
     var buttonBar: some View {
-        HStack(spacing: 10.0) {
+        HStack(spacing: 2.0) {
             Button(action: {
                 self.newMessageType = .text
                 self.newImage = nil
