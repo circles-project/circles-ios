@@ -118,7 +118,10 @@ struct PeopleOverviewScreen: View {
             Divider()
 
             ForEach(following) { user in
-                PersonHeaderRow(user: user, profile: profile)
+                NavigationLink(destination: UnconnectedPersonDetailView(user: user)) {
+                    PersonHeaderRow(user: user, profile: profile)
+                }
+                .buttonStyle(.plain)
                 Divider()
             }
         }
@@ -145,7 +148,10 @@ struct PeopleOverviewScreen: View {
             Divider()
 
             ForEach(followers) { user in
-                PersonHeaderRow(user: user, profile: profile)
+                NavigationLink(destination: UnconnectedPersonDetailView(user: user)) {
+                    PersonHeaderRow(user: user, profile: profile)
+                }
+                .buttonStyle(.plain)
                 Divider()
             }
         }

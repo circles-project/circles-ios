@@ -86,6 +86,7 @@
 		A521C3F72A68D9390051ED88 /* CircleInvitationsIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A521C3F62A68D9390051ED88 /* CircleInvitationsIndicator.swift */; };
 		A52ACB8B2A78240C005D90C5 /* SelfDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52ACB8A2A78240C005D90C5 /* SelfDetailView.swift */; };
 		A52ACB8D2A7824D3005D90C5 /* ProfileSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52ACB8C2A7824D3005D90C5 /* ProfileSpace.swift */; };
+		A52ACB8F2A786974005D90C5 /* UnconnectedPersonDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52ACB8E2A786974005D90C5 /* UnconnectedPersonDetailView.swift */; };
 		A52DF68129E59A81008860C3 /* RoomAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68029E59A81008860C3 /* RoomAvatar.swift */; };
 		A52DF68329E59C32008860C3 /* StateEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68229E59C32008860C3 /* StateEventView.swift */; };
 		A52DF68529E72CC1008860C3 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68429E72CC1008860C3 /* Keychain.swift */; };
@@ -244,6 +245,7 @@
 		A521C3F62A68D9390051ED88 /* CircleInvitationsIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleInvitationsIndicator.swift; sourceTree = "<group>"; };
 		A52ACB8A2A78240C005D90C5 /* SelfDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfDetailView.swift; sourceTree = "<group>"; };
 		A52ACB8C2A7824D3005D90C5 /* ProfileSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSpace.swift; sourceTree = "<group>"; };
+		A52ACB8E2A786974005D90C5 /* UnconnectedPersonDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnconnectedPersonDetailView.swift; sourceTree = "<group>"; };
 		A52DF68029E59A81008860C3 /* RoomAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomAvatar.swift; sourceTree = "<group>"; };
 		A52DF68229E59C32008860C3 /* StateEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateEventView.swift; sourceTree = "<group>"; };
 		A52DF68429E72CC1008860C3 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
@@ -575,6 +577,7 @@
 				409F436B265DE24000690A61 /* PersonHeaderRow.swift */,
 				409F4367265DE23E00690A61 /* PersonsCircleRow.swift */,
 				A52ACB8A2A78240C005D90C5 /* SelfDetailView.swift */,
+				A52ACB8E2A786974005D90C5 /* UnconnectedPersonDetailView.swift */,
 			);
 			path = People;
 			sourceTree = "<group>";
@@ -867,6 +870,7 @@
 				A5A40B6329D46ABD009A17EE /* HtmlView.swift in Sources */,
 				409F4336265DE15F00690A61 /* CircleTimelineScreen.swift in Sources */,
 				A52DF69229EB8820008860C3 /* GroupInviteCard.swift in Sources */,
+				A52ACB8F2A786974005D90C5 /* UnconnectedPersonDetailView.swift in Sources */,
 				409F4370265DE24000690A61 /* PersonHeaderRow.swift in Sources */,
 				409F4332265DE15F00690A61 /* CircleCreationSheet.swift in Sources */,
 				40CD7F6F2667E16100DE315F /* VideoPicker.swift in Sources */,

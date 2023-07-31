@@ -54,7 +54,7 @@ struct SelfDetailView: View {
                             .resizable()
                             .scaledToFill()
                             .frame(width: 180, height: 180)
-                            .clipShape(Circle())
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
                         
                         Text(matrix.displayName ?? matrix.creds.userId.username)
                             .font(.title)
