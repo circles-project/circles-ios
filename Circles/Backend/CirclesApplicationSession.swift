@@ -32,9 +32,10 @@ class CirclesApplicationSession: ObservableObject {
     //typealias PersonRoom = Matrix.SpaceRoom // Each person's profile room is a space, where we may or may not be members of the child rooms
     
     var circles: ContainerRoom<CircleSpace>     // Our top-level circles space contains the spaces for each of our circles
-    var groups: ContainerRoom<GroupRoom>        // Top-level groups space contains the individual rooms for each of our groups
-    var galleries: ContainerRoom<GalleryRoom>   // Top-level galleries space contains the individual rooms for each of our galleries
-    var people: ContainerRoom<PersonRoom>       // Top-level people space contains the space rooms for each of our contacts
+    var groups: ContainerRoom<GroupRoom>        // Groups space contains the individual rooms for each of our groups
+    var galleries: ContainerRoom<GalleryRoom>   // Galleries space contains the individual rooms for each of our galleries
+    var people: ContainerRoom<PersonRoom>       // People space contains the space rooms for each of our contacts
+    var profile: ContainerRoom<Matrix.Room>     // Our profile space contains the "wall" rooms for each circle that we "publish" to our connections
     
     static func loadConfig(matrix: Matrix.Session) async throws -> CirclesConfigContent? {
         // Easy mode: Do we have our config saved in the Account Data?
@@ -90,6 +91,13 @@ class CirclesApplicationSession: ObservableObject {
                 } else {
                     return false
                 }
+            }).first,
+            let profileId: RoomId = childRoomIds.filter({
+                if let t = tags[$0] {
+                    return t.contains(ROOM_TAG_MY_PROFILE)
+                } else {
+                    return false
+                }
             }).first
         else {
             throw CirclesError("Failed to find space rooms")
@@ -99,7 +107,8 @@ class CirclesApplicationSession: ObservableObject {
                                           circles: circlesId,
                                           groups: groupsId,
                                           galleries: photosId,
-                                          people: peopleId)
+                                          people: peopleId,
+                                          profile: profileId)
         // Also save this config for future use
         try await matrix.putAccountData(config, for: EVENT_TYPE_CIRCLES_CONFIG)
         
@@ -168,12 +177,23 @@ class CirclesApplicationSession: ObservableObject {
         let peopleTime = peopleEnd.timeIntervalSince(peopleStart)
         logger.debug("\(peopleTime) sec to load People space")
         
+        let profileStart = Date()
+        guard let profile = try await matrix.getRoom(roomId: config.profile, as: ContainerRoom<Matrix.Room>.self)
+        else {
+            logger.error("Failed to load Profile space")
+            throw CirclesError("Failed to load Profile space")
+        }
+        let profileEnd = Date()
+        let profileTime = profileEnd.timeIntervalSince(profileStart)
+        logger.debug("\(profileTime) sec to load Profile space")
+        
         self.rootRoomId = config.root
         
         self.groups = groups
         self.galleries = galleries
         self.circles = circles
         self.people = people
+        self.profile = profile
         
         let endTS = Date()
         

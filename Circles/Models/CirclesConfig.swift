@@ -16,4 +16,5 @@ struct CirclesConfigContent: Codable {
     var groups: RoomId
     var galleries: RoomId
     var people: RoomId
+    var profile: RoomId
 }

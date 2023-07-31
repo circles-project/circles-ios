@@ -95,6 +95,7 @@ struct CirclesForm: View {
         let myGroups = try await client.createSpace(name: "My Groups")
         let myGalleries = try await client.createSpace(name: "My Photo Galleries")
         let myPeople = try await client.createSpace(name: "My People")
+        let myProfile = try await client.createSpace(name: displayName)
         
         print("- Adding Space child relationships")
         status = "Initializing spaces"
@@ -102,13 +103,20 @@ struct CirclesForm: View {
         try await client.addSpaceChild(myGroups, to: topLevelSpace)
         try await client.addSpaceChild(myGalleries, to: topLevelSpace)
         try await client.addSpaceChild(myPeople, to: topLevelSpace)
+        try await client.addSpaceChild(myProfile, to: topLevelSpace)
         
-        print("- Adding tag to top-level space")
+        print("- Adding tags to spaces")
+        status = "Tagging spaces"
         try await client.addTag(roomId: topLevelSpace, tag: ROOM_TAG_CIRCLES_SPACE_ROOT)
+        try await client.addTag(roomId: myCircles, tag: ROOM_TAG_MY_CIRCLES)
+        try await client.addTag(roomId: myGroups, tag: ROOM_TAG_MY_GROUPS)
+        try await client.addTag(roomId: myGalleries, tag: ROOM_TAG_MY_PHOTOS)
+        try await client.addTag(roomId: myPeople, tag: ROOM_TAG_MY_PEOPLE)
+        try await client.addTag(roomId: myProfile, tag: ROOM_TAG_MY_PROFILE)
         
         print("- Uploading Circles config to account data")
         status = "Saving configuration"
-        let config = CirclesConfigContent(root: topLevelSpace, circles: myCircles, groups: myGroups, galleries: myGalleries, people: myPeople)
+        let config = CirclesConfigContent(root: topLevelSpace, circles: myCircles, groups: myGroups, galleries: myGalleries, people: myPeople, profile: myProfile)
         try await client.putAccountData(config, for: EVENT_TYPE_CIRCLES_CONFIG)
         
         for circle in circles {

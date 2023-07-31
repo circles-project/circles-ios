@@ -18,6 +18,7 @@ let ROOM_TAG_MY_CIRCLES = "org.futo.space.circles"
 let ROOM_TAG_MY_GROUPS = "org.futo.space.groups"
 let ROOM_TAG_MY_PEOPLE = "org.futo.space.people"
 let ROOM_TAG_MY_PHOTOS = "org.futo.space.photos"
+let ROOM_TAG_MY_PROFILE = "org.futo.space.profile"
 
 
 let ROOM_TYPE_CIRCLE = APP_PREFIX+".social.timeline"
