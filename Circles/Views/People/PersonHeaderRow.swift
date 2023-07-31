@@ -80,6 +80,19 @@ struct PersonHeaderRow: View {
                     Label("Invite to connect", systemImage: "link")
                 }
             }
+            if user.session.ignoredUserIds.contains(user.userId) {
+                AsyncButton(action: {
+                    try await user.session.unignoreUser(userId: user.userId)
+                }) {
+                    Label("Un-ignore this user", systemImage: "person.wave.2.fill")
+                }
+            } else {
+                AsyncButton(action: {
+                    try await user.session.ignoreUser(userId: user.userId)
+                }) {
+                    Label("Ignore this user", systemImage: "person.2.slash.fill")
+                }
+            }
         }
     }
 }
