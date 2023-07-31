@@ -54,7 +54,7 @@
 		409F4364265DE21A00690A61 /* MessageReportingSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4361265DE21A00690A61 /* MessageReportingSheet.swift */; };
 		409F436C265DE24000690A61 /* PersonsCircleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4367265DE23E00690A61 /* PersonsCircleRow.swift */; };
 		409F436D265DE24000690A61 /* PeopleOverviewScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4368265DE23F00690A61 /* PeopleOverviewScreen.swift */; };
-		409F436F265DE24000690A61 /* PersonDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F436A265DE24000690A61 /* PersonDetailView.swift */; };
+		409F436F265DE24000690A61 /* ConnectedPersonDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F436A265DE24000690A61 /* ConnectedPersonDetailView.swift */; };
 		409F4370265DE24000690A61 /* PersonHeaderRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F436B265DE24000690A61 /* PersonHeaderRow.swift */; };
 		409F4376265DE25000690A61 /* PhotoGalleryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4372265DE24F00690A61 /* PhotoGalleryCard.swift */; };
 		409F4377265DE25000690A61 /* PhotoGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4373265DE24F00690A61 /* PhotoGalleryView.swift */; };
@@ -84,6 +84,8 @@
 		A509B89E2819B6C90053E5BC /* CirclesError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A509B89D2819B6C90053E5BC /* CirclesError.swift */; };
 		A521C3F52A6889C00051ED88 /* InvitedCircleDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A521C3F42A6889C00051ED88 /* InvitedCircleDetailView.swift */; };
 		A521C3F72A68D9390051ED88 /* CircleInvitationsIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A521C3F62A68D9390051ED88 /* CircleInvitationsIndicator.swift */; };
+		A52ACB8B2A78240C005D90C5 /* SelfDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52ACB8A2A78240C005D90C5 /* SelfDetailView.swift */; };
+		A52ACB8D2A7824D3005D90C5 /* ProfileSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52ACB8C2A7824D3005D90C5 /* ProfileSpace.swift */; };
 		A52DF68129E59A81008860C3 /* RoomAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68029E59A81008860C3 /* RoomAvatar.swift */; };
 		A52DF68329E59C32008860C3 /* StateEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68229E59C32008860C3 /* StateEventView.swift */; };
 		A52DF68529E72CC1008860C3 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68429E72CC1008860C3 /* Keychain.swift */; };
@@ -211,7 +213,7 @@
 		409F4361265DE21A00690A61 /* MessageReportingSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageReportingSheet.swift; sourceTree = "<group>"; };
 		409F4367265DE23E00690A61 /* PersonsCircleRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonsCircleRow.swift; sourceTree = "<group>"; };
 		409F4368265DE23F00690A61 /* PeopleOverviewScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeopleOverviewScreen.swift; sourceTree = "<group>"; };
-		409F436A265DE24000690A61 /* PersonDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonDetailView.swift; sourceTree = "<group>"; };
+		409F436A265DE24000690A61 /* ConnectedPersonDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectedPersonDetailView.swift; sourceTree = "<group>"; };
 		409F436B265DE24000690A61 /* PersonHeaderRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonHeaderRow.swift; sourceTree = "<group>"; };
 		409F4372265DE24F00690A61 /* PhotoGalleryCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoGalleryCard.swift; sourceTree = "<group>"; };
 		409F4373265DE24F00690A61 /* PhotoGalleryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoGalleryView.swift; sourceTree = "<group>"; };
@@ -240,6 +242,8 @@
 		A509B89D2819B6C90053E5BC /* CirclesError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesError.swift; sourceTree = "<group>"; };
 		A521C3F42A6889C00051ED88 /* InvitedCircleDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitedCircleDetailView.swift; sourceTree = "<group>"; };
 		A521C3F62A68D9390051ED88 /* CircleInvitationsIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleInvitationsIndicator.swift; sourceTree = "<group>"; };
+		A52ACB8A2A78240C005D90C5 /* SelfDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfDetailView.swift; sourceTree = "<group>"; };
+		A52ACB8C2A7824D3005D90C5 /* ProfileSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSpace.swift; sourceTree = "<group>"; };
 		A52DF68029E59A81008860C3 /* RoomAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomAvatar.swift; sourceTree = "<group>"; };
 		A52DF68229E59C32008860C3 /* StateEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateEventView.swift; sourceTree = "<group>"; };
 		A52DF68429E72CC1008860C3 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
@@ -432,6 +436,7 @@
 				A5FCF64029CC9B30008278B0 /* GroupRoom.swift */,
 				A5FCF64229CC9B4F008278B0 /* GalleryRoom.swift */,
 				A5A40B6729D60EF3009A17EE /* CirclesConfig.swift */,
+				A52ACB8C2A7824D3005D90C5 /* ProfileSpace.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -566,9 +571,10 @@
 			isa = PBXGroup;
 			children = (
 				409F4368265DE23F00690A61 /* PeopleOverviewScreen.swift */,
-				409F436A265DE24000690A61 /* PersonDetailView.swift */,
+				409F436A265DE24000690A61 /* ConnectedPersonDetailView.swift */,
 				409F436B265DE24000690A61 /* PersonHeaderRow.swift */,
 				409F4367265DE23E00690A61 /* PersonsCircleRow.swift */,
+				A52ACB8A2A78240C005D90C5 /* SelfDetailView.swift */,
 			);
 			path = People;
 			sourceTree = "<group>";
@@ -787,8 +793,10 @@
 				A5CC0AD029DB7001005935F0 /* BsspekeLoginVerifyForm.swift in Sources */,
 				A52DF68529E72CC1008860C3 /* Keychain.swift in Sources */,
 				409F4345265DE17500690A61 /* GroupsOverviewScreen.swift in Sources */,
+				A52ACB8D2A7824D3005D90C5 /* ProfileSpace.swift in Sources */,
 				4047F3DE26B895B80010B2C3 /* SecureFieldWithEye.swift in Sources */,
 				A53EADA62A6F0EA600EF18B7 /* CirclesTabbedInterface.swift in Sources */,
+				A52ACB8B2A78240C005D90C5 /* SelfDetailView.swift in Sources */,
 				409F4379265DE25000690A61 /* PhotoGalleryCreationSheet.swift in Sources */,
 				403CEA9D26E86B920054DBF4 /* AvatarForm.swift in Sources */,
 				A5CC0ACC29D91F7C005935F0 /* Zxcvbn.swift in Sources */,
@@ -833,7 +841,7 @@
 				409F42E9265DE06C00690A61 /* WebView.swift in Sources */,
 				40878FC72694C00000A66EF0 /* MessageContextMenu.swift in Sources */,
 				409F4377265DE25000690A61 /* PhotoGalleryView.swift in Sources */,
-				409F436F265DE24000690A61 /* PersonDetailView.swift in Sources */,
+				409F436F265DE24000690A61 /* ConnectedPersonDetailView.swift in Sources */,
 				403CEAA126E90DE10054DBF4 /* SignupStartForm.swift in Sources */,
 				409F4334265DE15F00690A61 /* CircleOverviewCard.swift in Sources */,
 				403CEA9926E868F30054DBF4 /* AccountInfoForm.swift in Sources */,

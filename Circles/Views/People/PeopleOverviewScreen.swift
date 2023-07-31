@@ -11,33 +11,98 @@ import Matrix
 
 struct PeopleOverviewScreen: View {
     @ObservedObject var people: ContainerRoom<Matrix.SpaceRoom>
+    @ObservedObject var profile: ContainerRoom<Matrix.Room>
     @ObservedObject var circles: ContainerRoom<CircleSpace>
     @ObservedObject var groups: ContainerRoom<GroupRoom>
     
     @State var following: [Matrix.User] = []
     @State var followers: [Matrix.User] = []
+    @State var invitations: [Matrix.InvitedRoom] = []
+    
+    @ViewBuilder
+    var meSection: some View {
+        VStack(alignment: .leading) {
+            let matrix = people.session
+
+            Text("ME")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+            Divider()
+            NavigationLink(destination: SelfDetailView(matrix: matrix, profile: profile, circles: circles)) {
+                HStack(alignment: .top) {
+                    Image(uiImage: matrix.avatar ?? UIImage(systemName: "person.crop.square")!)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 70, height: 70)
+                        .clipShape(RoundedRectangle(cornerRadius: 7))
+                    
+                    VStack(alignment: .leading) {
+                        Text(matrix.displayName ?? matrix.creds.userId.username)
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .lineLimit(1)
+                        Text(matrix.creds.userId.stringValue)
+                            .font(.subheadline)
+                            .foregroundColor(Color.gray)
+                            .lineLimit(1)
+                    }
+                }
+            }
+            .buttonStyle(.plain)
+            Divider()
+        }
+        .padding()
+    }
+    
+    @ViewBuilder
+    var invitesSection: some View {
+        LazyVStack(alignment: .leading) {
+            Text("INVITATIONS TO CONNECT")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+            
+            ForEach(invitations) { room in
+                
+            }
+        }
+        .onAppear {
+            self.invitations = profile.session.invitations.values.filter { room in
+                guard let type = room.type,
+                      type == M_SPACE,
+                      let roomName = room.name
+                else {
+                    return false
+                }
+                
+                let user = room.session.getUser(userId: room.sender)
+                return roomName == user.displayName
+            }
+        }
+    }
     
     @ViewBuilder
     var contactsSection: some View {
-        VStack(alignment: .leading) {
-            Text("CONNECTIONS")
+        LazyVStack(alignment: .leading) {
+            Text("MY CONNECTIONS")
                 .font(.subheadline)
                 .foregroundColor(.gray)
+            Divider()
+
 
             ForEach(people.rooms) { room in
                 let user = people.session.getUser(userId: room.creator)
-                Divider()
 
                 VStack(alignment: .leading) {
-                    NavigationLink(destination: PersonDetailView(space: room)) {
+                    NavigationLink(destination: ConnectedPersonDetailView(space: room)) {
                         //Text("\(user.displayName ?? user.id)")
-                        PersonHeaderRow(user: user)
+                        PersonHeaderRow(user: user, profile: profile)
                     }
                     .buttonStyle(PlainButtonStyle())
                     
                 }
                 //.padding(.leading)
                 //}
+                Divider()
             }
         }
         .padding()
@@ -46,14 +111,15 @@ struct PeopleOverviewScreen: View {
     
     @ViewBuilder
     var followingSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        LazyVStack(alignment: .leading, spacing: 10) {
             Text("PEOPLE I'M FOLLOWING")
                 .font(.subheadline)
                 .foregroundColor(.gray)
+            Divider()
 
             ForEach(following) { user in
+                PersonHeaderRow(user: user, profile: profile)
                 Divider()
-                PersonHeaderRow(user: user)
             }
         }
         .padding()
@@ -72,13 +138,15 @@ struct PeopleOverviewScreen: View {
     
     @ViewBuilder
     var followersSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("FOLLOWERS")
+        LazyVStack(alignment: .leading, spacing: 10) {
+            Text("MY FOLLOWERS")
                 .font(.subheadline)
                 .foregroundColor(.gray)
+            Divider()
+
             ForEach(followers) { user in
+                PersonHeaderRow(user: user, profile: profile)
                 Divider()
-                PersonHeaderRow(user: user)
             }
         }
         .padding()
@@ -101,6 +169,8 @@ struct PeopleOverviewScreen: View {
                 LazyVStack(alignment: .leading) {
                     
                     //Text("\(container.rooms.count) People")
+                    
+                    meSection
                     
                     contactsSection
                     

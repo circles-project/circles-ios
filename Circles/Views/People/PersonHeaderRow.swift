@@ -11,6 +11,7 @@ import Matrix
 
 struct PersonHeaderRow: View {
     @ObservedObject var user: Matrix.User
+    var profile: ProfileSpace
     
     var image: Image {
         guard let img = user.avatar else {
@@ -69,6 +70,17 @@ struct PersonHeaderRow: View {
                 .foregroundColor(.gray)
         }
         //.padding([.leading, .top], 5)
+        .contextMenu {
+            if profile.joinedMembers.contains(user.userId) {
+                AsyncButton(role: .destructive, action: {}) {
+                    Label("Remove connection", systemImage: "person.fill.xmark")
+                }
+            } else {
+                AsyncButton(action: {}) {
+                    Label("Invite to connect", systemImage: "link")
+                }
+            }
+        }
     }
 }
 

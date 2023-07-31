@@ -9,7 +9,7 @@
 import SwiftUI
 import Matrix
 
-struct PersonDetailView: View {
+struct ConnectedPersonDetailView: View {
     @ObservedObject var space: PersonRoom
     @ObservedObject var user: Matrix.User
     @State var rooms: [Matrix.SpaceChildRoom] = []

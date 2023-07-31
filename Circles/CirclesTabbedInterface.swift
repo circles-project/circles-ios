@@ -41,6 +41,7 @@ struct CirclesTabbedInterface: View {
                 .tag(Tab.circles)
             
             PeopleOverviewScreen(people: self.session.people,
+                                 profile: self.session.profile,
                                  circles: self.session.circles,
                                  groups: self.session.groups)
                 .tabItem {
