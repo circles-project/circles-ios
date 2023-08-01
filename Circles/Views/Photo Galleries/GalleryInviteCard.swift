@@ -23,7 +23,7 @@ struct GalleryInviteCard: View {
              AsyncButton(role: .destructive, action: {
                 try await room.reject()
             }) {
-                Label("Reject", systemImage: "xmark.circle")
+                Label("Reject", systemImage: "hand.thumbsdown.fill")
             }
             .padding(2)
             .frame(width: 120.0, height: 40.0)
@@ -35,62 +35,53 @@ struct GalleryInviteCard: View {
                 try await room.accept()
                 try await container.addChildRoom(roomId)
             }) {
-                Label("Accept", systemImage: "checkmark.circle")
+                Label("Accept", systemImage: "hand.thumbsup.fill")
             }
             .padding(2)
             .frame(width: 120.0, height: 40.0)
             
             Spacer()
         }
-         .buttonStyle(.bordered)
+        //.buttonStyle(.bordered)
     
     }
     
     var body: some View {
-        VStack(alignment: .center) {
+        VStack(alignment: .leading) {
+                
+            Image(uiImage: room.avatar ?? UIImage())
+                .resizable()
+                .scaledToFill()
+                //.frame(width: 300, height: 300)
+                .clipShape(RoundedRectangle(cornerRadius: 6))
             
-            Label("New Invitation!", systemImage: "envelope.open")
+            Text("\(room.name ?? "(unknown)")")
                 .font(.title2)
                 .fontWeight(.bold)
             
             HStack(alignment: .top) {
                 Text("From:")
+
+                Image(uiImage: user.avatar ?? UIImage(systemName: "person.circle")!)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 40, height: 40)
+                    .clipShape(Circle())
                 
                 VStack(alignment: .leading) {
-                    Text(user.displayName ?? "")
+                    Text(user.displayName ?? user.userId.username)
                     Text(user.userId.description)
                         .font(.subheadline)
                         .foregroundColor(.gray)
                 }
             }
-            .padding(.top, 2)
-                
-            ZStack {
-                Image(uiImage: room.avatar ?? UIImage())
-                    .resizable()
-                    .scaledToFill()
-                    //.frame(width: 90, height: 90)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                
-                Text("\(room.name ?? "(unknown)")")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundColor(.white)
-                    .shadow(color: .black, radius: 10)
-            }
-            .padding(4)
             
             buttonRow
         }
-        .padding(4)
-        .background(
-            RoundedRectangle(cornerRadius: 10)
-                .stroke(Color.gray, lineWidth: 2)
-                .foregroundColor(.background)
-        )
-        .padding(4)
+        .padding()
         .onAppear {
             room.updateAvatarImage()
+            user.refreshProfile()
         }
     }
 }

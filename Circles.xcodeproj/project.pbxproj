@@ -87,6 +87,7 @@
 		A52ACB8D2A7824D3005D90C5 /* ProfileSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52ACB8C2A7824D3005D90C5 /* ProfileSpace.swift */; };
 		A52ACB8F2A786974005D90C5 /* UnconnectedPersonDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52ACB8E2A786974005D90C5 /* UnconnectedPersonDetailView.swift */; };
 		A52ACB912A793B5A005D90C5 /* PeopleInvitationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52ACB902A793B5A005D90C5 /* PeopleInvitationsView.swift */; };
+		A52ACB932A7969F6005D90C5 /* GalleryInvitationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52ACB922A7969F6005D90C5 /* GalleryInvitationsView.swift */; };
 		A52DF68129E59A81008860C3 /* RoomAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68029E59A81008860C3 /* RoomAvatar.swift */; };
 		A52DF68329E59C32008860C3 /* StateEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68229E59C32008860C3 /* StateEventView.swift */; };
 		A52DF68529E72CC1008860C3 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68429E72CC1008860C3 /* Keychain.swift */; };
@@ -245,6 +246,7 @@
 		A52ACB8C2A7824D3005D90C5 /* ProfileSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSpace.swift; sourceTree = "<group>"; };
 		A52ACB8E2A786974005D90C5 /* UnconnectedPersonDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnconnectedPersonDetailView.swift; sourceTree = "<group>"; };
 		A52ACB902A793B5A005D90C5 /* PeopleInvitationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleInvitationsView.swift; sourceTree = "<group>"; };
+		A52ACB922A7969F6005D90C5 /* GalleryInvitationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryInvitationsView.swift; sourceTree = "<group>"; };
 		A52DF68029E59A81008860C3 /* RoomAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomAvatar.swift; sourceTree = "<group>"; };
 		A52DF68229E59C32008860C3 /* StateEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateEventView.swift; sourceTree = "<group>"; };
 		A52DF68429E72CC1008860C3 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
@@ -515,6 +517,7 @@
 				409F4374265DE25000690A61 /* PhotosOverviewScreen.swift */,
 				A54346C62A3BA7110025D147 /* PhotosUploadView.swift */,
 				A54346C82A3BB5BB0025D147 /* PhotoThumbnailCard.swift */,
+				A52ACB922A7969F6005D90C5 /* GalleryInvitationsView.swift */,
 			);
 			path = "Photo Galleries";
 			sourceTree = "<group>";
@@ -813,6 +816,7 @@
 				A5E101F82814FAFD000B2C42 /* bcrypt.c in Sources */,
 				403CEA9326E864160054DBF4 /* TermsOfServiceForm.swift in Sources */,
 				40878FCA2694DBC400A66EF0 /* MessageComposerSheet.swift in Sources */,
+				A52ACB932A7969F6005D90C5 /* GalleryInvitationsView.swift in Sources */,
 				409F4326265DE12600690A61 /* CloudImagePicker.swift in Sources */,
 				409F4333265DE15F00690A61 /* CircleAvatar.swift in Sources */,
 				A5A7E228282B06FD001A528D /* ApplicationState.swift in Sources */,

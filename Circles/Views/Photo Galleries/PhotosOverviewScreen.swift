@@ -52,22 +52,34 @@ struct PhotosOverviewScreen: View {
         NavigationView {
             ZStack {
                 ScrollView {
+                    VStack(alignment: .leading) {
                         let invitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_PHOTOS }
-                        ForEach(invitations) { invitation in
-                            let user = container.session.getUser(userId: invitation.sender)
-                            GalleryInviteCard(room: invitation, user: user, container: container)
+                        if !invitations.isEmpty {
+                            Text("INVITATIONS")
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                            
+                            NavigationLink(destination: GalleryInvitationsView(container: container)) {
+                                Label("\(invitations.count) invitation(s) to shared photo galleries", systemImage: "envelope.open.fill")
+                            }
+                            .padding()
                         }
-                    
-                    ForEach(container.rooms) { room in
-                        //Text("Found room \(room.roomId.string)")
-                        NavigationLink(destination: PhotoGalleryView(room: room)) {
-                            PhotoGalleryCard(room: room)
-                            // FIXME Add a longPress gesture
-                            //       for setting/changing the
-                            //       avatar image for the gallery
+                        
+                        Text("GALLERIES")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                        ForEach(container.rooms) { room in
+                            //Text("Found room \(room.roomId.string)")
+                            NavigationLink(destination: PhotoGalleryView(room: room)) {
+                                PhotoGalleryCard(room: room)
+                                // FIXME Add a longPress gesture
+                                //       for setting/changing the
+                                //       avatar image for the gallery
+                            }
+                            //.padding(1)
                         }
-                        .padding(1)
                     }
+                    .padding()
                 }
                 
                 VStack {
