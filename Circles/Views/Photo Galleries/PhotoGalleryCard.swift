@@ -1,4 +1,5 @@
 //  Copyright 2020, 2021 Kombucha Digital Privacy Systems LLC
+//  Copyright 2022, 2023 FUTO Holdings Inc
 //
 //  PhotoGalleryCard.swift
 //  Circles for iOS

@@ -1,3 +1,4 @@
+//  Copyright 2023 FUTO Holdings Inc
 //
 //  GalleryInviteCard.swift
 //  Circles
