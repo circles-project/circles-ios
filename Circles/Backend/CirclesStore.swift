@@ -323,19 +323,14 @@ public class CirclesStore: ObservableObject {
             print("DOMAIN\tCouldn't get country code from SKPaymentQueue")
             return nil
         }
-
-        let DEBUG = true
         
-        let usDomain: String
-        let euDomain: String
-        
-        if DEBUG {
-            usDomain = "us.circles-dev.net"
-            euDomain = "nl.circles-dev.net"
-        } else {
-            usDomain = "circu.li"
-            euDomain = "eu.circu.li"
-        }
+        #if DEBUG
+            let usDomain = "us.circles-dev.net"
+            let euDomain = "nl.circles-dev.net"
+        #else
+            let usDomain = "circu.li"
+            let euDomain = "eu.circu.li"
+        #endif
 
         switch countryCode {
         case "USA":
