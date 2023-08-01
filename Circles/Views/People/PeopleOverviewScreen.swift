@@ -66,7 +66,7 @@ struct PeopleOverviewScreen: View {
             
             if !invitations.isEmpty {
                 NavigationLink(destination: PeopleInvitationsView(people: people)) {
-                    Text("\(invitations.count) invitation(s) to connect")
+                    Label("\(invitations.count) invitation(s) to connect", systemImage: "envelope.open.fill")
                 }
             }
 
