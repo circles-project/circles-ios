@@ -87,6 +87,7 @@
 		A52ACB8B2A78240C005D90C5 /* SelfDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52ACB8A2A78240C005D90C5 /* SelfDetailView.swift */; };
 		A52ACB8D2A7824D3005D90C5 /* ProfileSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52ACB8C2A7824D3005D90C5 /* ProfileSpace.swift */; };
 		A52ACB8F2A786974005D90C5 /* UnconnectedPersonDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52ACB8E2A786974005D90C5 /* UnconnectedPersonDetailView.swift */; };
+		A52ACB912A793B5A005D90C5 /* PeopleInvitationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52ACB902A793B5A005D90C5 /* PeopleInvitationsView.swift */; };
 		A52DF68129E59A81008860C3 /* RoomAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68029E59A81008860C3 /* RoomAvatar.swift */; };
 		A52DF68329E59C32008860C3 /* StateEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68229E59C32008860C3 /* StateEventView.swift */; };
 		A52DF68529E72CC1008860C3 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68429E72CC1008860C3 /* Keychain.swift */; };
@@ -246,6 +247,7 @@
 		A52ACB8A2A78240C005D90C5 /* SelfDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfDetailView.swift; sourceTree = "<group>"; };
 		A52ACB8C2A7824D3005D90C5 /* ProfileSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSpace.swift; sourceTree = "<group>"; };
 		A52ACB8E2A786974005D90C5 /* UnconnectedPersonDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnconnectedPersonDetailView.swift; sourceTree = "<group>"; };
+		A52ACB902A793B5A005D90C5 /* PeopleInvitationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleInvitationsView.swift; sourceTree = "<group>"; };
 		A52DF68029E59A81008860C3 /* RoomAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomAvatar.swift; sourceTree = "<group>"; };
 		A52DF68229E59C32008860C3 /* StateEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateEventView.swift; sourceTree = "<group>"; };
 		A52DF68429E72CC1008860C3 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
@@ -578,6 +580,7 @@
 				409F4367265DE23E00690A61 /* PersonsCircleRow.swift */,
 				A52ACB8A2A78240C005D90C5 /* SelfDetailView.swift */,
 				A52ACB8E2A786974005D90C5 /* UnconnectedPersonDetailView.swift */,
+				A52ACB902A793B5A005D90C5 /* PeopleInvitationsView.swift */,
 			);
 			path = People;
 			sourceTree = "<group>";
@@ -802,6 +805,7 @@
 				A52ACB8B2A78240C005D90C5 /* SelfDetailView.swift in Sources */,
 				409F4379265DE25000690A61 /* PhotoGalleryCreationSheet.swift in Sources */,
 				403CEA9D26E86B920054DBF4 /* AvatarForm.swift in Sources */,
+				A52ACB912A793B5A005D90C5 /* PeopleInvitationsView.swift in Sources */,
 				A5CC0ACC29D91F7C005935F0 /* Zxcvbn.swift in Sources */,
 				A53E91282A572E8D007B0196 /* UpdateStatusMessageView.swift in Sources */,
 				404C72D3265DDF35000473DF /* ContentView.swift in Sources */,

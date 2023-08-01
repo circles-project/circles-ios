@@ -17,7 +17,8 @@ struct PeopleOverviewScreen: View {
     
     @State var following: [Matrix.User] = []
     @State var followers: [Matrix.User] = []
-    @State var invitations: [Matrix.InvitedRoom] = []
+    //@State var invitations: [Matrix.InvitedRoom]? = nil
+    @State var showInviteSheet = false
     
     @ViewBuilder
     var meSection: some View {
@@ -56,27 +57,20 @@ struct PeopleOverviewScreen: View {
     
     @ViewBuilder
     var invitesSection: some View {
-        LazyVStack(alignment: .leading) {
-            Text("INVITATIONS TO CONNECT")
-                .font(.subheadline)
-                .foregroundColor(.gray)
+        HStack {
+            Spacer()
             
-            ForEach(invitations) { room in
-                
+            let invitations = profile.session.invitations.values.filter { room in
+                room.type == M_SPACE
             }
-        }
-        .onAppear {
-            self.invitations = profile.session.invitations.values.filter { room in
-                guard let type = room.type,
-                      type == M_SPACE,
-                      let roomName = room.name
-                else {
-                    return false
+            
+            if !invitations.isEmpty {
+                NavigationLink(destination: PeopleInvitationsView(people: people)) {
+                    Text("\(invitations.count) invitation(s) to connect")
                 }
-                
-                let user = room.session.getUser(userId: room.sender)
-                return roomName == user.displayName
             }
+
+            Spacer()
         }
     }
     
@@ -89,20 +83,34 @@ struct PeopleOverviewScreen: View {
             Divider()
 
 
-            ForEach(people.rooms) { room in
-                let user = people.session.getUser(userId: room.creator)
-
-                VStack(alignment: .leading) {
-                    NavigationLink(destination: ConnectedPersonDetailView(space: room)) {
-                        //Text("\(user.displayName ?? user.id)")
-                        PersonHeaderRow(user: user, profile: profile)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    
+            if people.rooms.isEmpty {
+                Text("Not connected with anyone")
+                    .padding()
+                Button(action: {
+                    showInviteSheet = true
+                }) {
+                    Label("Invite friends to connect", systemImage: "plus.circle")
                 }
-                //.padding(.leading)
-                //}
-                Divider()
+                .padding(.leading)
+                .sheet(isPresented: $showInviteSheet) {
+                    RoomInviteSheet(room: profile, title: "Invite friends to connect")
+                }
+            } else {
+                ForEach(people.rooms) { room in
+                    let user = people.session.getUser(userId: room.creator)
+                    
+                    VStack(alignment: .leading) {
+                        NavigationLink(destination: ConnectedPersonDetailView(space: room)) {
+                            //Text("\(user.displayName ?? user.id)")
+                            PersonHeaderRow(user: user, profile: profile)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        
+                    }
+                    //.padding(.leading)
+                    //}
+                    Divider()
+                }
             }
         }
         .padding()
@@ -177,6 +185,8 @@ struct PeopleOverviewScreen: View {
                     //Text("\(container.rooms.count) People")
                     
                     meSection
+                    
+                    invitesSection
                     
                     contactsSection
                     

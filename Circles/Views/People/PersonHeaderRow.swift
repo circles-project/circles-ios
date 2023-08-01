@@ -1,4 +1,4 @@
-//  Copyright 2020, 2021 Kombucha Digital Privacy Systems LLC
+//  Copyright 2022, 2023 FUTO Holdings Inc
 //
 //  PersonHeaderRow.swift
 //  Circles for iOS
@@ -22,10 +22,7 @@ struct PersonHeaderRow: View {
     }
     
     var displayName: String {
-        guard let name = user.displayName else {
-            return user.id.components(separatedBy: ":").first ?? user.id
-        }
-        return name
+        user.displayName ?? user.userId.username
     }
     
     var status: String {
