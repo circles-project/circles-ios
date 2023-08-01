@@ -51,12 +51,6 @@ struct MessageContextMenu: View {
             Label("Refresh", systemImage: "arrow.clockwise")
         }
 
-        Button(action: {
-            self.sheetType = .detail
-        }) {
-            Label("Show detailed view", systemImage: "magnifyingglass")
-        }
-
         Menu {
             AsyncButton(action: {
                 try await message.room.setPowerLevel(userId: message.sender.userId, power: -10)

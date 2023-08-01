@@ -17,7 +17,6 @@ enum MessageDisplayStyle {
     case timeline
     case photoGallery
     case composer
-    case detail
 }
 
 struct MessageText: View {
@@ -114,7 +113,6 @@ struct MessageCard: MessageView {
     //@State var showReplyComposer = false
     @State var reporting = false
     private let debug = false
-    @State var showDetailView = false
     @State var sheetType: MessageSheetType? = nil
     
     init(message: Matrix.Message, isLocalEcho: Bool = false, isThreaded: Bool = false) {
@@ -417,9 +415,6 @@ struct MessageCard: MessageView {
 
                 case .composer:
                     MessageComposerSheet(room: message.room, parentMessage: message, galleries: galleries)
-
-                case .detail:
-                    MessageDetailSheet(message: message, displayStyle: .timeline)
 
                 case .reactions:
                     EmojiPicker(message: message)

@@ -9,7 +9,6 @@ import Foundation
 
 enum MessageSheetType: String {
     case composer
-    case detail
     case reactions
     case reporting
 }
