@@ -25,6 +25,17 @@ struct CirclesOverviewScreen: View {
     @State var confirmDeleteCircle = false
     @State var circleToDelete: CircleSpace? = nil
     
+    let helpTextMarkdown = """
+        # Circles
+                
+        Tip: A **circle** works like Facebook or Twitter.  Everyone posts to their own timeline, and you see posts from all the timelines that you're following.
+        
+        A circle is a good way to share things with lots of people who don't all know each other, like all the aunts and uncles and cousins from both sides of your family.
+        Or with all your friends from all the places you've ever lived, or with all your former coworkers across multiple jobs.
+
+        If you want to connect a bunch of people who *do* all know each other, it's better to create a **Group** instead.
+        """
+    
     var toolbarMenu: some View {
         Menu {
             Button(action: {self.sheetType = .create}) {

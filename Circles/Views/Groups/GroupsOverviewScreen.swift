@@ -22,6 +22,18 @@ struct GroupsOverviewScreen: View {
     @ObservedObject var container: ContainerRoom<GroupRoom>
     @State var sheetType: GroupsSheetType?
     
+    let helpTextMarkdown = """
+        # Groups
+        
+        Tip: A **group** is the best way to connect lots of people where everyone knows each other.
+        
+        Everyone in the group posts to the same timeline, and everyone in the group can see every post.
+        
+        For example, you might want to create a group for your book club, or your sports team, or your scout troop.
+        
+        If you want to share with a bunch of people who *don't* know each other, you should invite all those people to follow you in a **Circle** instead.
+        """
+    
     var body: some View {
         //let groups = container.groups
         NavigationView {
