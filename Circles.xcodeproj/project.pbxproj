@@ -123,6 +123,7 @@
 		A55F367329EDB66300F46971 /* GalleryInviteCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55F367229EDB66300F46971 /* GalleryInviteCard.swift */; };
 		A55F367529EEE7EA00F46971 /* PhotoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55F367429EEE7EA00F46971 /* PhotoDetailView.swift */; };
 		A55F367729EEFB6900F46971 /* PhotoContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55F367629EEFB6900F46971 /* PhotoContextMenu.swift */; };
+		A56AD6692A7AE9F20023ACB8 /* CirclesAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56AD6682A7AE9F20023ACB8 /* CirclesAppDelegate.swift */; };
 		A5A40B6129D468C3009A17EE /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = A5A40B6029D468C3009A17EE /* MarkdownUI */; };
 		A5A40B6329D46ABD009A17EE /* HtmlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A40B6229D46ABD009A17EE /* HtmlView.swift */; };
 		A5A40B6629D608C7009A17EE /* UiaInProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A40B6529D608C7009A17EE /* UiaInProgressView.swift */; };
@@ -281,6 +282,7 @@
 		A55F367229EDB66300F46971 /* GalleryInviteCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryInviteCard.swift; sourceTree = "<group>"; };
 		A55F367429EEE7EA00F46971 /* PhotoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailView.swift; sourceTree = "<group>"; };
 		A55F367629EEFB6900F46971 /* PhotoContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoContextMenu.swift; sourceTree = "<group>"; };
+		A56AD6682A7AE9F20023ACB8 /* CirclesAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesAppDelegate.swift; sourceTree = "<group>"; };
 		A5A40B6229D46ABD009A17EE /* HtmlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HtmlView.swift; sourceTree = "<group>"; };
 		A5A40B6529D608C7009A17EE /* UiaInProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiaInProgressView.swift; sourceTree = "<group>"; };
 		A5A40B6729D60EF3009A17EE /* CirclesConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesConfig.swift; sourceTree = "<group>"; };
@@ -376,13 +378,14 @@
 			isa = PBXGroup;
 			children = (
 				405F8E682698E8620057E970 /* Circles.entitlements */,
+				A5E101F62814FAFD000B2C42 /* Circles-Bridging-Header.h */,
 				404C72D9265DDF35000473DF /* Info.plist */,
 				404C72D0265DDF35000473DF /* CirclesApp.swift */,
+				A56AD6682A7AE9F20023ACB8 /* CirclesAppDelegate.swift */,
 				A509B89D2819B6C90053E5BC /* CirclesError.swift */,
 				A53EADA52A6F0EA600EF18B7 /* CirclesTabbedInterface.swift */,
 				409F4322265DE11900690A61 /* Constants.swift */,
 				404C72D2265DDF35000473DF /* ContentView.swift */,
-				A5E101F62814FAFD000B2C42 /* Circles-Bridging-Header.h */,
 				404C72D4265DDF35000473DF /* Assets.xcassets */,
 				A5B32ACA2810E9EF001BB952 /* Backend */,
 				409F42E1265DDFEB00690A61 /* Models */,
@@ -892,6 +895,7 @@
 				A55F367729EEFB6900F46971 /* PhotoContextMenu.swift in Sources */,
 				A5A40B6A29D62FC6009A17EE /* BsspekeEnrollOprfForm.swift in Sources */,
 				409F4341265DE17500690A61 /* GroupTimelineScreen.swift in Sources */,
+				A56AD6692A7AE9F20023ACB8 /* CirclesAppDelegate.swift in Sources */,
 				A55F367529EEE7EA00F46971 /* PhotoDetailView.swift in Sources */,
 				403CEA9B26E86AA90054DBF4 /* AllDoneForm.swift in Sources */,
 				A5FCF64329CC9B4F008278B0 /* GalleryRoom.swift in Sources */,

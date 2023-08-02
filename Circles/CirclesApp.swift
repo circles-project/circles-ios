@@ -10,8 +10,16 @@ import SwiftUI
 import StoreKit
 import Matrix
 
+#if os(macOS)
+
+#else
+import UIKit
+#endif
+
 @main
 struct CirclesApp: App {
+    @UIApplicationDelegateAdaptor(CirclesAppDelegate.self) var appDelegate
+    
     @StateObject private var store = CirclesStore()
     @StateObject private var iapObserver = AppStoreInterface()
     private var paymentQueue = SKPaymentQueue.default()

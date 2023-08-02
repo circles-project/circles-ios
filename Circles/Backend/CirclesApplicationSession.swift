@@ -116,27 +116,55 @@ class CirclesApplicationSession: ObservableObject {
     }
     
     func setupPushNotifications() async throws {
-        // From https://github.com/matrix-org/sygnal/blob/main/docs/applications.md#ios-applications-beware
-        let payload = """
+        
+        // Get the APN device token that our AppDelegate received from Apple
+        #if os(macOS)
+        // NSApplication.registerForRemoteNotifications()
+        #else
+        guard let token = apnDeviceToken
+        else {
+            logger.error("No APN device token")
+            return
+        }
+        logger.debug("Got APN device token \(token.base64EncodedString())")
+        #endif
+        
+        // Request body based on https://spec.matrix.org/v1.6/client-server-api/#post_matrixclientv3pushersset
+        // `data` from https://github.com/matrix-org/sygnal/blob/main/docs/applications.md#ios-applications-beware
+        
+        let deviceDisplayName = await UIDevice.current.model
+        let pushGatewayHostname = "sygnal.circu.li"
+        let languageCode = Locale.current.language.languageCode?.identifier ?? "en"
+        let body = """
         {
-          "url": "https://sygnal.circu.li/_matrix/push/v1/notify",
-          "format": "event_id_only",
-          "default_payload": {
-            "aps": {
-              "mutable-content": 1,
-              "content-available": 1,
-              "alert": {"loc-key": "SINGLE_UNREAD", "loc-args": []}
-            }
-          }
+            "app_display_name": "Circles",
+            "app_id": "org.futo.circles.ios",
+            "data": {
+                "url": "https://\(pushGatewayHostname)/_matrix/push/v1/notify",
+                "format": "event_id_only",
+                "default_payload": {
+                    "aps": {
+                        "mutable-content": 1,
+                        "content-available": 1,
+                        "alert": {"loc-key": "SINGLE_UNREAD", "loc-args": []}
+                    }
+                }
+            },
+            "device_display_name": "\(deviceDisplayName)",
+            "kind": "http",
+            "lang": "\(languageCode)",
+            "pushkey": "\(token)"
         }
         """
         
-        logger.debug("Setting up push notifications")
+        logger.debug("Setting up push notifications on Matrix homeserver")
         
-        let path = "/_matrix/client/r0/pushers/set"
-        let (data, response) = try await self.matrix.call(method: "POST", path: path, bodyData: payload.data(using: .utf8))
+        let path = "/_matrix/client/v3/pushers/set"
+        let (data, response) = try await self.matrix.call(method: "POST", path: path, bodyData: body.data(using: .utf8))
         
         logger.debug("Received \(data.count) bytes of response with status \(response.statusCode)")
+        
+
     }
     
     init(matrix: Matrix.Session) async throws {
