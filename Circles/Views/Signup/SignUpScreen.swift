@@ -17,39 +17,6 @@ struct SignupAccountInfo {
     var userId: String = ""
 }
 
-
-
-
-struct SignupFinishedView: View {
-    var store: CirclesStore
-    var creds: Matrix.Credentials
-    
-    var body: some View {
-        VStack {
-            Spacer()
-            Text("Successfully signed up!")
-                .font(.headline)
-            
-            AsyncButton(action: {
-                do {
-                    print("Doing nothing because we don't have the SSSS key here")
-                    //try await store.beginSetup(creds: creds)
-                } catch {
-                    
-                }
-            }) {
-                Text("Next: Set Up")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
-            }
-            Spacer()
-        }
-    }
-}
-
 struct SignupScreen: View {
     //@EnvironmentObject var appStore: AppStoreInterface
 
