@@ -39,11 +39,8 @@ struct ThreadView<V: MessageView>: View {
                     } else {
                         Text("No thread found")
                     }
-                    if let check = room.messages.filter({ $0.eventId == root.eventId || $0.threadId == root.eventId }) {
-                        Text("\(check.count) messages in the room that should have matched")
-                    } else {
-                        Text("check failed")
-                    }
+                    let check = room.messages.filter({ $0.eventId == root.eventId || $0.threadId == root.eventId })
+                    Text("\(check.count) messages in the room that should have matched")
                 }
             }
         }
