@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import MarkdownUI
 import Matrix
 
 enum CirclesOverviewSheetType: String {
@@ -36,10 +37,15 @@ struct CirclesOverviewScreen: View {
         If you want to connect a bunch of people who *do* all know each other, it's better to create a **Group** instead.
         """
     
+    @AppStorage("showCirclesHelpText") var showHelpText = true
+    
     var toolbarMenu: some View {
         Menu {
             Button(action: {self.sheetType = .create}) {
                 Label("New Circle", systemImage: "plus")
+            }
+            Button(action: {self.showHelpText = true }) {
+                Label("Help", systemImage: "questionmark.circle")
             }
         }
         label: {
@@ -128,6 +134,20 @@ struct CirclesOverviewScreen: View {
                     Label("Delete \"\(circle.name ?? "??")\"", systemImage: "xmark.bin")
                 }
             }
+            .popover(isPresented: $showHelpText) {
+                VStack {
+                    Markdown(helpTextMarkdown)
+                    
+                    Button(action: {self.showHelpText = false}) {
+                        Label("Got it", systemImage: "hand.thumbsup.fill")
+                            .padding()
+                    }
+                    .buttonStyle(.bordered)
+                    .padding()
+                }
+                .padding()
+            }
+
         }
     }
 }

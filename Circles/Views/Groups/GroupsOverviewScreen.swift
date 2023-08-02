@@ -8,6 +8,7 @@
 
 import SwiftUI
 import Matrix
+import MarkdownUI
 
 enum GroupsSheetType: String {
     case create
@@ -21,6 +22,7 @@ extension GroupsSheetType: Identifiable {
 struct GroupsOverviewScreen: View {
     @ObservedObject var container: ContainerRoom<GroupRoom>
     @State var sheetType: GroupsSheetType?
+    @AppStorage("showGroupsHelpText") var showHelpText = true
     
     let helpTextMarkdown = """
         # Groups
@@ -83,6 +85,11 @@ struct GroupsOverviewScreen: View {
                         }) {
                             Label("New Group", systemImage: "plus.circle")
                         }
+                        Button(action: {
+                            self.showHelpText = true
+                        }) {
+                            Label("Help", systemImage: "questionmark.circle")
+                        }
                     }
                     label: {
                         Label("More", systemImage: "ellipsis.circle")
@@ -98,6 +105,19 @@ struct GroupsOverviewScreen: View {
                 default:
                     Text("Coming soon")
                 }
+            }
+            .popover(isPresented: $showHelpText) {
+                VStack {
+                    Markdown(helpTextMarkdown)
+                    
+                    Button(action: {self.showHelpText = false}) {
+                        Label("Got it", systemImage: "hand.thumbsup.fill")
+                            .padding()
+                    }
+                    .buttonStyle(.bordered)
+                    .padding()
+                }
+                .padding()
             }
         }
     }
