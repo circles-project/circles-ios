@@ -88,6 +88,7 @@
 		A52ACB8F2A786974005D90C5 /* UnconnectedPersonDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52ACB8E2A786974005D90C5 /* UnconnectedPersonDetailView.swift */; };
 		A52ACB912A793B5A005D90C5 /* PeopleInvitationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52ACB902A793B5A005D90C5 /* PeopleInvitationsView.swift */; };
 		A52ACB932A7969F6005D90C5 /* GalleryInvitationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52ACB922A7969F6005D90C5 /* GalleryInvitationsView.swift */; };
+		A52ACB952A797FD3005D90C5 /* SignupFinishedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52ACB942A797FD3005D90C5 /* SignupFinishedView.swift */; };
 		A52DF68129E59A81008860C3 /* RoomAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68029E59A81008860C3 /* RoomAvatar.swift */; };
 		A52DF68329E59C32008860C3 /* StateEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68229E59C32008860C3 /* StateEventView.swift */; };
 		A52DF68529E72CC1008860C3 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68429E72CC1008860C3 /* Keychain.swift */; };
@@ -247,6 +248,7 @@
 		A52ACB8E2A786974005D90C5 /* UnconnectedPersonDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnconnectedPersonDetailView.swift; sourceTree = "<group>"; };
 		A52ACB902A793B5A005D90C5 /* PeopleInvitationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleInvitationsView.swift; sourceTree = "<group>"; };
 		A52ACB922A7969F6005D90C5 /* GalleryInvitationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryInvitationsView.swift; sourceTree = "<group>"; };
+		A52ACB942A797FD3005D90C5 /* SignupFinishedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupFinishedView.swift; sourceTree = "<group>"; };
 		A52DF68029E59A81008860C3 /* RoomAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomAvatar.swift; sourceTree = "<group>"; };
 		A52DF68229E59C32008860C3 /* StateEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateEventView.swift; sourceTree = "<group>"; };
 		A52DF68429E72CC1008860C3 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
@@ -542,6 +544,7 @@
 				403CEA9226E864160054DBF4 /* TermsOfServiceForm.swift */,
 				403CEA9426E865740054DBF4 /* TokenForm.swift */,
 				403CEA9626E866B70054DBF4 /* ValidateEmailForm.swift */,
+				A52ACB942A797FD3005D90C5 /* SignupFinishedView.swift */,
 			);
 			path = Signup;
 			sourceTree = "<group>";
@@ -864,6 +867,7 @@
 				A5F2E95C2A4497E30097DBF8 /* UiaView.swift in Sources */,
 				409F4390265DE2CE00690A61 /* SystemNoticesView.swift in Sources */,
 				A504DA7328120AF100EFF42E /* AsyncButton.swift in Sources */,
+				A52ACB952A797FD3005D90C5 /* SignupFinishedView.swift in Sources */,
 				403CEA9526E865740054DBF4 /* TokenForm.swift in Sources */,
 				409F438C265DE2C200690A61 /* CircleTimeline.swift in Sources */,
 				409F4337265DE15F00690A61 /* CirclesOverviewScreen.swift in Sources */,
