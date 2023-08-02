@@ -115,6 +115,30 @@ class CirclesApplicationSession: ObservableObject {
         return config
     }
     
+    func setupPushNotifications() async throws {
+        // From https://github.com/matrix-org/sygnal/blob/main/docs/applications.md#ios-applications-beware
+        let payload = """
+        {
+          "url": "https://sygnal.circu.li/_matrix/push/v1/notify",
+          "format": "event_id_only",
+          "default_payload": {
+            "aps": {
+              "mutable-content": 1,
+              "content-available": 1,
+              "alert": {"loc-key": "SINGLE_UNREAD", "loc-args": []}
+            }
+          }
+        }
+        """
+        
+        logger.debug("Setting up push notifications")
+        
+        let path = "/_matrix/client/r0/pushers/set"
+        let (data, response) = try await self.matrix.call(method: "POST", path: path, bodyData: payload.data(using: .utf8))
+        
+        logger.debug("Received \(data.count) bytes of response with status \(response.statusCode)")
+    }
+    
     init(matrix: Matrix.Session) async throws {
         self.logger = Logger(subsystem: "Circles", category: "Session")
         self.matrix = matrix
