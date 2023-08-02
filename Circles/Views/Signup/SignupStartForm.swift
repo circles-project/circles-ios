@@ -78,14 +78,13 @@ struct SignupStartForm: View {
             
             if debugMode {
                 VStack {
-                    if let flows = state.flows {
-                        ForEach(flows, id: \.self) { flow in
-                            Text("Auth flow:")
-                                .font(.body)
-                            ForEach(flow.stages, id: \.self) { stage in
-                                Text(stage)
-                                    .font(.caption)
-                            }
+                    let flows = state.flows
+                    ForEach(flows, id: \.self) { flow in
+                        Text("Auth flow:")
+                            .font(.body)
+                        ForEach(flow.stages, id: \.self) { stage in
+                            Text(stage)
+                                .font(.caption)
                         }
                     }
                 }

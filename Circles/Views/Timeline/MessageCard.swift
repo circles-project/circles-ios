@@ -175,8 +175,8 @@ struct MessageCard: MessageView {
                                 MessageThumbnail(message: message)
                                 //.padding(1)
                                 
-                                if let caption = imageContent.caption,
-                                   let markdown = MarkdownContent(caption) {
+                                if let caption = imageContent.caption {
+                                    let markdown = MarkdownContent(caption)
                                     Markdown(markdown)
                                 }
                             }
