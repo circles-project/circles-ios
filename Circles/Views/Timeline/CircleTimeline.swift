@@ -42,8 +42,8 @@ struct CircleTimeline: View {
                             .fontWeight(.bold)
                     }
                 }
-                if let firstMessage = messages.first,
-                   let ts = firstMessage.timestamp {
+                if let firstMessage = messages.first {
+                    let ts = firstMessage.timestamp
                     Text("since \(formatter.string(from: ts))")
                         .padding(.leading, 20)
                 }
