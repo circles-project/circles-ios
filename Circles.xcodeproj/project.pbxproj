@@ -1196,16 +1196,16 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/KeyboardKit/KeyboardKit";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 6.0.0;
+				kind = upToNextMinorVersion;
+				minimumVersion = 7.7.0;
 			};
 		};
 		A5D2A3EA29BA643C00428C45 /* XCRemoteSwiftPackageReference "matrix.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://gitlab.futo.org/circles/matrix.swift.git";
 			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 0.2.0;
+				branch = release/v0.2.0;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
