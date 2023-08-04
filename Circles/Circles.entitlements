@@ -7,7 +7,7 @@
 	<key>com.apple.developer.associated-domains</key>
 	<array>
 		<string>webcredentials:circu.li</string>
-		<string>webcredentials:example.com</string>
+		<string>webcredentials:eu.circu.li</string>
 		<string>webcredentials:us.circles-dev.net</string>
 		<string>webcredentials:nl.circles-dev.net</string>
 	</array>
