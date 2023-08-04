@@ -13,6 +13,7 @@ struct WelcomeScreen: View {
     var store: CirclesStore
     
     @State var username: String = ""
+    @State var showDomainPicker = false
     
     var logo: some View {
         RandomizedCircles()
@@ -75,16 +76,14 @@ struct WelcomeScreen: View {
             Text("Not a member?")
             AsyncButton(action: {
 
-                if let countryCode = SKPaymentQueue.default().storefront?.countryCode {
+                if let countryCode = await Storefront.current?.countryCode {
                     print("LOGIN\tGot country code = \(countryCode)")
+                    let domain = store.getOurDomain(countryCode: countryCode)
+                    print("LOGIN\tSigning up on domain \(domain)")
+                    try await self.store.signup(domain: domain)
                 } else {
                     print("LOGIN\tFailed to get country code from StoreKit")
-                }
-
-                do {
-                    try await self.store.signup()
-                } catch {
-                    
+                    self.showDomainPicker = true
                 }
 
             }) {
@@ -96,6 +95,20 @@ struct WelcomeScreen: View {
                     .cornerRadius(10)
             }
             .padding(.bottom, 50)
+            .confirmationDialog("Select a region", isPresented: $showDomainPicker) {
+                AsyncButton(action: {
+                    print("LOGIN\tSigning up on user-selected US domain")
+                    try await store.signup(domain: usDomain)
+                }) {
+                    Text("🇺🇸 Sign up on US server")
+                }
+                AsyncButton(action: {
+                    print("LOGIN\tSigning up on user-selected EU domain")
+                    try await store.signup(domain: euDomain)
+                }) {
+                    Text("🇪🇺 Sign up on EU server")
+                }
+            }
 
 
         }

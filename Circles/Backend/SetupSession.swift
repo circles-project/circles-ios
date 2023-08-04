@@ -7,10 +7,11 @@
 
 import Foundation
 import UIKit
-
+import os
 import Matrix
 
 class SetupSession: ObservableObject {
+    var logger: os.Logger
     var creds: Matrix.Credentials
     var store: CirclesStore
     var client: Matrix.Client
@@ -23,22 +24,34 @@ class SetupSession: ObservableObject {
     @Published var state: State
     
     init(creds: Matrix.Credentials, s4keyInfo: (String, Data), store: CirclesStore) async throws {
+        let logger = os.Logger(subsystem: "circles", category: "setup")
+        let (keyId, key) = s4keyInfo
+        logger.debug("Created new SetupSession with s4 keyId \(keyId)")
+        self.logger = logger
         self.creds = creds
         self.store = store
         //self.client = try Matrix.Client(creds: creds)
-        self.client = try await Matrix.Session(creds: creds, startSyncing: false, secretStorageKeyInfo: s4keyInfo)
+        //logger.debug("Initializing Matrix session")
+        //self.client = try await Matrix.Session(creds: creds, startSyncing: false, secretStorageKeyInfo: s4keyInfo)
+        logger.debug("Intialzing Matrix client")
+        self.client = try await Matrix.Client(creds: creds)
+        logger.debug("Setting state to .profile")
         self.state = .profile
     }
     
     func setupProfile(name: String, avatar: UIImage) async throws {
+        logger.debug("Setting displayname")
         try await client.setMyDisplayName(name)
+        logger.debug("Setting avatar image")
         try await client.setMyAvatarImage(avatar)
+        logger.debug("Setting state to .circles")
         await MainActor.run {
             self.state = .circles(name)
         }
     }
     
     func setAllDone() async {
+        logger.debug("Setting state to .allDone")
         await MainActor.run {
             self.state = .allDone
         }

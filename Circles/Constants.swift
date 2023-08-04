@@ -40,3 +40,11 @@ let RECOVERY_MIN_INTERVAL = 60.0
 let DEFAULT_DOMAIN = "circu.li"
 
 let MATRIX_SSSS_KEY_LABEL = "matrix_ssss"
+
+#if DEBUG
+    let usDomain = "us.circles-dev.net"
+    let euDomain = "nl.circles-dev.net"
+#else
+    let usDomain = "circu.li"
+    let euDomain = "eu.circu.li"
+#endif

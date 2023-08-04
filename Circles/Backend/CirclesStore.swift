@@ -195,16 +195,11 @@ public class CirclesStore: ObservableObject {
         }
     }
     
-    func signup() async throws {
+    func signup(domain: String) async throws {
         // We only support signing up on our own servers
         // Look at the country code of the user's StoreKit storefront to decide which server we should use
         // Create a SignupSession and set our state to .signingUp
         
-        guard let domain = ourDomain else {
-            print("SIGNUP\tCouldn't find domain from StoreKit info")
-            return
-        }
-
         let deviceModel = await UIDevice.current.model
         let signupSession = try await SignupSession(domain: domain, initialDeviceDisplayName: "Circles (\(deviceModel))", completion: { session,data in
             self.logger.debug("Signup was successful")
@@ -317,20 +312,12 @@ public class CirclesStore: ObservableObject {
     // MARK: Domain handling
 
     
-    private var ourDomain: String? {
-
-        guard let countryCode = SKPaymentQueue.default().storefront?.countryCode else {
-            print("DOMAIN\tCouldn't get country code from SKPaymentQueue")
-            return nil
-        }
-        
-        #if DEBUG
-            let usDomain = "us.circles-dev.net"
-            let euDomain = "nl.circles-dev.net"
-        #else
-            let usDomain = "circu.li"
-            let euDomain = "eu.circu.li"
-        #endif
+    private var ourDomains = [
+        usDomain,
+        euDomain,
+    ]
+    
+    public func getOurDomain(countryCode: String) -> String {
 
         switch countryCode {
         case "USA":
