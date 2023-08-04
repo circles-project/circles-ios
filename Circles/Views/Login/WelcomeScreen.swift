@@ -76,6 +76,7 @@ struct WelcomeScreen: View {
             Text("Not a member?")
             AsyncButton(action: {
 
+                /* // Enabling manual testing of the various servers for now
                 if let countryCode = await Storefront.current?.countryCode {
                     print("LOGIN\tGot country code = \(countryCode)")
                     let domain = store.getOurDomain(countryCode: countryCode)
@@ -85,7 +86,9 @@ struct WelcomeScreen: View {
                     print("LOGIN\tFailed to get country code from StoreKit")
                     self.showDomainPicker = true
                 }
-
+                */
+                
+                self.showDomainPicker = true
             }) {
                 Text("Sign Up")
                     .padding()
