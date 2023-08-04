@@ -38,9 +38,13 @@ class CirclesApplicationSession: ObservableObject {
     var profile: ContainerRoom<Matrix.Room>     // Our profile space contains the "wall" rooms for each circle that we "publish" to our connections
     
     static func loadConfig(matrix: Matrix.Session) async throws -> CirclesConfigContent? {
+        Matrix.logger.debug("Loading Circles configuration")
         // Easy mode: Do we have our config saved in the Account Data?
         if let config = try await matrix.getAccountData(for: EVENT_TYPE_CIRCLES_CONFIG, of: CirclesConfigContent.self) {
+            Matrix.logger.debug("Found Circles config in the account data")
             return config
+        } else {
+            Matrix.logger.debug("No Circles config in account data.  Looking for rooms based on tags...")
         }
 
         // Not so easy mode: Do we have a room with our special tag?
@@ -140,7 +144,8 @@ class CirclesApplicationSession: ObservableObject {
     }
     
     init(matrix: Matrix.Session) async throws {
-        self.logger = Logger(subsystem: "Circles", category: "Session")
+        let logger = Logger(subsystem: "Circles", category: "Session")
+        self.logger = logger
         self.matrix = matrix
         
         let startTS = Date()
@@ -149,15 +154,17 @@ class CirclesApplicationSession: ObservableObject {
         let configStart = Date()
         guard let config = try await CirclesApplicationSession.loadConfig(matrix: matrix)
         else {
+            logger.error("Could not load Circles config")
             throw Matrix.Error("Could not load Circles config")
         }
         let configEnd = Date()
         let configTime = configEnd.timeIntervalSince(configStart)
-        logger.debug("\(configTime) sec to load config from the server")
+        logger.debug("\(configTime, privacy: .public) sec to load config from the server")
 
         logger.debug("Loading Matrix spaces")
         
         
+        logger.debug("Loading Groups space")
         let groupsStart = Date()
         guard let groups = try await matrix.getRoom(roomId: config.groups, as: ContainerRoom<GroupRoom>.self)
         else {
@@ -166,9 +173,10 @@ class CirclesApplicationSession: ObservableObject {
         }
         let groupsEnd = Date()
         let groupsTime = groupsEnd.timeIntervalSince(groupsStart)
-        logger.debug("\(groupsTime) sec to load Groups space")
+        logger.debug("\(groupsTime, privacy: .public) sec to load Groups space")
         
         
+        logger.debug("Loading Galleries space")
         let galleriesStart = Date()
         guard let galleries = try await matrix.getRoom(roomId: config.galleries, as: ContainerRoom<GalleryRoom>.self)
         else {
@@ -177,9 +185,9 @@ class CirclesApplicationSession: ObservableObject {
         }
         let galleriesEnd = Date()
         let galleriesTime = galleriesEnd.timeIntervalSince(galleriesStart)
-        logger.debug("\(galleriesTime) sec to load Galleries space")
+        logger.debug("\(galleriesTime, privacy: .public) sec to load Galleries space")
         
-        
+        logger.debug("Loading Circles space")
         let circlesStart = Date()
         guard let circles = try await matrix.getRoom(roomId: config.circles, as: ContainerRoom<CircleSpace>.self)
         else {
@@ -188,9 +196,9 @@ class CirclesApplicationSession: ObservableObject {
         }
         let circlesEnd = Date()
         let circlesTime = circlesEnd.timeIntervalSince(circlesStart)
-        logger.debug("\(circlesTime) sec to load Circles space")
+        logger.debug("\(circlesTime, privacy: .public) sec to load Circles space")
         
-        
+        logger.debug("Loading People space")
         let peopleStart = Date()
         guard let people = try await matrix.getRoom(roomId: config.people, as: ContainerRoom<PersonRoom>.self)
         else {
@@ -199,8 +207,9 @@ class CirclesApplicationSession: ObservableObject {
         }
         let peopleEnd = Date()
         let peopleTime = peopleEnd.timeIntervalSince(peopleStart)
-        logger.debug("\(peopleTime) sec to load People space")
+        logger.debug("\(peopleTime, privacy: .public) sec to load People space")
         
+        logger.debug("Loading Profile space")
         let profileStart = Date()
         guard let profile = try await matrix.getRoom(roomId: config.profile, as: ContainerRoom<Matrix.Room>.self)
         else {
@@ -209,7 +218,7 @@ class CirclesApplicationSession: ObservableObject {
         }
         let profileEnd = Date()
         let profileTime = profileEnd.timeIntervalSince(profileStart)
-        logger.debug("\(profileTime) sec to load Profile space")
+        logger.debug("\(profileTime, privacy: .public) sec to load Profile space")
         
         self.rootRoomId = config.root
         
@@ -222,26 +231,12 @@ class CirclesApplicationSession: ObservableObject {
         let endTS = Date()
         
         let totalTime = endTS.timeIntervalSince(startTS)
-        logger.debug("\(totalTime) sec to initialize Circles Session")
+        logger.debug("\(totalTime, privacy: .public) sec to initialize Circles Session")
         
+        logger.debug("Starting Matrix background sync")
         try await matrix.startBackgroundSync()
-        
-        /*
-        // FIXME: CRAZY DEBUGGING
-        Task {
-            while true {
-                if let (roomId, room) = self.matrix.rooms.randomElement() {
-                    let imageName = ["diamond.fill", "circle.fill", "square.fill", "seal.fill", "shield.fill"].randomElement()!
-                    let image = UIImage(systemName: imageName)
-                    await MainActor.run {
-                        print("Randomizing avatar for room \(roomId.opaqueId) / \(room.roomId.opaqueId) to be \(imageName)")
-                        room.avatar = image
-                    }
-                }
-                try await Task.sleep(for: .seconds(2))
-            }
-        }
-        */
+                
+        logger.debug("Finished setting up Circles application session")
     }
     
     func cancelUIA() async throws {
