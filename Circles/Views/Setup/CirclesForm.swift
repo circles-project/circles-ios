@@ -5,6 +5,7 @@
 //  Created by Charles Wright on 9/7/21.
 //
 
+import os
 import SwiftUI
 import PhotosUI
 import Matrix
@@ -86,27 +87,48 @@ struct CirclesForm: View {
     }
     
     func setupCircles(_ circles: [CircleInfo]) async throws {
-        print("Creating Spaces hierarchy for Circles rooms")
         let client = session.client
-        print("- Creating Space rooms")
-        status = "Creating Matrix Spaces"
-        let topLevelSpace = try await client.createSpace(name: "Circles")
-        let myCircles = try await client.createSpace(name: "My Circles")
-        let myGroups = try await client.createSpace(name: "My Groups")
-        let myGalleries = try await client.createSpace(name: "My Photo Galleries")
-        let myPeople = try await client.createSpace(name: "My People")
-        let myProfile = try await client.createSpace(name: displayName)
+        let logger = os.Logger(subsystem: "circles", category: "setup")
         
-        print("- Adding Space child relationships")
+        logger.debug("Creating Spaces hierarchy for Circles rooms")
+        status = "Creating Matrix Spaces"
+
+        try await Task.sleep(for: .seconds(1))
+        let topLevelSpace = try await client.createSpace(name: "Circles")
+        logger.debug("Created top-level Circles space \(topLevelSpace)")
+
+        try await Task.sleep(for: .seconds(1))
+        let myCircles = try await client.createSpace(name: "My Circles")
+        logger.debug("Created My Circles space \(myCircles)")
+
+        try await Task.sleep(for: .seconds(1))
+        let myGroups = try await client.createSpace(name: "My Groups")
+        logger.debug("Created My Groups space \(myGroups)")
+
+        try await Task.sleep(for: .seconds(1))
+        let myGalleries = try await client.createSpace(name: "My Photo Galleries")
+        logger.debug("Created My Galleries space \(myGalleries)")
+
+        try await Task.sleep(for: .seconds(1))
+        let myPeople = try await client.createSpace(name: "My People")
+        logger.debug("Created My People space \(myPeople)")
+
+        try await Task.sleep(for: .seconds(1))
+        let myProfile = try await client.createSpace(name: displayName)
+        logger.debug("Created My Profile space \(myProfile)")
+        
+        logger.debug("- Adding Space child relationships")
         status = "Initializing spaces"
+        try await Task.sleep(for: .seconds(1))
         try await client.addSpaceChild(myCircles, to: topLevelSpace)
         try await client.addSpaceChild(myGroups, to: topLevelSpace)
         try await client.addSpaceChild(myGalleries, to: topLevelSpace)
         try await client.addSpaceChild(myPeople, to: topLevelSpace)
         try await client.addSpaceChild(myProfile, to: topLevelSpace)
         
-        print("- Adding tags to spaces")
+        logger.debug("- Adding tags to spaces")
         status = "Tagging spaces"
+        try await Task.sleep(for: .seconds(1))
         try await client.addTag(roomId: topLevelSpace, tag: ROOM_TAG_CIRCLES_SPACE_ROOT)
         try await client.addTag(roomId: myCircles, tag: ROOM_TAG_MY_CIRCLES)
         try await client.addTag(roomId: myGroups, tag: ROOM_TAG_MY_GROUPS)
@@ -114,14 +136,16 @@ struct CirclesForm: View {
         try await client.addTag(roomId: myPeople, tag: ROOM_TAG_MY_PEOPLE)
         try await client.addTag(roomId: myProfile, tag: ROOM_TAG_MY_PROFILE)
         
-        print("- Uploading Circles config to account data")
+        logger.debug("- Uploading Circles config to account data")
         status = "Saving configuration"
+        try await Task.sleep(for: .seconds(1))
         let config = CirclesConfigContent(root: topLevelSpace, circles: myCircles, groups: myGroups, galleries: myGalleries, people: myPeople, profile: myProfile)
         try await client.putAccountData(config, for: EVENT_TYPE_CIRCLES_CONFIG)
         
         for circle in circles {
-            print("- Creating circle [\(circle.name)]")
+            logger.debug("- Creating circle [\(circle.name, privacy: .public)]")
             status = "Creating circle \"\(circle.name)\""
+            try await Task.sleep(for: .seconds(1))
             let circleRoomId = try await client.createSpace(name: circle.name)
             let wallRoomId = try await client.createRoom(name: circle.name, type: ROOM_TYPE_CIRCLE)
             if let avatar = circle.avatar {
