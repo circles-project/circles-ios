@@ -18,6 +18,9 @@ struct SettingsScreen: View {
     @AppStorage("developerMode") var developerMode: Bool = false
     @AppStorage("debugMode") var debugMode: Bool = false
     
+    @AppStorage("showCirclesHelpText") var showCirclesHelpText = true
+    @AppStorage("showGroupsHelpText") var showGroupsHelpText = true
+    
     init(store: CirclesStore, session: CirclesApplicationSession) {
         self.store = store
         self.session = session
@@ -70,6 +73,14 @@ struct SettingsScreen: View {
                         
                         Toggle(isOn: $debugMode) {
                             Label("Debug Mode", systemImage: "ladybug.fill")
+                        }
+                        
+                        Toggle(isOn: $showCirclesHelpText) {
+                            Text("Circles tab \"help\" popup")
+                        }
+                        
+                        Toggle(isOn: $showGroupsHelpText) {
+                            Text("Groups tab \"help\" popup")
                         }
                     }
                 }
