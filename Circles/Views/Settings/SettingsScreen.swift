@@ -21,6 +21,8 @@ struct SettingsScreen: View {
     @AppStorage("showCirclesHelpText") var showCirclesHelpText = true
     @AppStorage("showGroupsHelpText") var showGroupsHelpText = true
     
+    @State var showConfirmLogout = false
+    
     init(store: CirclesStore, session: CirclesApplicationSession) {
         self.store = store
         self.session = session
@@ -95,10 +97,21 @@ struct SettingsScreen: View {
                 */
                 
                 Section(header: Label("Danger Zone", systemImage: "exclamationmark.triangle")) {
-
-                    NavigationLink(destination: LogoutView(store: store)) {
+                    
+                    Button(action: { showConfirmLogout = true }) {
                         Label("Log Out", systemImage: "power")
                     }
+                    .buttonStyle(.plain)
+                    .confirmationDialog("Confirm Log Out",
+                                        isPresented: $showConfirmLogout,
+                                        actions: {
+                        AsyncButton(role: .destructive, action: { try await store.logout() }) {
+                            Text("Log me out")
+                        }
+                    },
+                                        message: {
+                        Text("WARNING: You must be logged in on at least one device in order to receive decryption keys from your friends. If you log out from all devices, you may be unable to decrypt any posts or comments sent while you are logged out.")
+                    })
                     
                     NavigationLink(destination: DeactivateAccountView(store: store)) {
                         Label("Deactivate Account", systemImage: "person.fill.xmark")
