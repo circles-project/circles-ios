@@ -116,15 +116,15 @@ struct CirclesOverviewScreen: View {
             }
             .padding(.top)
             .navigationBarTitle("Circles", displayMode: .inline)
+            .toolbar {
+                ToolbarItemGroup(placement: .automatic) {
+                    toolbarMenu
+                }
+            }
             .sheet(item: $sheetType) { st in
                 switch(st) {
                 case .create:
                     CircleCreationSheet(container: container)
-                }
-            }
-            .toolbar {
-                ToolbarItemGroup(placement: .automatic) {
-                    toolbarMenu
                 }
             }
             .confirmationDialog("Confirm deleting circle", isPresented: $confirmDeleteCircle, presenting: circleToDelete) { circle in
@@ -134,7 +134,7 @@ struct CirclesOverviewScreen: View {
                     Label("Delete \"\(circle.name ?? "??")\"", systemImage: "xmark.bin")
                 }
             }
-            .popover(isPresented: $showHelpText) {
+            .sheet(isPresented: $showHelpText) {
                 VStack {
                     Markdown(helpTextMarkdown)
                     
@@ -146,6 +146,7 @@ struct CirclesOverviewScreen: View {
                     .padding()
                 }
                 .padding()
+                //.frame(minWidth: 300, minHeight: 300)
             }
 
         }

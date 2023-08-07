@@ -106,7 +106,7 @@ struct GroupsOverviewScreen: View {
                     Text("Coming soon")
                 }
             }
-            .popover(isPresented: $showHelpText) {
+            .sheet(isPresented: $showHelpText) {
                 VStack {
                     Markdown(helpTextMarkdown)
                     
