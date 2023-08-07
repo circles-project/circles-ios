@@ -311,11 +311,14 @@ public class CirclesStore: ObservableObject {
     
     // MARK: Domain handling
 
-    
     private var ourDomains = [
         usDomain,
         euDomain,
     ]
+    
+    public var countryCode: String? {
+        SKPaymentQueue.default().storefront?.countryCode
+    }
     
     public func getOurDomain(countryCode: String) -> String {
 

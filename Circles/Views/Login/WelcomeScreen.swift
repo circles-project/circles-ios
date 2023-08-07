@@ -15,6 +15,11 @@ struct WelcomeScreen: View {
     @State var username: String = ""
     @State var showDomainPicker = false
     
+    @State var showSuggestion = false
+    @State var suggestedUserId: UserId? = nil
+    
+    @State var showUsernameError = false
+    
     var logo: some View {
         RandomizedCircles()
             .clipped()
@@ -25,6 +30,47 @@ struct WelcomeScreen: View {
                    idealHeight: 200,
                    maxHeight: 300,
                    alignment: .center)
+    }
+    
+    // Try to create a valid UserId from the given input string
+    func suggestUserId(_ input: String) -> UserId? {
+        // If we already have a valid UserId, let's just stick with that
+        if let userId = UserId(input) {
+            return userId
+        }
+
+        // Case 1 - User just forgot the leading "@"
+        if !input.localizedStandardContains("@") {
+            // Do we have a country code and a default domain?
+            guard let countryCode = store.countryCode
+            else {
+                // If no, then the best we can do is to add the @ and give it a shot
+                return UserId("@\(input)")
+            }
+            
+            let domain = store.getOurDomain(countryCode: countryCode)
+            
+            if !input.contains(":") {
+                return UserId("@\(input):\(domain)")
+            } else {
+                return UserId("@\(input)")
+            }
+            
+        }
+        // Case 2 - User transposed their Matrix UserId into an email address
+        else if input.localizedStandardContains("@") && !input.starts(with: "@") {
+            let toks = input.split(separator: "@")
+            guard toks.count == 2,
+                  let userpart = toks.first,
+                  let domainAndPort = toks.last
+            else {
+                return nil
+            }
+            return UserId("@\(userpart):\(domainAndPort)")
+        }
+        
+        // If we didn't match any of the cases above, then we don't know what to do with this one
+        return nil
     }
     
     var body: some View {
@@ -49,17 +95,17 @@ struct WelcomeScreen: View {
 
             AsyncButton(action: {
                 if !username.isEmpty {
-                    guard let userId = UserId(username)
-                    else {
-                        // Set error message
-                        return
+                    if let userId = UserId(username) {
+                        try await store.login(userId: userId)
+                    } else {
+                        if let suggestion = suggestUserId(username) {
+                            self.suggestedUserId = suggestion
+                            self.showSuggestion = true
+                        } else {
+                            self.showUsernameError = true
+                        }
                     }
 
-                    do {
-                        try await store.login(userId: userId)
-                    } catch {
-                        
-                    }
                 }
             }) {
                 Text("Log In")
@@ -68,6 +114,27 @@ struct WelcomeScreen: View {
                     .foregroundColor(.white)
                     .background(Color.accentColor)
                     .cornerRadius(10)
+            }
+            .confirmationDialog("It looks like maybe you mis-typed your user id",
+                                isPresented: $showSuggestion,
+                                presenting: suggestedUserId,
+                                actions: { userId in
+                                    AsyncButton(action: {
+                                        try await store.login(userId: userId)
+                                        await MainActor.run {
+                                            self.suggestedUserId = nil
+                                        }
+                                    }) {
+                                        Text("Log in as \(userId.stringValue)")
+                                    }
+                                },
+                                message: { userId in
+                                    Text("It looks like you might have mis-typed your user id.  Did you mean \(userId.stringValue)?")
+                                }
+            )
+            .alert(isPresented: $showUsernameError) {
+                Alert(title: Text("Invalid User ID"),
+                      message: Text("Circles user ID's should start with an @ and have a domain at the end, like @username:example.com"))
             }
 
             
