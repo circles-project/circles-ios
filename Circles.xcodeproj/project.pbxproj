@@ -115,6 +115,7 @@
 		A54346C72A3BA7110025D147 /* PhotosUploadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54346C62A3BA7110025D147 /* PhotosUploadView.swift */; };
 		A54346C92A3BB5BB0025D147 /* PhotoThumbnailCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54346C82A3BB5BB0025D147 /* PhotoThumbnailCard.swift */; };
 		A5481C2528108DC7006F782F /* AnyCodable in Frameworks */ = {isa = PBXBuildFile; productRef = A5481C2428108DC7006F782F /* AnyCodable */; };
+		A54A27862A81735F00858846 /* BsspekeLoginForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54A27852A81735F00858846 /* BsspekeLoginForm.swift */; };
 		A54BA3A22850108300453D5E /* CirclesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3A12850108300453D5E /* CirclesStore.swift */; };
 		A54BA3A62851222200453D5E /* WelcomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3A52851222200453D5E /* WelcomeScreen.swift */; };
 		A54BA3A928529BE500453D5E /* SetupScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3A828529BE500453D5E /* SetupScreen.swift */; };
@@ -272,6 +273,7 @@
 		A54346C22A3B785A0025D147 /* GalleryGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryGridView.swift; sourceTree = "<group>"; };
 		A54346C62A3BA7110025D147 /* PhotosUploadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosUploadView.swift; sourceTree = "<group>"; };
 		A54346C82A3BB5BB0025D147 /* PhotoThumbnailCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoThumbnailCard.swift; sourceTree = "<group>"; };
+		A54A27852A81735F00858846 /* BsspekeLoginForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BsspekeLoginForm.swift; sourceTree = "<group>"; };
 		A54BA3A12850108300453D5E /* CirclesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesStore.swift; sourceTree = "<group>"; };
 		A54BA3A52851222200453D5E /* WelcomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreen.swift; sourceTree = "<group>"; };
 		A54BA3A828529BE500453D5E /* SetupScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupScreen.swift; sourceTree = "<group>"; };
@@ -646,6 +648,7 @@
 				A5F2E95B2A4497E30097DBF8 /* UiaView.swift */,
 				A5F0148529D75899000D57B3 /* UsernameEnrollForm.swift */,
 				A53E912D2A5C95DC007B0196 /* UiaOverlayView.swift */,
+				A54A27852A81735F00858846 /* BsspekeLoginForm.swift */,
 			);
 			path = UIA;
 			sourceTree = "<group>";
@@ -885,6 +888,7 @@
 				4073E7C4267915AF001A80CF /* RepliesView.swift in Sources */,
 				409F4343265DE17500690A61 /* GroupOverviewRow.swift in Sources */,
 				403CEA9726E866B70054DBF4 /* ValidateEmailForm.swift in Sources */,
+				A54A27862A81735F00858846 /* BsspekeLoginForm.swift in Sources */,
 				404C72D1265DDF35000473DF /* CirclesApp.swift in Sources */,
 				A55F367729EEFB6900F46971 /* PhotoContextMenu.swift in Sources */,
 				A5A40B6A29D62FC6009A17EE /* BsspekeEnrollOprfForm.swift in Sources */,

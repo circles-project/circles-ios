@@ -68,6 +68,12 @@ struct SignupScreen: View {
             switch session.state {
             case .notConnected:
                 notConnectedView
+                
+            case .failed(let error):
+                Text("Signup failed")
+                
+            case .canceled:
+                Text("Signup canceled")
 
             case .connected(let uiaaState):
                 SignupStartForm(session: session, store: store, state: uiaaState)

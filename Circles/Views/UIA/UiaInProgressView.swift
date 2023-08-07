@@ -39,12 +39,18 @@ struct UiaInProgressView: View {
             else if stage == AUTH_TYPE_ENROLL_BSSPEKE_SAVE {
                 BsspekeEnrollSaveForm(session: session)
             }
+            /*
             else if stage == AUTH_TYPE_LOGIN_BSSPEKE_OPRF {
                 BsspekeLoginOprfForm(session: session)
             }
             else if stage == AUTH_TYPE_LOGIN_BSSPEKE_VERIFY {
                 BsspekeLoginVerifyForm(session: session)
             }
+            */
+            else if stage == AUTH_TYPE_LOGIN_BSSPEKE_OPRF || stage == AUTH_TYPE_LOGIN_BSSPEKE_VERIFY {
+                BsspekeLoginForm(session: session, stage: stage)
+            }
+
             else if stage == AUTH_TYPE_ENROLL_EMAIL_REQUEST_TOKEN {
                 EmailEnrollRequestTokenForm(session: session, secret: $emailSecret)
             }

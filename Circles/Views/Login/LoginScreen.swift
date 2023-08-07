@@ -15,13 +15,16 @@ struct LoginScreen: View {
     var store: CirclesStore
     @State var password = ""
     
-    var body: some View {
+    
+    @ViewBuilder
+    var currentStatusView: some View {
 
         switch session.state {
             
         case .notConnected:
-            VStack {
+            VStack(spacing: 50) {
                 ProgressView()
+                    .scaleEffect(3)
                 Text("Connecting to server")
                     .onAppear {
                         let _ = Task {
@@ -29,6 +32,16 @@ struct LoginScreen: View {
                         }
                     }
             }
+            
+        case .failed(let error):
+            VStack(spacing: 25) {
+                Label("Error", systemImage: "exclamationmark.triangle")
+                    .font(.title)
+                    .fontWeight(.bold)
+                Text("The server rejected our request to log in.")
+                Text("Please double-check your user id and then try again.")
+            }
+            .padding()
             
         case .connected(let uiaaState):
             VStack {
@@ -92,8 +105,25 @@ struct LoginScreen: View {
             }
         }
   
-     }
+    }
 
+    var body: some View {
+        VStack {
+            Spacer()
+
+            currentStatusView
+            
+            Spacer()
+            
+            AsyncButton(role: .destructive, action: {
+                //try await session.cancel()
+                try await store.disconnect()
+            }) {
+                Text("Cancel Login")
+            }
+            .buttonStyle(.bordered)
+        }
+    }
 }
 
 /*

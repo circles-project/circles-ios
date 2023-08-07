@@ -30,6 +30,12 @@ struct UiaView: View {
                 }) {
                     Text("Tap to Authenticate")
                 }
+                
+            case .failed(let error):
+                Text("Authentication failed")
+                
+            case .canceled:
+                Text("Authentication canceled")
 
             case .connected(let uiaaState):
                 ProgressView()
