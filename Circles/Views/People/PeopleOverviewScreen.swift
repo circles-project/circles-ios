@@ -197,7 +197,7 @@ struct PeopleOverviewScreen: View {
             }
             .navigationBarTitle("People", displayMode: .inline)
         }
-        .navigationViewStyle(StackNavigationViewStyle())
+        //.navigationViewStyle(StackNavigationViewStyle())
 
     }
 }

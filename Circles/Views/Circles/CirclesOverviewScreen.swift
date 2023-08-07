@@ -66,7 +66,7 @@ struct CirclesOverviewScreen: View {
     }
     
     var body: some View {
-        NavigationStack {
+        NavigationView {
             ZStack {
                 
                 ScrollView {
