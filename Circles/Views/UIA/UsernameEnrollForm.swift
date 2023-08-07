@@ -18,16 +18,16 @@ struct UsernameEnrollForm: View {
     @State var alertMessage = ""
     
     var body: some View {
-        VStack(alignment: .center) {
+        VStack(alignment: .center, spacing: 40) {
             Spacer()
+
             Text("Choose a username")
                 .font(.title2)
-            Text("")
+
             TextField("Username", text: $username, prompt: Text("username"))
                 .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
                 .disableAutocorrection(true)
                 .frame(width: 300.0, height: 40.0)
-            Spacer()
             
             AsyncButton(action: {
                 
@@ -58,6 +58,8 @@ struct UsernameEnrollForm: View {
                 )
             }
             */
+            
+            Spacer()
         }
     }
 }

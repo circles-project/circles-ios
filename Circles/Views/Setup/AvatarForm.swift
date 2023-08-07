@@ -78,7 +78,6 @@ struct AvatarForm: View {
                 .frame(width: 300)
                 .padding()
 
-            Spacer()
 
             AsyncButton(action: {
                 if let image = avatarImage {
@@ -99,6 +98,7 @@ struct AvatarForm: View {
             .disabled(avatarImage == nil || displayName.isEmpty)
             .padding()
 
+            Spacer()
         }
     }
 }
