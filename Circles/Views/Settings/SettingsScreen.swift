@@ -111,7 +111,7 @@ struct SettingsScreen: View {
                                             AsyncButton(action: {
                                                 try await store.softLogout()
                                             }) {
-                                                Label("Take me back to login", systemImage: "person.2.fill")
+                                                Text("Take me back to login")
                                             }
                                         },
                                         message: {
@@ -126,7 +126,9 @@ struct SettingsScreen: View {
                     .confirmationDialog("Confirm Log Out",
                                         isPresented: $showConfirmLogout,
                                         actions: {
-                                            AsyncButton(role: .destructive, action: { try await store.logout() }) {
+                                            AsyncButton(role: .destructive, action: {
+                                                try await store.logout()
+                                            }) {
                                                 Text("Log me out")
                                             }
                                         },
