@@ -250,6 +250,7 @@ class CirclesApplicationSession: ObservableObject {
 
     
     func close() async throws {
+        logger.debug("Closing Circles session")
         try await matrix.close()
     }
 }

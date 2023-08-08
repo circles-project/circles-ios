@@ -113,7 +113,7 @@ struct SettingsScreen: View {
                         Text("WARNING: You must be logged in on at least one device in order to receive decryption keys from your friends. If you log out from all devices, you may be unable to decrypt any posts or comments sent while you are logged out.")
                     })
                     
-                    NavigationLink(destination: DeactivateAccountView(store: store)) {
+                    NavigationLink(destination: DeactivateAccountView(store: store, session: session)) {
                         Label("Deactivate Account", systemImage: "person.fill.xmark")
                     }
                 }

@@ -309,6 +309,20 @@ public class CirclesStore: ObservableObject {
         }
     }
     
+    func deactivate() async throws {
+        guard case let .online(session) = self.state
+        else {
+            logger.error("Can't deactivate unless we have an active session")
+            throw CirclesError("Can't deactivate unless we have an active session")
+        }
+        
+        let creds = session.matrix.creds
+        try await session.matrix.deactivateAccount() { (uia, data) in
+            try await self.disconnect()
+            self.removeCredentials(for: creds.userId)
+        }
+    }
+    
     // MARK: Domain handling
 
     private var ourDomains = [
