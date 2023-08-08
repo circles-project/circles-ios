@@ -31,15 +31,11 @@ struct SignupScreen: View {
     //@State var emailSessionInfo: SignupSession.LegacyEmailRequestTokenResponse?
 
     @State var accountInfo = SignupAccountInfo()
+    @State var showConfirmCancel = false
     
     var cancelButton: some View {
-        AsyncButton(action: {
-            //self.selectedScreen = .login
-            do {
-                try await self.store.disconnect()
-            } catch {
-                
-            }
+        Button(action: {
+            self.showConfirmCancel = true
         }) {
             Text("Cancel")
                 .padding()
@@ -47,6 +43,22 @@ struct SignupScreen: View {
                 .foregroundColor(.red)
                 .cornerRadius(10)
         }
+        .confirmationDialog(Text("Abort Signup?"),
+                            isPresented: $showConfirmCancel,
+                            actions: {
+                                AsyncButton(role: .destructive, action: {
+                                    try await self.store.disconnect()
+                                }) {
+                                    Text("Abort Signup")
+                                }
+            
+                                Button(role: .cancel, action: {
+                                    self.showConfirmCancel = false
+                                }) {
+                                    Text("Continue Signup")
+                                }
+                            }
+        )
     }
     
     var notConnectedView: some View {
