@@ -22,6 +22,7 @@ struct SettingsScreen: View {
     @AppStorage("showGroupsHelpText") var showGroupsHelpText = true
     
     @State var showConfirmLogout = false
+    @State var showConfirmSwitch = false
     
     init(store: CirclesStore, session: CirclesApplicationSession) {
         self.store = store
@@ -98,12 +99,25 @@ struct SettingsScreen: View {
                 
                 Section(header: Label("Danger Zone", systemImage: "exclamationmark.triangle")) {
                     
-                    AsyncButton(action: {
-                        try await store.softLogout()
+                    Button(action: {
+                        self.showConfirmSwitch = true
                     }) {
                         Label("Switch User", systemImage: "person.2.fill")
                     }
                     .buttonStyle(.plain)
+                    .confirmationDialog("Confirm Switch User",
+                                        isPresented: $showConfirmSwitch,
+                                        actions: {
+                                            AsyncButton(action: {
+                                                try await store.softLogout()
+                                            }) {
+                                                Label("Take me back to login", systemImage: "person.2.fill")
+                                            }
+                                        },
+                                        message: {
+                                            Text("This will return you to the login screen without losing the ability to receive encrypted posts.  But be careful: Anyone can log back in to this account without entering the password.")
+                                        }
+                    )
                     
                     Button(action: { showConfirmLogout = true }) {
                         Label("Log Out", systemImage: "power")
@@ -112,13 +126,14 @@ struct SettingsScreen: View {
                     .confirmationDialog("Confirm Log Out",
                                         isPresented: $showConfirmLogout,
                                         actions: {
-                        AsyncButton(role: .destructive, action: { try await store.logout() }) {
-                            Text("Log me out")
-                        }
-                    },
+                                            AsyncButton(role: .destructive, action: { try await store.logout() }) {
+                                                Text("Log me out")
+                                            }
+                                        },
                                         message: {
-                        Text("WARNING: You must be logged in on at least one device in order to receive decryption keys from your friends. If you log out from all devices, you may be unable to decrypt any posts or comments sent while you are logged out.")
-                    })
+                                            Text("WARNING: You must be logged in on at least one device in order to receive decryption keys from your friends. If you log out from all devices, you may be unable to decrypt any posts or comments sent while you are logged out.")
+                                        }
+                    )
                     
                     NavigationLink(destination: DeactivateAccountView(store: store, session: session)) {
                         Label("Deactivate Account", systemImage: "person.fill.xmark")
