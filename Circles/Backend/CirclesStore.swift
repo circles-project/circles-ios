@@ -157,6 +157,18 @@ public class CirclesStore: ObservableObject {
     
     func login(userId: UserId) async throws {
         logger.debug("Logging in as \(userId)")
+        
+        // First - Check to see if we already have a device_id and access_token for this user
+        //         e.g. maybe they didn't log out, but only "switched"
+        if let creds = loadCredentials(userId.stringValue) {
+            logger.debug("Found saved credentials for \(userId)")
+            
+            // Save the full credentials including the userId, so we can automatically connect next time
+            self.saveCredentials(creds: creds)
+            try await self.connect(creds: creds)
+            return
+        }
+        
         let loginSession = try await LoginSession(userId: userId, completion: { session, data in
             self.logger.debug("Login was successful")
             
@@ -307,6 +319,15 @@ public class CirclesStore: ObservableObject {
         await MainActor.run {
             self.state = .nothing(nil)
         }
+    }
+    
+    func softLogout() async throws {
+        // If we are online, we must first disconnect
+        try await self.disconnect()
+       
+        // Remove the setting that marks this account as the one to automatically log in
+        UserDefaults.standard.removeObject(forKey: "user_id")
+        // However, don't remove the device_id or access_token - That's what makes this a "soft" logout
     }
     
     func deactivate() async throws {

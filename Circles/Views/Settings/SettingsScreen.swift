@@ -98,6 +98,13 @@ struct SettingsScreen: View {
                 
                 Section(header: Label("Danger Zone", systemImage: "exclamationmark.triangle")) {
                     
+                    AsyncButton(action: {
+                        try await store.softLogout()
+                    }) {
+                        Label("Switch User", systemImage: "person.2.fill")
+                    }
+                    .buttonStyle(.plain)
+                    
                     Button(action: { showConfirmLogout = true }) {
                         Label("Log Out", systemImage: "power")
                     }
