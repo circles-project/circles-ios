@@ -88,7 +88,7 @@ struct WelcomeScreen: View {
             */
             
             TextField("@user:example.com", text: $username)
-                .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
+                .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .frame(width: 300.0, height: 40.0)
 
