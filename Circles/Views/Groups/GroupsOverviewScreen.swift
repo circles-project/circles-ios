@@ -108,6 +108,10 @@ struct GroupsOverviewScreen: View {
             }
             .sheet(isPresented: $showHelpText) {
                 VStack {
+                    Image("iStock-1176559812")
+                        .resizable()
+                        .scaledToFit()
+                    
                     Markdown(helpTextMarkdown)
                     
                     Button(action: {self.showHelpText = false}) {
