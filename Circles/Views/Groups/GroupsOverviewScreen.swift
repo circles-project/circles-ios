@@ -50,7 +50,7 @@ struct GroupsOverviewScreen: View {
                         
                         ForEach(container.rooms) { room in
                             NavigationLink(destination: GroupTimelineScreen(room: room)) {
-                                GroupOverviewRow(room: room)
+                                GroupOverviewRow(container: container, room: room)
                             }
                             .buttonStyle(PlainButtonStyle())
                             .padding(.vertical, 2)
