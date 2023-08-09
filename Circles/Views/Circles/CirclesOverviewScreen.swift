@@ -67,54 +67,91 @@ struct CirclesOverviewScreen: View {
         try await circle.leave(reason: "Deleting circle Space room")
     }
     
+    @ViewBuilder
+    var baseLayer: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                
+                CircleInvitationsIndicator(session: container.session, container: container)
+                
+                ForEach(container.rooms) { circle in
+                    NavigationLink(destination: CircleTimelineScreen(space: circle)) {
+                        CircleOverviewCard(space: circle)
+                        //.padding(.top)
+                    }
+                    .onTapGesture {
+                        print("DEBUGUI\tNavigationLink tapped for Circle \(circle.id)")
+                    }
+                    .contextMenu {
+                        Button(role: .destructive, action: {
+                            //try await deleteCircle(circle: circle)
+                            self.circleToDelete = circle
+                            self.confirmDeleteCircle = true
+                        }) {
+                            Label("Delete", systemImage: "xmark.circle")
+                        }
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    Divider()
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder
+    var overlay: some View {
+        VStack {
+            Spacer()
+            HStack {
+                Spacer()
+                Button(action: {
+                    self.sheetType = .create
+                }) {
+                    Image(systemName: "plus.circle.fill")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 50, height: 50)
+                        .padding()
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder
+    var help: some View {
+        VStack {
+            HStack {
+                Image("iStock-1356527683")
+                    .resizable()
+                    .scaledToFit()
+                Image("iStock-1304744459")
+                    .resizable()
+                    .scaledToFit()
+                Image("iStock-1225782571")
+                    .resizable()
+                    .scaledToFit()
+                Image("iStock-640313068")
+                    .resizable()
+                    .scaledToFit()
+            }
+            Markdown(helpTextMarkdown)
+            
+            Button(action: {self.showHelpText = false}) {
+                Label("Got it", systemImage: "hand.thumbsup.fill")
+                    .padding()
+            }
+            .buttonStyle(.bordered)
+            .padding()
+        }
+        .padding()
+    }
+    
     var body: some View {
         NavigationView {
             ZStack {
+                baseLayer
                 
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 0) {
-                        
-                        CircleInvitationsIndicator(session: container.session, container: container)
-                        
-                        ForEach(container.rooms) { circle in
-                            NavigationLink(destination: CircleTimelineScreen(space: circle)) {
-                                CircleOverviewCard(space: circle)
-                                //.padding(.top)
-                            }
-                            .onTapGesture {
-                                print("DEBUGUI\tNavigationLink tapped for Circle \(circle.id)")
-                            }
-                            .contextMenu {
-                                Button(role: .destructive, action: {
-                                    //try await deleteCircle(circle: circle)
-                                    self.circleToDelete = circle
-                                    self.confirmDeleteCircle = true
-                                }) {
-                                    Label("Delete", systemImage: "xmark.circle")
-                                }
-                            }
-                            .buttonStyle(PlainButtonStyle())
-                            Divider()
-                        }
-                    }
-                }
-                
-                VStack {
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        Button(action: {
-                            self.sheetType = .create
-                        }) {
-                            Image(systemName: "plus.circle.fill")
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .padding()
-                        }
-                    }
-                }
-                
+                overlay
             }
             .padding(.top)
             .navigationBarTitle("Circles", displayMode: .inline)
@@ -133,36 +170,11 @@ struct CirclesOverviewScreen: View {
                 AsyncButton(role: .destructive, action: {
                     try await deleteCircle(circle: circle)
                 }) {
-                    Label("Delete \"\(circle.name ?? "??")\"", systemImage: "xmark.bin")
+                    Label("Delete circle \"\(circle.name ?? "??")\"", systemImage: "xmark.bin")
                 }
             }
             .sheet(isPresented: $showHelpText) {
-                VStack {
-                    HStack {
-                        Image("iStock-1356527683")
-                            .resizable()
-                            .scaledToFit()
-                        Image("iStock-1304744459")
-                            .resizable()
-                            .scaledToFit()
-                        Image("iStock-1225782571")
-                            .resizable()
-                            .scaledToFit()
-                        Image("iStock-640313068")
-                            .resizable()
-                            .scaledToFit()
-                    }
-                    Markdown(helpTextMarkdown)
-                    
-                    Button(action: {self.showHelpText = false}) {
-                        Label("Got it", systemImage: "hand.thumbsup.fill")
-                            .padding()
-                    }
-                    .buttonStyle(.bordered)
-                    .padding()
-                }
-                .padding()
-                //.frame(minWidth: 300, minHeight: 300)
+                help
             }
 
         }
