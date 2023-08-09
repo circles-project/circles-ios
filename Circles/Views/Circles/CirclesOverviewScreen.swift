@@ -29,12 +29,14 @@ struct CirclesOverviewScreen: View {
     let helpTextMarkdown = """
         # Circles
                 
-        Tip: A **circle** works like Facebook or Twitter.  Everyone posts to their own timeline, and you see posts from all the timelines that you're following.
+        Tip: A **circle** works like a secure, private version of Facebook or Twitter.  Everyone posts to their own timeline, and you see posts from all the timelines that you're following.
         
-        A circle is a good way to share things with lots of people who don't all know each other, like all the aunts and uncles and cousins from both sides of your family.
-        Or with all your friends from all the places you've ever lived, or with all your former coworkers across multiple jobs.
+        A circle is a good way to share things with lots of people who don't all know each other, but they all know you.
+        
+        For example, think about all the aunts and uncles and cousins from the different sides of your family.
+        Or, think about all of your friends across all of the places you've ever lived.
 
-        If you want to connect a bunch of people who *do* all know each other, it's better to create a **Group** instead.
+        If you want to connect a bunch of people who *do* all know each other, then it's better to create a **Group** instead.
         """
     
     @AppStorage("showCirclesHelpText") var showHelpText = true

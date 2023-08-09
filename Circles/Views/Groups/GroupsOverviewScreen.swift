@@ -27,13 +27,13 @@ struct GroupsOverviewScreen: View {
     let helpTextMarkdown = """
         # Groups
         
-        Tip: A **group** is the best way to connect lots of people where everyone knows each other.
+        Tip: A **group** is the best way to connect a bunch of people where everyone is connected to everyone else.
         
         Everyone in the group posts to the same timeline, and everyone in the group can see every post.
         
         For example, you might want to create a group for your book club, or your sports team, or your scout troop.
         
-        If you want to share with a bunch of people who *don't* know each other, you should invite all those people to follow you in a **Circle** instead.
+        If you want to share with lots of different people who don't all know each other, then you should invite those people to follow you in a **Circle** instead.
         """
     
     var body: some View {
