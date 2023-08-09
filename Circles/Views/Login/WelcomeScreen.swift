@@ -21,8 +21,10 @@ struct WelcomeScreen: View {
     @State var showUsernameError = false
     
     var logo: some View {
-        RandomizedCircles()
-            .clipped()
+        //RandomizedCircles()
+        Image("circles-icon-transparent")
+            .resizable()
+            .scaledToFit()
             .frame(minWidth: 100,
                    idealWidth: 200,
                    maxWidth: 300,
@@ -30,6 +32,7 @@ struct WelcomeScreen: View {
                    idealHeight: 200,
                    maxHeight: 300,
                    alignment: .center)
+
     }
     
     // Try to create a valid UserId from the given input string
@@ -78,7 +81,7 @@ struct WelcomeScreen: View {
                     
             logo
             
-            Text("Circles")
+            Text("FUTO Circles")
                 .font(.largeTitle)
                 .fontWeight(.bold)
             /*

@@ -60,7 +60,6 @@
 		409F4377265DE25000690A61 /* PhotoGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4373265DE24F00690A61 /* PhotoGalleryView.swift */; };
 		409F4378265DE25000690A61 /* PhotosOverviewScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4374265DE25000690A61 /* PhotosOverviewScreen.swift */; };
 		409F4379265DE25000690A61 /* PhotoGalleryCreationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4375265DE25000690A61 /* PhotoGalleryCreationSheet.swift */; };
-		409F437F265DE28600690A61 /* RandomizedCircles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F437E265DE28600690A61 /* RandomizedCircles.swift */; };
 		409F4382265DE29600690A61 /* SetupCircleCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4381265DE29600690A61 /* SetupCircleCard.swift */; };
 		409F4385265DE2A400690A61 /* RoomMessageComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4384265DE2A400690A61 /* RoomMessageComposer.swift */; };
 		409F438C265DE2C200690A61 /* CircleTimeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F438A265DE2C200690A61 /* CircleTimeline.swift */; };
@@ -221,7 +220,6 @@
 		409F4373265DE24F00690A61 /* PhotoGalleryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoGalleryView.swift; sourceTree = "<group>"; };
 		409F4374265DE25000690A61 /* PhotosOverviewScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotosOverviewScreen.swift; sourceTree = "<group>"; };
 		409F4375265DE25000690A61 /* PhotoGalleryCreationSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoGalleryCreationSheet.swift; sourceTree = "<group>"; };
-		409F437E265DE28600690A61 /* RandomizedCircles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RandomizedCircles.swift; sourceTree = "<group>"; };
 		409F4381265DE29600690A61 /* SetupCircleCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetupCircleCard.swift; sourceTree = "<group>"; };
 		409F4384265DE2A400690A61 /* RoomMessageComposer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomMessageComposer.swift; sourceTree = "<group>"; };
 		409F438A265DE2C200690A61 /* CircleTimeline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleTimeline.swift; sourceTree = "<group>"; };
@@ -456,7 +454,6 @@
 				409F4357265DE1D800690A61 /* Login */,
 				409F4366265DE22F00690A61 /* People */,
 				409F432A265DE14700690A61 /* Photo Galleries */,
-				409F437E265DE28600690A61 /* RandomizedCircles.swift */,
 				409F43A4265DE41000690A61 /* Rooms */,
 				A54BA3A728529BC900453D5E /* Setup */,
 				409F4358265DE1DE00690A61 /* Signup */,
@@ -836,7 +833,6 @@
 				A521C3F52A6889C00051ED88 /* InvitedCircleDetailView.swift in Sources */,
 				409F43A8265DE43B00690A61 /* RoomSecurityInfoSheet.swift in Sources */,
 				A52DF69029E8AB52008860C3 /* Color+background.swift in Sources */,
-				409F437F265DE28600690A61 /* RandomizedCircles.swift in Sources */,
 				A5D3C9C12A708F1300B41CC0 /* DBZxcvbn.m in Sources */,
 				A5D3C9C32A708F1300B41CC0 /* DBScorer.m in Sources */,
 				A55F367329EDB66300F46971 /* GalleryInviteCard.swift in Sources */,
