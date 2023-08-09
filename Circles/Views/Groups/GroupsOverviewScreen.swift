@@ -24,6 +24,9 @@ struct GroupsOverviewScreen: View {
     @State var sheetType: GroupsSheetType?
     @AppStorage("showGroupsHelpText") var showHelpText = true
     
+    @State var showConfirmLeave = false
+    @State var roomToLeave: GroupRoom?
+    
     let helpTextMarkdown = """
         # Groups
         
@@ -36,44 +39,62 @@ struct GroupsOverviewScreen: View {
         If you want to share with lots of different people who don't all know each other, then you should invite those people to follow you in a **Circle** instead.
         """
     
+    @ViewBuilder
+    var baseLayer: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                let invitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_GROUP }
+                ForEach(invitations) { invitation in
+                    let user = container.session.getUser(userId: invitation.sender)
+                    GroupInviteCard(room: invitation, user: user, container: container)
+                }
+                
+                ForEach(container.rooms) { room in
+                    NavigationLink(destination: GroupTimelineScreen(room: room)) {
+                        GroupOverviewRow(container: container, room: room)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .contextMenu {
+                        Button(role: .destructive, action: {
+                            self.showConfirmLeave = true
+                            self.roomToLeave = room
+                        }) {
+                            Label("Leave group", systemImage: "xmark.bin")
+                        }
+                    }
+                    .padding(.vertical, 2)
+                    Divider()
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder
+    var overlay: some View {
+        VStack {
+            Spacer()
+            HStack {
+                Spacer()
+                Button(action: {
+                    self.sheetType = .create
+                }) {
+                    Image(systemName: "plus.circle.fill")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 50, height: 50)
+                        .padding()
+                }
+            }
+        }
+    }
+    
     var body: some View {
         //let groups = container.groups
         NavigationView {
             ZStack {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 0) {
-                        let invitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_GROUP }
-                        ForEach(invitations) { invitation in
-                            let user = container.session.getUser(userId: invitation.sender)
-                            GroupInviteCard(room: invitation, user: user, container: container)
-                        }
-                        
-                        ForEach(container.rooms) { room in
-                            NavigationLink(destination: GroupTimelineScreen(room: room)) {
-                                GroupOverviewRow(container: container, room: room)
-                            }
-                            .buttonStyle(PlainButtonStyle())
-                            .padding(.vertical, 2)
-                            Divider()
-                        }
-                    }
-                }
+                baseLayer
                 
-                VStack {
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        Button(action: {
-                            self.sheetType = .create
-                        }) {
-                            Image(systemName: "plus.circle.fill")
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .padding()
-                        }
-                    }
-                }
+                overlay
             }
             .padding(.top)
             .navigationBarTitle(Text("Groups"), displayMode: .inline)
@@ -96,6 +117,17 @@ struct GroupsOverviewScreen: View {
                     }
                 }
             }
+            .confirmationDialog(Text("Confirm Leaving Group"),
+                                isPresented: $showConfirmLeave,
+                                actions: { //rm in
+                                    if let room = self.roomToLeave {
+                                        AsyncButton(role: .destructive, action: {
+                                            try await container.leaveChildRoom(room.roomId)
+                                        }) {
+                                            Text("Leave \(room.name ?? "this group")")
+                                        }
+                                    }
+                                })
             .sheet(item: $sheetType) { st in
                 // Figure out what kind of sheet we need
                 switch(st) {

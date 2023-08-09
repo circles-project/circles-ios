@@ -13,9 +13,7 @@ struct GroupOverviewRow: View {
     var container: ContainerRoom<GroupRoom>
     @ObservedObject var room: Matrix.Room
     @AppStorage("debugMode") var debugMode: Bool = false
-    
-    @State var showConfirmLeave = false
-    
+
     var timestamp: some View {
         let formatter = RelativeDateTimeFormatter()
         if let date = room.latestMessage?.timestamp {
@@ -59,22 +57,6 @@ struct GroupOverviewRow: View {
             }
             .padding(.top, 5)
         }
-        .contextMenu {
-            Button(role: .destructive, action: {
-                showConfirmLeave = true
-            }) {
-                Label("Leave group", systemImage: "xmark.bin")
-            }
-        }
-        .confirmationDialog(Text("Confirm Leaving Group"),
-                            isPresented: $showConfirmLeave,
-                            actions: { //rm in
-                                AsyncButton(role: .destructive, action: {
-                                    try await container.leaveChildRoom(room.roomId)
-                                }) {
-                                    Text("Leave \(room.name ?? "this group")")
-                                }
-                            })
     }
 }
 
