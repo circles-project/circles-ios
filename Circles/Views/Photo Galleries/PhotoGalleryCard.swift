@@ -76,14 +76,6 @@ struct PhotoGalleryCard: View {
             .foregroundColor(.white)
             .shadow(color: .black, radius: 5)
         }
-
-        .contextMenu {
-            Button(action: {
-                room.objectWillChange.send()
-            }) {
-                Text("Update")
-            }
-        }
     }
 }
 

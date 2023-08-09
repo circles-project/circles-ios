@@ -22,12 +22,10 @@ struct PhotosOverviewScreen: View {
     //@ObservedObject var store: KSStore
     @ObservedObject var container: ContainerRoom<GalleryRoom>
     //@State var showCreationSheet = false
-    var room: Matrix.Room?
     
-    init(container: ContainerRoom<GalleryRoom>) {
-        self.container = container
-        self.room = container.rooms.first
-    }
+    @State var showConfirmLeave = false
+    @State var roomToLeave: GalleryRoom?
+    
     
     @State private var sheetType: PhotosSheetType? = nil
     
@@ -49,57 +47,81 @@ struct PhotosOverviewScreen: View {
         }
     }
     
-    var body: some View {
-        NavigationView {
-            ZStack {
-                ScrollView {
-                    VStack(alignment: .leading) {
-                        let invitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_PHOTOS }
-                        if !invitations.isEmpty {
-                            Text("INVITATIONS")
-                                .font(.subheadline)
-                                .foregroundColor(.gray)
-                            
-                            NavigationLink(destination: GalleryInvitationsView(container: container)) {
-                                Label("\(invitations.count) invitation(s) to shared photo galleries", systemImage: "envelope.open.fill")
-                            }
-                            .padding()
-                        }
-                        
-                        Text("GALLERIES")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-                        ForEach(container.rooms) { room in
-                            //Text("Found room \(room.roomId.string)")
-                            NavigationLink(destination: PhotoGalleryView(room: room)) {
-                                PhotoGalleryCard(room: room)
-                                // FIXME Add a longPress gesture
-                                //       for setting/changing the
-                                //       avatar image for the gallery
-                            }
-                            //.padding(1)
-                        }
+    @ViewBuilder
+    var baseLayer: some View {
+        ScrollView {
+            VStack(alignment: .leading) {
+                let invitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_PHOTOS }
+                if !invitations.isEmpty {
+                    Text("INVITATIONS")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                    
+                    NavigationLink(destination: GalleryInvitationsView(container: container)) {
+                        Label("\(invitations.count) invitation(s) to shared photo galleries", systemImage: "envelope.open.fill")
                     }
+
                     .padding()
                 }
                 
-                VStack {
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        Button(action: {
-                            self.sheetType = .create
+                Text("GALLERIES")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                ForEach(container.rooms) { room in
+                    //Text("Found room \(room.roomId.string)")
+                    NavigationLink(destination: PhotoGalleryView(room: room)) {
+                        PhotoGalleryCard(room: room)
+                        // FIXME Add a longPress gesture
+                        //       for setting/changing the
+                        //       avatar image for the gallery
+                    }
+                    .contextMenu {
+                        Button(role: .destructive, action: {
+                            self.showConfirmLeave = true
+                            self.roomToLeave = room
                         }) {
-                            Image(systemName: "plus.circle.fill")
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .padding()
+                            Label("Leave gallery", systemImage: "xmark.bin")
                         }
                     }
+                    //.padding(1)
                 }
             }
+            .padding()
+        }
+    }
+    
+    @ViewBuilder
+    var overlay: some View {
+        VStack {
+            Spacer()
+            HStack {
+                Spacer()
+                Button(action: {
+                    self.sheetType = .create
+                }) {
+                    Image(systemName: "plus.circle.fill")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 50, height: 50)
+                        .padding()
+                }
+            }
+        }
+    }
+    
+    var body: some View {
+        NavigationView {
+            ZStack {
+                baseLayer
+                
+                overlay
+            }
             .navigationBarTitle("Photo Galleries", displayMode: .inline)
+            .toolbar {
+                ToolbarItemGroup(placement: .automatic) {
+                    toolbarMenu
+                }
+            }
             .sheet(item: $sheetType) { st in
                 switch(st) {
                 case .create:
@@ -108,12 +130,19 @@ struct PhotosOverviewScreen: View {
                     Text("Coming soon")
                 }
             }
-            .toolbar {
-                ToolbarItemGroup(placement: .automatic) {
-                    toolbarMenu
-                }
-            }
-            .navigationViewStyle(StackNavigationViewStyle())
+            .confirmationDialog(Text("Confirm Leaving Gallery"),
+                                isPresented: $showConfirmLeave,
+                                actions: {
+                                    if let room = self.roomToLeave {
+                                        AsyncButton(role: .destructive, action: {
+                                            try await container.leaveChildRoom(room.roomId)
+                                        }) {
+                                            Text("Leave \(room.name ?? "this gallery")")
+                                        }
+                                    }
+                                }
+            )
+            //.navigationViewStyle(StackNavigationViewStyle())
         }
     }
 }
