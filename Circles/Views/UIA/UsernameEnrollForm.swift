@@ -36,9 +36,11 @@ struct UsernameEnrollForm: View {
                 } catch {
                     // Tell the user that we hit an error
                     print("SIGNUP/Username\tUsername stage failed")
-                    self.alertTitle = "Something went wrong"
-                    self.alertMessage = "Failed to complete Username stage"
-                    self.showAlert = true
+                    await MainActor.run {
+                        self.alertTitle = "Username Unavailable"
+                        self.alertMessage = "The requested username is not available.  Please try a different one."
+                        self.showAlert = true
+                    }
                     print("SIGNUP/Username\tExisting username = \(session.realRequestDict["username"] as? String)")
                 }
 
@@ -50,14 +52,12 @@ struct UsernameEnrollForm: View {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
-            /*
             .alert(isPresented: $showAlert) {
                 Alert(title: Text(alertTitle),
                       message: Text(alertMessage),
                       dismissButton: .cancel(Text("OK"))
                 )
             }
-            */
             
             Spacer()
         }
