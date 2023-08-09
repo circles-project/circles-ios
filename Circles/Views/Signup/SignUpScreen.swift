@@ -77,6 +77,17 @@ struct SignupScreen: View {
     
     var body: some View {
         VStack {
+            Image("circles-icon-transparent")
+                .resizable()
+                .scaledToFit()
+                .frame(minWidth: 100,
+                       idealWidth: 150,
+                       maxWidth: 200,
+                       minHeight: 100,
+                       idealHeight: 150,
+                       maxHeight: 200,
+                       alignment: .center)
+            
             switch session.state {
             case .notConnected:
                 notConnectedView
