@@ -1,3 +1,12 @@
+# 0.4.0
+* Fixed a compatibility issue with Circles Android in the BS-SPEKE authentication.  Unfortunately this breaks existing Circles iOS accounts.
+* Added support for leaving groups and photo galleries
+* Improved the interface for reviewing group invitations
+* Replaced the randomized circles image with the actual Circles logo
+* Added stock photos to the Help dialog to illustrate the difference between circles and groups
+* Show an error when the username stage fails at signup
+* Ask for confirmation when canceling signup
+
 # 0.3.0
 * Fixed issue where login screens will spin forever
 * Fixed layout issues with master-detail views on iPad
