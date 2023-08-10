@@ -77,16 +77,20 @@ struct GroupTimelineScreen: View {
                 Label("Configure Group", systemImage: "gearshape")
             }
             
-            Button(action: {
-                self.sheetType = .members
-            }) {
-                Label("Manage members", systemImage: "person.2.circle.fill")
+            if room.iCanBan || room.iCanKick {
+                Button(action: {
+                    self.sheetType = .members
+                }) {
+                    Label("Manage members", systemImage: "person.2.circle.fill")
+                }
             }
             
-            Button(action: {
-                self.sheetType = .invite
-            }) {
-                Label("Invite new members", systemImage: "person.crop.circle.badge.plus")
+            if room.iCanInvite {
+                Button(action: {
+                    self.sheetType = .invite
+                }) {
+                    Label("Invite new members", systemImage: "person.crop.circle.badge.plus")
+                }
             }
             
             Button(action: {
