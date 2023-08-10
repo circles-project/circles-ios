@@ -80,7 +80,7 @@ struct GalleryGridView: View {
                   message.replyToEventId == nil,
                   message.type == M_ROOM_MESSAGE,
                   let content = message.content as? Matrix.MessageContent,
-                  supportedMessageTypes.contains(content.msgtype.rawValue)
+                  supportedMessageTypes.contains(content.msgtype)
             else {
                 return false
             }

@@ -20,7 +20,7 @@ struct RoomMessageComposer: View {
 
     
     //var onCancel: () -> Void
-    @State private var newMessageType: Matrix.MessageType = .text
+    @State private var newMessageType: String = M_TEXT
     @State private var newMessageText = ""
     @State private var newImage: UIImage?
     @State private var showPicker = false
@@ -50,12 +50,12 @@ struct RoomMessageComposer: View {
     var buttonBar: some View {
         HStack(spacing: 2.0) {
             Button(action: {
-                self.newMessageType = .text
+                self.newMessageType = M_TEXT
                 self.newImage = nil
             }) {
                 Image(systemName: "doc.plaintext")
             }
-            .disabled(newMessageType == .text)
+            .disabled(newMessageType == M_TEXT)
             /*
             Button(action: {
                 self.newMessageType = .image
@@ -74,20 +74,20 @@ struct RoomMessageComposer: View {
             */
             Menu {
                 Button(action: {
-                    self.newMessageType = .image
+                    self.newMessageType = M_IMAGE
                     self.showNewPicker = true
                 }) {
                     Label("Upload a photo", systemImage: "photo.fill")
                 }
                 Button(action: {
-                    self.newMessageType = .image
+                    self.newMessageType = M_IMAGE
                     self.imageSourceType = .local(.camera)
                     self.showPicker = true
                 }) {
                     Label("Take a new photo", systemImage: "camera.fill")
                 }
                 Button(action: {
-                    self.newMessageType = .image
+                    self.newMessageType = M_IMAGE
                     self.imageSourceType = .cloud
                     self.showPicker = true
                 }) {
@@ -97,7 +97,7 @@ struct RoomMessageComposer: View {
             label: {
                 Image(systemName: "photo.fill")
             }
-            .disabled(newMessageType == .image)
+            .disabled(newMessageType == M_IMAGE)
 
             Spacer()
             Button(role: .destructive, action: {
@@ -120,7 +120,7 @@ struct RoomMessageComposer: View {
             AsyncButton(action: {
                 switch(self.newMessageType) {
                     
-                case .text:
+                case M_TEXT:
                     if let parentMessage = self.parent {
                         print("REPLY\tSending threaded reply")
                         let replyEventId = try await parentMessage.room.sendReply(to: parentMessage.event, text: self.newMessageText, threaded: true)
@@ -132,7 +132,7 @@ struct RoomMessageComposer: View {
                         self.presentation.wrappedValue.dismiss()
                     }
                     
-                case .image:
+                case M_IMAGE:
                     guard let img = self.newImage else {
                         print("COMPOSER Trying to post an image without actually selecting an image")
                         return
@@ -173,13 +173,13 @@ struct RoomMessageComposer: View {
 
             ZStack {
                 switch(newMessageType) {
-                case .text:
+                case M_TEXT:
                     TextEditor(text: $newMessageText)
                         //.frame(height: 90)
                         //.foregroundColor(.gray)
                         .multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
                         .lineLimit(10)
-                case .image:
+                case M_IMAGE:
                         VStack(alignment: .center, spacing: 2) {
                             Image(uiImage: self.newImage ?? UIImage())
                                 //.scaledToFit()
@@ -225,7 +225,7 @@ struct RoomMessageComposer: View {
                         // We didn't get a new image
                         if self.newImage == nil {
                             await MainActor.run {
-                                self.newMessageType = .text
+                                self.newMessageType = M_TEXT
                             }
                         }
                     }

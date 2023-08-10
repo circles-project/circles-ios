@@ -154,7 +154,7 @@ struct MessageCard: MessageView {
         VStack {
             if let content = message.content as? Matrix.MessageContent {
                 switch(content.msgtype) {
-                case .text:
+                case M_TEXT:
                     if let textContent = content as? Matrix.mTextContent {
                         MessageText(textContent.body)
                         //Markdown(Document(textContent.body))
@@ -167,7 +167,7 @@ struct MessageCard: MessageView {
                         EmptyView()
                     }
                     
-                case .image:
+                case M_IMAGE:
                     if let imageContent = content as? Matrix.mImageContent {
                         HStack {
                             Spacer()
@@ -185,7 +185,7 @@ struct MessageCard: MessageView {
                     } else {
                         EmptyView()
                     }
-                case .video:
+                case M_VIDEO:
                     if let videoContent = content as? Matrix.mVideoContent {
                         ZStack(alignment: .center) {
                             MessageThumbnail(message: message)
@@ -353,6 +353,9 @@ struct MessageCard: MessageView {
                 Text("m.in_reply_to: \(content.replyToEventId ?? "n/a")")
             }
             Text("Reactions: \(message.reactions?.keys.count ?? 0) Distinct reactions")
+            if let content = message.content as? Matrix.MessageContent {
+                Text(content.debugString)
+            }
         }
     }
     

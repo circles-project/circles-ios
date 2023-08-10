@@ -19,7 +19,7 @@ struct PhotoContextMenu: View {
     var body: some View {
         
         if let content = message.content as? Matrix.MessageContent,
-            content.msgtype == .image
+            content.msgtype == M_IMAGE
         {
             Button(action: {
                 // FIXME: TODO
