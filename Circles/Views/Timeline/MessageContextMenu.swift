@@ -51,41 +51,45 @@ struct MessageContextMenu: View {
             Label("Refresh", systemImage: "arrow.clockwise")
         }
 
-        Menu {
-            AsyncButton(action: {
-                try await message.room.setPowerLevel(userId: message.sender.userId, power: -10)
-            }) {
-                Label("Block sender from posting here", systemImage: "person.crop.circle.badge.xmark")
+        // Don't try to block yourself
+        if message.sender.userId != message.room.session.creds.userId {
+            Menu {
+                AsyncButton(action: {
+                    try await message.room.setPowerLevel(userId: message.sender.userId, power: -10)
+                }) {
+                    Label("Block sender from posting here", systemImage: "person.crop.circle.badge.xmark")
+                }
+                .disabled( !message.room.iCanChangeState(type: M_ROOM_POWER_LEVELS) )
+                
+                AsyncButton(action: {
+                    try await message.room.kick(userId: message.sender.userId,
+                                                reason: "Removed by \(message.room.session.whoAmI()) for message \(message.eventId)")
+                }) {
+                    Label("Remove sender", systemImage: "trash.circle")
+                }
+                .disabled( !message.room.iCanKick )
+                
+                AsyncButton(action: {
+                    try await message.room.session.ignoreUser(userId: message.sender.userId)
+                }) {
+                    Label("Ignore sender", systemImage: "person.crop.circle.badge.minus")
+                }
+            } label: {
+                Label("Block", systemImage: "xmark.shield")
             }
-            .disabled( !message.room.iCanChangeState(type: M_ROOM_POWER_LEVELS) )
-
-            AsyncButton(action: {
-                try await message.room.kick(userId: message.sender.userId,
-                                  reason: "Removed by \(message.room.session.whoAmI()) for message \(message.eventId)")
+            
+            Button(action: {
+                //self.selectedMessage = self.message
+                //self.showReportingView = true
+                self.sheetType = .reporting
             }) {
-                Label("Remove sender", systemImage: "trash.circle")
+                HStack {
+                    Image(systemName: "exclamationmark.shield")
+                    Text("Report")
+                }
             }
-            .disabled( !message.room.iCanKick )
-
-            AsyncButton(action: {
-                try await message.room.session.ignoreUser(userId: message.sender.userId)
-            }) {
-                Label("Ignore sender", systemImage: "person.crop.circle.badge.minus")
-            }
-        } label: {
-            Label("Block", systemImage: "xmark.shield")
         }
-
-        Button(action: {
-            //self.selectedMessage = self.message
-            //self.showReportingView = true
-            self.sheetType = .reporting
-        }) {
-            HStack {
-                Image(systemName: "exclamationmark.shield")
-                Text("Report")
-            }
-        }
+        
         Menu {
             AsyncButton(action: {
                 try await message.room.redact(eventId: message.eventId,
