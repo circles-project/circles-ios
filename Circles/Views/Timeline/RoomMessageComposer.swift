@@ -127,7 +127,8 @@ struct RoomMessageComposer: View {
                         print("REPLY\tSent eventId = \(replyEventId)")
                         self.presentation.wrappedValue.dismiss()
                     } else {
-                        try await self.room.sendText(text: self.newMessageText)
+                        let eventId = try await self.room.sendText(text: self.newMessageText)
+                        print("COMPOSER\tSent eventId = \(eventId)")
                         self.presentation.wrappedValue.dismiss()
                     }
                     
@@ -137,7 +138,9 @@ struct RoomMessageComposer: View {
                         return
                     }
                     
-                    try await self.room.sendImage(image: img)
+                    let caption: String? = !self.newMessageText.isEmpty ? self.newMessageText : nil
+                    let eventId = try await self.room.sendImage(image: img, caption: caption)
+                    print("COMPOSER\tSent eventId = \(eventId)")
                     self.presentation.wrappedValue.dismiss()
                     
                 default:
