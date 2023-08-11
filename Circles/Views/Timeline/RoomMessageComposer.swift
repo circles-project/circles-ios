@@ -139,7 +139,7 @@ struct RoomMessageComposer: View {
                     }
                     
                     let caption: String? = !self.newMessageText.isEmpty ? self.newMessageText : nil
-                    let eventId = try await self.room.sendImage(image: img, caption: caption)
+                    let eventId = try await self.room.sendImage(image: img, caption: caption, withBlurhash: false, withThumbhash: true)
                     print("COMPOSER\tSent eventId = \(eventId)")
                     self.presentation.wrappedValue.dismiss()
                     
