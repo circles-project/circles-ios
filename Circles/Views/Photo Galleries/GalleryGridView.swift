@@ -15,6 +15,11 @@ struct GalleryGridView: View {
     @State var loading = false
     @AppStorage("debugMode") var debugMode: Bool = false
     
+    @State var thumbnailSize = CGFloat(80)
+    @State var numCols = 4
+    let maxCols = 16
+    let minCols = 1
+    
     let supportedMessageTypes = [M_IMAGE, M_VIDEO]
     
     
@@ -90,11 +95,13 @@ struct GalleryGridView: View {
         
         GeometryReader { geometry in
             
-            let thumbnailSize = geometry.size.width > 300 ? CGFloat(240) : CGFloat(96)
-            let hSpacing = geometry.size.width > 300 ? 8.0 : 4.0
+            //let thumbnailSize = geometry.size.width > 300 ? CGFloat(240) : CGFloat(96)
+            //let hSpacing = geometry.size.width > 800 ? 8.0 : 4.0
+            let hSpacing = CGFloat(4)
             let vSpacing = hSpacing
             
-            let numCols = Int(geometry.size.width) / Int(thumbnailSize+hSpacing)
+            //let numCols = Int(geometry.size.width) / Int(thumbnailSize+hSpacing)
+            let thumbnailSize = geometry.size.width / CGFloat(numCols) - hSpacing
             
             let columns = Array<GridItem>(repeating: GridItem(.fixed(thumbnailSize), spacing: vSpacing), count: numCols)
             
@@ -112,6 +119,29 @@ struct GalleryGridView: View {
             
             footer
         }
+        .gesture(MagnificationGesture()
+            .onChanged { value in
+                print("MAGNIFICATION value = \(value)")
+                
+                let scale = 1.0 / value
+                
+                
+                let scaled = Int(round(scale * CGFloat(numCols)))
+
+                let newNumCols: Int
+                if scale < 1.0 {
+                    // If we just apply the new scaling directly, *wow* does the view change super fast when we're shrinking
+                    // Let's try averaging betweeen the old value and the raw scaled value
+                    newNumCols = (numCols+scaled) / 2
+                } else {
+                    newNumCols = scaled
+                }
+
+                if minCols <= newNumCols && newNumCols <= maxCols {
+                    numCols = newNumCols
+                }
+            }
+        )
         
     }
 }
