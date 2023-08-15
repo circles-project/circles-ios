@@ -9,6 +9,7 @@
 import SwiftUI
 import Foundation
 import Matrix
+import AVKit
 
 import MarkdownUI
 //import NativeMarkKit
@@ -19,7 +20,7 @@ enum MessageDisplayStyle {
     case composer
 }
 
-struct MessageText: View {
+struct TextContentView: View {
     var text: String
     var paragraphs: [Substring]
     var markdown: MarkdownContent
@@ -30,64 +31,123 @@ struct MessageText: View {
         self.markdown = MarkdownContent(text)
     }
     
-    /*
     var body: some View {
-        VStack(alignment: .leading) {
-            if paragraphs.count > 1 {
-                ScrollView {
-                    VStack(alignment: .leading) {
-                        //ForEach(0 ..< self.paragraphs.count ) { index in
-                        //  let para = self.paragraphs[index]
-                        ForEach(self.paragraphs, id: \.self) { para in
-                            Text(para)
-                                .multilineTextAlignment(.leading)
-                                .font(.body)
-                                .padding(.bottom, 5)
-                        }
-                    }
-                }
-            }
-            else {
-                Text(self.text)
-                    .font(.body)
-            }
-        }
-    }
-    */
-    
-    var body: some View {
-        /*
-        if let fancyText = try? AttributedString(markdown: self.text, options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)) {
-            return Text(fancyText)
-        }
-        else {
-            return Text(self.text)
-        }
-        */
         Markdown(markdown)
             .textSelection(.enabled)
     }
 }
 
-struct MessageThumbnail: View {
+struct ImageContentView: View {
     @ObservedObject var message: Matrix.Message
     
-    var thumbnail: Image {
-        Image(uiImage: message.thumbnail ?? UIImage())
-    }
-    
     var body: some View {
-        ZStack {
-            thumbnail
-                .resizable()
-                .scaledToFit()
-                .clipShape(RoundedRectangle(cornerRadius: 6))
-                .foregroundColor(.gray)
+        HStack {
+            if let imageContent = message.content as? Matrix.mImageContent {
+                Spacer()
+                VStack(alignment: .center) {
+                    MessageThumbnail(message: message)
+                    
+                    if let caption = imageContent.caption {
+                        let markdown = MarkdownContent(caption)
+                        Markdown(markdown)
+                    }
+                }
+                Spacer()
+            } else {
+                EmptyView()
+            }
         }
     }
-    
-    
 }
+
+struct VideoContentView: View {
+    @ObservedObject var message: Matrix.Message
+    
+    enum Status {
+        case nothing
+        case downloading
+        case downloaded(AVPlayer)
+        case failed
+    }
+    @State var status: Status = .nothing
+    
+    var body: some View {
+        VStack {
+            if let content = message.content as? Matrix.mVideoContent {
+                switch status {
+                case .nothing:
+                    ZStack(alignment: .center) {
+                        MessageThumbnail(message: message)
+                        AsyncButton(action: {
+                            if let file = content.file {
+                                
+                                let url = URL.temporaryDirectory.appendingPathComponent("\(file.url.serverName):\(file.url.mediaId).mp4")
+                                //let url = URL.documentsDirectory.appendingPathComponent("\(file.url.mediaId).mp4")
+
+
+                                if FileManager.default.fileExists(atPath: url.absoluteString) {
+                                    self.status = .downloaded(AVPlayer(url: url))
+                                } else {
+                                    
+                                    self.status = .downloading
+                                    /*
+                                     let url = try await message.room.session.downloadAndDecryptFile(file)
+                                     self.status = .downloaded(url)
+                                     */
+                                    let data = try await message.room.session.downloadAndDecryptData(file)
+                                    print("VIDEO\tDownloaded data")
+                                    print("VIDEO\tCreated temporary URL \(url)")
+                                    try data.write(to: url)
+                                    print("VIDEO\tWrote data to URL")
+                                    self.status = .downloaded(AVPlayer(url: url))
+                                }
+                            }
+                        }) {
+                            Image(systemName: "play.circle")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 80, height: 80)
+                                .foregroundColor(.white)
+                                .shadow(color: Color.black, radius: 10)
+                        }
+                        .buttonStyle(.plain)
+                    }
+
+                case .downloading:
+                    ZStack(alignment: .center) {
+                        MessageThumbnail(message: message)
+                        ProgressView("Downloading...")
+                    }
+
+                case .downloaded(let player):
+                    VideoPlayer(player: player)
+                        .frame(height: 400)
+                        .onDisappear {
+                            player.pause()
+                        }
+                        .onAppear {
+                            player.play()
+                        }
+                    Button(action: {
+                        player.play()
+                        player.seek(to: .zero)
+                    }) {
+                        Image(systemName: "play")
+                    }
+                    .frame(width: 60, height: 60)
+
+                case .failed:
+                    Label("Failed to load video", systemImage: "exclamationmark.triangle")
+                        .foregroundColor(.red)
+                }
+
+            } else {
+                EmptyView()
+            }
+        }
+    }
+}
+
 
 struct MessageTimestamp: View {
     var message: Matrix.Message
@@ -156,10 +216,7 @@ struct MessageCard: MessageView {
                 switch(content.msgtype) {
                 case M_TEXT:
                     if let textContent = content as? Matrix.mTextContent {
-                        MessageText(textContent.body)
-                        //Markdown(Document(textContent.body))
-                        //NativeMarkText(textContent.body)
-                        //.frame(minHeight: 30, maxHeight:400)
+                        TextContentView(textContent.body)
                             .padding(.horizontal, 3)
                             .padding(.vertical, 5)
                     }
@@ -168,24 +225,10 @@ struct MessageCard: MessageView {
                     }
                     
                 case M_IMAGE:
-                    if let imageContent = content as? Matrix.mImageContent {
-                        HStack {
-                            Spacer()
-                            VStack(alignment: .center) {
-                                MessageThumbnail(message: message)
-                                //.padding(1)
-                                
-                                if let caption = imageContent.caption {
-                                    let markdown = MarkdownContent(caption)
-                                    Markdown(markdown)
-                                }
-                            }
-                            Spacer()
-                        }
-                    } else {
-                        EmptyView()
-                    }
+                    ImageContentView(message: message)
+                    
                 case M_VIDEO:
+                    /*
                     if let videoContent = content as? Matrix.mVideoContent {
                         ZStack(alignment: .center) {
                             MessageThumbnail(message: message)
@@ -195,6 +238,8 @@ struct MessageCard: MessageView {
                     } else {
                         EmptyView()
                     }
+                    */
+                    VideoContentView(message: message)
                 default:
                     if message.type == "m.room.encrypted" {
                         ZStack {
