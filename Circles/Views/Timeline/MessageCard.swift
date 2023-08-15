@@ -78,6 +78,7 @@ struct VideoContentView: View {
                 case .nothing:
                     ZStack(alignment: .center) {
                         MessageThumbnail(message: message)
+
                         AsyncButton(action: {
                             if let file = content.file {
                                 
@@ -108,7 +109,7 @@ struct VideoContentView: View {
                                 .scaledToFit()
                                 .frame(width: 80, height: 80)
                                 .foregroundColor(.white)
-                                .shadow(color: Color.black, radius: 10)
+                                .shadow(color: .black, radius: 10)
                         }
                         .buttonStyle(.plain)
                     }
@@ -116,36 +117,52 @@ struct VideoContentView: View {
                 case .downloading:
                     ZStack(alignment: .center) {
                         MessageThumbnail(message: message)
+
                         ProgressView("Downloading...")
+                            .foregroundColor(.white)
+                            .shadow(color: .black, radius: 10)
                     }
 
                 case .downloaded(let player):
-                    VideoPlayer(player: player)
-                        .frame(height: 400)
-                        .onDisappear {
-                            player.pause()
-                        }
-                        .onAppear {
-                            player.play()
-                        }
-                    Button(action: {
-                        player.play()
-                        player.seek(to: .zero)
-                    }) {
-                        Image(systemName: "play")
+                    // 2023-08-15: We need the ZStack here to ensure that the VideoPlayer
+                    // takes up the same space that the thumbnail image takes.
+                    // For whatever reason VideoPlayer is not smart about using space like
+                    // Image is, so without this we'd have to hard-code a .frame around the
+                    // thing with fixed dimensions, and that would not look good on both
+                    // iPhone and iPad.
+                    // I tried using a GeometryReader instead, and it also comes out tiny
+                    // just like the VideoPlayer; I suspect maybe it's already using one
+                    // internally.
+                    // Seems like they're not giving the video a high enough layout priority.
+                    // Anyway... this works fine for now.
+                    ZStack {
+                        MessageThumbnail(message: message)
+
+                        VideoPlayer(player: player)
+                            .onAppear {
+                                player.play()
+                            }
+                            .onDisappear {
+                                player.pause()
+                            }
                     }
-                    .frame(width: 60, height: 60)
+                    
 
                 case .failed:
-                    Label("Failed to load video", systemImage: "exclamationmark.triangle")
-                        .foregroundColor(.red)
+                    ZStack {
+                        MessageThumbnail(message: message)
+
+                        Label("Failed to load video", systemImage: "exclamationmark.triangle")
+                            .foregroundColor(.red)
+                            .shadow(color: .white, radius: 10)
+                    }
                 }
 
             } else {
                 EmptyView()
             }
-        }
-    }
+        } // end VStack
+    } // end body
 }
 
 
@@ -455,7 +472,8 @@ struct MessageCard: MessageView {
     
     var body: some View {
 
-        linkWrapper
+        //linkWrapper
+        mainCard
             .contextMenu {
                 MessageContextMenu(message: message,
                                    sheetType: $sheetType)
