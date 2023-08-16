@@ -82,26 +82,50 @@ struct VideoContentView: View {
                         AsyncButton(action: {
                             if let file = content.file {
                                 
-                                let url = URL.temporaryDirectory.appendingPathComponent("\(file.url.serverName):\(file.url.mediaId).mp4")
+                                let localUrl = URL.temporaryDirectory.appendingPathComponent("\(file.url.serverName):\(file.url.mediaId).mp4")
                                 //let url = URL.documentsDirectory.appendingPathComponent("\(file.url.mediaId).mp4")
 
 
-                                if FileManager.default.fileExists(atPath: url.absoluteString) {
-                                    self.status = .downloaded(AVPlayer(url: url))
+                                if FileManager.default.fileExists(atPath: localUrl.absoluteString) {
+                                    self.status = .downloaded(AVPlayer(url: localUrl))
                                 } else {
                                     
-                                    self.status = .downloading
-                                    /*
-                                     let url = try await message.room.session.downloadAndDecryptFile(file)
-                                     self.status = .downloaded(url)
-                                     */
-                                    let data = try await message.room.session.downloadAndDecryptData(file)
-                                    print("VIDEO\tDownloaded data")
-                                    print("VIDEO\tCreated temporary URL \(url)")
-                                    try data.write(to: url)
-                                    print("VIDEO\tWrote data to URL")
-                                    self.status = .downloaded(AVPlayer(url: url))
+                                    do {
+                                        self.status = .downloading
+                                        /*
+                                         let url = try await message.room.session.downloadAndDecryptFile(file)
+                                         self.status = .downloaded(url)
+                                         */
+                                        let data = try await message.room.session.downloadAndDecryptData(file)
+                                        print("VIDEO\tDownloaded data")
+                                        try data.write(to: localUrl)
+                                        print("VIDEO\tWrote data to local URL")
+                                        self.status = .downloaded(AVPlayer(url: localUrl))
+                                    } catch {
+                                        print("VIDEO\tFailed to download and decrypt encrypted video file")
+                                        self.status = .failed
+                                    }
                                 }
+                            } else if let mxc = content.url {
+                                let localUrl = URL.temporaryDirectory.appendingPathComponent("\(mxc.serverName):\(mxc.mediaId).mp4")
+                                if FileManager.default.fileExists(atPath: localUrl.absoluteString) {
+                                    self.status = .downloaded(AVPlayer(url: localUrl))
+                                } else {
+                                    do {
+                                        self.status = .downloading
+                                        let data = try await message.room.session.downloadData(mxc: mxc)
+                                        print("VIDEO\tDownloaded data")
+                                        try data.write(to: localUrl)
+                                        print("VIDEO\tWrote data to local URL")
+                                        self.status = .downloaded(AVPlayer(url: localUrl))
+                                    } catch {
+                                        print("VIDEO\tFailed to download plaintext video file")
+                                        self.status = .failed
+                                    }
+                                }
+                            } else {
+                                print("VIDEO\tNo encrypted file or mxc:// URL for m.video")
+                                self.status = .failed
                             }
                         }) {
                             Image(systemName: "play.circle")
@@ -118,9 +142,13 @@ struct VideoContentView: View {
                     ZStack(alignment: .center) {
                         MessageThumbnail(message: message)
 
-                        ProgressView("Downloading...")
-                            .foregroundColor(.white)
-                            .shadow(color: .black, radius: 10)
+                        VStack(alignment: .center) {
+                            ProgressView()
+                                .scaleEffect(2)
+                            Text("Downloading...")
+                        }
+                        .foregroundColor(.white)
+                        .shadow(color: .black, radius: 10)
                     }
 
                 case .downloaded(let player):
@@ -156,6 +184,11 @@ struct VideoContentView: View {
                             .foregroundColor(.red)
                             .shadow(color: .white, radius: 10)
                     }
+                } // end switch
+                
+                if let caption = content.caption {
+                    let markdown = MarkdownContent(caption)
+                    Markdown(markdown)
                 }
 
             } else {
