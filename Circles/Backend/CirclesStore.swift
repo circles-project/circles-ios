@@ -137,17 +137,6 @@ public class CirclesStore: ObservableObject {
         }
         logger.debug("Set state to .online")
     }
-
-    /*
-    private func computeKeyId(key: Data) throws -> String {
-        guard let keyHash = Digest(algorithm: .sha256).update(data: key)?.final()
-        else {
-            throw Matrix.Error("Failed to hash key")
-        }
-        let keyId = "m.secret_storage.key." + Data(keyHash[0..<16]).base64EncodedString().trimmingCharacters(in: CharacterSet(charactersIn: "="))
-        return keyId
-    }
-    */
     
     private func generateS4Key(bsspeke: BlindSaltSpeke.ClientSession) throws -> (String, Data) {
         let ssssKey = Data(bsspeke.generateHashedKey(label: MATRIX_SSSS_KEY_LABEL))
