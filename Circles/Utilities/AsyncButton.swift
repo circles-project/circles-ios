@@ -18,7 +18,11 @@ struct AsyncButton<Label: View>: View {
         pending = true
     
         Task {
-            try await action()
+            do {
+                try await action()
+            } catch {
+                print("AsyncButton: Action failed")
+            }
             await MainActor.run {
                 pending = false
             }
