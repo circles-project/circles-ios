@@ -41,7 +41,13 @@ struct ContentView: View {
                 ProgressView()
                     .onAppear {
                         _ = Task {
-                            try await store.connect(creds: creds)
+                            do {
+                                try await store.connect(creds: creds)
+                            } catch {
+                                print("connect() failed -- disconnecting instead")
+                                store.removeCredentials(for: creds.userId)
+                                try await store.disconnect()
+                            }
                         }
                     }
             }
@@ -54,6 +60,9 @@ struct ContentView: View {
             
         case .loggingIn(let loginSession):
             LoginScreen(session: loginSession, store: store)
+            
+        case .needSSKey(let matrix, let keyId, let keyDescription):
+            SecretStoragePasswordScreen(store: store, matrix: matrix, keyId: keyId, description: keyDescription)
 
         case .online(let circlesSession):
             CirclesTabbedInterface(store: store, session: circlesSession)

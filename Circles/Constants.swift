@@ -40,6 +40,7 @@ let RECOVERY_MIN_INTERVAL = 60.0
 let DEFAULT_DOMAIN = "circu.li"
 
 let MATRIX_SSSS_KEY_LABEL = "matrix_ssss"
+let MATRIX_SSSS_KEYID_LABEL = "matrix_ssss_key_id"
 
 #if DEBUG
     let usDomain = "us.circles-dev.net"
@@ -48,3 +49,6 @@ let MATRIX_SSSS_KEY_LABEL = "matrix_ssss"
     let usDomain = "circu.li"
     let euDomain = "eu.circu.li"
 #endif
+
+let ORG_FUTO_BCRYPT_SHA2 = "org.futo.bcrypt-sha2"
+let ORG_FUTO_BSSPEKE_ECC = "org.futo.bsspeke-ecc"

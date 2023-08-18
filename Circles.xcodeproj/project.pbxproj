@@ -124,6 +124,7 @@
 		A54BA3A62851222200453D5E /* WelcomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3A52851222200453D5E /* WelcomeScreen.swift */; };
 		A54BA3A928529BE500453D5E /* SetupScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3A828529BE500453D5E /* SetupScreen.swift */; };
 		A54BA3AB28592D2000453D5E /* SetupSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3AA28592D2000453D5E /* SetupSession.swift */; };
+		A55B8F1E2A8D761A00BAA1FD /* SecretStoragePasswordScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55B8F1D2A8D761A00BAA1FD /* SecretStoragePasswordScreen.swift */; };
 		A55F367329EDB66300F46971 /* GalleryInviteCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55F367229EDB66300F46971 /* GalleryInviteCard.swift */; };
 		A55F367529EEE7EA00F46971 /* PhotoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55F367429EEE7EA00F46971 /* PhotoDetailView.swift */; };
 		A55F367729EEFB6900F46971 /* PhotoContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55F367629EEFB6900F46971 /* PhotoContextMenu.swift */; };
@@ -286,6 +287,7 @@
 		A54BA3A52851222200453D5E /* WelcomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreen.swift; sourceTree = "<group>"; };
 		A54BA3A828529BE500453D5E /* SetupScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupScreen.swift; sourceTree = "<group>"; };
 		A54BA3AA28592D2000453D5E /* SetupSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupSession.swift; sourceTree = "<group>"; };
+		A55B8F1D2A8D761A00BAA1FD /* SecretStoragePasswordScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecretStoragePasswordScreen.swift; sourceTree = "<group>"; };
 		A55F367229EDB66300F46971 /* GalleryInviteCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryInviteCard.swift; sourceTree = "<group>"; };
 		A55F367429EEE7EA00F46971 /* PhotoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailView.swift; sourceTree = "<group>"; };
 		A55F367629EEFB6900F46971 /* PhotoContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoContextMenu.swift; sourceTree = "<group>"; };
@@ -541,6 +543,7 @@
 				409F4359265DE1EE00690A61 /* LoggedOutScreen.swift */,
 				409F435A265DE1EE00690A61 /* LoginScreen.swift */,
 				A54BA3A52851222200453D5E /* WelcomeScreen.swift */,
+				A55B8F1D2A8D761A00BAA1FD /* SecretStoragePasswordScreen.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -897,6 +900,7 @@
 				A53E91322A5F152D007B0196 /* AcknowledgementsView.swift in Sources */,
 				A53E912E2A5C95DC007B0196 /* UiaOverlayView.swift in Sources */,
 				A54BA3A22850108300453D5E /* CirclesStore.swift in Sources */,
+				A55B8F1E2A8D761A00BAA1FD /* SecretStoragePasswordScreen.swift in Sources */,
 				40AEA6742678E24200C9CBD1 /* BlurHashDecode.swift in Sources */,
 				A54A278C2A843C5F00858846 /* InvitedGroupCard.swift in Sources */,
 				40E4D88A268A76CF0055968A /* SignupScreen.swift in Sources */,
@@ -1220,7 +1224,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://gitlab.futo.org/circles/matrix.swift.git";
 			requirement = {
-				branch = main;
+				branch = feat/secret_storage_keygen;
 				kind = branch;
 			};
 		};

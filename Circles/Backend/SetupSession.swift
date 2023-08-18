@@ -23,10 +23,8 @@ class SetupSession: ObservableObject {
     }
     @Published var state: State
     
-    init(creds: Matrix.Credentials, s4keyInfo: (String, Data), store: CirclesStore) async throws {
+    init(creds: Matrix.Credentials, store: CirclesStore) async throws {
         let logger = os.Logger(subsystem: "circles", category: "setup")
-        let (keyId, key) = s4keyInfo
-        logger.debug("Created new SetupSession with s4 keyId \(keyId)")
         self.logger = logger
         self.creds = creds
         self.store = store

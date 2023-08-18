@@ -67,7 +67,8 @@ func generateLegacySecretStorageKey(userId: UserId, password: String) throws -> 
     print("SECRETS\tGot new private key = [\(newPrivateKey)]")
 
 
-    let keyId = try Matrix.SecretStore.computeKeyId(key: newPrivateKey)
+    //let keyId = try Matrix.SecretStore.computeKeyId(key: newPrivateKey)
+    let keyId = UUID().uuidString
     
     return (keyId, newPrivateKey)
 }

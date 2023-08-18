@@ -25,6 +25,7 @@ public class CirclesStore: ObservableObject {
         case nothing(CirclesError?)
         case loggingIn(LoginSession) // Because /login can now take more than a simple username/password
         case haveCreds(Matrix.Credentials)
+        case needSSKey(Matrix.Session,String,KeyDescriptionContent)
         case online(CirclesApplicationSession)
         case signingUp(SignupSession)
         case settingUp(SetupSession)
@@ -33,6 +34,7 @@ public class CirclesStore: ObservableObject {
     
     var logger: os.Logger
     
+    // MARK: init
     
     init() {
         self.logger = Logger(subsystem: "Circles", category: "Store")
@@ -66,6 +68,8 @@ public class CirclesStore: ObservableObject {
         }
     }
     
+    // MARK: Sync tokens
+    
     private func loadSyncToken(userId: UserId, deviceId: String) -> String? {
         UserDefaults.standard.string(forKey: "sync_token[\(userId)::\(deviceId)]")
     }
@@ -73,6 +77,8 @@ public class CirclesStore: ObservableObject {
     private func saveSyncToken(token: String, userId: UserId, deviceId: String) {
         UserDefaults.standard.set(token, forKey: "sync_token[\(userId)::\(deviceId)]")
     }
+    
+    // MARK: Credentials
     
     private func loadCredentials(_ user: String? = nil) -> Matrix.Credentials? {
         
@@ -105,15 +111,15 @@ public class CirclesStore: ObservableObject {
         try await keychainStore.saveKey(key: key, keyId: keyId)
     }
     
+    // MARK: Connect
     
-    func connect(creds: Matrix.Credentials, s4KeyInfo: (String,Data)? = nil) async throws {
+    func connect(creds: Matrix.Credentials, s4Key: Matrix.SecretStorageKey? = nil) async throws {
         logger.debug("connect()")
         let token = loadSyncToken(userId: creds.userId, deviceId: creds.deviceId)
         logger.debug("Got token = \(token ?? "none")")
         
-        if let keyInfo = s4KeyInfo {
-            let (keyId, key) = keyInfo
-            logger.debug("Connecting with s4 keyId [\(keyId)]")
+        if let key = s4Key {
+            logger.debug("Connecting with s4 keyId [\(key.keyId)]")
         } else {
             logger.debug("No s4 key / keyId")
         }
@@ -121,10 +127,110 @@ public class CirclesStore: ObservableObject {
         guard let matrix = try? await Matrix.Session(creds: creds,
                                                      syncToken: token,
                                                      startSyncing: false,
-                                                     secretStorageKeyInfo: s4KeyInfo),
-              let session = try? await CirclesApplicationSession(matrix: matrix)
+                                                     secretStorageKey: s4Key)
         else {
-            let err = CirclesError("Failed to connect as \(creds.userId)")
+            logger.error("Failed to initialize Matrix session")
+            let error = CirclesError("Failed to initialize Matrix session")
+            await MainActor.run {
+                self.state = .nothing(error)
+            }
+            throw error
+        }
+        
+        guard let ssss = matrix.secretStore
+        else {
+            logger.warning("Matrix session needs secret storage")
+            let error = CirclesError("Matrix session has no secret storage")
+            await MainActor.run {
+                self.state = .nothing(error)
+            }
+            throw error
+        }
+        
+        switch ssss.state {
+        case .online(let defaultKeyId):
+            logger.debug("Matrix secret storage is online")
+            
+            guard let session = try? await CirclesApplicationSession(matrix: matrix)
+            else {
+                let error = CirclesError("Failed to connect as \(creds.userId)")
+                await MainActor.run {
+                    self.state = .nothing(error)
+                }
+                throw error
+            }
+            
+            logger.debug("Set up Matrix+CirclesSession")
+            await MainActor.run {
+                self.state = .online(session)
+            }
+            logger.debug("Set state to .online")
+            return
+            
+        case .error(let msg):
+            logger.error("Matrix secret storage failed: \(msg, privacy: .public)")
+            let error = CirclesError("Matrix secret storage failed")
+            await MainActor.run {
+                self.state = .nothing(error)
+            }
+            throw error
+            
+        case .uninitialized:
+            logger.error("Matrix secret storage did not initialize")
+            let error = CirclesError("Matrix secret storage did not initialize")
+            await MainActor.run {
+                self.state = .nothing(error)
+            }
+            throw error
+            
+        case .needKey(let keyId, let keyDescription):
+            logger.info("Matrix secret storage needs a key")
+            await MainActor.run {
+                self.state = .needSSKey(matrix, keyId, keyDescription)
+            }
+            return
+        }
+    }
+
+    // MARK: Finish connecting
+    
+    func finishConnecting(key: Matrix.SecretStorageKey) async throws {
+        
+        guard case .needSSKey(let matrix, let needKeyId, let description) = self.state
+        else {
+            logger.error("Can't finish connecting unless we're waiting on a secret storage key")
+            throw CirclesError("Can't finish connecting unless we're waiting on a secret storage key")
+        }
+        
+        guard key.keyId == needKeyId
+        else {
+            logger.error("This is not the secret storage key that we're looking for")
+            throw CirclesError("This is not the secret storage key that we're looking for")
+        }
+        
+        guard let ssss = matrix.secretStore
+        else {
+            logger.error("Can't go online without secret storage")
+            throw CirclesError("Can't go online without secret storage")
+        }
+        
+        // Add our new secret storage key
+        try await ssss.addNewSecretStorageKey(key)
+        
+        guard case .online(let defaultKeyId) = ssss.state
+        else {
+            logger.error("Secret storage is still not online")
+            throw CirclesError("Secret storage is still not online")
+        }
+        
+        // Yay we're online with secret storage
+        // Make sure that our Matrix session has cross-signing and encrypted key backup enabled
+        try await matrix.setupCrossSigning()
+        try await matrix.setupKeyBackup()
+        
+        guard let session = try? await CirclesApplicationSession(matrix: matrix)
+        else {
+            let err = CirclesError("Failed to initialize Circles session for \(matrix.creds.userId)")
             await MainActor.run {
                 self.state = .nothing(err)
             }
@@ -138,11 +244,26 @@ public class CirclesStore: ObservableObject {
         logger.debug("Set state to .online")
     }
     
-    private func generateS4Key(bsspeke: BlindSaltSpeke.ClientSession) throws -> (String, Data) {
-        let ssssKey = Data(bsspeke.generateHashedKey(label: MATRIX_SSSS_KEY_LABEL))
-        let ssssKeyId = try Matrix.SecretStore.computeKeyId(key: ssssKey)
-        return (ssssKeyId, ssssKey)
+    // MARK: Generate S4 key
+    
+    private func generateS4Key(bsspeke: BlindSaltSpeke.ClientSession) throws -> Matrix.SecretStorageKey {
+        let key = Data(bsspeke.generateHashedKey(label: MATRIX_SSSS_KEY_LABEL))
+        
+        let keyId = bsspeke.generateHashedKey(label: MATRIX_SSSS_KEYID_LABEL)
+                        .prefix(16)
+                        .map {
+                            String(format: "%02hhx", $0)
+                        }
+                        .joined()
+        
+        let description = try Matrix.SecretStore.generateKeyDescription(key: key, keyId: keyId, passphrase: .init(algorithm: ORG_FUTO_BSSPEKE_ECC))
+        
+        let s4Key = Matrix.SecretStorageKey(key: key, keyId: keyId, description: description)
+        
+        return s4Key
     }
+    
+    // MARK: Login
     
     func login(userId: UserId) async throws {
         logger.debug("Logging in as \(userId)")
@@ -176,16 +297,15 @@ public class CirclesStore: ObservableObject {
             // Check for a BS-SPEKE session, and if we have one, use it to generate our SSSS key
             if let bsspeke = session.getBSSpekeClient() {
                 self.logger.debug("Got BS-SPEKE client")
-                let (keyId, key) = try self.generateS4Key(bsspeke: bsspeke)
-                self.logger.debug("BS-SPEKE key: id = \(keyId), key = \(key.base64EncodedString())")
-                let keyInfo = (keyId, key)
+                let s4Key = try self.generateS4Key(bsspeke: bsspeke)
+                self.logger.debug("BS-SPEKE key: id = \(s4Key.keyId), key = \(s4Key.key.base64EncodedString())")
 
                 // Save the keys into our device Keychain, so they will be available to future Matrix sessions where we load creds and connect, without logging in
                 let store = Matrix.KeychainSecretStore(userId: creds.userId)
-                try await store.saveKey(key: key, keyId: keyId)
+                try await store.saveKey(key: s4Key.key, keyId: s4Key.keyId)
 
-                self.logger.debug("Connecting with keyId [\(keyId)]")
-                try await self.connect(creds: creds, s4KeyInfo: keyInfo)
+                self.logger.debug("Connecting with keyId [\(s4Key.keyId)]")
+                try await self.connect(creds: creds, s4Key: s4Key)
             } else {
                 self.logger.warning("Could not find BS-SPEKE client")
                 try await self.connect(creds: creds)
@@ -195,6 +315,8 @@ public class CirclesStore: ObservableObject {
             self.state = .loggingIn(loginSession)
         }
     }
+    
+    // MARK: Signup
     
     func signup(domain: String) async throws {
         // We only support signing up on our own servers
@@ -219,16 +341,15 @@ public class CirclesStore: ObservableObject {
             // Check for a BS-SPEKE session, and if we have one, use it to generate our SSSS key
             if let bsspeke = session.getBSSpekeClient() {
                 self.logger.debug("Got BS-SPEKE client")
-                let (keyId, key) = try self.generateS4Key(bsspeke: bsspeke)
-                self.logger.debug("BS-SPEKE key: id = \(keyId), key = \(key.base64EncodedString())")
-                let keyInfo = (keyId, key)
+                let s4Key = try self.generateS4Key(bsspeke: bsspeke)
+                self.logger.debug("BS-SPEKE key: id = \(s4Key.keyId), key = \(s4Key.key.base64EncodedString())")
 
                 // Save the keys into our device Keychain, so they will be available to future Matrix sessions where we load creds and connect, without logging in
                 let store = Matrix.KeychainSecretStore(userId: creds.userId)
-                try await store.saveKey(key: key, keyId: keyId)
+                try await store.saveKey(key: s4Key.key, keyId: s4Key.keyId)
 
-                self.logger.debug("Configuring with keyId [\(keyId)]")
-                try await self.beginSetup(creds: creds, s4KeyInfo: keyInfo)
+                self.logger.debug("Configuring with keyId [\(s4Key.keyId)]")
+                try await self.beginSetup(creds: creds)
             } else {
                 self.logger.warning("Could not find BS-SPEKE client")
             }
@@ -238,7 +359,9 @@ public class CirclesStore: ObservableObject {
         }
     }
     
-    func beginSetup(creds: Matrix.Credentials, s4KeyInfo: (String,Data)) async throws {
+    // MARK: Begin setup
+    
+    func beginSetup(creds: Matrix.Credentials) async throws {
         
         var fullCreds = creds
         
@@ -247,17 +370,21 @@ public class CirclesStore: ObservableObject {
             fullCreds.wellKnown = try await Matrix.fetchWellKnown(for: domain)
         }
         
-        let session = try await SetupSession(creds: fullCreds, s4keyInfo: s4KeyInfo, store: self)
+        let session = try await SetupSession(creds: fullCreds, store: self)
         await MainActor.run {
             self.state = .settingUp(session)
         }
     }
     
-    private func removeCredentials(for userId: UserId) {
+    // MARK: Remove credentials
+    
+    public func removeCredentials(for userId: UserId) {
         UserDefaults.standard.removeObject(forKey: "user_id")
         UserDefaults.standard.removeObject(forKey: "device_id[\(userId)]")
         UserDefaults.standard.removeObject(forKey: "access_token[\(userId)]")
     }
+    
+    // MARK: Logout
     
     func logout() async throws {
         switch state {
@@ -267,7 +394,6 @@ public class CirclesStore: ObservableObject {
             //try await disconnect()
             try await session.matrix.logout()
             removeCredentials(for: creds.userId)
-            
             await MainActor.run {
                 self.state = .nothing(nil)
             }
@@ -278,7 +404,15 @@ public class CirclesStore: ObservableObject {
                 try await client.logout()
             }
             removeCredentials(for: creds.userId)
+            await MainActor.run {
+                self.state = .nothing(nil)
+            }
             
+        case .needSSKey(let matrix, let keyId, let keyDescription):
+            logger.info("Logging out of session that was blocked waiting for keys")
+            let creds = matrix.creds
+            try await matrix.logout()
+            removeCredentials(for: creds.userId)
             await MainActor.run {
                 self.state = .nothing(nil)
             }
@@ -289,7 +423,6 @@ public class CirclesStore: ObservableObject {
                 try await client.logout()
             }
             removeCredentials(for: creds.userId)
-            
             await MainActor.run {
                 self.state = .nothing(nil)
             }
@@ -298,6 +431,8 @@ public class CirclesStore: ObservableObject {
             logger.warning("Can't log out because we are not online")
         }
     }
+    
+    // MARK: Disconnect
     
     func disconnect() async throws {
         // First disconnect any connected session
@@ -310,6 +445,8 @@ public class CirclesStore: ObservableObject {
         }
     }
     
+    // MARK: Soft logout
+    
     func softLogout() async throws {
         // If we are online, we must first disconnect
         try await self.disconnect()
@@ -318,6 +455,8 @@ public class CirclesStore: ObservableObject {
         UserDefaults.standard.removeObject(forKey: "user_id")
         // However, don't remove the device_id or access_token - That's what makes this a "soft" logout
     }
+    
+    // MARK: Deactivate
     
     func deactivate() async throws {
         guard case let .online(session) = self.state
