@@ -1,3 +1,15 @@
+# 0.5.0
+* Add pinch to zoom on the photo gallery's grid view
+* Add support for playing `m.video` posts
+* Fix buttons getting stuck in a disabled state when async tasks fail
+* Improve support for secret storage, when it's already been set up by another app
+
+# 0.4.1
+* Send caption for image posts, if they have one
+* Don't allow user to block themself
+* Hide menu items for managing/inviting members when the user does not have those powers
+* Don't send BlurHash, it crashes Circles Android
+
 # 0.4.0
 * Fixed a compatibility issue with Circles Android in the BS-SPEKE authentication.  Unfortunately this breaks existing Circles iOS accounts.
 * Added support for leaving groups and photo galleries
