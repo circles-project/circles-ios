@@ -8,6 +8,7 @@
 
 import SwiftUI
 import PhotosUI
+import QuickLookThumbnailing
 import Matrix
 
 struct RoomMessageComposer: View {
@@ -23,8 +24,10 @@ struct RoomMessageComposer: View {
     @State private var newMessageType: String = M_TEXT
     @State private var newMessageText = ""
     @State private var newImage: UIImage?
+    @State private var newMovie: Movie?
     @State private var showPicker = false
     @State private var showNewPicker = false
+    @State private var newPickerFilter: PHPickerFilter = .images
     //@State private var imageSourceType: UIImagePickerController.SourceType = .photoLibrary
     @State private var inProgress = false
     
@@ -74,7 +77,15 @@ struct RoomMessageComposer: View {
             */
             Menu {
                 Button(action: {
+                    self.newMessageType = M_VIDEO
+                    self.newPickerFilter = .videos
+                    self.showNewPicker = true
+                }) {
+                    Label("Upload a video", systemImage: "film")
+                }
+                Button(action: {
                     self.newMessageType = M_IMAGE
+                    self.newPickerFilter = .images
                     self.showNewPicker = true
                 }) {
                     Label("Upload a photo", systemImage: "photo.fill")
@@ -164,7 +175,6 @@ struct RoomMessageComposer: View {
     }
     
     var body: some View {
-        GeometryReader { proxy in
         VStack(alignment: .leading, spacing: 2) {
             let myUserId = room.session.creds.userId
             let myUser = room.session.getUser(userId: myUserId)
@@ -180,23 +190,27 @@ struct RoomMessageComposer: View {
                         .multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
                         .lineLimit(10)
                 case M_IMAGE:
-                        VStack(alignment: .center, spacing: 2) {
-                            Image(uiImage: self.newImage ?? UIImage())
-                                //.scaledToFit()
-                                .resizable()
-                                .scaledToFit()
-                                //.frame(height: imageHeight)
-                                .clipShape(RoundedRectangle(cornerRadius: 6))
-                                //.layoutPriority(-1)
-                            //TextField("Enter your optional caption here", text: $newMessageText)
-                            TextEditor(text: $newMessageText)
-                                .lineLimit(2)
-                                //.frame(height: textHeight)
-                                //.foregroundColor(.gray)
-                                .multilineTextAlignment(.leading)
-                                .padding(5)
-                                //.layoutPriority(1)
-                        }
+                    VStack(alignment: .center, spacing: 2) {
+                        Image(uiImage: self.newImage ?? UIImage())
+                            .resizable()
+                            .scaledToFit()
+                            .clipShape(RoundedRectangle(cornerRadius: 6))
+                        TextEditor(text: $newMessageText)
+                            .lineLimit(2)
+                            .multilineTextAlignment(.leading)
+                            .padding(5)
+                    }
+                case M_VIDEO:
+                    VStack(alignment: .center, spacing: 2) {
+                        Image(uiImage: self.newMovie?.thumbnail ?? UIImage())
+                            .resizable()
+                            .scaledToFit()
+                            .clipShape(RoundedRectangle(cornerRadius: 6))
+                        TextEditor(text: $newMessageText)
+                            .lineLimit(2)
+                            .multilineTextAlignment(.leading)
+                            .padding(5)
+                    }
                 default:
                     Image(uiImage: self.newImage ?? UIImage())
                 }
@@ -213,19 +227,45 @@ struct RoomMessageComposer: View {
                 }
             }
             .onChange(of: selectedItem) { newItem in
-                print("Selected item changed")
-                Task {
-                    if let data = try? await newItem?.loadTransferable(type: Data.self),
-                       let img = UIImage(data: data)
-                    {
-                        await MainActor.run {
-                            self.newImage = img
+                print("PICKER Selected item changed")
+                if let item = newItem {
+                    Task {
+                        let contentTypes = item.supportedContentTypes
+                        for contentType in contentTypes {
+                            guard let mimeType = contentType.preferredMIMEType
+                            else { continue }
+                            print("PICKER Found mimetype \(mimeType)")
                         }
-                    } else {
-                        // We didn't get a new image
-                        if self.newImage == nil {
-                            await MainActor.run {
-                                self.newMessageType = M_TEXT
+                                                
+                        // If we are supposed to be loading an image, load the whole thing right now
+                        if self.newMessageType == M_IMAGE {
+                            if let data = try? await newItem?.loadTransferable(type: Data.self),
+                               let ciImg = CIImage(data: data)
+                            {
+                                let img = UIImage(ciImage: ciImg)
+                                await MainActor.run {
+                                    self.newImage = img
+                                }
+                            } else {
+                                // We didn't get a new image
+                                if self.newImage == nil {
+                                    await MainActor.run {
+                                        self.newMessageType = M_TEXT
+                                    }
+                                }
+                            }
+                            return
+                        }
+                        
+                        if self.newMessageType == M_VIDEO {
+                            if let movie = try? await newItem?.loadTransferable(type: Movie.self) {
+                                print("PICKER User picked a video: \(movie.url.absoluteString)")
+                                let thumb = try await movie.loadThumbnail()
+                                await MainActor.run {
+                                    self.newMovie = movie
+                                }
+                            } else {
+                                print("PICKER Failed to get a new video")
                             }
                         }
                     }
@@ -233,10 +273,6 @@ struct RoomMessageComposer: View {
             }
 
             buttonBar
-        }
-        .onAppear {
-            print("GeometryReader says w = \(proxy.size.width) x h = \(proxy.size.height)")
-        }
         }
         .padding(.all, 3.0)
         //.padding([.top, .leading, .trailing], 5)
@@ -267,7 +303,7 @@ struct RoomMessageComposer: View {
                 //Text("FIXME: CloudImagePicker")
             }
         })
-        .photosPicker(isPresented: $showNewPicker, selection: $selectedItem, matching: .images)
+        .photosPicker(isPresented: $showNewPicker, selection: $selectedItem, matching: self.newPickerFilter)
         .alert(isPresented: $showAlert) {
             Alert(title: Text(alertTitle),
                   message: Text(alertMessage),

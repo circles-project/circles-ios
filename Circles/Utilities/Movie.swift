@@ -12,13 +12,19 @@ import QuickLookThumbnailing
 import Matrix
 
 // Based on https://developer.apple.com/documentation/coretransferable/filerepresentation
-struct Movie: Transferable {
+class Movie: Transferable {
     let url: URL
     let asset: AVAsset
+    public private(set) var thumbnail: UIImage?
     
-    init(url: URL) {
+    required init(url: URL) {
         self.url = url
         self.asset = AVAsset(url: url)
+        self.thumbnail = nil
+        
+        Task {
+            try await self.loadThumbnail()
+        }
     }
     
     var duration: Double {
@@ -39,16 +45,20 @@ struct Movie: Transferable {
         }
     }
     
-    var thumbnail: UIImage {
-        get async throws {
-            let thumbnailSize = try await self.size
-            let request = QLThumbnailGenerator.Request(fileAt: self.url,
-                                                       size: thumbnailSize,
-                                                       scale: 1.0,
-                                                       representationTypes: .thumbnail)
-            return try await QLThumbnailGenerator.shared.generateBestRepresentation(for: request).uiImage
-        }
+    func loadThumbnail() async throws -> UIImage {
+        Matrix.logger.debug("MOVIE Loading thumbnail for \(self.url.absoluteString)")
+        let thumbnailSize = try await self.size
+        Matrix.logger.debug("MOVIE Got size \(thumbnailSize.height)x\(thumbnailSize.width)")
+        let request = QLThumbnailGenerator.Request(fileAt: self.url,
+                                                   size: thumbnailSize,
+                                                   scale: 1.0,
+                                                   representationTypes: .thumbnail)
+        let t = try await QLThumbnailGenerator.shared.generateBestRepresentation(for: request).uiImage
+        Matrix.logger.debug("Generated UIImage thumbnail")
+        self.thumbnail = t
+        return t
     }
+
     
     static var transferRepresentation: some TransferRepresentation {
         FileRepresentation(contentType: .movie) { movie in
@@ -56,6 +66,9 @@ struct Movie: Transferable {
             } importing: { received in
                 let filename = received.file.lastPathComponent
                 let copy: URL = FileManager.default.temporaryDirectory.appendingPathComponent(filename)
+                if FileManager.default.fileExists(atPath: copy.path) {
+                    try FileManager.default.removeItem(at: copy)
+                }
                 try FileManager.default.copyItem(at: received.file, to: copy)
                 return Self.init(url: copy) }
     }
