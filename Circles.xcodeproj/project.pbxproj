@@ -80,6 +80,7 @@
 		A509B89A28189E950053E5BC /* BlindSaltSpeke in Frameworks */ = {isa = PBXBuildFile; productRef = A509B89928189E950053E5BC /* BlindSaltSpeke */; };
 		A509B89C2818A1F80053E5BC /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A509B89B2818A1F80053E5BC /* Array+Extension.swift */; };
 		A509B89E2819B6C90053E5BC /* CirclesError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A509B89D2819B6C90053E5BC /* CirclesError.swift */; };
+		A520B6792A9410BE002D88C8 /* Movie.swift in Sources */ = {isa = PBXBuildFile; fileRef = A520B6782A9410BE002D88C8 /* Movie.swift */; };
 		A521C3F52A6889C00051ED88 /* InvitedCircleDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A521C3F42A6889C00051ED88 /* InvitedCircleDetailView.swift */; };
 		A521C3F72A68D9390051ED88 /* CircleInvitationsIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A521C3F62A68D9390051ED88 /* CircleInvitationsIndicator.swift */; };
 		A52ACB8B2A78240C005D90C5 /* SelfDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52ACB8A2A78240C005D90C5 /* SelfDetailView.swift */; };
@@ -245,6 +246,7 @@
 		A504DA7228120AF100EFF42E /* AsyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncButton.swift; sourceTree = "<group>"; };
 		A509B89B2818A1F80053E5BC /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
 		A509B89D2819B6C90053E5BC /* CirclesError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesError.swift; sourceTree = "<group>"; };
+		A520B6782A9410BE002D88C8 /* Movie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Movie.swift; sourceTree = "<group>"; };
 		A521C3F42A6889C00051ED88 /* InvitedCircleDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitedCircleDetailView.swift; sourceTree = "<group>"; };
 		A521C3F62A68D9390051ED88 /* CircleInvitationsIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleInvitationsIndicator.swift; sourceTree = "<group>"; };
 		A52ACB8A2A78240C005D90C5 /* SelfDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfDetailView.swift; sourceTree = "<group>"; };
@@ -436,6 +438,7 @@
 				A52DF68429E72CC1008860C3 /* Keychain.swift */,
 				A52DF68F29E8AB52008860C3 /* Color+background.swift */,
 				A53EAC562A6F037D00EF18B7 /* LegacySecretStoreKeygen.swift */,
+				A520B6782A9410BE002D88C8 /* Movie.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -902,6 +905,7 @@
 				A54BA3A22850108300453D5E /* CirclesStore.swift in Sources */,
 				A55B8F1E2A8D761A00BAA1FD /* SecretStoragePasswordScreen.swift in Sources */,
 				40AEA6742678E24200C9CBD1 /* BlurHashDecode.swift in Sources */,
+				A520B6792A9410BE002D88C8 /* Movie.swift in Sources */,
 				A54A278C2A843C5F00858846 /* InvitedGroupCard.swift in Sources */,
 				40E4D88A268A76CF0055968A /* SignupScreen.swift in Sources */,
 				4073E7C4267915AF001A80CF /* RepliesView.swift in Sources */,
@@ -1224,7 +1228,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://gitlab.futo.org/circles/matrix.swift.git";
 			requirement = {
-				branch = main;
+				branch = feat/send_video;
 				kind = branch;
 			};
 		};
