@@ -18,7 +18,10 @@ struct RoomInviteSheet: View {
     @State var pending = false
     @State var suggestions = [UserId]()
     @State var searchTask: Task<Void,Swift.Error>?
-
+    @State private var alertTitle: String = ""
+    @State private var alertMessage: String = ""
+    @State private var showAlert = false
+    
     var inputForm: some View {
         VStack(alignment: .center) {
             
@@ -50,7 +53,12 @@ struct RoomInviteSheet: View {
                         self.searchTask = self.searchTask ?? Task {
                             let currentUserIds = self.newUsers.map { $0.userId }
                             let suggestedUserIds = try await room.session.searchUserDirectory(term: searchTerm)
-                                .filter { !currentUserIds.contains($0) }
+                                .filter {
+                                    !currentUserIds.contains($0) &&
+                                    !room.joinedMembers.contains($0) &&
+                                    !room.invitedMembers.contains($0) &&
+                                    !room.bannedMembers.contains($0)
+                                }
                             print("INVITE:\tGot \(suggestedUserIds.count) search results: \(suggestedUserIds)")
                             await MainActor.run {
                                 self.suggestions = suggestedUserIds
@@ -63,9 +71,35 @@ struct RoomInviteSheet: View {
                 AsyncButton(action: {
                     guard let userId = UserId(newestUserIdString)
                     else {
-                        // FIXME: Set some error message
+                        self.alertTitle = "Invalid User ID"
+                        self.alertMessage = "Circles user ID's should start with an @ and have a domain at the end, like @username:example.com"
+                        self.showAlert = true
+                        print("RoomInviteSheet - ERROR:\t \(self.alertMessage)")
                         return
                     }
+                    if room.joinedMembers.contains(userId) {
+                        self.alertTitle = "\(userId) is already a member of this room"
+                        self.alertMessage = ""
+                        self.showAlert = true
+                        print("RoomInviteSheet - ERROR:\t \(self.alertMessage)")
+                        return
+                    }
+                    else if room.invitedMembers.contains(userId) {
+                        self.alertTitle = "\(userId) has already been invited to this room"
+                        self.alertMessage = "\(userId) invite is still pending user decision."
+                        self.showAlert = true
+                        print("RoomInviteSheet - ERROR:\t \(self.alertMessage)")
+                        return
+                    }
+                    else if room.bannedMembers.contains(userId) {
+                        self.alertTitle = "\(userId) is banned from this room"
+                        self.alertMessage = "You must unblock \(userId) before you can invite the user back to the room."
+                        self.showAlert = true
+                        print("RoomInviteSheet - ERROR:\t \(self.alertMessage)")
+                        return
+                    }
+
+                    print("RoomInviteSheet - INFO:\t Adding \(userId) to invite list")
                     let user = room.session.getUser(userId: userId)
 
                     await MainActor.run {
@@ -78,6 +112,11 @@ struct RoomInviteSheet: View {
             }
             .disabled(pending)
             .padding()
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text(alertTitle),
+                      message: Text(alertMessage),
+                      dismissButton: .default(Text("OK")))
+            }            
             
             if !self.suggestions.isEmpty {
                 List {
