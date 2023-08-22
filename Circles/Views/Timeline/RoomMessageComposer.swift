@@ -139,7 +139,7 @@ struct RoomMessageComposer: View {
                         self.presentation.wrappedValue.dismiss()
                     } else {
                         let eventId = try await self.room.sendText(text: self.newMessageText)
-                        print("COMPOSER\tSent eventId = \(eventId)")
+                        print("COMPOSER\tSent m.text with eventId = \(eventId)")
                         self.presentation.wrappedValue.dismiss()
                     }
                     
@@ -151,7 +151,21 @@ struct RoomMessageComposer: View {
                     
                     let caption: String? = !self.newMessageText.isEmpty ? self.newMessageText : nil
                     let eventId = try await self.room.sendImage(image: img, caption: caption, withBlurhash: false, withThumbhash: true)
-                    print("COMPOSER\tSent eventId = \(eventId)")
+                    print("COMPOSER\tSent m.image with eventId = \(eventId)")
+                    self.presentation.wrappedValue.dismiss()
+                    
+                    
+                case M_VIDEO:
+                    guard let movie = self.newMovie,
+                          let thumbnail = movie.thumbnail
+                    else {
+                        print("COMPOSER Trying to post a video without actually selecting a video")
+                        return
+                    }
+                    
+                    let caption: String? = !self.newMessageText.isEmpty ? self.newMessageText : nil
+                    let eventId = try await self.room.sendVideo(url: movie.url, thumbnail: thumbnail, caption: caption)
+                    print("COMPOSER\tSent m.video with eventId = \(eventId)")
                     self.presentation.wrappedValue.dismiss()
                     
                 default:
