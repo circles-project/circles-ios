@@ -51,38 +51,18 @@ struct RoomMessageComposer: View {
     */
     
     var buttonBar: some View {
-        HStack(spacing: 2.0) {
+        HStack(spacing: 5.0) {
             Button(action: {
                 self.newMessageType = M_TEXT
                 self.newImage = nil
             }) {
                 Image(systemName: "doc.plaintext")
+                    .scaleEffect(1.5)
             }
             .disabled(newMessageType == M_TEXT)
-            /*
-            Button(action: {
-                self.newMessageType = .image
-                self.imageSourceType = .photoLibrary
-                self.showPicker = true
-            }) {
-                Image(systemName: "photo.fill")
-            }
-            Button(action: {
-                self.newMessageType = .image
-                self.imageSourceType = .camera
-                self.showPicker = true
-            }) {
-                Image(systemName: "camera.fill")
-            }
-            */
-            Menu {
-                Button(action: {
-                    self.newMessageType = M_VIDEO
-                    self.newPickerFilter = .videos
-                    self.showNewPicker = true
-                }) {
-                    Label("Upload a video", systemImage: "film")
-                }
+            .padding(1)
+
+            Menu(content: {
                 Button(action: {
                     self.newMessageType = M_IMAGE
                     self.newPickerFilter = .images
@@ -104,12 +84,32 @@ struct RoomMessageComposer: View {
                 }) {
                     Label("Choose an already uploaded photo", systemImage: "photo")
                 }
-            }
+            },
             label: {
                 Image(systemName: "photo.fill")
-            }
+                    .scaleEffect(1.5)
+            })
             .disabled(newMessageType == M_IMAGE)
+            .padding(1)
 
+            
+            Menu(content: {
+                Button(action: {
+                    self.newMessageType = M_VIDEO
+                    self.newPickerFilter = .videos
+                    self.showNewPicker = true
+                }) {
+                    Label("Upload a video", systemImage: "film")
+                }
+            },
+            label: {
+                Image(systemName: "film")
+                    .scaleEffect(1.5)
+            })
+            .disabled(newMessageType == M_VIDEO)
+            .padding(1)
+
+            
             Spacer()
             Button(role: .destructive, action: {
                 //self.isPresented = false
@@ -126,7 +126,7 @@ struct RoomMessageComposer: View {
                     //.background(RoundedRectangle(cornerRadius: 4).stroke(Color.red, lineWidth: 1))
             }
             .buttonStyle(.bordered)
-            .padding()
+            .padding(3)
 
             AsyncButton(action: {
                 switch(self.newMessageType) {
@@ -181,7 +181,7 @@ struct RoomMessageComposer: View {
                     //.background(RoundedRectangle(cornerRadius: 4).stroke(Color.blue, lineWidth: 1))
             }
             .buttonStyle(.bordered)
-            .padding()
+            .padding(3)
 
         }
         //.padding([.leading, .trailing])
@@ -254,9 +254,8 @@ struct RoomMessageComposer: View {
                         // If we are supposed to be loading an image, load the whole thing right now
                         if self.newMessageType == M_IMAGE {
                             if let data = try? await newItem?.loadTransferable(type: Data.self),
-                               let ciImg = CIImage(data: data)
+                               let img = UIImage(data: data)
                             {
-                                let img = UIImage(ciImage: ciImg)
                                 await MainActor.run {
                                     self.newImage = img
                                 }
