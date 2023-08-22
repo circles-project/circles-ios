@@ -13,6 +13,10 @@ struct PersonHeaderRow: View {
     @ObservedObject var user: Matrix.User
     var profile: ProfileSpace
     
+    @State private var alertTitle: String = ""
+    @State private var alertMessage: String = ""
+    @State private var showAlert = false
+    
     var image: Image {
         guard let img = user.avatar else {
             return Image(systemName: "person.crop.square")
@@ -73,8 +77,23 @@ struct PersonHeaderRow: View {
                     Label("Remove connection", systemImage: "person.fill.xmark")
                 }
             } else {
-                AsyncButton(action: {}) {
+                AsyncButton(action: {
+                    do {
+                        try await profile.invite(userId: user.userId)
+                    } catch {
+                        print("PersonHeaderRow - ERROR:\t \(error)")
+
+                        self.alertTitle = "Request failed"
+                        self.alertMessage = "An unknown error has occurred. Please try again later."
+                        self.showAlert = true
+                    }
+                }) {
                     Label("Invite to connect", systemImage: "link")
+                }
+                .alert(isPresented: $showAlert) {
+                    Alert(title: Text(alertTitle),
+                          message: Text(alertMessage),
+                          dismissButton: .default(Text("OK")))
                 }
             }
             if user.session.ignoredUserIds.contains(user.userId) {

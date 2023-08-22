@@ -10,8 +10,13 @@ import Matrix
 
 struct UnconnectedPersonDetailView: View {
     @ObservedObject var user: Matrix.User
+    @ObservedObject var room: Matrix.Room
     @State var mutualFriends: [Matrix.User]? = nil
 
+    @State private var alertTitle: String = ""
+    @State private var alertMessage: String = ""
+    @State private var showAlert = false
+    
     var avatar: Image {
         return (user.avatar != nil)
             ? Image(uiImage: user.avatar!)
@@ -44,10 +49,25 @@ struct UnconnectedPersonDetailView: View {
                 Text(user.userId.stringValue)
                     .font(.subheadline)
                     .foregroundColor(.gray)
-                Button(action: {}) {
+                AsyncButton(action: {
+                    do {
+                        try await room.invite(userId: user.userId)
+                    } catch {
+                        print("UnconnectedPersonDetailView - ERROR:\t \(error)")
+
+                        self.alertTitle = "Request failed"
+                        self.alertMessage = "An unknown error has occurred. Please try again later."
+                        self.showAlert = true
+                    }
+                }) {
                     Label("Invite to connect", systemImage: "link")
                 }
                 .padding(5)
+                .alert(isPresented: $showAlert) {
+                    Alert(title: Text(alertTitle),
+                          message: Text(alertMessage),
+                          dismissButton: .default(Text("OK")))
+                }
             }
             
             Spacer()
