@@ -20,6 +20,10 @@ struct CircleCreationSheet: View {
     @State var users: [Matrix.User] = []
     @State var newestUserId: String = ""
     
+    @State private var alertTitle: String = ""
+    @State private var alertMessage: String = ""
+    @State private var showAlert = false
+    
     var buttonBar: some View {
         HStack {
             Button(action: {
@@ -125,10 +129,27 @@ struct CircleCreationSheet: View {
                         .autocapitalization(.none)
                     
                     Button(action: {
-                        if let userId = UserId(newestUserId) {
-                            let user = container.session.getUser(userId: userId)
-                            users.append(user)
+                        guard let userId = UserId(newestUserId)
+                        else {
+                            self.alertTitle = "Invalid User ID"
+                            self.alertMessage = "Circles user ID's should start with an @ and have a domain at the end, like @username:example.com"
+                            self.showAlert = true
+                            self.newestUserId = ""
+                            print("CircleCreationSheet - ERROR:\t \(self.alertMessage)")
+                            return
                         }
+                        if container.joinedMembers.contains(userId) {
+                            self.alertTitle = "\(userId) is already a member of this room"
+                            self.alertMessage = ""
+                            self.showAlert = true
+                            print("CircleCreationSheet - ERROR:\t \(self.alertMessage)")
+                            return
+                        }
+                        
+                        print("CircleCreationSheet - INFO:\t Adding \(userId) to invite list")
+                        let user = container.session.getUser(userId: userId)
+                        users.append(user)
+                        self.newestUserId = ""
                     }) {
                         Text("Add")
                     }
@@ -138,6 +159,11 @@ struct CircleCreationSheet: View {
                     MessageAuthorHeader(user: user)
                 }
                 
+            }
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text(alertTitle),
+                      message: Text(alertMessage),
+                      dismissButton: .default(Text("OK")))
             }
 
         }

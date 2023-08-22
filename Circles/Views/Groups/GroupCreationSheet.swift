@@ -25,6 +25,10 @@ struct GroupCreationSheet: View {
     @State var showPicker = false
     @State var selectedItem: PhotosPickerItem?
     
+    @State private var alertTitle: String = ""
+    @State private var alertMessage: String = ""
+    @State private var showAlert = false
+    
     var buttonbar: some View {
         HStack {
             Button(action: {
@@ -161,10 +165,24 @@ struct GroupCreationSheet: View {
                 AsyncButton(action: {
                     guard let userId = UserId(newestUserId)
                     else {
+                        self.alertTitle = "Invalid User ID"
+                        self.alertMessage = "Circles user ID's should start with an @ and have a domain at the end, like @username:example.com"
+                        self.showAlert = true
                         self.newestUserId = ""
-                        // FIXME: Set error message
+                        print("GroupCreationSheet - ERROR:\t \(self.alertMessage)")
                         return
                     }
+                    if groups.joinedMembers.contains(userId) {
+                        self.alertTitle = "\(userId) is already a member of this room"
+                        self.alertMessage = ""
+                        self.showAlert = true
+                        self.newestUserId = ""
+                        print("GroupCreationSheet - ERROR:\t \(self.alertMessage)")
+                        return
+                    }
+                    
+                    print("GroupCreationSheet - INFO:\t Adding \(userId) to invite list")
+                    
                     let user = groups.session.getUser(userId: userId)
                     self.users.append(user)
                     self.newestUserId = ""
@@ -174,6 +192,11 @@ struct GroupCreationSheet: View {
                 }
             }
             .padding(.horizontal)
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text(alertTitle),
+                      message: Text(alertMessage),
+                      dismissButton: .default(Text("OK")))
+            }
             
             VStack(alignment: .leading) {
 
