@@ -1,3 +1,10 @@
+# 0.5.1
+* Add ability to encrypt and upload videos and post them as m.video messages
+* Centered the Circle timeline
+* Prevent creation of a Group without a name
+* Validate user_id's on invite
+* Fix the profile invite button
+
 # 0.5.0
 * Add pinch to zoom on the photo gallery's grid view
 * Add support for playing `m.video` posts
