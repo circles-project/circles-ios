@@ -61,7 +61,7 @@ struct CircleTimeline: View {
         
         VStack(alignment: .leading) {
             ScrollView {
-                LazyVStack(alignment: .leading) {
+                LazyVStack(alignment: .center) {
                     ForEach(messages) { msg in
                         VStack(alignment: .leading) {
                             HStack {
