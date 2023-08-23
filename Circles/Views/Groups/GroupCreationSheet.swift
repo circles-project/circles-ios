@@ -76,6 +76,7 @@ struct GroupCreationSheet: View {
             {
                 Text("Create")
                     .fontWeight(.bold)
+                    .disabled(groupName.isEmpty)
             }
         }
     }
