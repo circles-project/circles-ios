@@ -61,11 +61,7 @@ struct StateEventView: View {
                 Text("*\(sender) set the room encryption parameters*")
                 
             default:
-                if message.stateKey != nil {
-                    Text("*\(sender) updated the \(roomType) state*")
-                } else {
-                    Text("*\(sender) sent an unknown message (\(message.type))*")
-                }
+                Text("*\(sender) updated the \(roomType) state (\(message.type))*")
             }
         }
         .font(.caption)
