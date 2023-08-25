@@ -12,16 +12,70 @@ import Matrix
 
 struct RoomAvatar: View {
     @ObservedObject var room: Matrix.Room
+    @Environment(\.colorScheme) var colorScheme
+    
+    var showDefaultAvatarText: Bool
+    
+    var textColor: Color {
+        colorScheme == .dark
+            ? Color.white
+            : Color.black
+    }
     
     var body: some View {
-        Image(uiImage: room.avatar ?? UIImage())
-            .renderingMode(.original)
-            .resizable()
-            .scaledToFill()
-            .clipShape(RoundedRectangle(cornerRadius: 6))
-            .onAppear {
-                // Fetch the avatar from the url
-                room.updateAvatarImage()
+        GeometryReader { geometry in
+            ZStack {
+                if let img = room.avatar {
+                    Image(uiImage: img)
+                        .renderingMode(.original)
+                        .resizable()
+                        .scaledToFill()
+                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                        .onAppear {
+                            // Fetch the avatar from the url
+                            room.updateAvatarImage()
+                        }
+                        .padding(3)
+                }
+                else {
+                    // Make the color choice pseudo-random, but fixed based on
+                    // the room name instead of changing the color randomly
+                    // each time the avatar is rendered.
+                    let colorChoice: Int = room.name?.chars.reduce(0, { acc, str in
+                        guard let num = Int(str),
+                              let accNum = acc
+                        else {
+                            return acc
+                        }
+                        
+                        return accNum + num
+                    }) ?? 0
+                    let colors = [Color.blue, Color.purple, Color.orange, Color.yellow, Color.red, Color.pink, Color.green]
+                    let color = colors[colorChoice % colors.count]
+
+                    RoundedRectangle(cornerSize: CGSize())
+                        .foregroundColor(color)
+                        .scaledToFill()
+                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                        .onAppear {
+                            // Fetch the avatar from the url
+                            room.updateAvatarImage()
+                        }
+                        .padding(3)
+
+                    if showDefaultAvatarText,
+                       let groupName = room.name {
+                        let initials = groupName.split(whereSeparator: { $0.isWhitespace }).joined().capitalized
+                        let location = CGPoint(x: 0.5 * geometry.size.width, y: 0.5 * geometry.size.height)
+                        
+                        Text(initials)
+                            .fontWeight(.bold)
+                            .foregroundColor(textColor)
+                            .position(x: location.x,
+                                      y: location.y)
+                    }
+                }
             }
+        }
     }
 }

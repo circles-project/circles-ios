@@ -26,7 +26,7 @@ struct GroupOverviewRow: View {
     
     var body: some View {
         HStack(alignment: .top) {
-            RoomAvatar(room: room)
+            RoomAvatar(room: room, showDefaultAvatarText: true)
                 .frame(width: 80, height: 80)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
             
