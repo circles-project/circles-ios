@@ -58,7 +58,9 @@ struct RoomCircleAvatar: View {
                         }
                     
                     if let displayName = user.displayName {
-                        let initials = displayName.split(whereSeparator: { $0.isWhitespace }).joined().capitalized
+                        let initials = displayName.split(whereSeparator: { $0.isWhitespace })
+                                                  .compactMap({ $0.first?.uppercased() })
+                                                  .joined()
                         Text(initials)
                             .fontWeight(.bold)
                             .foregroundColor(outlineColor)
