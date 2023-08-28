@@ -94,7 +94,7 @@ struct SelfDetailView: View {
                 } else {
                     ForEach(profile.rooms) { room in
                         HStack {
-                            RoomAvatar(room: room)
+                            RoomAvatar(room: room, showDefaultAvatarText: true)
                                 .frame(width: 80, height: 80)
                             Text(room.name ?? "??")
                                 .font(.title3)
