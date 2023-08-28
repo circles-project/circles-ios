@@ -63,8 +63,10 @@ struct RoomAvatar: View {
                         .padding(3)
 
                     if showDefaultAvatarText,
-                       let groupName = room.name {
-                        let initials = groupName.split(whereSeparator: { $0.isWhitespace }).joined().capitalized
+                       let name = room.name {
+                        let initials = name.split(whereSeparator: { $0.isWhitespace })
+                                           .compactMap({ $0.first?.uppercased() })
+                                           .joined()
                         let location = CGPoint(x: 0.5 * geometry.size.width, y: 0.5 * geometry.size.height)
                         
                         Text(initials)
