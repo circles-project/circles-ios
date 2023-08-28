@@ -177,7 +177,8 @@ struct CirclesOverviewScreen: View {
             .sheet(isPresented: $showHelpText) {
                 help
             }
-
+            
+            Text("Create or select a circle to view its timeline")
         }
     }
 }

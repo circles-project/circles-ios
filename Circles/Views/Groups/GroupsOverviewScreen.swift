@@ -153,6 +153,8 @@ struct GroupsOverviewScreen: View {
                 }
                 .padding()
             }
+            
+            Text("Create or select a group to view its timeline")
         }
     }
 }

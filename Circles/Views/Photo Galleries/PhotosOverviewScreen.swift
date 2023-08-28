@@ -143,6 +143,8 @@ struct PhotosOverviewScreen: View {
                                 }
             )
             //.navigationViewStyle(StackNavigationViewStyle())
+            
+            Text("Create or select a photo gallery to view an album")
         }
     }
 }
