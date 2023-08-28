@@ -22,42 +22,27 @@ struct SetupCircleCard: View {
         VStack(alignment: .leading) {
             
             HStack {
-                if let img = self.avatar {
-                    VStack {
+                
+                ZStack {
+                    Color.gray
+                    
+                    if let img = self.avatar {
                         Image(uiImage: img)
                             .resizable()
                             .scaledToFill()
-                            .clipShape(Circle())
-                            .frame(width: 120, height: 120, alignment: .center)
-                            //.padding()
-
-                        PhotosPicker(selection: $selectedItem, matching: .images) {
-                            Label("Change", systemImage: "photo")
-                                .font(.subheadline)
-                        }
                     }
                 }
-                else {
-                    ZStack {
-                        Image(systemName: "photo")
-                            .resizable()
-                            .scaledToFill()
-                            .overlay(Color.gray.opacity(0.50))
-                            .clipShape(RoundedRectangle(cornerRadius: 20))
-                            .frame(width: 120, height: 120, alignment: .center)
-                            .foregroundColor(.gray)
-                            .padding()
-                        
-                        PhotosPicker(selection: $selectedItem) {
-                            Text("Choose a cover photo")
-                                .font(.title3)
-                                .fontWeight(.semibold)
-                                .multilineTextAlignment(.center)
-                                .foregroundColor(.white)
-                                .shadow(color: .black, radius: 3.0, x: 2.0, y: 2.0)
-                                .padding(10)
-                        }
+                .clipShape(Circle())
+                .frame(width: 120, height: 120, alignment: .center)
+                .foregroundColor(.gray)
+                .overlay(alignment: .bottomTrailing) {
+                    PhotosPicker(selection: $selectedItem) {
+                        Image(systemName: "pencil.circle.fill")
+                            .symbolRenderingMode(.multicolor)
+                            .font(.system(size: 30))
+                            .foregroundColor(.accentColor)
                     }
+                    .buttonStyle(.borderless)
                 }
 
                 VStack(alignment: .leading) {

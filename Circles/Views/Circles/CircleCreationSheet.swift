@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import PhotosUI
 import Matrix
 
 struct CircleCreationSheet: View {
@@ -16,6 +17,8 @@ struct CircleCreationSheet: View {
     @State private var circleName: String = ""
     @State private var rooms: Set<Matrix.Room> = []
     @State private var avatarImage: UIImage? = nil
+    @State private var showPicker = false
+    @State private var item: PhotosPickerItem?
     
     @State var users: [Matrix.User] = []
     @State var newestUserId: String = ""
@@ -68,27 +71,42 @@ struct CircleCreationSheet: View {
     
     var mockup: some View {
         HStack {
+            let cardSize: CGFloat = 120
+            
             ZStack {
-                let cardSize: CGFloat = 120
-
-                Circle()
-                    .foregroundColor(Color.gray)
-                    .opacity(0.80)
-                    .frame(width: cardSize, height: cardSize)
-                
                 if let img = avatarImage {
                     Image(uiImage: img)
                         .resizable()
                         .scaledToFill()
-                        .frame(width: cardSize, height: cardSize)
-                        //.clipped()
-                        .clipShape(Circle())
-                        .overlay(Circle().stroke(Color.gray, lineWidth: 2))
-                        .shadow(radius: 5)
-                        .padding(5)
+                } else {
+                    Color.gray
                 }
             }
-            
+            .frame(width: cardSize, height: cardSize)
+            .clipShape(Circle())
+            //.overlay(Circle().stroke(Color.gray, lineWidth: 2))
+            .overlay(alignment: .bottomTrailing) {
+                PhotosPicker(selection: $item, matching: .images) {
+                    Image(systemName: "pencil.circle.fill")
+                        .symbolRenderingMode(.multicolor)
+                        .font(.system(size: 30))
+                        .foregroundColor(.accentColor)
+                }
+                .buttonStyle(.borderless)
+            }
+            .shadow(radius: 5)
+            .padding(5)
+            .onChange(of: item) { newItem in
+                Task {
+                    if let data = try? await newItem?.loadTransferable(type: Data.self) {
+                        let img = UIImage(data: data)
+                        await MainActor.run {
+                            self.avatarImage = img
+                        }
+                    }
+                }
+            }
+
             VStack(alignment: .leading) {
                 let myUser = container.session.getUser(userId: container.session.creds.userId)
                 Text(myUser.displayName ?? "\(myUser.userId)")

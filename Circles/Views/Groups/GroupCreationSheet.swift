@@ -81,13 +81,6 @@ struct GroupCreationSheet: View {
         }
     }
     
-    var image: Image {
-        (self.headerImage != nil)
-            ? Image(uiImage: self.headerImage!)
-            //: Image(systemName: "photo")
-            : Image(uiImage: UIImage())
-    }
-    
     var body: some View {
         VStack {
             buttonbar
@@ -103,45 +96,45 @@ struct GroupCreationSheet: View {
                 */
                 TextField("Group name", text: $groupName)
             }
-            
-            /*
-            HStack {
-                /*
-                Text("Initial Status:")
-                    .fontWeight(.bold)
-                */
-                TextField("Initial status message", text: $groupTopic)
-            }
-            */
-            
-            PhotosPicker(selection: $selectedItem, matching: .images) {
-                ZStack {
-                    image
+      
+            ZStack {
+                if let img = self.headerImage {
+                    Image(uiImage: img)
                         .resizable()
                         .scaledToFit()
-                    if self.headerImage == nil {
-                        Text("Header image")
-                            .foregroundColor(Color.gray)
-                    } else {
-                        VStack {
-                            Text(self.groupName)
-                                .font(.title)
-                                .fontWeight(.bold)
-                                .multilineTextAlignment(.center)
-                                .foregroundColor(Color.white)
-                                .shadow(color: Color.black, radius: 3.0)
-                                .padding()
-                            
-                            Text(self.groupTopic)
-                                .font(.subheadline)
-                                .fontWeight(.bold)
-                                .multilineTextAlignment(.center)
-                                .foregroundColor(Color.white)
-                                .shadow(color: Color.black, radius: 3.0)
-                                .padding(.horizontal)
-                        }
-                    }
+                } else {
+                    Color.gray
                 }
+
+                VStack {
+                    Text(self.groupName)
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(Color.white)
+                        .shadow(color: Color.black, radius: 3.0)
+                        .padding()
+                    
+                    Text(self.groupTopic)
+                        .font(.subheadline)
+                        .fontWeight(.bold)
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(Color.white)
+                        .shadow(color: Color.black, radius: 3.0)
+                        .padding(.horizontal)
+                }
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+            .overlay(alignment: .bottomTrailing) {
+                
+                PhotosPicker(selection: $selectedItem, matching: .images) {
+                    Image(systemName: "pencil.circle.fill")
+                        .symbolRenderingMode(.multicolor)
+                        .font(.system(size: 30))
+                        .foregroundColor(.accentColor)
+                }
+                .buttonStyle(.borderless)
+
             }
             .onChange(of: selectedItem) { newItem in
                 Task {
