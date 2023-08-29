@@ -39,15 +39,20 @@ struct PhotoGalleryView: View {
     
     var toolbarMenu: some View {
         Menu {
-            Button(action: {
-                self.showCoverImagePicker = true
-            }) {
-                Label("New cover image", systemImage: "photo")
+            if room.iCanChangeState(type: M_ROOM_AVATAR) {
+                Button(action: {
+                    self.showCoverImagePicker = true
+                }) {
+                    Label("New cover image", systemImage: "photo")
+                }
             }
-            Button(action: {
-                self.sheetType = .invite
-            }) {
-                Label("Invite", systemImage: "person.2.circle")
+            
+            if room.iCanInvite {
+                Button(action: {
+                    self.sheetType = .invite
+                }) {
+                    Label("Invite", systemImage: "person.2.circle")
+                }
             }
         }
         label: {
@@ -112,8 +117,10 @@ struct PhotoGalleryView: View {
             }
             .navigationBarTitle(room.name ?? "Untitled gallery")
             .toolbar {
-                ToolbarItemGroup(placement: .automatic) {
-                    toolbarMenu
+                if room.iCanChangeState(type: M_ROOM_AVATAR) || room.iCanInvite {
+                    ToolbarItemGroup(placement: .automatic) {
+                        toolbarMenu
+                    }
                 }
             }
             .sheet(item: self.$sheetType) { st in

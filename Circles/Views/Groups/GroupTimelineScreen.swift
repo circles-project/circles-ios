@@ -73,10 +73,12 @@ struct GroupTimelineScreen: View {
     var toolbarMenu: some View {
         Menu {
             
-            Button(action: {self.sheetType = .configure}) {
-                Label("Configure Group", systemImage: "gearshape")
+            if room.iCanChangeState(type: M_ROOM_NAME) || room.iCanChangeState(type: M_ROOM_AVATAR) {
+                Button(action: {self.sheetType = .configure}) {
+                    Label("Configure Group", systemImage: "gearshape")
+                }
             }
-            
+
             if room.iCanBan || room.iCanKick {
                 Button(action: {
                     self.sheetType = .members
