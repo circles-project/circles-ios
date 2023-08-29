@@ -103,6 +103,8 @@ struct SettingsScreen: View {
                         self.showConfirmSwitch = true
                     }) {
                         Label("Switch User", systemImage: "person.2.fill")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
                     .confirmationDialog("Confirm Switch User",
@@ -121,6 +123,8 @@ struct SettingsScreen: View {
                     
                     Button(action: { showConfirmLogout = true }) {
                         Label("Log Out", systemImage: "power")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
                     .confirmationDialog("Confirm Log Out",
