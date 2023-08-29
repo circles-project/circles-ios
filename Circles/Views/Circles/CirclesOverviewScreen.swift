@@ -69,33 +69,40 @@ struct CirclesOverviewScreen: View {
     
     @ViewBuilder
     var baseLayer: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                
-                CircleInvitationsIndicator(session: container.session, container: container)
-                
-                ForEach(container.rooms) { circle in
-                    NavigationLink(destination: CircleTimelineScreen(space: circle)) {
-                        CircleOverviewCard(space: circle)
-                            .contentShape(Rectangle())
-                        //.padding(.top)
-                    }
-                    .onTapGesture {
-                        print("DEBUGUI\tNavigationLink tapped for Circle \(circle.id)")
-                    }
-                    .contextMenu {
-                        Button(role: .destructive, action: {
-                            //try await deleteCircle(circle: circle)
-                            self.circleToDelete = circle
-                            self.confirmDeleteCircle = true
-                        }) {
-                            Label("Delete", systemImage: "xmark.circle")
+        let circleInvitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_CIRCLE }
+        
+        if !container.rooms.isEmpty || !circleInvitations.isEmpty {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    
+                    CircleInvitationsIndicator(session: container.session, container: container)
+                    
+                    ForEach(container.rooms) { circle in
+                        NavigationLink(destination: CircleTimelineScreen(space: circle)) {
+                            CircleOverviewCard(space: circle)
+                                .contentShape(Rectangle())
+                            //.padding(.top)
                         }
+                        .onTapGesture {
+                            print("DEBUGUI\tNavigationLink tapped for Circle \(circle.id)")
+                        }
+                        .contextMenu {
+                            Button(role: .destructive, action: {
+                                //try await deleteCircle(circle: circle)
+                                self.circleToDelete = circle
+                                self.confirmDeleteCircle = true
+                            }) {
+                                Label("Delete", systemImage: "xmark.circle")
+                            }
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        Divider()
                     }
-                    .buttonStyle(PlainButtonStyle())
-                    Divider()
                 }
             }
+        }
+        else {
+            Text("Create a circle to get started")
         }
     }
     

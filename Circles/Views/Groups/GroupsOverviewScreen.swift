@@ -41,29 +41,35 @@ struct GroupsOverviewScreen: View {
     
     @ViewBuilder
     var baseLayer: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-
-                GroupInvitationsIndicator(session: container.session, container: container)
-                
-                ForEach(container.rooms) { room in
-                    NavigationLink(destination: GroupTimelineScreen(room: room)) {
-                        GroupOverviewRow(container: container, room: room)
-                            .contentShape(Rectangle())
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    .contextMenu {
-                        Button(role: .destructive, action: {
-                            self.showConfirmLeave = true
-                            self.roomToLeave = room
-                        }) {
-                            Label("Leave group", systemImage: "xmark.bin")
+        let groupInvitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_GROUP }
+        
+        if !container.rooms.isEmpty || !groupInvitations.isEmpty  {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    GroupInvitationsIndicator(session: container.session, container: container)
+                    
+                    ForEach(container.rooms) { room in
+                        NavigationLink(destination: GroupTimelineScreen(room: room)) {
+                            GroupOverviewRow(container: container, room: room)
+                                .contentShape(Rectangle())
                         }
+                        .buttonStyle(PlainButtonStyle())
+                        .contextMenu {
+                            Button(role: .destructive, action: {
+                                self.showConfirmLeave = true
+                                self.roomToLeave = room
+                            }) {
+                                Label("Leave group", systemImage: "xmark.bin")
+                            }
+                        }
+                        .padding(.vertical, 2)
+                        Divider()
                     }
-                    .padding(.vertical, 2)
-                    Divider()
                 }
             }
+        }
+        else {
+            Text("Create a group to get started")
         }
     }
     
