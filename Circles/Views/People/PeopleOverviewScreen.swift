@@ -48,6 +48,7 @@ struct PeopleOverviewScreen: View {
                             .lineLimit(1)
                     }
                 }
+                .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             Divider()
@@ -107,6 +108,7 @@ struct PeopleOverviewScreen: View {
                         .buttonStyle(PlainButtonStyle())
                         
                     }
+                    .contentShape(Rectangle())
                     //.padding(.leading)
                     //}
                     Divider()
@@ -128,6 +130,7 @@ struct PeopleOverviewScreen: View {
             ForEach(following) { user in
                 NavigationLink(destination: UnconnectedPersonDetailView(user: user, room: profile)) {
                     PersonHeaderRow(user: user, profile: profile)
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 Divider()
@@ -158,6 +161,7 @@ struct PeopleOverviewScreen: View {
             ForEach(followers) { user in
                 NavigationLink(destination: UnconnectedPersonDetailView(user: user, room: profile)) {
                     PersonHeaderRow(user: user, profile: profile)
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 Divider()

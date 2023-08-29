@@ -49,6 +49,7 @@ struct GroupsOverviewScreen: View {
                 ForEach(container.rooms) { room in
                     NavigationLink(destination: GroupTimelineScreen(room: room)) {
                         GroupOverviewRow(container: container, room: room)
+                            .contentShape(Rectangle())
                     }
                     .buttonStyle(PlainButtonStyle())
                     .contextMenu {

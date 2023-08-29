@@ -77,6 +77,7 @@ struct CirclesOverviewScreen: View {
                 ForEach(container.rooms) { circle in
                     NavigationLink(destination: CircleTimelineScreen(space: circle)) {
                         CircleOverviewCard(space: circle)
+                            .contentShape(Rectangle())
                         //.padding(.top)
                     }
                     .onTapGesture {
