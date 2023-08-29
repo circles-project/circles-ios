@@ -200,6 +200,8 @@ struct PeopleOverviewScreen: View {
                 }
             }
             .navigationBarTitle("People", displayMode: .inline)
+            
+            Text("Select a profile to view additional information")
         }
         //.navigationViewStyle(StackNavigationViewStyle())
 

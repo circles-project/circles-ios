@@ -49,44 +49,50 @@ struct PhotosOverviewScreen: View {
     
     @ViewBuilder
     var baseLayer: some View {
-        ScrollView {
-            VStack(alignment: .leading) {
-                let invitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_PHOTOS }
-                if !invitations.isEmpty {
-                    Text("INVITATIONS")
+        let invitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_PHOTOS }
+        
+        if !container.rooms.isEmpty || !invitations.isEmpty {
+            ScrollView {
+                VStack(alignment: .leading) {
+                    if !invitations.isEmpty {
+                        Text("INVITATIONS")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                        
+                        NavigationLink(destination: GalleryInvitationsView(container: container)) {
+                            Label("\(invitations.count) invitation(s) to shared photo galleries", systemImage: "envelope.open.fill")
+                        }
+
+                        .padding()
+                    }
+                    
+                    Text("GALLERIES")
                         .font(.subheadline)
                         .foregroundColor(.gray)
-                    
-                    NavigationLink(destination: GalleryInvitationsView(container: container)) {
-                        Label("\(invitations.count) invitation(s) to shared photo galleries", systemImage: "envelope.open.fill")
-                    }
-
-                    .padding()
-                }
-                
-                Text("GALLERIES")
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
-                ForEach(container.rooms) { room in
-                    //Text("Found room \(room.roomId.string)")
-                    NavigationLink(destination: PhotoGalleryView(room: room)) {
-                        PhotoGalleryCard(room: room)
-                        // FIXME Add a longPress gesture
-                        //       for setting/changing the
-                        //       avatar image for the gallery
-                    }
-                    .contextMenu {
-                        Button(role: .destructive, action: {
-                            self.showConfirmLeave = true
-                            self.roomToLeave = room
-                        }) {
-                            Label("Leave gallery", systemImage: "xmark.bin")
+                    ForEach(container.rooms) { room in
+                        //Text("Found room \(room.roomId.string)")
+                        NavigationLink(destination: PhotoGalleryView(room: room)) {
+                            PhotoGalleryCard(room: room)
+                            // FIXME Add a longPress gesture
+                            //       for setting/changing the
+                            //       avatar image for the gallery
                         }
+                        .contextMenu {
+                            Button(role: .destructive, action: {
+                                self.showConfirmLeave = true
+                                self.roomToLeave = room
+                            }) {
+                                Label("Leave gallery", systemImage: "xmark.bin")
+                            }
+                        }
+                        //.padding(1)
                     }
-                    //.padding(1)
                 }
+                .padding()
             }
-            .padding()
+        }
+        else {
+            Text("Create a photo gallery to get started")
         }
     }
     
@@ -143,6 +149,8 @@ struct PhotosOverviewScreen: View {
                                 }
             )
             //.navigationViewStyle(StackNavigationViewStyle())
+            
+            Text("Create or select a photo gallery to view an album")
         }
     }
 }
