@@ -44,7 +44,20 @@ struct RoomCircleAvatar: View {
                                   y: location.y)
                 }
                 else {
-                    let color = [Color.blue, Color.purple, Color.orange, Color.yellow, Color.red, Color.pink, Color.green].randomElement() ?? Color.green
+                    // Make the color choice pseudo-random, but fixed based on
+                    // the room name instead of changing the color randomly
+                    // each time the avatar is rendered.
+                    let colorChoice: Int = room.roomId.stringValue.chars.reduce(0, { acc, str in
+                        guard let asciiValue = Character(str).asciiValue
+                        else {
+                            return acc
+                        }
+
+                        return acc + Int(asciiValue)
+                    })
+                    let colors = [Color.blue, Color.purple, Color.orange, Color.yellow, Color.red, Color.pink, Color.green]
+                    let color = colors[colorChoice % colors.count]
+                    
                     let userId = room.creator
                     let user = room.session.getUser(userId: userId)
                     
@@ -58,9 +71,13 @@ struct RoomCircleAvatar: View {
                         }
                     
                     if let displayName = user.displayName {
-                        let initials = displayName.split(whereSeparator: { $0.isWhitespace })
+                        var initials = displayName.split(whereSeparator: { $0.isWhitespace })
                                                   .compactMap({ $0.first?.uppercased() })
                                                   .joined()
+                        if initials.count > Int(scale * 10) {
+                            let _ = initials.removeLast(initials.count - Int(scale * 10))
+                        }
+
                         Text(initials)
                             .fontWeight(.bold)
                             .foregroundColor(outlineColor)
