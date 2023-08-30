@@ -11,14 +11,25 @@ import Matrix
 
 struct ProfileImageView: View {
     @ObservedObject var user: Matrix.User
+    @Environment(\.colorScheme) var colorScheme
     
-    var image: Image {
-        Image(uiImage: user.avatar ?? UIImage(systemName: "person.fill")!)
+    var defaultImageColor: Color {
+        colorScheme == .dark
+            ? Color.white
+            : Color.black
     }
     
     var body: some View {
-        image
-            .resizable()
-            .scaledToFit()
+        if let avatar = user.avatar {
+            Image(uiImage: avatar)
+                .resizable()
+                .scaledToFit()
+        }
+        else {
+            Image(systemName: "person.fill")
+                .resizable()
+                .scaledToFit()
+                .foregroundColor(defaultImageColor)
+        }
     }
 }
