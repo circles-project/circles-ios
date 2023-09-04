@@ -8,8 +8,8 @@
 	<array>
 		<string>webcredentials:circu.li</string>
 		<string>webcredentials:eu.circu.li</string>
-		<string>webcredentials:us.circles-dev.net</string>
-		<string>webcredentials:nl.circles-dev.net</string>
+		<string>webcredentials:*.circles-dev.net</string>
+		<string>webcredentials:circles.futo.org</string>
 	</array>
 	<key>com.apple.developer.authentication-services.autofill-credential-provider</key>
 	<true/>
