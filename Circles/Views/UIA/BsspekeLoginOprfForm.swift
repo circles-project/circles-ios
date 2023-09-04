@@ -26,6 +26,7 @@ struct BsspekeLoginOprfForm: View {
             
             VStack {
                 SecureField("Passphrase", text: $password, prompt: Text("Passphrase"))
+                    .textContentType(.password)
                     .frame(width: 300.0, height: 40.0)
                 AsyncButton(action: {
                     print("Doing BS-SPEKE OPRF stage for UIA")

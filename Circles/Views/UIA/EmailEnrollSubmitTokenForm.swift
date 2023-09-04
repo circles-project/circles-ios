@@ -28,6 +28,7 @@ struct EmailEnrollSubmitTokenForm: View {
             Spacer()
             VStack {
                 TextField("123456", text: $token, prompt: Text("6-Digit Code"))
+                    .textContentType(.oneTimeCode)
                     .keyboardType(.numberPad)
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)

@@ -35,6 +35,7 @@ struct EmailEnrollRequestTokenForm: View {
             }
             VStack {
                 TextField("you@example.com", text: $address, prompt: Text("Email address"))
+                    .textContentType(.emailAddress)
                     .keyboardType(.emailAddress)
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)

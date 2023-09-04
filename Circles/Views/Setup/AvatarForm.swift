@@ -73,6 +73,7 @@ struct AvatarForm: View {
             .padding()
             
             TextField("First Last", text: $displayName, prompt: Text("Your name"))
+                .textContentType(.name)
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(.words)
                 .frame(width: 300)

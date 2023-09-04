@@ -21,6 +21,7 @@ struct UpdateDisplaynameView: View {
             Spacer()
             
             TextField(session.displayName ?? "", text: $newDisplayname, prompt: Text("Your name"))
+                .textContentType(.name)
                 .frame(width: 300, height: 40)
 
             AsyncButton(action: {

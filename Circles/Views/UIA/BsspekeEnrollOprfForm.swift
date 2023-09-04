@@ -74,6 +74,7 @@ struct BsspekeEnrollOprfForm: View {
                 }
 
                 SecureField("correct horse battery staple", text: $password, prompt: Text("New passphrase"))
+                    .textContentType(.newPassword)
                     .onChange(of: password) { newPassword in
                         if let result = checker.passwordStrength(newPassword) {
                             print("Password score: \(result.score)")
@@ -86,6 +87,7 @@ struct BsspekeEnrollOprfForm: View {
                     }
                     .frame(width: 300.0, height: 40.0)
                 SecureField("correct horse battery staple", text: $repeatPassword, prompt: Text("Repeat passphrase"))
+                    .textContentType(.newPassword)
                     .frame(width: 300.0, height: 40.0)
                 AsyncButton(action: {
                     guard let userId = getUserId()
