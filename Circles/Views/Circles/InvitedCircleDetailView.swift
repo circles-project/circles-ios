@@ -11,6 +11,7 @@ import Matrix
 struct InvitedCircleDetailView: View {
     @ObservedObject var room: Matrix.InvitedRoom
     @ObservedObject var user: Matrix.User
+    @EnvironmentObject var matrix: Matrix.Session
     @State var showRoomIdPopover = false
 
     var body: some View {
@@ -92,7 +93,7 @@ struct InvitedCircleDetailView: View {
                             Text("")
                         }
                         ForEach(followers) { followerId in
-                            let follower = room.session.getUser(userId: followerId)
+                            let follower = matrix.getUser(userId: followerId)
                             GridRow {
                                 Text("")
                                 MessageAuthorHeader(user: follower)

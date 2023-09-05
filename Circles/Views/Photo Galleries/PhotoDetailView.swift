@@ -15,6 +15,7 @@ struct PhotoDetailView: View {
     @ObservedObject var message: Matrix.Message
     @State var fullres: UIImage?
     
+    @EnvironmentObject var matrix: Matrix.Session
     @Environment(\.presentationMode) var presentation
     //@GestureState private var magnifyBy = 1.0
     @State var magnifyBy = 1.0
@@ -92,13 +93,13 @@ struct PhotoDetailView: View {
             }
             Task {
                 if let file = content.file {
-                    let data = try await message.room.session.downloadAndDecryptData(file)
+                    let data = try await matrix.downloadAndDecryptData(file)
                     let image = UIImage(data: data)
                     await MainActor.run {
                         self.fullres = image
                     }
                 } else if let url = content.url {
-                    let data = try await message.room.session.downloadData(mxc: url)
+                    let data = try await matrix.downloadData(mxc: url)
                     let image = UIImage(data: data)
                     await MainActor.run {
                         self.fullres = image

@@ -12,9 +12,11 @@ import SwiftUI
 import Matrix
 
 struct PhotoContextMenu: View {
-    var message: Matrix.Message
+    @ObservedObject var message: Matrix.Message
     @Binding var sheetType: PhotoSheetType?
     @Binding var showDetail: Bool
+    
+    @EnvironmentObject var matrix: Matrix.Session
     
     var body: some View {
         
@@ -27,7 +29,7 @@ struct PhotoContextMenu: View {
                 Label("Save image", systemImage: "square.and.arrow.down")
             }
 
-            if message.sender.userId == message.room.session.creds.userId {
+            if message.sender.userId == matrix.creds.userId {
                 Button(action: {
                     // FIXME: TODO
                 }) {

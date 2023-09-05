@@ -12,6 +12,7 @@ import Matrix
 
 struct CircleCreationSheet: View {
     @ObservedObject var container: ContainerRoom<CircleSpace>
+    @EnvironmentObject var matrix: Matrix.Session
     @Environment(\.presentationMode) var presentation
     
     @State private var circleName: String = ""
@@ -43,7 +44,7 @@ struct CircleCreationSheet: View {
                 // First create the Space for the circle
                 let circleRoomId = try await container.createChildRoom(name: circleName, type: M_SPACE, encrypted: false, avatar: avatarImage)
                 
-                guard let circleRoom = try await container.session.getRoom(roomId: circleRoomId, as: CircleSpace.self)
+                guard let circleRoom = try await matrix.getRoom(roomId: circleRoomId, as: CircleSpace.self)
                 else {
                     print("Failed to get new circle Space room for roomId \(circleRoomId)")
                     return
@@ -54,7 +55,7 @@ struct CircleCreationSheet: View {
 
                 // Invite our followers to join the room where we're going to post
                 for user in users {
-                    try await container.session.inviteUser(roomId: wallRoomId, userId: user.userId)
+                    try await matrix.inviteUser(roomId: wallRoomId, userId: user.userId)
                 }
                 
                 self.presentation.wrappedValue.dismiss()
@@ -108,7 +109,7 @@ struct CircleCreationSheet: View {
             }
 
             VStack(alignment: .leading) {
-                let myUser = container.session.getUser(userId: container.session.creds.userId)
+                let myUser = matrix.getUser(userId: matrix.creds.userId)
                 Text(myUser.displayName ?? "\(myUser.userId)")
                     .font(.title2)
                     .fontWeight(.bold)
@@ -165,7 +166,7 @@ struct CircleCreationSheet: View {
                         }
                         
                         print("CircleCreationSheet - INFO:\t Adding \(userId) to invite list")
-                        let user = container.session.getUser(userId: userId)
+                        let user = matrix.getUser(userId: userId)
                         users.append(user)
                         self.newestUserId = ""
                     }) {

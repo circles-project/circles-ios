@@ -11,9 +11,9 @@ import CoreImage
 import Matrix
 
 struct SelfDetailView: View {
-    @ObservedObject var matrix: Matrix.Session
     @ObservedObject var profile: ContainerRoom<Matrix.Room>
     @ObservedObject var circles: ContainerRoom<CircleSpace>
+    @EnvironmentObject var matrix: Matrix.Session
     
     func generateQRCode() -> UIImage? {
         guard let data = profile.roomId.stringValue.data(using: String.Encoding.ascii)

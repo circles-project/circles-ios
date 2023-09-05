@@ -19,6 +19,7 @@ extension CirclesOverviewSheetType: Identifiable {
 
 struct CirclesOverviewScreen: View {
     @ObservedObject var container: ContainerRoom<CircleSpace>
+    @EnvironmentObject var matrix: Matrix.Session
     @State var selection: String = ""
     
     @State private var sheetType: CirclesOverviewSheetType? = nil
@@ -69,13 +70,13 @@ struct CirclesOverviewScreen: View {
     
     @ViewBuilder
     var baseLayer: some View {
-        let circleInvitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_CIRCLE }
+        let circleInvitations = matrix.invitations.values.filter { $0.type == ROOM_TYPE_CIRCLE }
         
         if !container.rooms.isEmpty || !circleInvitations.isEmpty {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
                     
-                    CircleInvitationsIndicator(session: container.session, container: container)
+                    CircleInvitationsIndicator(container: container)
                     
                     ForEach(container.rooms) { circle in
                         NavigationLink(destination: CircleTimelineScreen(space: circle)) {

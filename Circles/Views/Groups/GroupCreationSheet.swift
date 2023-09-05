@@ -13,6 +13,7 @@ import Matrix
 struct GroupCreationSheet: View {
     //@ObservedObject var store: KSStore
     @ObservedObject var groups: ContainerRoom<GroupRoom>
+    @EnvironmentObject var matrix: Matrix.Session
     @Environment(\.presentationMode) var presentation
     
     @State var groupName: String = ""
@@ -46,7 +47,7 @@ struct GroupCreationSheet: View {
                                                                      type: ROOM_TYPE_GROUP,
                                                                      encrypted: true,
                                                                      avatar: self.headerImage),
-                      let room = try await groups.session.getRoom(roomId: roomId)
+                      let room = try await matrix.getRoom(roomId: roomId)
                 else {
                     // Set error message
                     return
@@ -177,7 +178,7 @@ struct GroupCreationSheet: View {
                     
                     print("GroupCreationSheet - INFO:\t Adding \(userId) to invite list")
                     
-                    let user = groups.session.getUser(userId: userId)
+                    let user = matrix.getUser(userId: userId)
                     self.users.append(user)
                     self.newestUserId = ""
                 }) {

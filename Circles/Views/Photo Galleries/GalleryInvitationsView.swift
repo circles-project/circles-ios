@@ -11,16 +11,17 @@ import Matrix
 
 struct GalleryInvitationsView: View {
     @ObservedObject var container: ContainerRoom<GalleryRoom>
+    @EnvironmentObject var matrix: Matrix.Session
     
     var body: some View {
         ScrollView {
             VStack {
-                let invitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_PHOTOS }
+                let invitations = matrix.invitations.values.filter { $0.type == ROOM_TYPE_PHOTOS }
                 if invitations.isEmpty {
                     Text("No current invitations")
                 } else {
                     ForEach(invitations) { invitation in
-                        let user = container.session.getUser(userId: invitation.sender)
+                        let user = matrix.getUser(userId: invitation.sender)
                         GalleryInviteCard(room: invitation, user: user, container: container)
                         Divider()
                     }

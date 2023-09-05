@@ -10,18 +10,18 @@ import Matrix
 
 struct GroupInvitationsView: View {
     //@Binding var invitations: [Matrix.InvitedRoom]
-    @ObservedObject var session: Matrix.Session
-    var container: ContainerRoom<GroupRoom>
+    @EnvironmentObject var matrix: Matrix.Session
+    @ObservedObject var container: ContainerRoom<GroupRoom>
     
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                let invitations = session.invitations.values.filter { $0.type == ROOM_TYPE_GROUP }
+                let invitations = matrix.invitations.values.filter { $0.type == ROOM_TYPE_GROUP }
                 if invitations.isEmpty {
                     Text("No pending invitations")
                 } else {
                     ForEach(invitations) { room in
-                        let user = room.session.getUser(userId: room.sender)
+                        let user = matrix.getUser(userId: room.sender)
                         InvitedGroupCard(room: room, user: user, container: container)
                         Divider()
                     }

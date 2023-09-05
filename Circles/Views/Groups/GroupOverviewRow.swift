@@ -10,7 +10,7 @@ import SwiftUI
 import Matrix
 
 struct GroupOverviewRow: View {
-    var container: ContainerRoom<GroupRoom>
+    @ObservedObject var container: ContainerRoom<GroupRoom>
     @ObservedObject var room: Matrix.Room
     @AppStorage("debugMode") var debugMode: Bool = false
 

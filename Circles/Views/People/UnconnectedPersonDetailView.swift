@@ -11,6 +11,7 @@ import Matrix
 struct UnconnectedPersonDetailView: View {
     @ObservedObject var user: Matrix.User
     @ObservedObject var room: Matrix.Room
+    @EnvironmentObject var matrix: Matrix.Session
     @State var mutualFriends: [Matrix.User]? = nil
 
     @State private var alertTitle: String = ""
@@ -110,17 +111,16 @@ struct UnconnectedPersonDetailView: View {
         }
         .onAppear {
             Task {
-                let session = user.session
                 // First find the set of circles that we're both in
-                let rooms: [Matrix.Room] = session.rooms.values.filter { room in
+                let rooms: [Matrix.Room] = matrix.rooms.values.filter { room in
                     room.type == ROOM_TYPE_CIRCLE && room.joinedMembers.contains(user.userId)
                 }
                 // Find the users in those circles who are not (1) me or (2) them
                 let users: Set<Matrix.User> = rooms.reduce([], { curr, room in
                     let roomMembers: [Matrix.User] = room.joinedMembers.filter {
-                        $0 != user.userId && $0 != user.session.creds.userId
+                        $0 != user.userId && $0 != matrix.creds.userId
                     }.compactMap {
-                        session.getUser(userId: $0)
+                        matrix.getUser(userId: $0)
                     }
                     return curr.union(roomMembers)
                 })

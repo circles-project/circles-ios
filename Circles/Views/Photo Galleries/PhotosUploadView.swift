@@ -13,7 +13,7 @@ import Matrix
 struct PhotosUploadView: View {
     typealias UploadTask = Task<Void,Error>
     
-    var room: Matrix.Room
+    @ObservedObject var room: Matrix.Room
     @State var task: UploadTask?
     @Binding var items: [PhotosPickerItem]
     @Binding var total: Int

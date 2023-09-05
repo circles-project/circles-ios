@@ -11,6 +11,7 @@ import Matrix
 
 struct RoomCircleAvatar: View {
     @ObservedObject var room: Matrix.Room
+    @EnvironmentObject var matrix: Matrix.Session
     @Environment(\.colorScheme) var colorScheme
     //var position: CGPoint
     var location: CGPoint
@@ -59,7 +60,7 @@ struct RoomCircleAvatar: View {
                     let color = colors[colorChoice % colors.count]
                     
                     let userId = room.creator
-                    let user = room.session.getUser(userId: userId)
+                    let user = matrix.getUser(userId: userId)
                     
                     Circle()
                         .foregroundColor(color)
@@ -102,6 +103,7 @@ struct RoomCircleAvatar: View {
 
 struct CircleAvatar: View {
     @ObservedObject var space: CircleSpace
+    @EnvironmentObject var matrix: Matrix.Session
     @Environment(\.colorScheme) var colorScheme
 
     var outlineColor: Color {
@@ -112,10 +114,10 @@ struct CircleAvatar: View {
     
     var body: some View {
         let mainRoom: Matrix.Room? = space.rooms.first {
-            $0.creator == space.session.creds.userId
+            $0.creator == matrix.creds.userId
         }
         let otherRooms = space.rooms.filter {
-            $0.creator != space.session.creds.userId
+            $0.creator != matrix.creds.userId
         }
         let N_MAX = 9
         let n = min(otherRooms.count, N_MAX)
