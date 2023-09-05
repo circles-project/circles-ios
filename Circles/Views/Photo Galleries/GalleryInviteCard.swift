@@ -50,8 +50,7 @@ struct GalleryInviteCard: View {
     var body: some View {
         VStack(alignment: .leading) {
                 
-            Image(uiImage: room.avatar ?? UIImage())
-                .resizable()
+            RoomAvatar(room: room, avatarText: .roomName)
                 .scaledToFill()
                 //.frame(width: 300, height: 300)
                 .clipShape(RoundedRectangle(cornerRadius: 6))

@@ -15,8 +15,7 @@ struct InvitedGroupCard: View {
     
     var body: some View {
         HStack(spacing: 1) {
-            Image(uiImage: room.avatar ?? UIImage())
-                .resizable()
+            RoomAvatar(room: room, avatarText: .roomInitials)
                 //.overlay(Circle().stroke(Color.primary, lineWidth: 2))
                 .scaledToFill()
                 .frame(width: 120, height: 120)

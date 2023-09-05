@@ -20,13 +20,12 @@ struct InvitedCircleDetailView: View {
                 Text("You have been invited to:")
                     .padding()
                 
-                Image(uiImage: room.avatar ?? UIImage())
-                    .resizable()
+                RoomAvatar(room: room, avatarText: .roomName)
                     .clipShape(Circle())
                     .overlay(Circle().stroke(Color.primary, lineWidth: 2))
                     .scaledToFit()
-                //.frame(width: 240, height: 240)
-                //.padding(-50)
+                    //.frame(width: 240, height: 240)
+                    //.padding(-50)
                 
                 Text(room.name ?? "(unnamed circle)")
                     .font(.largeTitle)
