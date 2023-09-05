@@ -155,6 +155,12 @@ struct CirclesForm: View {
             try await client.addSpaceChild(circleRoomId, to: myCircles)
         }
         
+        logger.debug("- Creating photo gallery [Photos]")
+        status = "Creating photo gallery"
+        try await Task.sleep(for: .seconds(1))
+        let photosGallery = try await client.createRoom(name: "Photos", type: ROOM_TYPE_PHOTOS)
+        try await client.addSpaceChild(photosGallery, to: myGalleries)
+        
         status = "All done!"
         await session.setAllDone()
     }
