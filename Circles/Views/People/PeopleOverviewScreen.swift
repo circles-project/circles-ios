@@ -57,25 +57,6 @@ struct PeopleOverviewScreen: View {
     }
     
     @ViewBuilder
-    var invitesSection: some View {
-        HStack {
-            Spacer()
-            
-            let invitations = profile.session.invitations.values.filter { room in
-                room.type == M_SPACE
-            }
-            
-            if !invitations.isEmpty {
-                NavigationLink(destination: PeopleInvitationsView(people: people)) {
-                    Label("\(invitations.count) invitation(s) to connect", systemImage: "envelope.open.fill")
-                }
-            }
-
-            Spacer()
-        }
-    }
-    
-    @ViewBuilder
     var contactsSection: some View {
         LazyVStack(alignment: .leading) {
             Text("MY CONNECTIONS")
@@ -190,7 +171,7 @@ struct PeopleOverviewScreen: View {
                     
                     meSection
                     
-                    invitesSection
+                    PeopleInvitationsIndicator(session: people.session, container: people)
                     
                     contactsSection
                     

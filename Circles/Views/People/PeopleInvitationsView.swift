@@ -9,13 +9,12 @@ import SwiftUI
 import Matrix
 
 struct PeopleInvitationsView: View {
-    //@ObservedObject var session: Matrix.Session
+    @ObservedObject var session: Matrix.Session
     @ObservedObject var people: ContainerRoom<Matrix.SpaceRoom>
     
     var body: some View {
         ScrollView {
             VStack {
-                let session = people.session
                 let invites = session.invitations.values.filter { $0.type == M_SPACE }
                 ForEach(invites) { invite in
                     let user = session.getUser(userId: invite.sender)
