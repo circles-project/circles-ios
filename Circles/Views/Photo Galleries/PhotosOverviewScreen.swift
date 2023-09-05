@@ -23,10 +23,10 @@ struct PhotosOverviewScreen: View {
     @ObservedObject var container: ContainerRoom<GalleryRoom>
     //@State var showCreationSheet = false
     
-    @EnvironmentObject var matrix: Matrix.Session
-
     @State var showConfirmLeave = false
     @State var roomToLeave: GalleryRoom?
+    
+    
     @State private var sheetType: PhotosSheetType? = nil
     
     var toolbarMenu: some View {
@@ -49,7 +49,7 @@ struct PhotosOverviewScreen: View {
     
     @ViewBuilder
     var baseLayer: some View {
-        let invitations = matrix.invitations.values.filter { $0.type == ROOM_TYPE_PHOTOS }
+        let invitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_PHOTOS }
         
         if !container.rooms.isEmpty || !invitations.isEmpty {
             ScrollView {

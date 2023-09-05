@@ -9,16 +9,16 @@ import SwiftUI
 import Matrix
 
 struct PeopleInvitationsView: View {
+    //@ObservedObject var session: Matrix.Session
     @ObservedObject var people: ContainerRoom<Matrix.SpaceRoom>
-    @EnvironmentObject var matrix: Matrix.Session
     
     var body: some View {
         ScrollView {
             VStack {
-                let invites = matrix.invitations.values.filter { $0.type == M_SPACE }
-                
+                let session = people.session
+                let invites = session.invitations.values.filter { $0.type == M_SPACE }
                 ForEach(invites) { invite in
-                    let user = matrix.getUser(userId: invite.sender)
+                    let user = session.getUser(userId: invite.sender)
 
                     HStack(alignment: .top) {
                         Image(uiImage: invite.avatar ?? user.avatar ?? UIImage(systemName: "person.circle")!)

@@ -11,9 +11,7 @@ import Matrix
 
 struct PersonHeaderRow: View {
     @ObservedObject var user: Matrix.User
-    @ObservedObject var profile: ProfileSpace
-    
-    @EnvironmentObject var matrix: Matrix.Session
+    var profile: ProfileSpace
     
     @State private var alertTitle: String = ""
     @State private var alertMessage: String = ""
@@ -98,15 +96,15 @@ struct PersonHeaderRow: View {
                           dismissButton: .default(Text("OK")))
                 }
             }
-            if matrix.ignoredUserIds.contains(user.userId) {
+            if user.session.ignoredUserIds.contains(user.userId) {
                 AsyncButton(action: {
-                    try await matrix.unignoreUser(userId: user.userId)
+                    try await user.session.unignoreUser(userId: user.userId)
                 }) {
                     Label("Un-ignore this user", systemImage: "person.wave.2.fill")
                 }
             } else {
                 AsyncButton(action: {
-                    try await matrix.ignoreUser(userId: user.userId)
+                    try await user.session.ignoreUser(userId: user.userId)
                 }) {
                     Label("Ignore this user", systemImage: "person.2.slash.fill")
                 }

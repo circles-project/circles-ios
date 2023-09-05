@@ -13,7 +13,7 @@ import Matrix
 
 struct PhotoGalleryCreationSheet: View {
     //@ObservedObject var store: KSStore
-    @ObservedObject var container: ContainerRoom<GalleryRoom>
+    var container: ContainerRoom<GalleryRoom>
     @Environment(\.presentationMode) var presentation
     
     @State private var galleryName: String = ""

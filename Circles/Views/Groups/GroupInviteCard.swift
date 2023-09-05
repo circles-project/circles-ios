@@ -13,7 +13,7 @@ import Matrix
 struct GroupInviteCard: View {
     @ObservedObject var room: Matrix.InvitedRoom
     @ObservedObject var user: Matrix.User
-    @ObservedObject var container: ContainerRoom<GroupRoom>
+    var container: ContainerRoom<GroupRoom>
     
     var body: some View {
         VStack(alignment: .center) {

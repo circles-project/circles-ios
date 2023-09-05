@@ -11,11 +11,9 @@ import Matrix
 
 struct PeopleOverviewScreen: View {
     @ObservedObject var people: ContainerRoom<Matrix.SpaceRoom>
-    @ObservedObject var profile: ProfileSpace
+    @ObservedObject var profile: ContainerRoom<Matrix.Room>
     @ObservedObject var circles: ContainerRoom<CircleSpace>
     @ObservedObject var groups: ContainerRoom<GroupRoom>
-    
-    @EnvironmentObject var matrix: Matrix.Session
     
     @State var following: [Matrix.User] = []
     @State var followers: [Matrix.User] = []
@@ -25,11 +23,13 @@ struct PeopleOverviewScreen: View {
     @ViewBuilder
     var meSection: some View {
         VStack(alignment: .leading) {
+            let matrix = people.session
+
             Text("ME")
                 .font(.subheadline)
                 .foregroundColor(.gray)
             Divider()
-            NavigationLink(destination: SelfDetailView(profile: profile, circles: circles)) {
+            NavigationLink(destination: SelfDetailView(matrix: matrix, profile: profile, circles: circles)) {
                 HStack(alignment: .top) {
                     Image(uiImage: matrix.avatar ?? UIImage(systemName: "person.crop.square")!)
                         .resizable()
@@ -61,7 +61,7 @@ struct PeopleOverviewScreen: View {
         HStack {
             Spacer()
             
-            let invitations = matrix.invitations.values.filter { room in
+            let invitations = profile.session.invitations.values.filter { room in
                 room.type == M_SPACE
             }
             
@@ -98,7 +98,7 @@ struct PeopleOverviewScreen: View {
                 }
             } else {
                 ForEach(people.rooms) { room in
-                    let user = matrix.getUser(userId: room.creator)
+                    let user = people.session.getUser(userId: room.creator)
                     
                     VStack(alignment: .leading) {
                         NavigationLink(destination: ConnectedPersonDetailView(space: room)) {
@@ -145,7 +145,7 @@ struct PeopleOverviewScreen: View {
                 $0.stringValue < $1.stringValue
             }
             following = sortedUserIds.compactMap { userId -> Matrix.User in
-                matrix.getUser(userId: userId)
+                circles.session.getUser(userId: userId)
             }
         }
     }
@@ -176,7 +176,7 @@ struct PeopleOverviewScreen: View {
                 $0.stringValue < $1.stringValue
             }
             followers = sortedUserIds.compactMap { userId -> Matrix.User in
-                matrix.getUser(userId: userId)
+                circles.session.getUser(userId: userId)
             }
         }
     }

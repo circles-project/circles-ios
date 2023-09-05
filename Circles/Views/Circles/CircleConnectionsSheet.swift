@@ -11,7 +11,6 @@ import Matrix
 
 struct CircleConnectionsSheet: View {
     @ObservedObject var space: CircleSpace
-    @EnvironmentObject var matrix: Matrix.Session
     @Environment(\.presentationMode) var presentation
     @State var roomToLeave: Matrix.Room? = nil
     @State var showConfirmLeave = false
@@ -51,7 +50,7 @@ struct CircleConnectionsSheet: View {
             List {
                 let rooms = space.rooms.filter { $0.roomId != space.wall?.roomId }
                 ForEach(rooms) { room in
-                    let user = matrix.getUser(userId: room.creator)
+                    let user = space.session.getUser(userId: room.creator)
                     //PersonsCircleRow(room: room)
                     HStack {
                         Image(uiImage: room.avatar ?? UIImage())

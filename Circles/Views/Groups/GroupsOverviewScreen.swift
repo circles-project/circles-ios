@@ -21,7 +21,6 @@ extension GroupsSheetType: Identifiable {
 
 struct GroupsOverviewScreen: View {
     @ObservedObject var container: ContainerRoom<GroupRoom>
-    @EnvironmentObject var matrix: Matrix.Session
     @State var sheetType: GroupsSheetType?
     @AppStorage("showGroupsHelpText") var showHelpText = true
     
@@ -42,12 +41,12 @@ struct GroupsOverviewScreen: View {
     
     @ViewBuilder
     var baseLayer: some View {
-        let groupInvitations = matrix.invitations.values.filter { $0.type == ROOM_TYPE_GROUP }
+        let groupInvitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_GROUP }
         
         if !container.rooms.isEmpty || !groupInvitations.isEmpty  {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    GroupInvitationsIndicator(container: container)
+                    GroupInvitationsIndicator(session: container.session, container: container)
                     
                     ForEach(container.rooms) { room in
                         NavigationLink(destination: GroupTimelineScreen(room: room)) {

@@ -87,7 +87,6 @@ struct CirclesTabbedInterface: View {
     var body: some View {
         ZStack {
             tabview
-                .environmentObject(session.matrix)
             
             UiaOverlayView(circles: session, matrix: session.matrix)
         }

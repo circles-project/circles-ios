@@ -14,7 +14,7 @@ import Matrix
 struct GalleryInviteCard: View {
     @ObservedObject var room: Matrix.InvitedRoom
     @ObservedObject var user: Matrix.User
-    @ObservedObject var container: ContainerRoom<GalleryRoom>
+    var container: ContainerRoom<GalleryRoom>
     
     @ViewBuilder
     var buttonRow: some View {
