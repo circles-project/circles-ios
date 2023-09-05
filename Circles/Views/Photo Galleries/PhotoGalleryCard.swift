@@ -39,7 +39,7 @@ struct PhotoGalleryCard: View {
     var body: some View {
         ZStack {
             
-            RoomAvatar(room: room, showDefaultAvatarText: false)
+            RoomAvatar(room: room, avatarText: .none)
                 .scaledToFill()
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 /*

@@ -10,34 +10,39 @@ import SwiftUI
 
 import Matrix
 
-struct RoomAvatar: View {
-    @ObservedObject var room: Matrix.Room
+struct RoomAvatar<Room>: View where Room: RoomAvatarInfo {
+    @ObservedObject var room: Room
     @Environment(\.colorScheme) var colorScheme
     
-    var showDefaultAvatarText: Bool
-    
+    var avatarText: AvatarText
     var textColor: Color {
         colorScheme == .dark
             ? Color.white
             : Color.black
     }
     
+    enum AvatarText: String {
+        case none
+        case roomName
+        case roomInitials
+    }
+    
     var body: some View {
-        GeometryReader { geometry in
-            ZStack {
-                if let img = room.avatar {
-                    Image(uiImage: img)
-                        .renderingMode(.original)
-                        .resizable()
-                        .scaledToFill()
-                        .clipShape(RoundedRectangle(cornerRadius: 6))
-                        .onAppear {
-                            // Fetch the avatar from the url
-                            room.updateAvatarImage()
-                        }
-                        .padding(3)
+        if let img = room.avatar {
+            Image(uiImage: img)
+                .renderingMode(.original)
+                .resizable()
+                .scaledToFill()
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+                .onAppear {
+                    // Fetch the avatar from the url
+                    room.updateAvatarImage()
                 }
-                else {
+                .padding(3)
+        }
+        else {
+            GeometryReader { geometry in
+                ZStack {
                     // Make the color choice pseudo-random, but fixed based on
                     // the room name instead of changing the color randomly
                     // each time the avatar is rendered.
@@ -62,18 +67,27 @@ struct RoomAvatar: View {
                         }
                         .padding(3)
 
-                    if showDefaultAvatarText,
+                    if avatarText != .none,
                        let name = room.name {
-                        let initials = name.split(whereSeparator: { $0.isWhitespace })
-                                           .compactMap({ $0.first?.uppercased() })
-                                           .joined()
-                        let location = CGPoint(x: 0.5 * geometry.size.width, y: 0.5 * geometry.size.height)
-                        
-                        Text(initials)
-                            .fontWeight(.bold)
-                            .foregroundColor(textColor)
-                            .position(x: location.x,
-                                      y: location.y)
+                        if avatarText == .roomInitials {
+                            let location = CGPoint(x: 0.5 * geometry.size.width, y: 0.5 * geometry.size.height)
+                            let initials = name.split(whereSeparator: { $0.isWhitespace })
+                                               .compactMap({ $0.first?.uppercased() })
+                                               .joined()
+                            
+                            Text(initials)
+                                .fontWeight(.bold)
+                                .foregroundColor(textColor)
+                                .position(x: location.x,
+                                          y: location.y)
+                        }
+                        else {
+                            Text(name)
+                                .font(.title)
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                                .shadow(color: .black, radius: 5)
+                        }
                     }
                 }
             }

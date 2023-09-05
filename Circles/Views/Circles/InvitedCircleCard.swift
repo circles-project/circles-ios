@@ -18,13 +18,12 @@ struct InvitedCircleCard: View {
     
     var body: some View {
         HStack(spacing: 1) {
-            Image(uiImage: room.avatar ?? UIImage())
-                .resizable()
-                .clipShape(Circle())
+            RoomAvatar(room: room, avatarText: .roomInitials)
                 //.overlay(Circle().stroke(Color.primary, lineWidth: 2))
-                .scaledToFit()
                 .frame(width: 180, height: 180)
+                .scaledToFit()
                 .padding(-20)
+                .clipShape(Circle())
             
             VStack(alignment: .leading) {
                 Text(room.name ?? "(unnamed circle)")
