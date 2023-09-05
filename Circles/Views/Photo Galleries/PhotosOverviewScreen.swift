@@ -54,17 +54,7 @@ struct PhotosOverviewScreen: View {
         if !container.rooms.isEmpty || !invitations.isEmpty {
             ScrollView {
                 VStack(alignment: .leading) {
-                    if !invitations.isEmpty {
-                        Text("INVITATIONS")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-                        
-                        NavigationLink(destination: GalleryInvitationsView(container: container)) {
-                            Label("\(invitations.count) invitation(s) to shared photo galleries", systemImage: "envelope.open.fill")
-                        }
-
-                        .padding()
-                    }
+                    GalleryInvitationsIndicator(session: container.session, container: container)
                     
                     Text("GALLERIES")
                         .font(.subheadline)
