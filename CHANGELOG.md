@@ -1,3 +1,10 @@
+# 0.5.2
+* Improved default avatar images for groups, circles, and photo galleries
+* Only moderators and admins can can send invites
+* Improved support for password managers
+* Create the first photo gallery when we set up the account
+* Various bug fixes
+
 # 0.5.1
 * Add ability to encrypt and upload videos and post them as m.video messages
 * Centered the Circle timeline
