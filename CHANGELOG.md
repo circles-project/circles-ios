@@ -1,3 +1,7 @@
+# 0.5.3
+* Improved support for redactions
+* Fixed compatibility problems for accounts created with Circles Android
+
 # 0.5.2
 * Improved default avatar images for groups, circles, and photo galleries
 * Only moderators and admins can can send invites
