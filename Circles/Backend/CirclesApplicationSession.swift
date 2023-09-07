@@ -52,6 +52,7 @@ class CirclesApplicationSession: ObservableObject {
         let roomIds = try await matrix.getJoinedRoomIds()
         for roomId in roomIds {
             tags[roomId] = try await matrix.getTags(roomId: roomId)
+            Matrix.logger.debug("\(roomId): \(tags[roomId]?.joined(separator: " ") ?? "(none)")")
         }
         
         guard let rootId: RoomId = roomIds.filter({
@@ -62,50 +63,77 @@ class CirclesApplicationSession: ObservableObject {
             }
         }).first
         else {
-            return nil
+            Matrix.logger.error("Couldn't find Circles space root")
+            throw CirclesError("Failed to find Circles space root")
         }
+        Matrix.logger.debug("Found Circles space root \(rootId)")
         
         let childRoomIds = try await matrix.getSpaceChildren(rootId)
         
-        guard
-            let circlesId: RoomId = childRoomIds.filter({
+        guard let circlesId: RoomId = childRoomIds.filter({
                 if let t = tags[$0] {
                     return t.contains(ROOM_TAG_MY_CIRCLES)
                 } else {
                     return false
                 }
-            }).first,
-            let groupsId: RoomId = childRoomIds.filter({
+            }).first
+        else {
+            Matrix.logger.error("Failed to find circles space")
+            throw CirclesError("Failed to find circles space")
+        }
+        Matrix.logger.debug("Found circles space \(circlesId)")
+                    
+        guard let groupsId: RoomId = childRoomIds.filter({
                 if let t = tags[$0] {
                     return t.contains(ROOM_TAG_MY_GROUPS)
                 } else {
                     return false
                 }
-            }).first,
-            let peopleId: RoomId = childRoomIds.filter({
-                if let t = tags[$0] {
-                    return t.contains(ROOM_TAG_MY_PEOPLE)
-                } else {
-                    return false
-                }
-            }).first,
-            let photosId: RoomId = childRoomIds.filter({
+            }).first
+        else {
+            Matrix.logger.error("Failed to find groups space")
+            throw CirclesError("Failed to find groups space")
+        }
+        Matrix.logger.debug("Found groups space \(groupsId)")
+        
+        guard let photosId: RoomId = childRoomIds.filter({
                 if let t = tags[$0] {
                     return t.contains(ROOM_TAG_MY_PHOTOS)
                 } else {
                     return false
                 }
-            }).first,
-            let profileId: RoomId = childRoomIds.filter({
-                if let t = tags[$0] {
-                    return t.contains(ROOM_TAG_MY_PROFILE)
-                } else {
-                    return false
-                }
             }).first
         else {
-            throw CirclesError("Failed to find space rooms")
+            Matrix.logger.error("Failed to find photos space")
+            throw CirclesError("Failed to find photos space")
         }
+        Matrix.logger.debug("Found photos space \(photosId)")
+        
+        // People and Profile space are a bit different - They might not exist in previous Circles Android versions
+        // So if we don't find them, it's ok.  Just create them now.
+        
+        func getSpaceId(tag: String, name: String) async throws -> RoomId {
+            if let existingProfileSpaceId = childRoomIds.filter({
+                    if let t = tags[$0] {
+                        return t.contains(tag)
+                    } else {
+                        return false
+                    }
+            }).first {
+                Matrix.logger.debug("Found space \(existingProfileSpaceId) with tag \(tag)")
+                return existingProfileSpaceId
+            }
+            else {
+                let newProfileSpaceId = try await matrix.createSpace(name: name)
+                try await matrix.addTag(roomId: newProfileSpaceId, tag: tag)
+                try await matrix.addSpaceChild(newProfileSpaceId, to: rootId)
+                return newProfileSpaceId
+            }
+        }
+        
+        let displayName = try await matrix.getDisplayName(userId: matrix.creds.userId) ?? matrix.creds.userId.stringValue
+        let profileId = try await getSpaceId(tag: ROOM_TAG_MY_PROFILE, name: displayName)
+        let peopleId = try await getSpaceId(tag: ROOM_TAG_MY_PEOPLE, name: "My People")
         
         let config = CirclesConfigContent(root: rootId,
                                           circles: circlesId,
