@@ -108,8 +108,12 @@ struct GalleryGridView: View {
             ScrollView {
                 
                 LazyVGrid(columns: columns, spacing: hSpacing) {
-                    ForEach(messages) { msg in
-                        PhotoThumbnailCard(message: msg, height: thumbnailSize, width: thumbnailSize)
+                    ForEach(messages) { message in
+                        // To handle event replacement (aka edits) we need to find the latest version of the message
+                        // * If there's a replacement, use that one
+                        // * Otherwise use the original one
+                        let currentMessage = message.replacement ?? message
+                        PhotoThumbnailCard(message: currentMessage, height: thumbnailSize, width: thumbnailSize)
                     }
                 }
             }
