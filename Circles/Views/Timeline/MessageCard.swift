@@ -43,7 +43,7 @@ struct ImageContentView: View {
     var body: some View {
         HStack {
             if let imageContent = message.content as? Matrix.mImageContent {
-                Spacer()
+                //Spacer()
                 VStack(alignment: .center) {
                     MessageThumbnail(message: message)
                     
@@ -52,7 +52,7 @@ struct ImageContentView: View {
                         Markdown(markdown)
                     }
                 }
-                Spacer()
+                //Spacer()
             } else {
                 EmptyView()
             }
@@ -447,7 +447,10 @@ struct MessageCard: MessageView {
     
     var mainCard: some View {
         
-        VStack(alignment: .leading, spacing: 2) {
+        let shadowColor: Color = message.mentionsMe ? .blue : .gray
+        let shadowRaduis: CGFloat = message.mentionsMe ? 3 : 2
+        
+        return VStack(alignment: .leading, spacing: 2) {
             
             MessageAuthorHeader(user: message.sender)
 
@@ -476,7 +479,7 @@ struct MessageCard: MessageView {
             RoundedRectangle(cornerRadius: 4)
                 //.foregroundColor(.init(light: .white, dark: .black))
                 .foregroundColor(.background)
-                .shadow(color: .gray, radius: 2, x: 0, y: 1)
+                .shadow(color: shadowColor, radius: shadowRaduis, x: 0, y: 0)
         )
 
     }
