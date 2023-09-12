@@ -62,16 +62,21 @@ struct CircleTimeline: View {
         VStack(alignment: .leading) {
             ScrollView {
                 LazyVStack(alignment: .center) {
-                    ForEach(messages) { msg in
+                    ForEach(messages) { message in
                         VStack(alignment: .leading) {
                             HStack {
-                                let index: Int = messages.firstIndex(of: msg)!
                                 if debugMode && showDebug {
+                                    let index: Int = messages.firstIndex(of: message)!
                                     Text("\(index)")
                                 }
-                                MessageCard(message: msg)
+                                
+                                // To handle message replacements (aka edits) we need to always display the latest version of the message
+                                // * If there's a replacement, show it
+                                // * Otherwise, show the original message
+                                let currentMessage = message.replacement ?? message
+                                MessageCard(message: currentMessage)
                             }
-                            RepliesView(room: msg.room, parent: msg)
+                            RepliesView(room: message.room, parent: message)
                         }
                     }
                     .padding([.top, .leading, .trailing], 3)
