@@ -447,7 +447,7 @@ struct MessageCard: MessageView {
     
     var mainCard: some View {
         
-        let shadowColor: Color = message.mentionsMe ? .blue : .gray
+        let shadowColor: Color = message.mentionsMe ? .accentColor : .gray
         let shadowRaduis: CGFloat = message.mentionsMe ? 3 : 2
         
         return VStack(alignment: .leading, spacing: 2) {
