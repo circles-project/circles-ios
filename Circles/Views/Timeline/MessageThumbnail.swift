@@ -20,7 +20,7 @@ struct MessageThumbnail: View {
             thumbnail
                 .resizable()
                 .scaledToFit()
-                .clipShape(RoundedRectangle(cornerRadius: 6))
+                //.clipShape(RoundedRectangle(cornerRadius: 6))
                 .foregroundColor(.gray)
         }
     }
