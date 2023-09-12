@@ -198,21 +198,6 @@ struct VideoContentView: View {
     } // end body
 }
 
-
-struct MessageTimestamp: View {
-    var message: Matrix.Message
-    
-    var body: some View {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .short
-        dateFormatter.timeStyle = .short
-        
-        return Text(dateFormatter.string(from: message.timestamp))
-            .font(.caption)
-            .foregroundColor(Color.gray)
-    }
-}
-
 struct MessageCard: MessageView {
     @ObservedObject var message: Matrix.Message
     var isLocalEcho = false
@@ -247,7 +232,13 @@ struct MessageCard: MessageView {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .short
-        return Text("\(message.timestamp, formatter: formatter)")
+        
+        let edited: String = message.relationType == M_REPLACE ? "Edited " : ""
+        let formattedTimestampString: String = formatter.string(from: message.timestamp)
+        
+        let text = edited + formattedTimestampString
+        
+        return Text(text)
             .font(.footnote)
             .foregroundColor(.gray)
     }
