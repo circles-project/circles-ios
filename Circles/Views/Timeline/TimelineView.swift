@@ -88,36 +88,25 @@ struct TimelineView<V: MessageView>: View {
                     }
                     
                     ForEach(messages) { message in
-                        if message.type == M_ROOM_MESSAGE {
-
+                        if message.type == M_ROOM_MESSAGE || message.type == M_ROOM_ENCRYPTED {
+                            
                             VStack(alignment: .leading) {
                                 
                                 // To handle event replacements, we need to get the latest version
                                 // * If there's a replacement of the original message, then that's the one we want
                                 // * sOtherwise we take the original
                                 let currentMessage = message.replacement ?? message
-
+                                
                                 V(message: currentMessage, isLocalEcho: false, isThreaded: false)
                                     .padding(.top, 5)
-                                    /*
-                                     .onAppear {
-                                     //print("INFINITE_SCROLL\tChecking to see if we need to paginate")
-                                     if msg == messages.last {
-                                     print("INFINITE_SCROLL\tPaginating room \(room.displayName ?? "Unnamed room") [\(room.id)]")
-                                     loading = true
-                                     room.paginate() { _ in
-                                     loading = false
-                                     }
-                                     }
-                                     }
-                                     */
-                                RepliesView(room: room, parent: message)
 
+                                RepliesView(room: room, parent: message)
+                                
                             }
                             .onAppear {
                                 message.loadReactions()
                             }
-                        } else {
+                        } else if debugMode && message.stateKey != nil {
                             StateEventView(message: message)
                         }
                     }
