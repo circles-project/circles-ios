@@ -37,32 +37,35 @@ struct WelcomeScreen: View {
     
     // Try to create a valid UserId from the given input string
     func suggestUserId(_ input: String) -> UserId? {
+        
+        let lower = input.lowercased()
+        
         // If we already have a valid UserId, let's just stick with that
-        if let userId = UserId(input) {
+        if let userId = UserId(lower) {
             return userId
         }
 
         // Case 1 - User just forgot the leading "@"
-        if !input.localizedStandardContains("@") {
+        if !lower.localizedStandardContains("@") {
             // Do we have a country code and a default domain?
             guard let countryCode = store.countryCode
             else {
                 // If no, then the best we can do is to add the @ and give it a shot
-                return UserId("@\(input)")
+                return UserId("@\(lower)")
             }
             
             let domain = store.getOurDomain(countryCode: countryCode)
             
-            if !input.contains(":") {
-                return UserId("@\(input):\(domain)")
+            if !lower.contains(":") {
+                return UserId("@\(lower):\(domain)")
             } else {
-                return UserId("@\(input)")
+                return UserId("@\(lower)")
             }
             
         }
         // Case 2 - User transposed their Matrix UserId into an email address
-        else if input.localizedStandardContains("@") && !input.starts(with: "@") {
-            let toks = input.split(separator: "@")
+        else if lower.localizedStandardContains("@") && !lower.starts(with: "@") {
+            let toks = lower.split(separator: "@")
             guard toks.count == 2,
                   let userpart = toks.first,
                   let domainAndPort = toks.last
