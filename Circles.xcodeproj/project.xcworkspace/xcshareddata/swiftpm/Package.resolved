@@ -1,0 +1,131 @@
+{
+  "pins" : [
+    {
+      "identity" : "anycodable",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Flight-School/AnyCodable",
+      "state" : {
+        "revision" : "862808b2070cd908cb04f9aafe7de83d35f81b05",
+        "version" : "0.6.7"
+      }
+    },
+    {
+      "identity" : "asn1swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tikhop/ASN1Swift",
+      "state" : {
+        "revision" : "b53bee03a942623db25afc5bfb80227b2cb3b425",
+        "version" : "1.2.4"
+      }
+    },
+    {
+      "identity" : "blindsaltspeke",
+      "kind" : "remoteSourceControl",
+      "location" : "https://gitlab.futo.org/cvwright/BlindSaltSpeke.git",
+      "state" : {
+        "revision" : "abff6268f076aeef190f67e978bf27094304ef62",
+        "version" : "0.4.2"
+      }
+    },
+    {
+      "identity" : "cbsspeke",
+      "kind" : "remoteSourceControl",
+      "location" : "https://gitlab.futo.org/cvwright/Cbsspeke.git",
+      "state" : {
+        "revision" : "3ae70a0f7b2e314fcef55eb8d0f589a1458d7e2e",
+        "version" : "0.4.2"
+      }
+    },
+    {
+      "identity" : "grdb.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/groue/GRDB.swift.git",
+      "state" : {
+        "revision" : "dd7e7f39e8e4d7a22d258d9809a882f914690b01",
+        "version" : "5.26.1"
+      }
+    },
+    {
+      "identity" : "idzswiftcommoncrypto",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/iosdevzone/IDZSwiftCommonCrypto.git",
+      "state" : {
+        "revision" : "d824371e670bd57eb456bbc41139b4997f7207b8",
+        "version" : "0.13.1"
+      }
+    },
+    {
+      "identity" : "keyboardkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/KeyboardKit/KeyboardKit",
+      "state" : {
+        "revision" : "e28e929e92ce9945f7e1a61acc8ba93a4d08a723",
+        "version" : "7.7.1"
+      }
+    },
+    {
+      "identity" : "keychainaccess",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kishikawakatsumi/KeychainAccess",
+      "state" : {
+        "revision" : "84e546727d66f1adc5439debad16270d0fdd04e7",
+        "version" : "4.2.2"
+      }
+    },
+    {
+      "identity" : "matrix.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://gitlab.futo.org/circles/matrix.swift.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "61039958ca63d844e5515acca78b393e79bdf72b"
+      }
+    },
+    {
+      "identity" : "matrixsdkcrypto",
+      "kind" : "remoteSourceControl",
+      "location" : "https://gitlab.futo.org/circles/MatrixSDKCrypto.git",
+      "state" : {
+        "revision" : "78665ec89f4051e49fcac4a851ca8935267a49c3",
+        "version" : "0.3.12"
+      }
+    },
+    {
+      "identity" : "sqlite.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stephencelis/SQLite.swift.git",
+      "state" : {
+        "revision" : "7a2e3cd27de56f6d396e84f63beefd0267b55ccb",
+        "version" : "0.14.1"
+      }
+    },
+    {
+      "identity" : "swift-collections",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-collections.git",
+      "state" : {
+        "branch" : "release/1.1",
+        "revision" : "873690c60e35d647e10b0d0d69799abae2001234"
+      }
+    },
+    {
+      "identity" : "swift-markdown-ui",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/gonzalezreal/swift-markdown-ui",
+      "state" : {
+        "revision" : "12b351a75201a8124c2f2e1f9fc6ef5cd812c0b9",
+        "version" : "2.1.0"
+      }
+    },
+    {
+      "identity" : "tpinappreceipt",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tikhop/TPInAppReceipt",
+      "state" : {
+        "revision" : "5b830d6ce6c34bb4bb976917576ab560e7945037",
+        "version" : "3.3.4"
+      }
+    }
+  ],
+  "version" : 2
+}

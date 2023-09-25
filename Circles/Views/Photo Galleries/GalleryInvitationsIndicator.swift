@@ -14,10 +14,10 @@ struct GalleryInvitationsIndicator: View {
     @ObservedObject var session: Matrix.Session
     var container: ContainerRoom<GalleryRoom>
     
+    @State var invitations: [Matrix.InvitedRoom] = []
+    
     var body: some View {
         VStack(alignment: .leading) {
-            let invitations = session.invitations.values.filter { $0.type == ROOM_TYPE_PHOTOS }
-            
             if !invitations.isEmpty {
                 Text("INVITATIONS")
                     .font(.subheadline)
@@ -29,6 +29,9 @@ struct GalleryInvitationsIndicator: View {
 
                 .padding()
             }
+        }
+        .onAppear {
+            invitations = session.invitations.values.filter { $0.type == ROOM_TYPE_PHOTOS }
         }
     }
 }
