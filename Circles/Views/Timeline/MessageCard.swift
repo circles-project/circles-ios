@@ -269,60 +269,45 @@ struct MessageCard: MessageView {
                     ImageContentView(message: message)
                     
                 case M_VIDEO:
-                    /*
-                    if let videoContent = content as? Matrix.mVideoContent {
-                        ZStack(alignment: .center) {
-                            MessageThumbnail(message: message)
-                            Image(systemName: "play.circle")
-                        }
-                        .frame(minWidth: 200, maxWidth: 400, minHeight: 200, maxHeight: 500, alignment: .center)
-                    } else {
-                        EmptyView()
-                    }
-                    */
                     VideoContentView(message: message)
+                    
                 default:
-                    if message.type == "m.room.encrypted" {
-                        ZStack {
-                            let bgColor = colorScheme == .dark ? Color.black : Color.white
-                            Image(systemName: "lock.rectangle")
-                                .resizable()
-                                .foregroundColor(Color.gray)
-                                .scaledToFit()
-                                .padding()
-                            VStack {
-                                Text("ERROR")
-                                    .font(.title)
-                                    .fontWeight(.bold)
-                                Text("Failed to decrypt message")
-                                    .font(.title2)
-                                    .fontWeight(.semibold)
-                                Text("Message id: \(message.id)")
-                                    .font(.footnote)
-                            }
-                            .foregroundColor(.red)
-                            .multilineTextAlignment(.center)
-                            .background(
-                                bgColor
-                                    .opacity(0.5)
-                            )
+                    Text("This version of Circles can't display this message yet (\"\(message.type)\")")
+                        .foregroundColor(.red)
+                
+                } // end switch
+                
+            } else if message.type == M_ROOM_ENCRYPTED {
+                VStack {
+                    let bgColor = colorScheme == .dark ? Color.black : Color.white
+                    Image(systemName: "lock.rectangle")
+                        .resizable()
+                        .foregroundColor(Color.gray)
+                        .scaledToFit()
+                        .padding()
+                    VStack {
+                        Label("Could not to decrypt message", systemImage: "exclamationmark.triangle")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                        if debugMode {
+                            Text("Message id: \(message.id)")
+                                .font(.footnote)
                         }
-                        /*
-                         .onAppear {
-                         print("Trying to decrypt...")
-                         message.matrix.tryToDecrypt(message: message) { response in
-                         if response.isSuccess {
-                         message.objectWillChange.send()
-                         }
-                         }
-                         }
-                         */
                     }
-                    else {
-                        Text("This version of Circles can't display this message yet (\"\(message.type)\")")
-                            .foregroundColor(.red)
-                    }
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.gray)
+                    .background(
+                        bgColor
+                            .opacity(0.5)
+                    )
+                    .padding(.bottom, 2)
                 }
+                 .onAppear {
+                     print("Trying to decrypt message \(message.eventId) ...")
+                     Task {
+                         try await message.decrypt()
+                     }
+                 }
             } else {
                 Text("Something went wrong.  Circles failed to parse a message of type \"\(message.type)\".")
                     .foregroundColor(.red)
