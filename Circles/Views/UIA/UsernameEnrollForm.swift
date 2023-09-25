@@ -26,7 +26,7 @@ struct UsernameEnrollForm: View {
 
             TextField("Username", text: $username, prompt: Text("username"))
                 .textContentType(.username)
-                .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
+                .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .frame(width: 300.0, height: 40.0)
             
