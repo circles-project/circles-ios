@@ -14,12 +14,12 @@ struct PeopleInvitationsIndicator: View {
     @ObservedObject var session: Matrix.Session
     var container: ContainerRoom<Matrix.SpaceRoom>
     
+    @State var invitations: [Matrix.InvitedRoom] = []
+    
     var body: some View {
         HStack {
             Spacer()
             
-            let invitations = session.invitations.values.filter { $0.type == M_SPACE }
-
             if !invitations.isEmpty {
                 NavigationLink(destination: PeopleInvitationsView(session: session, people: container)) {
                     Label("\(invitations.count) invitation(s) to connect", systemImage: "envelope.open.fill")
@@ -27,6 +27,9 @@ struct PeopleInvitationsIndicator: View {
             }
             
             Spacer()
+        }
+        .onAppear {
+            invitations = session.invitations.values.filter { $0.type == M_SPACE }
         }
     }
 }

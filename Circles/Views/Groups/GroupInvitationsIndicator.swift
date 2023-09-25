@@ -13,15 +13,19 @@ struct GroupInvitationsIndicator: View {
     @ObservedObject var session: Matrix.Session
     var container: ContainerRoom<GroupRoom>
     
+    @State var invitations: [Matrix.InvitedRoom] = []
+    
     var body: some View {
         VStack {
-            let circleInvitations = session.invitations.values.filter { $0.type == ROOM_TYPE_GROUP }
-            if circleInvitations.count > 0 {
+            if invitations.count > 0 {
                 NavigationLink(destination: GroupInvitationsView(session: session, container: container)) {
-                    Text("You have \(circleInvitations.count) pending invitation(s)")
+                    Text("You have \(invitations.count) pending invitation(s)")
                 }
                 .padding()
             }
+        }
+        .onAppear {
+            invitations = session.invitations.values.filter { $0.type == ROOM_TYPE_GROUP }
         }
     }
 }
