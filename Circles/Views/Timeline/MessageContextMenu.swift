@@ -90,18 +90,19 @@ struct MessageContextMenu: View {
             }
         }
         
-        Menu {
-            AsyncButton(action: {
-                try await message.room.redact(eventId: message.eventId,
-                                              reason: "Deleted by \(message.room.session.whoAmI())")
-            }) {
+        if message.iCanRedact {
+            Menu {
+                AsyncButton(action: {
+                    try await message.room.redact(eventId: message.eventId,
+                                                  reason: "Deleted by \(message.room.session.whoAmI())")
+                }) {
+                    Label("Delete", systemImage: "trash")
+                }
+                .foregroundColor(.red)
+                
+            } label: {
                 Label("Delete", systemImage: "trash")
             }
-            .disabled(!message.room.iCanRedact)
-            .foregroundColor(.red)
-
-        } label: {
-            Label("Delete", systemImage: "trash")
         }
     }
 

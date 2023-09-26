@@ -31,16 +31,11 @@ struct PhotosOverviewScreen: View {
     
     var toolbarMenu: some View {
         Menu {
-            Button(action: {}) {
-                Label("Settings", systemImage: "gearshape")
-            }
-            
             Button(action: {
                 self.sheetType = .create
             }) {
                 Label("New Gallery", systemImage: "plus")
             }
-
         }
         label: {
             Label("More", systemImage: "ellipsis.circle")
