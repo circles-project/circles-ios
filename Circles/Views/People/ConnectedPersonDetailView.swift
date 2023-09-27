@@ -128,9 +128,7 @@ struct ConnectedPersonDetailView: View {
         .onAppear {
             // Hit the Homeserver to make sure we have the latest
             //user.matrix.getDisplayName(userId: user.id) { _ in }
-            let _ = Task {
-                try await user.refreshProfile()
-            }
+                user.refreshProfile()
         }
     }
 }
