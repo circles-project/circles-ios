@@ -309,6 +309,14 @@ struct RoomMessageComposer: View {
                             .resizable()
                             .scaledToFit()
                             .clipShape(RoundedRectangle(cornerRadius: 6))
+                            .overlay(alignment: .bottomTrailing) {
+                                PhotosPicker(selection: $selectedItem, matching: .images) {
+                                    Image(systemName: "pencil.circle.fill")
+                                        .symbolRenderingMode(.multicolor)
+                                        .font(.system(size: 30))
+                                        .foregroundColor(.accentColor)
+                                }
+                            }
                         TextEditor(text: $newMessageText)
                             .lineLimit(2)
                             .multilineTextAlignment(.leading)
@@ -321,6 +329,14 @@ struct RoomMessageComposer: View {
                             .resizable()
                             .scaledToFit()
                             .clipShape(RoundedRectangle(cornerRadius: 6))
+                            .overlay(alignment: .bottomTrailing) {
+                                PhotosPicker(selection: $selectedItem, matching: .videos) {
+                                    Image(systemName: "pencil.circle.fill")
+                                        .symbolRenderingMode(.multicolor)
+                                        .font(.system(size: 30))
+                                        .foregroundColor(.accentColor)
+                                }
+                            }
                         TextEditor(text: $newMessageText)
                             .lineLimit(2)
                             .multilineTextAlignment(.leading)
@@ -334,6 +350,14 @@ struct RoomMessageComposer: View {
                                 .resizable()
                                 .scaledToFit()
                                 .clipShape(RoundedRectangle(cornerRadius: 6))
+                                .overlay(alignment: .bottomTrailing) {
+                                    PhotosPicker(selection: $selectedItem, matching: .images) {
+                                        Image(systemName: "pencil.circle.fill")
+                                            .symbolRenderingMode(.multicolor)
+                                            .font(.system(size: 30))
+                                            .foregroundColor(.accentColor)
+                                    }
+                                }
                         } else {
                             ZStack {
                                 Image(systemName: "photo.artframe")
@@ -361,6 +385,14 @@ struct RoomMessageComposer: View {
                                         }
                                     }
                             }
+                            .overlay(alignment: .bottomTrailing) {
+                                PhotosPicker(selection: $selectedItem, matching: .images) {
+                                    Image(systemName: "pencil.circle.fill")
+                                        .symbolRenderingMode(.multicolor)
+                                        .font(.system(size: 30))
+                                        .foregroundColor(.accentColor)
+                                }
+                            }
                         }
                         TextEditor(text: $newMessageText)
                             .lineLimit(2)
@@ -375,6 +407,14 @@ struct RoomMessageComposer: View {
                                 .resizable()
                                 .scaledToFit()
                                 .clipShape(RoundedRectangle(cornerRadius: 6))
+                                .overlay(alignment: .bottomTrailing) {
+                                    PhotosPicker(selection: $selectedItem, matching: .videos) {
+                                        Image(systemName: "pencil.circle.fill")
+                                            .symbolRenderingMode(.multicolor)
+                                            .font(.system(size: 30))
+                                            .foregroundColor(.accentColor)
+                                    }
+                                }
                         } else {
                             ZStack {
                                 Image(systemName: "photo.artframe")
@@ -401,6 +441,14 @@ struct RoomMessageComposer: View {
                                             }
                                         }
                                     }
+                            }
+                            .overlay(alignment: .bottomTrailing) {
+                                PhotosPicker(selection: $selectedItem, matching: .videos) {
+                                    Image(systemName: "pencil.circle.fill")
+                                        .symbolRenderingMode(.multicolor)
+                                        .font(.system(size: 30))
+                                        .foregroundColor(.accentColor)
+                                }
                             }
                         }
                         TextEditor(text: $newMessageText)
