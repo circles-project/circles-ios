@@ -15,7 +15,6 @@ struct TimelineView<V: MessageView>: View {
     @State var debug = false
     @State var loading = false
     @State var selectedMessage: Matrix.Message?
-    @State var sheetType: TimelineSheetType?
     
     var footer: some View {
         VStack(alignment: .center) {

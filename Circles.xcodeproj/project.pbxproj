@@ -26,7 +26,6 @@
 		40878FBC268E4D9000A66EF0 /* AppStoreInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40878FBB268E4D9000A66EF0 /* AppStoreInterface.swift */; };
 		40878FC72694C00000A66EF0 /* MessageContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40878FC62694C00000A66EF0 /* MessageContextMenu.swift */; };
 		40878FCA2694DBC400A66EF0 /* MessageComposerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40878FC92694DBC400A66EF0 /* MessageComposerSheet.swift */; };
-		40878FCD2696198500A66EF0 /* TimelineSheetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40878FCC2696198500A66EF0 /* TimelineSheetType.swift */; };
 		409F42E3265DE00700690A61 /* Array+Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F42E2265DE00700690A61 /* Array+Sample.swift */; };
 		409F42E6265DE03B00690A61 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F42E5265DE03B00690A61 /* Utils.swift */; };
 		409F42E9265DE06C00690A61 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F42E8265DE06C00690A61 /* WebView.swift */; };
@@ -195,7 +194,6 @@
 		40878FBB268E4D9000A66EF0 /* AppStoreInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreInterface.swift; sourceTree = "<group>"; };
 		40878FC62694C00000A66EF0 /* MessageContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageContextMenu.swift; sourceTree = "<group>"; };
 		40878FC92694DBC400A66EF0 /* MessageComposerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageComposerSheet.swift; sourceTree = "<group>"; };
-		40878FCC2696198500A66EF0 /* TimelineSheetType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineSheetType.swift; sourceTree = "<group>"; };
 		409F42E2265DE00700690A61 /* Array+Sample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Sample.swift"; sourceTree = "<group>"; };
 		409F42E5265DE03B00690A61 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		409F42E8265DE06C00690A61 /* WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
@@ -584,7 +582,6 @@
 				4073E7C3267915AF001A80CF /* RepliesView.swift */,
 				409F4384265DE2A400690A61 /* RoomMessageComposer.swift */,
 				409F438A265DE2C200690A61 /* CircleTimeline.swift */,
-				40878FCC2696198500A66EF0 /* TimelineSheetType.swift */,
 				409F4392265DE2DE00690A61 /* TimelineView.swift */,
 				A52DF68229E59C32008860C3 /* StateEventView.swift */,
 				A52DF68929E8868C008860C3 /* MessageView.swift */,
@@ -886,7 +883,6 @@
 				A54346C92A3BB5BB0025D147 /* PhotoThumbnailCard.swift in Sources */,
 				409F42E3265DE00700690A61 /* Array+Sample.swift in Sources */,
 				A5D3C9C22A708F1300B41CC0 /* DBMatcher.m in Sources */,
-				40878FCD2696198500A66EF0 /* TimelineSheetType.swift in Sources */,
 				409F436D265DE24000690A61 /* PeopleOverviewScreen.swift in Sources */,
 				A5D2A3F629C0EED700428C45 /* Sequence+asyncMap.swift in Sources */,
 				40878FBC268E4D9000A66EF0 /* AppStoreInterface.swift in Sources */,
@@ -1236,7 +1232,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://gitlab.futo.org/circles/matrix.swift.git";
 			requirement = {
-				branch = main;
+				branch = "cvwright/feat-new-image-type";
 				kind = branch;
 			};
 		};
