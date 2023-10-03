@@ -8,7 +8,8 @@
 import Foundation
 
 enum MessageSheetType: String {
-    case composer
+    case reply
+    case edit
     case reactions
     case reporting
 }

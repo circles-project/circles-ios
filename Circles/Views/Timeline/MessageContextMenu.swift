@@ -90,6 +90,14 @@ struct MessageContextMenu: View {
             }
         }
         
+        if message.sender.userId == message.room.session.creds.userId {
+            Button(action: {
+                self.sheetType = .edit
+            }) {
+                Label("Edit", systemImage: "pencil")
+            }
+        }
+        
         if message.iCanRedact {
             Menu {
                 AsyncButton(action: {

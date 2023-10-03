@@ -348,7 +348,7 @@ struct MessageCard: MessageView {
 
     var replyButton: some View {
         Button(action: {
-            self.sheetType = .composer
+            self.sheetType = .reply
         }) {
             //Label("Reply", systemImage: "bubble.right")
             Image(systemName: "bubble.right")
@@ -493,8 +493,11 @@ struct MessageCard: MessageView {
             .sheet(item: $sheetType) { st in
                 switch(st) {
 
-                case .composer:
+                case .reply:
                     MessageComposerSheet(room: message.room, parentMessage: message, galleries: galleries)
+                    
+                case .edit:
+                    MessageComposerSheet(room: message.room, editingMessage: message, galleries: galleries)
 
                 case .reactions:
                     EmojiPicker(message: message)
