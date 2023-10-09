@@ -8,6 +8,7 @@
 import SwiftUI
 import UIKit
 import CoreImage
+import CoreImage.CIFilterBuiltins
 import Matrix
 
 struct SelfDetailView: View {
@@ -23,22 +24,44 @@ struct SelfDetailView: View {
         }
         print("Generating QR code for \(data.count) bytes")
         
-        if let filter = CIFilter(name: "CIQRCodeGenerator") {
-            filter.setValue(data, forKey: "inputMessage")
-            filter.setValue("Q", forKey: "inputCorrectionLevel")
-            let transform = CGAffineTransform(scaleX: 10, y: 10)
+        let filter = CIFilter.qrCodeGenerator()
+        filter.setValue(data, forKey: "inputMessage")
+        //filter.setValue("Q", forKey: "inputCorrectionLevel")
 
 
-            if let outputImage = filter.outputImage {
-                let transformedImage = outputImage.transformed(by: transform)
-                //return UIImage(ciImage: outputImage)
-                return UIImage(ciImage: transformedImage)
+        if let result = filter.outputImage {
+            let context = CIContext()
+            /*
+            if let outputImage = context.createCGImage(result, from: result.extent) {
+                let ui = UIImage(cgImage: outputImage)
+                print("QR code image is \(ui.size.height) x \(ui.size.width)")
+                return ui
             } else {
-                print("Failed to generate QR image")
+                print("Failed to create UIImage from output image")
+                return nil
             }
+            */
+            
+            // Scale up the QR code by a factor of 10x
+            let transform = CGAffineTransform(scaleX: 10, y: 10)
+            let transformedImage = result.transformed(by: transform)
+            
+            // For whatever reason, we MUST convert to a CGImage here, using the CIContext.
+            // If we do not do this (eg by trying to create a UIImage directly from the CIImage),
+            // then we get nothing but a blank square for our QR code. :(
+            if let cgImg = context.createCGImage(transformedImage, from: transformedImage.extent) {
+                let ui = UIImage(cgImage: cgImg)
+                //print("QR code image is \(ui.size.height) x \(ui.size.width)")
+                return ui
+            } else {
+                print("Failed to create UIImage from transformed image")
+                return nil
+            }
+            
         } else {
-            print("Failed to initialize CIFilter for QR code")
+            print("Failed to generate QR image")
         }
+
 
         return nil
     }
@@ -64,17 +87,15 @@ struct SelfDetailView: View {
                             .font(.subheadline)
                             .foregroundColor(.gray)
                         
-                        /*
                          if let qr = self.generateQRCode() {
-                         Image(uiImage: qr)
-                         //.resizable()
-                         //.scaledToFit()
-                         //.frame(width: 120, height: 120)
-                         .border(Color.red)
+                             Image(uiImage: qr)
+                                //.resizable()
+                                //.scaledToFit()
+                                //.frame(width: 120, height: 120)
+                                .border(Color.red)
                          } else {
-                         Text("🙁")
+                             Text("🙁 Failed to generate QR code")
                          }
-                         */
                     }
                     Spacer()
                 }
