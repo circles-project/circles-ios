@@ -24,24 +24,12 @@ struct SelfDetailView: View {
         }
         print("Generating QR code for \(data.count) bytes")
         
+        // https://developer.apple.com/documentation/coreimage/ciqrcodegenerator
         let filter = CIFilter.qrCodeGenerator()
         filter.setValue(data, forKey: "inputMessage")
-        //filter.setValue("Q", forKey: "inputCorrectionLevel")
-
+        filter.setValue("Q", forKey: "inputCorrectionLevel") // 25%
 
         if let result = filter.outputImage {
-            let context = CIContext()
-            /*
-            if let outputImage = context.createCGImage(result, from: result.extent) {
-                let ui = UIImage(cgImage: outputImage)
-                print("QR code image is \(ui.size.height) x \(ui.size.width)")
-                return ui
-            } else {
-                print("Failed to create UIImage from output image")
-                return nil
-            }
-            */
-            
             // Scale up the QR code by a factor of 10x
             let transform = CGAffineTransform(scaleX: 10, y: 10)
             let transformedImage = result.transformed(by: transform)
@@ -49,6 +37,7 @@ struct SelfDetailView: View {
             // For whatever reason, we MUST convert to a CGImage here, using the CIContext.
             // If we do not do this (eg by trying to create a UIImage directly from the CIImage),
             // then we get nothing but a blank square for our QR code. :(
+            let context = CIContext()
             if let cgImg = context.createCGImage(transformedImage, from: transformedImage.extent) {
                 let ui = UIImage(cgImage: cgImg)
                 //print("QR code image is \(ui.size.height) x \(ui.size.width)")
