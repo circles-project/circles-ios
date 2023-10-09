@@ -16,45 +16,6 @@ struct SelfDetailView: View {
     @ObservedObject var profile: ContainerRoom<Matrix.Room>
     @ObservedObject var circles: ContainerRoom<CircleSpace>
     
-    func generateQRCode() -> UIImage? {
-        guard let data = profile.roomId.stringValue.data(using: String.Encoding.ascii)
-        else {
-            print("Failed to get UTF-8 data")
-            return nil
-        }
-        print("Generating QR code for \(data.count) bytes")
-        
-        // https://developer.apple.com/documentation/coreimage/ciqrcodegenerator
-        let filter = CIFilter.qrCodeGenerator()
-        filter.setValue(data, forKey: "inputMessage")
-        filter.setValue("Q", forKey: "inputCorrectionLevel") // 25%
-
-        if let result = filter.outputImage {
-            // Scale up the QR code by a factor of 10x
-            let transform = CGAffineTransform(scaleX: 10, y: 10)
-            let transformedImage = result.transformed(by: transform)
-            
-            // For whatever reason, we MUST convert to a CGImage here, using the CIContext.
-            // If we do not do this (eg by trying to create a UIImage directly from the CIImage),
-            // then we get nothing but a blank square for our QR code. :(
-            let context = CIContext()
-            if let cgImg = context.createCGImage(transformedImage, from: transformedImage.extent) {
-                let ui = UIImage(cgImage: cgImg)
-                //print("QR code image is \(ui.size.height) x \(ui.size.width)")
-                return ui
-            } else {
-                print("Failed to create UIImage from transformed image")
-                return nil
-            }
-            
-        } else {
-            print("Failed to generate QR image")
-        }
-
-
-        return nil
-    }
-    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
@@ -76,7 +37,7 @@ struct SelfDetailView: View {
                             .font(.subheadline)
                             .foregroundColor(.gray)
                         
-                         if let qr = self.generateQRCode() {
+                        if let qr = profile.qrImage {
                              Image(uiImage: qr)
                                 //.resizable()
                                 //.scaledToFit()
