@@ -8,40 +8,13 @@
 import SwiftUI
 import UIKit
 import CoreImage
+import CoreImage.CIFilterBuiltins
 import Matrix
 
 struct SelfDetailView: View {
     @ObservedObject var matrix: Matrix.Session
     @ObservedObject var profile: ContainerRoom<Matrix.Room>
     @ObservedObject var circles: ContainerRoom<CircleSpace>
-    
-    func generateQRCode() -> UIImage? {
-        guard let data = profile.roomId.stringValue.data(using: String.Encoding.ascii)
-        else {
-            print("Failed to get UTF-8 data")
-            return nil
-        }
-        print("Generating QR code for \(data.count) bytes")
-        
-        if let filter = CIFilter(name: "CIQRCodeGenerator") {
-            filter.setValue(data, forKey: "inputMessage")
-            filter.setValue("Q", forKey: "inputCorrectionLevel")
-            let transform = CGAffineTransform(scaleX: 10, y: 10)
-
-
-            if let outputImage = filter.outputImage {
-                let transformedImage = outputImage.transformed(by: transform)
-                //return UIImage(ciImage: outputImage)
-                return UIImage(ciImage: transformedImage)
-            } else {
-                print("Failed to generate QR image")
-            }
-        } else {
-            print("Failed to initialize CIFilter for QR code")
-        }
-
-        return nil
-    }
     
     var body: some View {
         ScrollView {
@@ -64,17 +37,15 @@ struct SelfDetailView: View {
                             .font(.subheadline)
                             .foregroundColor(.gray)
                         
-                        /*
-                         if let qr = self.generateQRCode() {
-                         Image(uiImage: qr)
-                         //.resizable()
-                         //.scaledToFit()
-                         //.frame(width: 120, height: 120)
-                         .border(Color.red)
+                        if let qr = profile.qrImage {
+                             Image(uiImage: qr)
+                                //.resizable()
+                                //.scaledToFit()
+                                //.frame(width: 120, height: 120)
+                                .border(Color.red)
                          } else {
-                         Text("🙁")
+                             Text("🙁 Failed to generate QR code")
                          }
-                         */
                     }
                     Spacer()
                 }
