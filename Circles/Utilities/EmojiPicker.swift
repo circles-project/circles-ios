@@ -31,32 +31,19 @@ struct EmojiPicker: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading) {
-            buttonBar
-            Divider()
-
-            Picker("Select Category: \(selectedCategory.title)", selection: $selectedCategory) {
-                ForEach(categories) { category in
-                    Text(category.title)
-                        .tag(category)
-                }
-            }
-            .pickerStyle(MenuPickerStyle())
-
-            ScrollView {
-                let columns: [GridItem] =
-                        Array(repeating: .init(.flexible()), count: 6)
-
-
-                LazyVGrid(columns: columns) {
-
-                    let emojis: [Emoji] = selectedCategory.emojis
-                    let reactions = emojis.map { $0.char }
-
-                    ForEach(reactions, id: \.self) { reaction in
-                        //let reaction: String = emoji.char
+        ScrollView {
+            VStack(alignment: .leading) {
+                buttonBar
+                
+                // Quick reactions
+                Text("QUICK REACTIONS")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                HStack {
+                    let emojis = ["👍", "👎", "😀", "😢", "❤️", "🎉", "🔥"]
+                    ForEach(emojis, id: \.self) { emoji in
                         AsyncButton(action: {
-                            guard let reactionEventId = try? await self.message.sendReaction(reaction)
+                            guard let reactionEventId = try? await self.message.sendReaction(emoji)
                             else {
                                 // FIXME: Set some error message
                                 return
@@ -64,13 +51,52 @@ struct EmojiPicker: View {
                             
                             // Log that we've used this emoji
                             let provider = MostRecentEmojiProvider()
-                            provider.registerEmoji(Emoji(reaction))
+                            provider.registerEmoji(Emoji(emoji))
 
                             self.presentation.wrappedValue.dismiss()
                         }) {
-                            Text(reaction)
+                            Text(emoji)
                                 .font(.title)
                                 .padding(3)
+                        }
+                    }
+                }
+            
+                let columns: [GridItem] =
+                        Array(repeating: .init(.flexible()), count: 6)
+
+                ForEach(categories) { category in
+                    
+                    Divider()
+
+                    Text(category.title.uppercased())
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                    
+                    LazyVGrid(columns: columns) {
+                        
+                        let emojis: [Emoji] = category.emojis
+                        let reactions = emojis.map { $0.char }
+                        
+                        ForEach(reactions, id: \.self) { reaction in
+                            //let reaction: String = emoji.char
+                            AsyncButton(action: {
+                                guard let reactionEventId = try? await self.message.sendReaction(reaction)
+                                else {
+                                    // FIXME: Set some error message
+                                    return
+                                }
+                                
+                                // Log that we've used this emoji
+                                let provider = MostRecentEmojiProvider()
+                                provider.registerEmoji(Emoji(reaction))
+                                
+                                self.presentation.wrappedValue.dismiss()
+                            }) {
+                                Text(reaction)
+                                    .font(.title)
+                                    .padding(3)
+                            }
                         }
                     }
                 }
