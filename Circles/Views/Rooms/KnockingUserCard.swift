@@ -11,6 +11,7 @@ import Matrix
 struct KnockingUserCard: View {
     @ObservedObject var user: Matrix.User
     @ObservedObject var room: Matrix.Room
+    @EnvironmentObject var appSession: CirclesApplicationSession
     @State var showRejectDialog: Bool = false
     
     var reason: String? {
@@ -20,8 +21,34 @@ struct KnockingUserCard: View {
         {
             return content.reason
         } else {
-            return "Foo bar baz.  Just because."
+            return nil
         }
+    }
+    
+    var commonGroups: Set<Matrix.Room> {
+        let rooms = appSession.groups.rooms.filter {
+            $0.creator != $0.session.creds.userId && $0.joinedMembers.contains(user.userId)
+        }
+        return Set(rooms)
+    }
+    
+    var commonTimelines: Set<Matrix.Room> {
+        let circles = appSession.circles.rooms
+        var common = Set<Matrix.Room>()
+        for circle in circles {
+            let matches = circle.rooms.filter {
+                $0.creator != $0.session.creds.userId && $0.joinedMembers.contains(user.userId)
+            }
+            common.formUnion(matches)
+        }
+        return common
+    }
+    
+    var commonContacts: Set<Matrix.Room> {
+        let spaces = appSession.people.rooms.filter {
+            $0.creator != $0.session.creds.userId && $0.joinedMembers.contains(user.userId)
+        }
+        return Set(spaces)
     }
     
     @ViewBuilder
@@ -89,11 +116,11 @@ struct KnockingUserCard: View {
                     
                     Text("Common connections with you:")
                     VStack(alignment: .leading) {
-                        Text("In \(Int.random(in: 2...10)) of your groups")
+                        Text("In \(commonGroups.count) of your groups")
                         
-                        Text("Following \(Int.random(in: 2...10)) of your friends' timelines")
+                        Text("Following \(commonTimelines.count) of your friends' timelines")
                         
-                        Text("Connected to \(Int.random(in: 2...10)) of your people")
+                        Text("Connected to \(commonContacts.count) of your people")
                     }
                     .foregroundColor(.gray)
                     .padding(.leading)

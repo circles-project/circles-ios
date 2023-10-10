@@ -17,6 +17,7 @@ struct RoomKnockDetailsView: View {
         ScrollView {
             VStack {
                 ForEach(room.knockingMembers) { userId in
+                //ForEach([UserId("@cvwright:circu.li")!]) { userId in
                     Divider()
                     let user = room.session.getUser(userId: userId)
                     KnockingUserCard(user: user, room: room)
