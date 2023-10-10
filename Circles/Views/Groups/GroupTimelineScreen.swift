@@ -126,6 +126,10 @@ struct GroupTimelineScreen: View {
                  .font(.footnote)
                  */
                 
+                if !room.knockingMembers.isEmpty {
+                    RoomKnockIndicator(room: room)
+                }
+                
                 timeline
                     .sheet(item: $sheetType) { st in
                         switch(st) {

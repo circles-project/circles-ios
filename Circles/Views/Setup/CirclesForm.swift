@@ -114,7 +114,7 @@ struct CirclesForm: View {
         logger.debug("Created My People space \(myPeople)")
 
         try await Task.sleep(for: .seconds(1))
-        let myProfile = try await client.createSpace(name: displayName)
+        let myProfile = try await client.createSpace(name: displayName, joinRule: .knock)  // Profile room is m.knock because we might share it with other users
         logger.debug("Created My Profile space \(myProfile)")
         
         logger.debug("- Adding Space child relationships")
@@ -147,7 +147,7 @@ struct CirclesForm: View {
             status = "Creating circle \"\(circle.name)\""
             try await Task.sleep(for: .seconds(1))
             let circleRoomId = try await client.createSpace(name: circle.name)
-            let wallRoomId = try await client.createRoom(name: circle.name, type: ROOM_TYPE_CIRCLE)
+            let wallRoomId = try await client.createRoom(name: circle.name, type: ROOM_TYPE_CIRCLE, joinRule: .knock)
             if let avatar = circle.avatar {
                 try await client.setAvatarImage(roomId: wallRoomId, image: avatar)
             }
@@ -158,7 +158,7 @@ struct CirclesForm: View {
         logger.debug("- Creating photo gallery [Photos]")
         status = "Creating photo gallery"
         try await Task.sleep(for: .seconds(1))
-        let photosGallery = try await client.createRoom(name: "Photos", type: ROOM_TYPE_PHOTOS)
+        let photosGallery = try await client.createRoom(name: "Photos", type: ROOM_TYPE_PHOTOS, joinRule: .knock)
         try await client.addSpaceChild(photosGallery, to: myGalleries)
         
         status = "All done!"

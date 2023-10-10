@@ -12,16 +12,6 @@ import SwiftUI
 struct CircleOverviewCard: View {
     @ObservedObject var space: CircleSpace
     
-    var timestamp: Text {
-        let formatter = RelativeDateTimeFormatter()
-        
-        guard let ts = space.timestamp else {
-            return Text("")
-        }
-        
-        return Text("Last updated \(ts, formatter: formatter)")
-    }
-    
     var avatar: some View {
         CircleAvatar(space: space)
     }

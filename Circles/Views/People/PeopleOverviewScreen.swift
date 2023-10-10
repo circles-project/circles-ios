@@ -34,7 +34,7 @@ struct PeopleOverviewScreen: View {
                     Image(uiImage: matrix.avatar ?? UIImage(systemName: "person.crop.square")!)
                         .resizable()
                         .scaledToFill()
-                        .frame(width: 70, height: 70)
+                        .frame(width: 80, height: 80)
                         .clipShape(RoundedRectangle(cornerRadius: 7))
                     
                     VStack(alignment: .leading) {
@@ -63,11 +63,12 @@ struct PeopleOverviewScreen: View {
                 .font(.subheadline)
                 .foregroundColor(.gray)
             Divider()
-
+            
+            if profile.knockingMembers.count > 0 {
+                RoomKnockIndicator(room: profile)
+            }
 
             if people.rooms.isEmpty {
-                Text("Not connected with anyone")
-                    .padding()
                 Button(action: {
                     showInviteSheet = true
                 }) {

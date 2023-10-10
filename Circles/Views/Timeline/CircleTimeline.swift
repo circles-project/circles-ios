@@ -60,6 +60,12 @@ struct CircleTimeline: View {
         let messages: [Matrix.Message] = space.getCollatedTimeline(filter: { $0.relatedEventId == nil }).reversed()
         
         VStack(alignment: .leading) {
+            if let wall = space.wall,
+               wall.knockingMembers.count > 0
+            {
+                RoomKnockIndicator(room: wall)
+            }
+            
             ScrollView {
                 LazyVStack(alignment: .center) {
                     ForEach(messages) { message in

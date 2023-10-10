@@ -130,6 +130,9 @@
 		A55F367329EDB66300F46971 /* GalleryInviteCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55F367229EDB66300F46971 /* GalleryInviteCard.swift */; };
 		A55F367529EEE7EA00F46971 /* PhotoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55F367429EEE7EA00F46971 /* PhotoDetailView.swift */; };
 		A55F367729EEFB6900F46971 /* PhotoContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55F367629EEFB6900F46971 /* PhotoContextMenu.swift */; };
+		A56BE1722AD5CBD200B15F51 /* RoomKnockIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56BE1712AD5CBD200B15F51 /* RoomKnockIndicator.swift */; };
+		A56BE1742AD5CEFA00B15F51 /* RoomKnockDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56BE1732AD5CEFA00B15F51 /* RoomKnockDetailsView.swift */; };
+		A56BE1762AD5D0E900B15F51 /* KnockingUserCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56BE1752AD5D0E900B15F51 /* KnockingUserCard.swift */; };
 		A5A40B6129D468C3009A17EE /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = A5A40B6029D468C3009A17EE /* MarkdownUI */; };
 		A5A40B6329D46ABD009A17EE /* HtmlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A40B6229D46ABD009A17EE /* HtmlView.swift */; };
 		A5A40B6629D608C7009A17EE /* UiaInProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A40B6529D608C7009A17EE /* UiaInProgressView.swift */; };
@@ -295,6 +298,9 @@
 		A55F367229EDB66300F46971 /* GalleryInviteCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryInviteCard.swift; sourceTree = "<group>"; };
 		A55F367429EEE7EA00F46971 /* PhotoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailView.swift; sourceTree = "<group>"; };
 		A55F367629EEFB6900F46971 /* PhotoContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoContextMenu.swift; sourceTree = "<group>"; };
+		A56BE1712AD5CBD200B15F51 /* RoomKnockIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomKnockIndicator.swift; sourceTree = "<group>"; };
+		A56BE1732AD5CEFA00B15F51 /* RoomKnockDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomKnockDetailsView.swift; sourceTree = "<group>"; };
+		A56BE1752AD5D0E900B15F51 /* KnockingUserCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnockingUserCard.swift; sourceTree = "<group>"; };
 		A5A40B6229D46ABD009A17EE /* HtmlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HtmlView.swift; sourceTree = "<group>"; };
 		A5A40B6529D608C7009A17EE /* UiaInProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiaInProgressView.swift; sourceTree = "<group>"; };
 		A5A40B6729D60EF3009A17EE /* CirclesConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesConfig.swift; sourceTree = "<group>"; };
@@ -614,6 +620,9 @@
 				409F43A6265DE43B00690A61 /* RoomSecurityInfoSheet.swift */,
 				A52DF68029E59A81008860C3 /* RoomAvatar.swift */,
 				A53E2E712A74616400B75CDD /* RoomMemberRow.swift */,
+				A56BE1712AD5CBD200B15F51 /* RoomKnockIndicator.swift */,
+				A56BE1732AD5CEFA00B15F51 /* RoomKnockDetailsView.swift */,
+				A56BE1752AD5D0E900B15F51 /* KnockingUserCard.swift */,
 			);
 			path = Rooms;
 			sourceTree = "<group>";
@@ -855,6 +864,7 @@
 				A54BA3A928529BE500453D5E /* SetupScreen.swift in Sources */,
 				A5CC0ACE29DB6E26005935F0 /* BsspekeLoginOprfForm.swift in Sources */,
 				A53EAC572A6F037D00EF18B7 /* LegacySecretStoreKeygen.swift in Sources */,
+				A56BE1722AD5CBD200B15F51 /* RoomKnockIndicator.swift in Sources */,
 				A54BA3AB28592D2000453D5E /* SetupSession.swift in Sources */,
 				A521C3F52A6889C00051ED88 /* InvitedCircleDetailView.swift in Sources */,
 				409F43A8265DE43B00690A61 /* RoomSecurityInfoSheet.swift in Sources */,
@@ -875,6 +885,7 @@
 				409F436F265DE24000690A61 /* ConnectedPersonDetailView.swift in Sources */,
 				403CEAA126E90DE10054DBF4 /* SignupStartForm.swift in Sources */,
 				409F4334265DE15F00690A61 /* CircleOverviewCard.swift in Sources */,
+				A56BE1762AD5D0E900B15F51 /* KnockingUserCard.swift in Sources */,
 				403CEA9926E868F30054DBF4 /* AccountInfoForm.swift in Sources */,
 				A54A278E2A843CC600858846 /* InvitedGroupDetailView.swift in Sources */,
 				409F4342265DE17500690A61 /* GroupHeader.swift in Sources */,
@@ -912,6 +923,7 @@
 				A54A278C2A843C5F00858846 /* InvitedGroupCard.swift in Sources */,
 				40E4D88A268A76CF0055968A /* SignupScreen.swift in Sources */,
 				4073E7C4267915AF001A80CF /* RepliesView.swift in Sources */,
+				A56BE1742AD5CEFA00B15F51 /* RoomKnockDetailsView.swift in Sources */,
 				409F4343265DE17500690A61 /* GroupOverviewRow.swift in Sources */,
 				403CEA9726E866B70054DBF4 /* ValidateEmailForm.swift in Sources */,
 				A54A27862A81735F00858846 /* BsspekeLoginForm.swift in Sources */,

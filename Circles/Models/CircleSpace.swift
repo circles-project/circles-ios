@@ -29,11 +29,12 @@ class CircleSpace: ContainerRoom<Matrix.Room> {
         }
     }
     
-    var timestamp: Date? {
-        self.rooms.compactMap { room -> Date? in
-            room.timeline.values.last?.timestamp
+    override var timestamp: Date {
+        if let childRoomTimestamp = self.rooms.compactMap({ $0.timestamp }).max() {
+            return childRoomTimestamp
+        } else {
+            return super.timestamp
         }
-        .max()
     }
     
     var canPaginateRooms: Bool {

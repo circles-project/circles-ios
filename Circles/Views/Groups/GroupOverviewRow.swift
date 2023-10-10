@@ -14,23 +14,13 @@ struct GroupOverviewRow: View {
     @ObservedObject var room: Matrix.Room
     @AppStorage("debugMode") var debugMode: Bool = false
 
-    var timestamp: some View {
-        let formatter = RelativeDateTimeFormatter()
-        if let date = room.latestMessage?.timestamp {
-            return Text("Last updated \(date, formatter: formatter)")
-        } else {
-            return Text("")
-        }
-    }
-    
-    
     var body: some View {
         HStack(alignment: .top) {
             RoomAvatar(room: room, avatarText: .roomInitials)
-                .frame(width: 80, height: 80)
+                .frame(width: 110, height: 110)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
             
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading) {
                 HStack(alignment: .center, spacing: 3) {
                     Text(room.name ?? room.id)
                         .fontWeight(.bold)
@@ -39,20 +29,27 @@ struct GroupOverviewRow: View {
                 .font(.title2)
 
                 VStack(alignment: .leading) {
-                    Text("\(room.joinedMembers.count) members")
-                        .font(.title3)
-                        .foregroundColor(.gray)
-                    
-                    timestamp
-                        .font(.headline)
-                        .foregroundColor(.gray)
                     
                     if debugMode {
-                        Text(room.roomId.description)
+                        Text(room.roomId.stringValue)
                             .font(.subheadline)
                             .foregroundColor(.red)
                     }
+                    
+                    Text("\(room.joinedMembers.count) member(s)")
+
+                    Text("Last updated \(room.timestamp, formatter: RelativeDateTimeFormatter())")
+                    
+                    //let knockCount = room.knockingMembers.count
+                    let knockCount = Int.random(in: 2...10)
+                    if room.iCanInvite && knockCount > 0 {
+                        Label("\(knockCount) requests for invitations", systemImage: "star.fill")
+                            .foregroundColor(.accentColor)
+                    }
+
                 }
+                .font(.title3)
+                .foregroundColor(.gray)
                 .padding(.leading, 8)
             }
             .padding(.top, 5)

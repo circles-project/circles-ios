@@ -173,6 +173,7 @@ class ContainerRoom<T: Matrix.Room>: Matrix.Room {
     ) async throws -> RoomId {
         let powerLevels = RoomPowerLevelsContent(invite: 50)
         let childRoomId = try await self.session.createRoom(name: name, type: type, encrypted: encrypted,
+                                                            joinRule: .knock,
                                                             powerLevelContentOverride: powerLevels)
         try await self.addChildRoom(childRoomId)
         if let image = avatar {

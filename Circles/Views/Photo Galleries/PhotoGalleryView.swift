@@ -65,7 +65,12 @@ struct PhotoGalleryView: View {
             
             ZStack {
                 //TimelineView<PhotoCard>(room: room)
-                GalleryGridView(room: room)
+                VStack {
+                    if room.knockingMembers.count > 0 {
+                        RoomKnockIndicator(room: room)
+                    }
+                    GalleryGridView(room: room)
+                }
                 
                 VStack {
                     Spacer()
