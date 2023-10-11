@@ -9,11 +9,11 @@
 import SwiftUI
 import Matrix
 import MarkdownUI
+import CodeScanner
 
 enum GroupsSheetType: String {
     case create
-    case edit
-    case other
+    case scanQR
 }
 extension GroupsSheetType: Identifiable {
     var id: String { rawValue }
@@ -79,9 +79,20 @@ struct GroupsOverviewScreen: View {
             Spacer()
             HStack {
                 Spacer()
-                Button(action: {
-                    self.sheetType = .create
-                }) {
+                Menu {
+                    Button(action: {
+                        self.sheetType = .create
+                    }) {
+                        Label("Create group", systemImage: "plus.square.fill")
+                    }
+                    
+                    Button(action: {
+                        self.sheetType = .scanQR
+                    }) {
+                        Label("Scan QR code", systemImage: "qrcode")
+                    }
+                }
+                label: {
                     Image(systemName: "plus.circle.fill")
                         .resizable()
                         .scaledToFill()
@@ -137,9 +148,8 @@ struct GroupsOverviewScreen: View {
                 switch(st) {
                 case .create:
                     GroupCreationSheet(groups: container)
-
-                default:
-                    Text("Coming soon")
+                case .scanQR:
+                    ScanQrCodeAndKnockSheet(session: container.session)
                 }
             }
             .sheet(isPresented: $showHelpText) {
