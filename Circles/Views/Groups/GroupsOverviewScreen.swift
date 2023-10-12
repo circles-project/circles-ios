@@ -122,6 +122,11 @@ struct GroupsOverviewScreen: View {
                             Label("New Group", systemImage: "plus.circle")
                         }
                         Button(action: {
+                            self.sheetType = .scanQR
+                        }) {
+                            Label("Scan QR code", systemImage: "qrcode")
+                        }
+                        Button(action: {
                             self.showHelpText = true
                         }) {
                             Label("Help", systemImage: "questionmark.circle")
