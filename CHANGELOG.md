@@ -1,3 +1,13 @@
+# 0.6.0
+* Added the ability to edit posts
+* Added the ability to request invitation by scanning QR code
+* Added quick reactions to the emoji picker
+* Added some missing context menus
+* Added highlighting for posts that mention you
+* Bugfix: Make invitation indicators more responsive to new invites
+* Hide state events in the timeline by default
+* Bugfix: Create "people" and "profile" spaces if they do not exist
+
 # 0.5.3
 * Improved support for redactions
 * Fixed compatibility problems for accounts created with Circles Android
