@@ -16,6 +16,7 @@ enum GallerySheetType: String {
     //case settings
     //case avatar
     case invite
+    case showQr
 }
 extension GallerySheetType: Identifiable {
     var id: String { rawValue }
@@ -45,6 +46,10 @@ struct PhotoGalleryView: View {
                 }) {
                     Label("New cover image", systemImage: "photo")
                 }
+            }
+            
+            Button(action: { self.sheetType = .showQr }) {
+                Label("Show QR code", systemImage: "qrcode")
             }
             
             if room.iCanInvite {
@@ -132,6 +137,8 @@ struct PhotoGalleryView: View {
                 switch(st) {
                 case .invite:
                     RoomInviteSheet(room: self.room)
+                case .showQr:
+                    RoomQrCodeSheet(room: self.room)
                 }
             }
             .photosPicker(isPresented: $showCoverImagePicker, selection: $avatarItem, matching: .images)

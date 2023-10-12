@@ -12,7 +12,8 @@ import Matrix
 
 enum PhotosSheetType: String {
     case create
-    case settings
+    //case settings
+    case scanQr
 }
 extension PhotosSheetType: Identifiable {
     var id: String { rawValue }
@@ -31,10 +32,12 @@ struct PhotosOverviewScreen: View {
     
     var toolbarMenu: some View {
         Menu {
-            Button(action: {
-                self.sheetType = .create
-            }) {
+            Button(action: { self.sheetType = .create }) {
                 Label("New Gallery", systemImage: "plus")
+            }
+            
+            Button(action: { self.sheetType = .scanQr }) {
+                Label("Scan QR code", systemImage: "qrcode")
             }
         }
         label: {
@@ -87,9 +90,15 @@ struct PhotosOverviewScreen: View {
             Spacer()
             HStack {
                 Spacer()
-                Button(action: {
-                    self.sheetType = .create
-                }) {
+                Menu {
+                    Button(action: { self.sheetType = .create }) {
+                        Label("Create gallery", systemImage: "plus.circle")
+                    }
+                    Button(action: { self.sheetType = .scanQr }) {
+                        Label("Scan QR code", systemImage: "qrcode")
+                    }
+                }
+                label: {
                     Image(systemName: "plus.circle.fill")
                         .resizable()
                         .scaledToFill()
@@ -117,8 +126,8 @@ struct PhotosOverviewScreen: View {
                 switch(st) {
                 case .create:
                     PhotoGalleryCreationSheet(container: container)
-                default:
-                    Text("Coming soon")
+                case .scanQr:
+                    ScanQrCodeAndKnockSheet(session: container.session)
                 }
             }
             .confirmationDialog(Text("Confirm Leaving Gallery"),

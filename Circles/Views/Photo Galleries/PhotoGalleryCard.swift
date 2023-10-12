@@ -73,6 +73,12 @@ struct PhotoGalleryCard: View {
                     //Text(room.avatarUrl?.mediaId ?? "(none)")
                     //    .font(.subheadline)
                 }
+                
+                let knockCount = room.knockingMembers.count
+                if room.iCanInvite && room.iCanKick && knockCount > 0 {
+                    Label("\(knockCount) requests for invitations", systemImage: "star.fill")
+                            //.foregroundColor(.accentColor)
+                }
 
             }
             .foregroundColor(.white)
