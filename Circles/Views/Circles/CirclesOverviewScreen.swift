@@ -12,6 +12,7 @@ import Matrix
 
 enum CirclesOverviewSheetType: String {
     case create
+    case scanQr
 }
 extension CirclesOverviewSheetType: Identifiable {
     var id: String { rawValue }
@@ -20,6 +21,8 @@ extension CirclesOverviewSheetType: Identifiable {
 struct CirclesOverviewScreen: View {
     @ObservedObject var container: ContainerRoom<CircleSpace>
     @State var selection: String = ""
+    
+    @State var circleInvitations: [Matrix.InvitedRoom] = []
     
     @State private var sheetType: CirclesOverviewSheetType? = nil
     
@@ -46,6 +49,9 @@ struct CirclesOverviewScreen: View {
             Button(action: {self.sheetType = .create}) {
                 Label("New Circle", systemImage: "plus")
             }
+            Button(action: {self.sheetType = .scanQr}) {
+                Label("Scan QR code", systemImage: "qrcode")
+            }
             Button(action: {self.showHelpText = true }) {
                 Label("Help", systemImage: "questionmark.circle")
             }
@@ -69,13 +75,14 @@ struct CirclesOverviewScreen: View {
     
     @ViewBuilder
     var baseLayer: some View {
-        let circleInvitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_CIRCLE }
         
         if !container.rooms.isEmpty || !circleInvitations.isEmpty {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    
-                    CircleInvitationsIndicator(session: container.session, container: container)
+                
+                    if circleInvitations.count > 0 {
+                        CircleInvitationsIndicator(session: container.session, container: container)
+                    }
                     
                     ForEach(container.rooms) { circle in
                         NavigationLink(destination: CircleTimelineScreen(space: circle)) {
@@ -112,9 +119,21 @@ struct CirclesOverviewScreen: View {
             Spacer()
             HStack {
                 Spacer()
-                Button(action: {
-                    self.sheetType = .create
-                }) {
+                
+                Menu {
+                    Button(action: {
+                        self.sheetType = .create
+                    }) {
+                        Label("Create new circle", systemImage: "plus.circle")
+                    }
+                    
+                    Button(action: {
+                        self.sheetType = .scanQr
+                    }) {
+                        Label("Scan QR code", systemImage: "qrcode")
+                    }
+                }
+                label: {
                     Image(systemName: "plus.circle.fill")
                         .resizable()
                         .scaledToFill()
@@ -168,10 +187,15 @@ struct CirclesOverviewScreen: View {
                     toolbarMenu
                 }
             }
+            .onAppear {
+                circleInvitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_CIRCLE }
+            }
             .sheet(item: $sheetType) { st in
                 switch(st) {
                 case .create:
                     CircleCreationSheet(container: container)
+                case .scanQr:
+                    ScanQrCodeAndKnockSheet(session: container.session)
                 }
             }
             .confirmationDialog("Confirm deleting circle", isPresented: $confirmDeleteCircle, presenting: circleToDelete) { circle in

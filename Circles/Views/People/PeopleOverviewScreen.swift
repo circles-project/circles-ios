@@ -20,6 +20,17 @@ struct PeopleOverviewScreen: View {
     //@State var invitations: [Matrix.InvitedRoom]? = nil
     @State var showInviteSheet = false
     
+    @State var sheetType: SheetType?
+    enum SheetType: String, Identifiable {
+        case invite
+        case scanQr
+        case showQr
+        
+        var id: String {
+            self.rawValue
+        }
+    }
+
     @ViewBuilder
     var meSection: some View {
         VStack(alignment: .leading) {
@@ -34,7 +45,7 @@ struct PeopleOverviewScreen: View {
                     Image(uiImage: matrix.avatar ?? UIImage(systemName: "person.crop.square")!)
                         .resizable()
                         .scaledToFill()
-                        .frame(width: 70, height: 70)
+                        .frame(width: 80, height: 80)
                         .clipShape(RoundedRectangle(cornerRadius: 7))
                     
                     VStack(alignment: .leading) {
@@ -59,44 +70,60 @@ struct PeopleOverviewScreen: View {
     @ViewBuilder
     var contactsSection: some View {
         LazyVStack(alignment: .leading) {
-            Text("MY CONNECTIONS")
-                .font(.subheadline)
-                .foregroundColor(.gray)
-            Divider()
-
-
-            if people.rooms.isEmpty {
-                Text("Not connected with anyone")
-                    .padding()
-                Button(action: {
-                    showInviteSheet = true
-                }) {
-                    Label("Invite friends to connect", systemImage: "plus.circle")
-                }
-                .padding(.leading)
-                .sheet(isPresented: $showInviteSheet) {
-                    RoomInviteSheet(room: profile, title: "Invite friends to connect")
-                }
-            } else {
-                ForEach(people.rooms) { room in
-                    let user = people.session.getUser(userId: room.creator)
-                    
-                    VStack(alignment: .leading) {
-                        NavigationLink(destination: ConnectedPersonDetailView(space: room)) {
-                            //Text("\(user.displayName ?? user.id)")
-                            PersonHeaderRow(user: user, profile: profile)
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                        
+            HStack {
+                Text("MY CONNECTIONS")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                Spacer()
+                Menu {
+                    Button(action: { self.sheetType = .invite }) {
+                        Label("Invite friends to connect", systemImage: "person.2.fill")
                     }
-                    .contentShape(Rectangle())
-                    //.padding(.leading)
-                    //}
-                    Divider()
+                    Button(action: { self.sheetType = .showQr }) {
+                        Label("Show my QR code", systemImage: "qrcode")
+                    }
+                    Button(action: { self.sheetType = .scanQr }) {
+                        Label("Scan a friend's QR code", systemImage: "qrcode.viewfinder")
+                    }
                 }
+                label: {
+                    Image(systemName: "plus.circle")
+                }
+            }
+            Divider()
+            
+            if profile.knockingMembers.count > 0 {
+                RoomKnockIndicator(room: profile)
+            }
+                
+            ForEach(people.rooms) { room in
+                let user = people.session.getUser(userId: room.creator)
+                
+                VStack(alignment: .leading) {
+                    NavigationLink(destination: ConnectedPersonDetailView(space: room)) {
+                        //Text("\(user.displayName ?? user.id)")
+                        PersonHeaderRow(user: user, profile: profile)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    
+                }
+                .contentShape(Rectangle())
+                //.padding(.leading)
+                //}
+                Divider()
             }
         }
         .padding()
+        .sheet(item: $sheetType) { type in
+            switch type {
+            case .invite:
+                RoomInviteSheet(room: profile, title: "Invite friends to connect")
+            case .scanQr:
+                ScanQrCodeAndKnockSheet(session: profile.session)
+            case .showQr:
+                RoomQrCodeSheet(room: profile)
+            }
+        }
 
     }
     

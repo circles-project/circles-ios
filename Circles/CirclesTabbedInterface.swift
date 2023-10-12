@@ -34,6 +34,7 @@ struct CirclesTabbedInterface: View {
         TabView(selection: $selection) {
             
             CirclesOverviewScreen(container: self.session.circles)
+                .environmentObject(session)
                 .tabItem {
                     Image(systemName: "circles.hexagonpath")
                     Text("Circles")
@@ -44,6 +45,7 @@ struct CirclesTabbedInterface: View {
                                  profile: self.session.profile,
                                  circles: self.session.circles,
                                  groups: self.session.groups)
+                .environmentObject(session)
                 .tabItem {
                     Image(systemName: "rectangle.stack.person.crop")
                     Text("People")
@@ -51,6 +53,7 @@ struct CirclesTabbedInterface: View {
                 .tag(Tab.people)
             
             GroupsOverviewScreen(container: self.session.groups)
+                .environmentObject(session)
                 .tabItem {
                     Image(systemName: "person.2.square.stack")
                     Text("Groups")
@@ -58,6 +61,7 @@ struct CirclesTabbedInterface: View {
                 .tag(Tab.groups)
             
             PhotosOverviewScreen(container: self.session.galleries)
+                .environmentObject(session)
                 .tabItem {
                     Image(systemName: "photo.fill.on.rectangle.fill")
                     Text("Photos")
@@ -65,6 +69,7 @@ struct CirclesTabbedInterface: View {
                 .tag(Tab.photos)
             
             SettingsScreen(store: store, session: session)
+                .environmentObject(session)
                 .tabItem {
                     Image(systemName: "gearshape")
                     Text("Settings")

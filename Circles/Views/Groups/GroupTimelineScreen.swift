@@ -16,6 +16,7 @@ enum GroupScreenSheetType: String {
     case configure
     case security
     case composer
+    case qrCode
     //case pickHeaderImage
     //case pickProfileImage
     //case pickMessageImage
@@ -96,6 +97,12 @@ struct GroupTimelineScreen: View {
             }
             
             Button(action: {
+                self.sheetType = .qrCode
+            }) {
+                Label("Show QR code", systemImage: "qrcode")
+            }
+            
+            Button(action: {
                 self.sheetType = .security
             }) {
                 Label("Security", systemImage: "shield.fill")
@@ -126,11 +133,16 @@ struct GroupTimelineScreen: View {
                  .font(.footnote)
                  */
                 
+                if !room.knockingMembers.isEmpty {
+                    RoomKnockIndicator(room: room)
+                }
+                
                 timeline
                     .sheet(item: $sheetType) { st in
                         switch(st) {
                         case .members:
                             RoomMembersSheet(room: room, title: "Group members for \(room.name ?? "(unnamed group)")")
+                        
                         case .invite:
                             RoomInviteSheet(room: room, title: "Invite new members to \(room.name ?? "(unnamed group)")")
                             
@@ -143,6 +155,8 @@ struct GroupTimelineScreen: View {
                         case .composer:
                             MessageComposerSheet(room: room, parentMessage: nilParentMessage, galleries: galleries)
                             
+                        case .qrCode:
+                            RoomQrCodeSheet(room: room)
                         }
                     }
             }
@@ -169,15 +183,7 @@ struct GroupTimelineScreen: View {
             }
         }
         .navigationBarTitle(title, displayMode: .inline)
-        .onAppear {
-            // Hack kludge to make this @$%*# thing *&#$%ing update
-            Task {
-                try await Task.sleep(for: .milliseconds(500))
-                await MainActor.run {
-                    room.objectWillChange.send()
-                }
-            }
-        }
+
     }
 }
 

@@ -12,16 +12,6 @@ import SwiftUI
 struct CircleOverviewCard: View {
     @ObservedObject var space: CircleSpace
     
-    var timestamp: Text {
-        let formatter = RelativeDateTimeFormatter()
-        
-        guard let ts = space.timestamp else {
-            return Text("")
-        }
-        
-        return Text("Last updated \(ts, formatter: formatter)")
-    }
-    
     var avatar: some View {
         CircleAvatar(space: space)
     }
@@ -48,6 +38,13 @@ struct CircleOverviewCard: View {
                         .font(.subheadline)
                         .foregroundColor(Color.gray)
 
+                    if let wall = space.wall {
+                        let knockCount = wall.knockingMembers.count
+                        if knockCount > 0 {
+                            Label("\(knockCount) requests for invitations", systemImage: "star.fill")
+                                .foregroundColor(.accentColor)
+                        }
+                    }
                 }
                 .padding(.leading)
 
