@@ -10,12 +10,13 @@ import SwiftUI
 import PhotosUI
 
 enum CircleSheetType: String {
-    case settings
+    //case settings
     case followers
     case following
     case invite
     //case photo
     case composer
+    case showQr
 }
 extension CircleSheetType: Identifiable {
     var id: String { rawValue }
@@ -64,6 +65,10 @@ struct CircleTimelineScreen: View {
             
             Button(action: {self.sheetType = .composer}) {
                 Label("Post a New Message", systemImage: "plus.bubble")
+            }
+            
+            Button(action: {self.sheetType = .showQr}) {
+                Label("Show QR code", systemImage: "qrcode")
             }
         }
         label: {
@@ -129,8 +134,14 @@ struct CircleTimelineScreen: View {
                     */
                     case .composer:
                         MessageComposerSheet(room: space.wall!, galleries: galleries)
-                    default:
-                        Text("Coming soon!")
+                    
+                    case .showQr:
+                        if let wall = space.wall {
+                            RoomQrCodeSheet(room: wall)
+                        } else {
+                            Text("Error: Unable to generate QR code")
+                                .foregroundColor(.red)
+                        }
                     }
                 }
             
