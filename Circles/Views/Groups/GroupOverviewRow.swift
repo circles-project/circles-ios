@@ -40,9 +40,8 @@ struct GroupOverviewRow: View {
 
                     Text("Last updated \(room.timestamp, formatter: RelativeDateTimeFormatter())")
                     
-                    //let knockCount = room.knockingMembers.count
-                    let knockCount = Int.random(in: 2...10)
-                    if room.iCanInvite && knockCount > 0 {
+                    let knockCount = room.knockingMembers.count
+                    if room.iCanInvite && room.iCanKick && knockCount > 0 {
                         Label("\(knockCount) requests for invitations", systemImage: "star.fill")
                             .foregroundColor(.accentColor)
                     }
