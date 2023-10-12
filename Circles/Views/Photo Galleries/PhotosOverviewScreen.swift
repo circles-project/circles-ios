@@ -54,10 +54,36 @@ struct PhotosOverviewScreen: View {
                 VStack(alignment: .leading) {
                     GalleryInvitationsIndicator(session: container.session, container: container)
                     
-                    Text("GALLERIES")
+                    let myGalleries = container.rooms.filter { $0.creator == container.session.creds.userId }
+                    Text("MY GALLERIES")
                         .font(.subheadline)
                         .foregroundColor(.gray)
-                    ForEach(container.rooms) { room in
+                    ForEach(myGalleries) { room in
+                        //Text("Found room \(room.roomId.string)")
+                        NavigationLink(destination: PhotoGalleryView(room: room)) {
+                            PhotoGalleryCard(room: room)
+                            // FIXME Add a longPress gesture
+                            //       for setting/changing the
+                            //       avatar image for the gallery
+                        }
+                        .contextMenu {
+                            Button(role: .destructive, action: {
+                                self.showConfirmLeave = true
+                                self.roomToLeave = room
+                            }) {
+                                Label("Leave gallery", systemImage: "xmark.bin")
+                            }
+                        }
+                        //.padding(1)
+                    }
+                    
+                    Divider()
+                    
+                    let sharedGalleries = container.rooms.filter { $0.creator != container.session.creds.userId }
+                    Text("SHARED GALLERIES")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                    ForEach(sharedGalleries) { room in
                         //Text("Found room \(room.roomId.string)")
                         NavigationLink(destination: PhotoGalleryView(room: room)) {
                             PhotoGalleryCard(room: room)
