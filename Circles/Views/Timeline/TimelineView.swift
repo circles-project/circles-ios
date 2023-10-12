@@ -75,7 +75,7 @@ struct TimelineView<V: MessageView>: View {
         }.sorted(by: {$0.timestamp > $1.timestamp})
 
         ScrollView {
-            LazyVStack(alignment: .center) {
+            LazyVStack(alignment: .center, spacing: 5) {
 
                 //let messages = room.messages.sorted(by: {$0.timestamp > $1.timestamp})
                 
