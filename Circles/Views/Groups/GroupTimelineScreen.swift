@@ -183,15 +183,7 @@ struct GroupTimelineScreen: View {
             }
         }
         .navigationBarTitle(title, displayMode: .inline)
-        .onAppear {
-            // Hack kludge to make this @$%*# thing *&#$%ing update
-            Task {
-                try await Task.sleep(for: .milliseconds(500))
-                await MainActor.run {
-                    room.objectWillChange.send()
-                }
-            }
-        }
+
     }
 }
 
