@@ -22,6 +22,8 @@ struct CirclesOverviewScreen: View {
     @ObservedObject var container: ContainerRoom<CircleSpace>
     @State var selection: String = ""
     
+    @State var circleInvitations: [Matrix.InvitedRoom] = []
+    
     @State private var sheetType: CirclesOverviewSheetType? = nil
     
     @State var confirmDeleteCircle = false
@@ -73,13 +75,14 @@ struct CirclesOverviewScreen: View {
     
     @ViewBuilder
     var baseLayer: some View {
-        let circleInvitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_CIRCLE }
         
         if !container.rooms.isEmpty || !circleInvitations.isEmpty {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    
-                    CircleInvitationsIndicator(session: container.session, container: container)
+                
+                    if circleInvitations.count > 0 {
+                        CircleInvitationsIndicator(session: container.session, container: container)
+                    }
                     
                     ForEach(container.rooms) { circle in
                         NavigationLink(destination: CircleTimelineScreen(space: circle)) {
@@ -183,6 +186,9 @@ struct CirclesOverviewScreen: View {
                 ToolbarItemGroup(placement: .automatic) {
                     toolbarMenu
                 }
+            }
+            .onAppear {
+                circleInvitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_CIRCLE }
             }
             .sheet(item: $sheetType) { st in
                 switch(st) {

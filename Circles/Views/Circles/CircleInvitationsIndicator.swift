@@ -11,18 +11,23 @@ import Matrix
 struct CircleInvitationsIndicator: View {
     //@Binding var invitations: [Matrix.InvitedRoom]
     @ObservedObject var session: Matrix.Session
-    var container: ContainerRoom<CircleSpace>
+    @ObservedObject var container: ContainerRoom<CircleSpace>
     
     @State var invitations: [Matrix.InvitedRoom] = []
     
     var body: some View {
-        VStack {
-            if invitations.count > 0 {
-                NavigationLink(destination: CircleInvitationsView(session: session, container: container)) {
-                    Text("You have \(invitations.count) pending invitation(s)")
-                }
+        HStack {
+            Spacer()
+            NavigationLink(destination: CircleInvitationsView(session: session, container: container)) {
+                Text("You have \(invitations.count) pending invitation(s)")
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .padding()
             }
+            Spacer()
         }
+        .background(Color.accentColor)
+        .frame(maxHeight: 60)
         .onAppear {
             invitations = session.invitations.values.filter { $0.type == ROOM_TYPE_CIRCLE }
         }
