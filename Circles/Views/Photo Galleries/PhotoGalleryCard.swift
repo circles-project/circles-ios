@@ -61,6 +61,19 @@ struct PhotoGalleryCard: View {
                 */
     
             VStack {
+                
+                if room.creator != room.session.creds.userId {
+                    let user = room.session.getUser(userId: room.creator)
+                    HStack {
+                        ProfileImageView(user: user)
+                            .clipShape(Circle())
+                            .frame(width: 70, height: 70)
+                        Text(user.displayName ?? user.userId.username)
+                            .font(.title3)
+                            .fontWeight(.bold)
+                    }
+                }
+                
                 Text(room.name ?? "")
                     .font(.title)
                     .fontWeight(.bold)
