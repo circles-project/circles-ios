@@ -209,6 +209,7 @@ struct MessageCard: MessageView {
     @State var reporting = false
     private let debug = false
     @State var sheetType: MessageSheetType? = nil
+    @State var showAllReactions = false
     
     init(message: Matrix.Message, isLocalEcho: Bool = false, isThreaded: Bool = false) {
         self.message = message
@@ -373,40 +374,58 @@ struct MessageCard: MessageView {
                 $0.count
             }.sorted(by: >) ?? []
             
-            ForEach(reactionCounts.prefix(5), id: \.key) { emoji, count in
-                //Text(emoji)
-                Text("\(emoji) \(count) ")
-            }
-            if reactionCounts.count > 5 {
-                Text("...")
+            if showAllReactions {
+                let columns = [
+                    GridItem(.adaptive(minimum: 45))
+                ]
+                LazyVGrid(columns: columns, spacing: 5) {
+                    ForEach(reactionCounts, id: \.key) { emoji, count in
+                        Text("\(emoji) \(count) ")
+                    }
+                }
+            } else {
+                let limit = 7
+                ForEach(reactionCounts.prefix(limit), id: \.key) { emoji, count in
+                    Text("\(emoji) \(count) ")
+                }
+                if reactionCounts.count > limit {
+                    Button(action: {self.showAllReactions = true}) {
+                        Text("more")
+                    }
+                }
             }
         }
+        .foregroundColor(.secondary)
+        .padding(2)
     }
     
     var footer: some View {
         VStack(alignment: .leading) {
-            Divider()
+            
+            //Divider()
 
+            HStack {
+                shield
+                //Spacer()
+                timestamp
+                Spacer()
+                likeButton
+                if message.relatedEventId == nil {
+                    replyButton
+                }
+                menuButton
+            }
+            .padding(.top, 3)
+            .padding(.horizontal, 3)
+            .font(.headline)
+            
             if let r = message.reactions,
                !r.isEmpty
             {
+                Divider()
+
                 reactions
             }
-            
-            //if displayStyle != .composer {
-                HStack {
-                    shield
-                    Spacer()
-                    likeButton
-                    if message.relatedEventId == nil {
-                        replyButton
-                    }
-                    menuButton
-                }
-                .padding(.top, 3)
-                .padding(.horizontal, 3)
-                .font(.headline)
-            //}
 
         }
         .padding(.bottom, 3)
@@ -449,11 +468,6 @@ struct MessageCard: MessageView {
             if debugMode {
                 details
                     .font(.caption)
-            }
-            
-            HStack {
-                Spacer()
-                timestamp
             }
 
             footer
