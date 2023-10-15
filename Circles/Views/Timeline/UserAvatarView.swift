@@ -9,7 +9,7 @@
 import SwiftUI
 import Matrix
 
-struct ProfileImageView: View {
+struct UserAvatarView: View {
     @ObservedObject var user: Matrix.User
     @Environment(\.colorScheme) var colorScheme
     
@@ -30,6 +30,9 @@ struct ProfileImageView: View {
                 .resizable()
                 .scaledToFit()
                 .foregroundColor(defaultImageColor)
+                .onAppear {
+                    user.fetchAvatarImage()
+                }
         }
     }
 }

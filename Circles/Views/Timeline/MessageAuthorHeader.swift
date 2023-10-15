@@ -28,7 +28,7 @@ struct MessageAuthorHeader: View {
         HStack(alignment: .top) {
             
             //profileImage
-            ProfileImageView(user: user)
+            UserAvatarView(user: user)
                 //.resizable()
                 .scaledToFill()
                 .frame(width: 60, height: 60)

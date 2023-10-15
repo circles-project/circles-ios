@@ -103,7 +103,7 @@ struct KnockingUserCard: View {
     var body: some View {
         VStack(alignment: .leading) {
             HStack(alignment: .top) {
-                ProfileImageView(user: user)
+                UserAvatarView(user: user)
                     .frame(width: 110, height: 110)
                 
                 VStack(alignment: .leading) {
