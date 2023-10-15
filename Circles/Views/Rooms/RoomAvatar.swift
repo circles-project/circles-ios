@@ -91,6 +91,9 @@ struct RoomAvatar<Room>: View where Room: RoomAvatarInfo {
                     }
                 }
             }
+            .onAppear {
+                room.updateAvatarImage()
+            }
         }
     }
 }
