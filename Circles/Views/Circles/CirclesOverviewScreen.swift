@@ -84,7 +84,10 @@ struct CirclesOverviewScreen: View {
                         CircleInvitationsIndicator(session: container.session, container: container)
                     }
                     
-                    ForEach(container.rooms) { circle in
+                    // Sort intro _reverse_ chronological order
+                    let circles = container.rooms.sorted(by: { $0.timestamp > $1.timestamp })
+                    
+                    ForEach(circles) { circle in
                         NavigationLink(destination: CircleTimelineScreen(space: circle)) {
                             CircleOverviewCard(space: circle)
                                 .contentShape(Rectangle())

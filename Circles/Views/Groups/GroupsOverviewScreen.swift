@@ -48,7 +48,10 @@ struct GroupsOverviewScreen: View {
                 VStack(alignment: .leading, spacing: 0) {
                     GroupInvitationsIndicator(session: container.session, container: container)
                     
-                    ForEach(container.rooms) { room in
+                    // Sort into _reverse_ chronological order
+                    let rooms = container.rooms.sorted(by: { $0.timestamp > $1.timestamp })
+                    
+                    ForEach(rooms) { room in
                         NavigationLink(destination: GroupTimelineScreen(room: room)) {
                             GroupOverviewRow(container: container, room: room)
                                 .contentShape(Rectangle())
