@@ -65,7 +65,7 @@ struct PhotoGalleryCard: View {
                 if room.creator != room.session.creds.userId {
                     let user = room.session.getUser(userId: room.creator)
                     HStack {
-                        ProfileImageView(user: user)
+                        UserAvatarView(user: user)
                             .clipShape(Circle())
                             .frame(width: 70, height: 70)
                         Text(user.displayName ?? user.userId.username)
