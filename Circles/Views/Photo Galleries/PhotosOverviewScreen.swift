@@ -54,7 +54,9 @@ struct PhotosOverviewScreen: View {
                 VStack(alignment: .leading) {
                     GalleryInvitationsIndicator(session: container.session, container: container)
                     
-                    let myGalleries = container.rooms.filter { $0.creator == container.session.creds.userId }
+                    let myGalleries = container.rooms
+                                               .filter { $0.creator == container.session.creds.userId }
+                                               .sorted(by: {$0.timestamp > $1.timestamp }) // Reverse chronological ordering
                     Text("MY GALLERIES")
                         .font(.subheadline)
                         .foregroundColor(.gray)
@@ -79,7 +81,9 @@ struct PhotosOverviewScreen: View {
                     
                     Divider()
                     
-                    let sharedGalleries = container.rooms.filter { $0.creator != container.session.creds.userId }
+                    let sharedGalleries = container.rooms
+                                                   .filter { $0.creator != container.session.creds.userId }
+                                                   .sorted(by: {$0.timestamp > $1.timestamp }) // Reverse chronological ordering
                     Text("SHARED GALLERIES")
                         .font(.subheadline)
                         .foregroundColor(.gray)
