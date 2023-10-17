@@ -10,7 +10,7 @@ import SwiftUI
 
 import Matrix
 
-struct RoomAvatar<Room>: View where Room: RoomAvatarInfo {
+struct RoomAvatar<Room>: View where Room: BasicRoomProtocol {
     @ObservedObject var room: Room
     @Environment(\.colorScheme) var colorScheme
     

@@ -30,21 +30,30 @@ struct CircleOverviewCard: View {
                             .fontWeight(.bold)
                         Spacer()
                     }
-                    Text("Following \(space.following.count)")
-                        .font(.subheadline)
-                        .foregroundColor(Color.gray)
+                    
+                    VStack(alignment: .leading) {
+                        
+                        Text("Following \(space.following.count)")
+                        
+                        Text("Followed by \(space.followers.count)")
 
-                    Text("Followed by \(space.followers.count)")
-                        .font(.subheadline)
-                        .foregroundColor(Color.gray)
-
-                    if let wall = space.wall {
-                        let knockCount = wall.knockingMembers.count
-                        if knockCount > 0 {
-                            Label("\(knockCount) requests for invitations", systemImage: "star.fill")
-                                .foregroundColor(.accentColor)
+                        if space.unread > 0 {
+                            Text("\(space.unread) unread posts")
+                                .fontWeight(.bold)
+                        } else {
+                            Text("Last updated \(space.timestamp, formatter: RelativeDateTimeFormatter())")
+                        }
+                        
+                        if let wall = space.wall {
+                            let knockCount = wall.knockingMembers.count
+                            if knockCount > 0 {
+                                Label("\(knockCount) requests for invitations", systemImage: "star.fill")
+                                    .foregroundColor(.accentColor)
+                            }
                         }
                     }
+                    .font(.headline)
+                    .foregroundColor(.gray)
                 }
                 .padding(.leading)
 
