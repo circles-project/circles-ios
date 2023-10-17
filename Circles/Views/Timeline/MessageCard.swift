@@ -370,9 +370,9 @@ struct MessageCard: MessageView {
     var reactions: some View {
         HStack {
             //Spacer()
-            let reactionCounts = self.message.reactions?.mapValues {
+            let reactionCounts = self.message.reactions.mapValues {
                 $0.count
-            }.sorted(by: >) ?? []
+            }.sorted(by: >)
             
             if showAllReactions {
                 let columns = [
@@ -419,8 +419,7 @@ struct MessageCard: MessageView {
             .padding(.horizontal, 3)
             .font(.headline)
             
-            if let r = message.reactions,
-               !r.isEmpty
+            if !message.reactions.isEmpty
             {
                 Divider()
 
@@ -442,7 +441,7 @@ struct MessageCard: MessageView {
                 Text("related event_id: \(content.relatedEventId ?? "n/a")")
                 Text("m.in_reply_to: \(content.replyToEventId ?? "n/a")")
             }
-            Text("Reactions: \(message.reactions?.keys.count ?? 0) Distinct reactions")
+            Text("Reactions: \(message.reactions.keys.count) Distinct reactions")
             if let content = message.content as? Matrix.MessageContent {
                 Text(content.debugString)
             }
