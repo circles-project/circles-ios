@@ -1,3 +1,11 @@
+# 0.6.1
+* Split the photo galleries list into "My Galleries" and "Shared Galleries"
+* Show the gallery owner's name and photo on shared galleries
+* Updated the layout of the basic timeline post
+* Added unread post counts on circle and group overviews
+* Added support for sending read receipts
+* Bugfix: Make sure we fetch the cover image for each circle/group/gallery
+
 # 0.6.0
 * Added the ability to edit posts
 * Added the ability to request invitation by scanning QR code
