@@ -480,6 +480,14 @@ struct MessageCard: MessageView {
                 .foregroundColor(.background)
                 .shadow(color: shadowColor, radius: shadowRaduis, x: 0, y: 0)
         )
+        .onAppear {
+            if message.sender.userId != message.room.session.creds.userId {
+                print("Updating m.read for room \(message.roomId) to be \(message.eventId)")
+                Task {
+                    try await message.room.sendReadReceipt(eventId: message.eventId, threadId: message.threadId)
+                }
+            }
+        }
 
     }
     

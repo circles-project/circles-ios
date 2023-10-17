@@ -37,6 +37,12 @@ class CircleSpace: ContainerRoom<Matrix.Room> {
         }
     }
     
+    override var unread: Int {
+        self.rooms.reduce(self.notificationCount) { prevCount, room in
+            room.notificationCount + prevCount
+        }
+    }
+    
     var canPaginateRooms: Bool {
         // We can paginate the circle if it contains even a single room that can be paginated
         for room in rooms {

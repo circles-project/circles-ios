@@ -23,10 +23,10 @@ struct GroupOverviewRow: View {
             VStack(alignment: .leading) {
                 HStack(alignment: .center, spacing: 3) {
                     Text(room.name ?? room.id)
+                        .font(.title2)
                         .fontWeight(.bold)
                     Spacer()
                 }
-                .font(.title2)
 
                 VStack(alignment: .leading) {
                     
@@ -38,12 +38,18 @@ struct GroupOverviewRow: View {
                     
                     Text("\(room.joinedMembers.count) member(s)")
 
-                    Text("Last updated \(room.timestamp, formatter: RelativeDateTimeFormatter())")
                     
                     let knockCount = room.knockingMembers.count
                     if room.iCanInvite && room.iCanKick && knockCount > 0 {
                         Label("\(knockCount) requests for invitations", systemImage: "star.fill")
                             .foregroundColor(.accentColor)
+                    }
+                    
+                    if room.unread > 0 {
+                        Text("\(room.unread) unread posts")
+                            .fontWeight(.bold)
+                    } else {
+                        Text("Last updated \(room.timestamp, formatter: RelativeDateTimeFormatter())")
                     }
 
                 }
