@@ -15,7 +15,8 @@ struct GalleryGridView: View {
     @State var loading = false
     @AppStorage("debugMode") var debugMode: Bool = false
     
-    @State var thumbnailSize = CGFloat(80)
+    @State var prevZoom: Double = 1.0
+    
     @State var numCols = 4
     let maxCols = 16
     let minCols = 1
@@ -75,6 +76,25 @@ struct GalleryGridView: View {
         }
     }
     
+    private func handleMagnification(zoom: MagnificationGesture.Value) {
+        withAnimation(.easeIn(duration: 0.1)) {
+            
+            // FIXME: Look instead at the change between `zoom` and the previous value
+            let ratio = zoom / prevZoom
+            
+            let epsilon = 0.10
+            if ratio > 1.0+epsilon && numCols > minCols {
+                numCols -= 1
+            }
+            
+            if ratio < 1.0-epsilon && numCols < maxCols {
+                numCols += 1
+            }
+            
+            prevZoom = zoom
+        }
+    }
+    
     @ViewBuilder
     var body: some View {
         // Get all the top-level messages (ie not the replies etc)
@@ -100,7 +120,6 @@ struct GalleryGridView: View {
             let hSpacing = CGFloat(4)
             let vSpacing = hSpacing
             
-            //let numCols = Int(geometry.size.width) / Int(thumbnailSize+hSpacing)
             let thumbnailSize = geometry.size.width / CGFloat(numCols) - hSpacing
             
             let columns = Array<GridItem>(repeating: GridItem(.fixed(thumbnailSize), spacing: vSpacing), count: numCols)
@@ -120,31 +139,11 @@ struct GalleryGridView: View {
             .onAppear {
                 print("GalleryGridView: Found \(messages.count) image/video messages")
             }
-            
-            footer
+
         }
         .gesture(MagnificationGesture()
-            .onChanged { value in
-                print("MAGNIFICATION value = \(value)")
-                
-                let scale = 1.0 / value
-                
-                
-                let scaled = Int(round(scale * CGFloat(numCols)))
-
-                let newNumCols: Int
-                if scale < 1.0 {
-                    // If we just apply the new scaling directly, *wow* does the view change super fast when we're shrinking
-                    // Let's try averaging betweeen the old value and the raw scaled value
-                    newNumCols = (numCols+scaled) / 2
-                } else {
-                    newNumCols = scaled
-                }
-
-                if minCols <= newNumCols && newNumCols <= maxCols {
-                    numCols = newNumCols
-                }
-            }
+            .onChanged(handleMagnification)
+            .onEnded(handleMagnification)
         )
         
     }
