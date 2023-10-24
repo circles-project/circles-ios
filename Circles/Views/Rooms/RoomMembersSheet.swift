@@ -23,23 +23,8 @@ struct RoomMembersSheet: View {
     @State var currentMembers: [Matrix.User] = []
     @State var invitedMembers: [Matrix.User] = []
     
-    /*
-    init(room: MatrixRoom) {
-        self.room = room
-        //self.currentMembers = room.joinedMembers
-        //self.invitedMembers = room.invitedMembers
-    }
-    */
-    
     var buttonBar: some View {
         HStack {
-            /*
-            Button(action: {
-                self.presentation.wrappedValue.dismiss()
-            }) {
-                Text("Cancel")
-            }
-            */
             
             Spacer()
             
@@ -67,8 +52,12 @@ struct RoomMembersSheet: View {
     }
     
     var currentMemberSection: some View {
-        Section(header: Text("Current")) {
+        VStack(alignment: .leading) {
+            Text("CURRENT")
+                .font(.subheadline)
+                .foregroundColor(.gray)
             ForEach(room.joinedMembers) { userId in
+                Divider()
                 let user = room.session.getUser(userId: userId)
                 RoomMemberRow(user: user, room: room)
                     .actionSheet(isPresented: $showConfirmRemove) {
@@ -96,19 +85,18 @@ struct RoomMembersSheet: View {
                                     ])
                     }
             }
-            .onDelete { indexes in
-                for index in indexes {
-                    self.currentToBeRemoved.append(currentMembers[index])
-                }
-                //self.showConfirmRemove = true
-                currentMembers.remove(atOffsets: indexes)
-            }
+
         }
     }
     
     var invitedMemberSection: some View {
-        Section(header: Text("Invited")) {
+        VStack(alignment: .leading) {
+            Text("INVITED")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+                .padding(.top)
             ForEach(room.invitedMembers) { userId in
+                Divider()
                 let user = room.session.getUser(userId: userId)
                 RoomMemberRow(user: user, room: room)
             }
@@ -116,8 +104,13 @@ struct RoomMembersSheet: View {
     }
     
     var bannedMemberSection: some View {
-        Section(header: Text("Banned")) {
+        VStack(alignment: .leading) {
+            Text("BANNED")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+                .padding(.top)
             ForEach(room.bannedMembers) { userId in
+                Divider()
                 let user = room.session.getUser(userId: userId)
                 RoomMemberRow(user: user, room: room)
             }
@@ -126,32 +119,29 @@ struct RoomMembersSheet: View {
     
     var body: some View {
         VStack {
-            
-            //buttonBar
-            
-            Text(title ?? "Followers for \(room.name ?? "this room")")
-                .font(.headline)
+                        
+            Text(title ?? "Users in \(room.name ?? "this room")")
+                .font(.title2)
                 .fontWeight(.bold)
                 .padding(10)
             
-            Spacer()
-            
-            VStack(alignment: .leading) {
-                //let haveModPowers = room.amIaModerator()
 
-                List {
+            ScrollView {
+                VStack(alignment: .leading) {
+                    
                     currentMemberSection
-
+                    
                     if !room.invitedMembers.isEmpty {
                         invitedMemberSection
                     }
-
+                    
                     if !room.bannedMembers.isEmpty {
                         bannedMemberSection
                     }
+                    
                 }
+                .padding()
             }
-
         }
 
     }
