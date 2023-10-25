@@ -1,3 +1,9 @@
+# 0.7.0
+* Bugfix: Load emoji reactions correctly
+* Improve pinch-to-zoom for photo galleries
+* Bugfix: Handle QR codes from Circles Android
+* Initial support for deep links, at the top level of the app and on the Groups tab
+
 # 0.6.1
 * Split the photo galleries list into "My Galleries" and "Shared Galleries"
 * Show the gallery owner's name and photo on shared galleries
