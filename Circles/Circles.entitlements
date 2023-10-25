@@ -10,6 +10,9 @@
 		<string>webcredentials:eu.circu.li</string>
 		<string>webcredentials:*.circles-dev.net</string>
 		<string>webcredentials:circles.futo.org</string>
+		<string>applinks:circu.li</string>
+		<string>applinks:*.circles-dev.net</string>
+		<string>applinks:circles.futo.org</string>
 	</array>
 	<key>com.apple.developer.authentication-services.autofill-credential-provider</key>
 	<true/>

@@ -27,6 +27,8 @@ struct GroupsOverviewScreen: View {
     @State var showConfirmLeave = false
     @State var roomToLeave: GroupRoom?
     
+    @State var selectedRoom: Matrix.Room?
+    
     let helpTextMarkdown = """
         # Groups
         
@@ -52,7 +54,10 @@ struct GroupsOverviewScreen: View {
                     let rooms = container.rooms.sorted(by: { $0.timestamp > $1.timestamp })
                     
                     ForEach(rooms) { room in
-                        NavigationLink(destination: GroupTimelineScreen(room: room)) {
+                        NavigationLink(destination: GroupTimelineScreen(room: room),
+                                       tag: room,
+                                       selection: $selectedRoom
+                        ) {
                             GroupOverviewRow(container: container, room: room)
                                 .contentShape(Rectangle())
                         }
@@ -67,6 +72,29 @@ struct GroupsOverviewScreen: View {
                         }
                         .padding(.vertical, 2)
                         Divider()
+                    }
+                }
+                .onOpenURL { url in
+                    
+                    guard let host = url.host(),
+                          CIRCLES_DOMAINS.contains(host),
+                          url.pathComponents.count >= 2,
+                          url.pathComponents[0] == "group",
+                          let roomId = RoomId(url.pathComponents[1])
+                    else {
+                        print("DEEPLINKS GROUPS Not handling URL \(url)")
+                        return
+                    }
+                    
+                    print("DEEPLINKS GROUPS Found roomId \(roomId)")
+                    
+                    if let roomFromUrl = container.rooms.first(where: { room in
+                        room.roomId == roomId
+                    }) {
+                        print("DEEPLINKS GROUPS Setting selected room to \(roomFromUrl.name ?? roomFromUrl.roomId.stringValue)")
+                        self.selectedRoom = roomFromUrl
+                    } else {
+                        print("DEEPLINKS GROUPS Room \(roomId) is not one of ours")
                     }
                 }
             }
