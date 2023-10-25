@@ -42,6 +42,13 @@ let DEFAULT_DOMAIN = "circu.li"
 let MATRIX_SSSS_KEY_LABEL = "matrix_ssss"
 let MATRIX_SSSS_KEYID_LABEL = "matrix_ssss_key_id"
 
+let CIRCLES_DOMAINS = [
+    "circu.li",
+    "eu.circu.li",
+    "us.circles-dev.net",
+    "nl.circles-dev.net",
+]
+
 #if DEBUG
     let usDomain = "us.circles-dev.net"
     let euDomain = "nl.circles-dev.net"
