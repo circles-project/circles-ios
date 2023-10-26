@@ -116,8 +116,9 @@ struct CirclesOverviewScreen: View {
                     
                     guard let host = url.host(),
                           CIRCLES_DOMAINS.contains(host),
-                          url.pathComponents.count >= 2,
-                          url.pathComponents[0] == "timeline",
+                          url.pathComponents.count >= 3,
+                          url.pathComponents[0] == "/",
+                          url.pathComponents[1] == "timeline",
                           let roomId = RoomId(url.pathComponents[1])
                     else {
                         print("DEEPLINKS CIRCLES Not handling URL \(url)")

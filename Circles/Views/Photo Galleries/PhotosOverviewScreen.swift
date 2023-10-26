@@ -118,8 +118,9 @@ struct PhotosOverviewScreen: View {
                     
                     guard let host = url.host(),
                           CIRCLES_DOMAINS.contains(host),
-                          url.pathComponents.count >= 2,
-                          url.pathComponents[0] == "gallery",
+                          url.pathComponents.count >= 3,
+                          url.pathComponents[0] == "/",
+                          url.pathComponents[1] == "gallery",
                           let roomId = RoomId(url.pathComponents[1])
                     else {
                         print("DEEPLINKS GALLERIES Not handling URL \(url)")

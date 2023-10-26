@@ -225,8 +225,9 @@ struct PeopleOverviewScreen: View {
                 
                 guard let host = url.host(),
                       CIRCLES_DOMAINS.contains(host),
-                      url.pathComponents.count >= 2,
-                      url.pathComponents[0] == "gallery",
+                      url.pathComponents.count >= 3,
+                      url.pathComponents[0] == "/",
+                      url.pathComponents[1] == "profile",
                       let roomId = RoomId(url.pathComponents[1])
                 else {
                     print("DEEPLINKS PEOPLE Not handling URL \(url)")
