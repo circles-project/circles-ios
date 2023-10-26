@@ -15,6 +15,8 @@ struct PeopleOverviewScreen: View {
     @ObservedObject var circles: ContainerRoom<CircleSpace>
     @ObservedObject var groups: ContainerRoom<GroupRoom>
     
+    @State var selectedUserId: UserId?
+    
     @State var following: [Matrix.User] = []
     @State var followers: [Matrix.User] = []
     //@State var invitations: [Matrix.InvitedRoom]? = nil
@@ -40,7 +42,10 @@ struct PeopleOverviewScreen: View {
                 .font(.subheadline)
                 .foregroundColor(.gray)
             Divider()
-            NavigationLink(destination: SelfDetailView(matrix: matrix, profile: profile, circles: circles)) {
+            NavigationLink(destination: SelfDetailView(matrix: matrix, profile: profile, circles: circles),
+                           tag: profile.session.creds.userId,
+                           selection: $selectedUserId
+            ) {
                 HStack(alignment: .top) {
                     Image(uiImage: matrix.avatar ?? UIImage(systemName: "person.crop.square")!)
                         .resizable()
@@ -100,7 +105,10 @@ struct PeopleOverviewScreen: View {
                 let user = people.session.getUser(userId: room.creator)
                 
                 VStack(alignment: .leading) {
-                    NavigationLink(destination: ConnectedPersonDetailView(space: room)) {
+                    NavigationLink(destination: ConnectedPersonDetailView(space: room),
+                                   tag: user.userId,
+                                   selection: $selectedUserId
+                    ) {
                         //Text("\(user.displayName ?? user.id)")
                         PersonHeaderRow(user: user, profile: profile)
                     }
@@ -136,7 +144,10 @@ struct PeopleOverviewScreen: View {
             Divider()
 
             ForEach(following) { user in
-                NavigationLink(destination: UnconnectedPersonDetailView(user: user, room: profile)) {
+                NavigationLink(destination: UnconnectedPersonDetailView(user: user, room: profile),
+                               tag: user.userId,
+                               selection: $selectedUserId
+                ) {
                     PersonHeaderRow(user: user, profile: profile)
                         .contentShape(Rectangle())
                 }
@@ -167,7 +178,10 @@ struct PeopleOverviewScreen: View {
             Divider()
 
             ForEach(followers) { user in
-                NavigationLink(destination: UnconnectedPersonDetailView(user: user, room: profile)) {
+                NavigationLink(destination: UnconnectedPersonDetailView(user: user, room: profile),
+                               tag: user.userId,
+                               selection: $selectedUserId
+                ) {
                     PersonHeaderRow(user: user, profile: profile)
                         .contentShape(Rectangle())
                 }
@@ -205,6 +219,30 @@ struct PeopleOverviewScreen: View {
                     followingSection
                     
                     followersSection
+                }
+            }
+            .onOpenURL { url in
+                
+                guard let host = url.host(),
+                      CIRCLES_DOMAINS.contains(host),
+                      url.pathComponents.count >= 2,
+                      url.pathComponents[0] == "gallery",
+                      let roomId = RoomId(url.pathComponents[1])
+                else {
+                    print("DEEPLINKS PEOPLE Not handling URL \(url)")
+                    return
+                }
+                
+                print("DEEPLINKS PEOPLE Found roomId \(roomId)")
+                
+                // Does any known user have this roomId as their profile?
+                if let roomFromUrl = people.rooms.first(where: { room in
+                    room.roomId == roomId
+                }) {
+                    print("DEEPLINKS PEOPLE Setting selected room to \(roomFromUrl.name ?? roomFromUrl.roomId.stringValue) (\(roomFromUrl.creator))")
+                    self.selectedUserId = roomFromUrl.creator
+                } else {
+                    print("DEEPLINKS PEOPLE Room \(roomId) is not one of ours")
                 }
             }
             .navigationBarTitle("People", displayMode: .inline)

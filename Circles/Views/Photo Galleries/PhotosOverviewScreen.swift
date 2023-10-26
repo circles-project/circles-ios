@@ -22,6 +22,7 @@ extension PhotosSheetType: Identifiable {
 struct PhotosOverviewScreen: View {
     //@ObservedObject var store: KSStore
     @ObservedObject var container: ContainerRoom<GalleryRoom>
+    @State var selectedGallery: GalleryRoom?
     //@State var showCreationSheet = false
     
     @State var showConfirmLeave = false
@@ -62,7 +63,10 @@ struct PhotosOverviewScreen: View {
                         .foregroundColor(.gray)
                     ForEach(myGalleries) { room in
                         //Text("Found room \(room.roomId.string)")
-                        NavigationLink(destination: PhotoGalleryView(room: room)) {
+                        NavigationLink(destination: PhotoGalleryView(room: room),
+                                       tag: room,
+                                       selection: $selectedGallery
+                        ) {
                             PhotoGalleryCard(room: room)
                             // FIXME Add a longPress gesture
                             //       for setting/changing the
@@ -89,7 +93,10 @@ struct PhotosOverviewScreen: View {
                         .foregroundColor(.gray)
                     ForEach(sharedGalleries) { room in
                         //Text("Found room \(room.roomId.string)")
-                        NavigationLink(destination: PhotoGalleryView(room: room)) {
+                        NavigationLink(destination: PhotoGalleryView(room: room),
+                                       tag: room,
+                                       selection: $selectedGallery
+                        ) {
                             PhotoGalleryCard(room: room)
                             // FIXME Add a longPress gesture
                             //       for setting/changing the
@@ -107,6 +114,29 @@ struct PhotosOverviewScreen: View {
                     }
                 }
                 .padding()
+                .onOpenURL { url in
+                    
+                    guard let host = url.host(),
+                          CIRCLES_DOMAINS.contains(host),
+                          url.pathComponents.count >= 2,
+                          url.pathComponents[0] == "gallery",
+                          let roomId = RoomId(url.pathComponents[1])
+                    else {
+                        print("DEEPLINKS GALLERIES Not handling URL \(url)")
+                        return
+                    }
+                    
+                    print("DEEPLINKS GALLERIES Found roomId \(roomId)")
+                    
+                    if let roomFromUrl = container.rooms.first(where: { room in
+                        room.roomId == roomId
+                    }) {
+                        print("DEEPLINKS GALLERIES Setting selected room to \(roomFromUrl.name ?? roomFromUrl.roomId.stringValue)")
+                        self.selectedGallery = roomFromUrl
+                    } else {
+                        print("DEEPLINKS GALLERIES Room \(roomId) is not one of ours")
+                    }
+                }
             }
         }
         else {
