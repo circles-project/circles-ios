@@ -119,7 +119,7 @@ struct CirclesOverviewScreen: View {
                           url.pathComponents.count >= 3,
                           url.pathComponents[0] == "/",
                           url.pathComponents[1] == "timeline",
-                          let roomId = RoomId(url.pathComponents[1])
+                          let roomId = RoomId(url.pathComponents[2])
                     else {
                         print("DEEPLINKS CIRCLES Not handling URL \(url)")
                         return

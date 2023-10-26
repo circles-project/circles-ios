@@ -81,7 +81,7 @@ struct GroupsOverviewScreen: View {
                           url.pathComponents.count >= 3,
                           url.pathComponents[0] == "/",
                           url.pathComponents[1] == "group",
-                          let roomId = RoomId(url.pathComponents[1])
+                          let roomId = RoomId(url.pathComponents[2])
                     else {
                         print("DEEPLINKS GROUPS Not handling URL \(url)")
                         return

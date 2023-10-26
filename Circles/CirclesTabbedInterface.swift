@@ -99,12 +99,15 @@ struct CirclesTabbedInterface: View {
             print("DEEPLINK URL: Host = \(host)")
             print("DEEPLINK URL: Path = \(components)")
             
-            guard let prefix = url.pathComponents.first
+            guard url.pathComponents.count >= 3,
+                  url.pathComponents[0] == "/",
+                  let roomId = RoomId(url.pathComponents[2])
             else {
                 print("DEEPLINK Not processing URL \(url) -- No first path component")
                 return
             }
             
+            let prefix = url.pathComponents[1]
             switch prefix {
             
             case "timeline":
@@ -124,12 +127,6 @@ struct CirclesTabbedInterface: View {
                 selection = .photos
             
             case "room":
-                guard url.pathComponents.count >= 2,
-                      let roomId = RoomId(url.pathComponents[1])
-                else {
-                    print("DEEPLINK No valid roomId for /room URL")
-                    return
-                }
                 
                 // Are we already in this room?
                 if let room = self.session.matrix.rooms[roomId] {

@@ -228,7 +228,7 @@ struct PeopleOverviewScreen: View {
                       url.pathComponents.count >= 3,
                       url.pathComponents[0] == "/",
                       url.pathComponents[1] == "profile",
-                      let roomId = RoomId(url.pathComponents[1])
+                      let roomId = RoomId(url.pathComponents[2])
                 else {
                     print("DEEPLINKS PEOPLE Not handling URL \(url)")
                     return

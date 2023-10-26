@@ -121,7 +121,7 @@ struct PhotosOverviewScreen: View {
                           url.pathComponents.count >= 3,
                           url.pathComponents[0] == "/",
                           url.pathComponents[1] == "gallery",
-                          let roomId = RoomId(url.pathComponents[1])
+                          let roomId = RoomId(url.pathComponents[2])
                     else {
                         print("DEEPLINKS GALLERIES Not handling URL \(url)")
                         return
