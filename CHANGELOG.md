@@ -1,4 +1,5 @@
 # main
+* MSC3061: Provide keys for older messages when inviting a new user
 * Initial support for handling deep links
 * Support for handling QR codes containing deep links
 * Generate QR codes in the new deep link format

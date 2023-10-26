@@ -20,7 +20,8 @@ extension CirclesOverviewSheetType: Identifiable {
 
 struct CirclesOverviewScreen: View {
     @ObservedObject var container: ContainerRoom<CircleSpace>
-    @State var selectedSpace: CircleSpace?
+    //@State var selectedSpace: CircleSpace?
+    @Binding var selected: RoomId?
     
     @State var circleInvitations: [Matrix.InvitedRoom] = []
     
@@ -89,8 +90,8 @@ struct CirclesOverviewScreen: View {
                     
                     ForEach(circles) { circle in
                         NavigationLink(destination: CircleTimelineScreen(space: circle),
-                                       tag: circle,
-                                       selection: $selectedSpace)
+                                       tag: circle.roomId,
+                                       selection: $selected)
                         {
                             CircleOverviewCard(space: circle)
                                 .contentShape(Rectangle())
@@ -110,33 +111,6 @@ struct CirclesOverviewScreen: View {
                         }
                         .buttonStyle(PlainButtonStyle())
                         Divider()
-                    }
-                }
-                .onOpenURL { url in
-                    
-                    guard let host = url.host(),
-                          CIRCLES_DOMAINS.contains(host),
-                          url.pathComponents.count >= 3,
-                          url.pathComponents[0] == "/",
-                          url.pathComponents[1] == "timeline",
-                          let roomId = RoomId(url.pathComponents[2])
-                    else {
-                        print("DEEPLINKS CIRCLES Not handling URL \(url)")
-                        return
-                    }
-                    
-                    print("DEEPLINKS CIRCLES Found roomId \(roomId)")
-                    
-                    if let matchingSpace = container.rooms.first(where: { space in
-                        let matchingRoom = space.rooms.first(where: {room in
-                            room.roomId == roomId
-                        })
-                        return matchingRoom != nil
-                    }) {
-                        print("DEEPLINKS CIRCLES Setting selected room to \(matchingSpace.name ?? matchingSpace.roomId.stringValue)")
-                        self.selectedSpace = matchingSpace
-                    } else {
-                        print("DEEPLINKS CIRCLES Room \(roomId) is not one of ours")
                     }
                 }
             }

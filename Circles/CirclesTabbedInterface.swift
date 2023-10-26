@@ -30,12 +30,17 @@ struct CirclesTabbedInterface: View {
     
     @State private var selection: Tab = .home
     @State var knockRoomId: RoomId?
+    
+    @State var selectedGroupId: RoomId?
+    @State var selectedCircleId: RoomId?
+    @State var selectedGalleryId: RoomId?
 
     @ViewBuilder
     var tabview: some View {
         TabView(selection: $selection) {
             
-            CirclesOverviewScreen(container: self.session.circles)
+            CirclesOverviewScreen(container: self.session.circles,
+                                  selected: $selectedCircleId)
                 .environmentObject(session)
                 .tabItem {
                     Image(systemName: "circles.hexagonpath")
@@ -54,7 +59,8 @@ struct CirclesTabbedInterface: View {
                 }
                 .tag(Tab.people)
             
-            GroupsOverviewScreen(container: self.session.groups)
+            GroupsOverviewScreen(container: self.session.groups,
+                                 selected: $selectedGroupId)
                 .environmentObject(session)
                 .tabItem {
                     Image(systemName: "person.2.square.stack")
@@ -62,7 +68,8 @@ struct CirclesTabbedInterface: View {
                 }
                 .tag(Tab.groups)
             
-            PhotosOverviewScreen(container: self.session.galleries)
+            PhotosOverviewScreen(container: self.session.galleries,
+                                 selected: $selectedGalleryId)
                 .environmentObject(session)
                 .tabItem {
                     Image(systemName: "photo.fill.on.rectangle.fill")
@@ -107,12 +114,34 @@ struct CirclesTabbedInterface: View {
                 return
             }
             
+            guard let room = self.session.matrix.rooms[roomId]
+            else {
+                print("DEEPLINK Not in room \(roomId) -- Knocking on it")
+                knockRoomId = roomId
+                return
+            }
+            
             let prefix = url.pathComponents[1]
             switch prefix {
             
             case "timeline":
                 print("DEEPLINK Setting tab to Circles")
                 selection = .circles
+                
+                // Do we have a Circle space that contains the given room?
+                if let matchingSpace = session.circles.rooms.first(where: { space in
+                    // Does this Circle space contain the given room?
+                    let matchingRoom = space.rooms.first(where: {room in
+                        // Is this room the given room?
+                        room.roomId == roomId
+                    })
+                    return matchingRoom != nil
+                }) {
+                    print("DEEPLINKS CIRCLES Setting selected circle to \(matchingSpace.name ?? matchingSpace.roomId.stringValue)")
+                    selectedCircleId = matchingSpace.roomId
+                } else {
+                    print("DEEPLINKS CIRCLES Room \(roomId) is not one of ours")
+                }
             
             case "profile":
                 print("DEEPLINK Setting tab to People")
@@ -121,31 +150,35 @@ struct CirclesTabbedInterface: View {
             case "group":
                 print("DEEPLINK Setting tab to Groups")
                 selection = .groups
+                selectedGroupId = roomId
             
             case "gallery":
                 print("DEEPLINK Setting tab to Photos")
                 selection = .photos
+                selectedGalleryId = roomId
             
             case "room":
                 
-                // Are we already in this room?
-                if let room = self.session.matrix.rooms[roomId] {
-                    // We're in the room.  Let's see what type of room it is, and use that to set the selected tab.
-                    switch room.type {
-                    case ROOM_TYPE_CIRCLE:
-                        selection = .circles
-                    case "m.space":
-                        selection = .people
-                    case ROOM_TYPE_GROUP:
-                        selection = .groups
-                    case ROOM_TYPE_PHOTOS:
-                        selection = .photos
-                    default:
-                        print("DEEPLINK Room type doesn't match any of our tabs - doing nothing")
-                    }
-                } else {
-                    // We're not in the room, but we can knock on it to request access
-                    self.knockRoomId = roomId
+                // Let's see what type of room it is, and use that to set the selected tab.
+                switch room.type {
+                    
+                case ROOM_TYPE_CIRCLE:
+                    selection = .circles
+                    selectedCircleId = roomId
+                    
+                case "m.space":
+                    selection = .people
+                    
+                case ROOM_TYPE_GROUP:
+                    selection = .groups
+                    selectedGroupId = roomId
+                    
+                case ROOM_TYPE_PHOTOS:
+                    selection = .photos
+                    selectedGalleryId = roomId
+                    
+                default:
+                    print("DEEPLINK Room type doesn't match any of our tabs - doing nothing")
                 }
 
             default:

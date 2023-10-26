@@ -221,31 +221,6 @@ struct PeopleOverviewScreen: View {
                     followersSection
                 }
             }
-            .onOpenURL { url in
-                
-                guard let host = url.host(),
-                      CIRCLES_DOMAINS.contains(host),
-                      url.pathComponents.count >= 3,
-                      url.pathComponents[0] == "/",
-                      url.pathComponents[1] == "profile",
-                      let roomId = RoomId(url.pathComponents[2])
-                else {
-                    print("DEEPLINKS PEOPLE Not handling URL \(url)")
-                    return
-                }
-                
-                print("DEEPLINKS PEOPLE Found roomId \(roomId)")
-                
-                // Does any known user have this roomId as their profile?
-                if let roomFromUrl = people.rooms.first(where: { room in
-                    room.roomId == roomId
-                }) {
-                    print("DEEPLINKS PEOPLE Setting selected room to \(roomFromUrl.name ?? roomFromUrl.roomId.stringValue) (\(roomFromUrl.creator))")
-                    self.selectedUserId = roomFromUrl.creator
-                } else {
-                    print("DEEPLINKS PEOPLE Room \(roomId) is not one of ours")
-                }
-            }
             .navigationBarTitle("People", displayMode: .inline)
             
             Text("Select a profile to view additional information")
