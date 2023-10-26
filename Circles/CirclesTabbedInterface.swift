@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct CirclesTabbedInterface: View {
     @ObservedObject var store: CirclesStore
@@ -28,6 +29,7 @@ struct CirclesTabbedInterface: View {
     }
     
     @State private var selection: Tab = .home
+    @State var knockRoomId: RoomId?
 
     @ViewBuilder
     var tabview: some View {
@@ -85,6 +87,77 @@ struct CirclesTabbedInterface: View {
                 }
                 .tag(5)
             */
+        }
+        .onOpenURL{ url in
+            guard let host = url.host()
+            else {
+                print("DEEPLINK Not processing URL \(url) -- No host")
+                return
+            }
+            let components = url.pathComponents
+            
+            print("DEEPLINK URL: Host = \(host)")
+            print("DEEPLINK URL: Path = \(components)")
+            
+            guard let prefix = url.pathComponents.first
+            else {
+                print("DEEPLINK Not processing URL \(url) -- No first path component")
+                return
+            }
+            
+            switch prefix {
+            
+            case "timeline":
+                print("DEEPLINK Setting tab to Circles")
+                selection = .circles
+            
+            case "profile":
+                print("DEEPLINK Setting tab to People")
+                selection = .people
+            
+            case "group":
+                print("DEEPLINK Setting tab to Groups")
+                selection = .groups
+            
+            case "gallery":
+                print("DEEPLINK Setting tab to Photos")
+                selection = .photos
+            
+            case "room":
+                guard url.pathComponents.count >= 2,
+                      let roomId = RoomId(url.pathComponents[1])
+                else {
+                    print("DEEPLINK No valid roomId for /room URL")
+                    return
+                }
+                
+                // Are we already in this room?
+                if let room = self.session.matrix.rooms[roomId] {
+                    // We're in the room.  Let's see what type of room it is, and use that to set the selected tab.
+                    switch room.type {
+                    case ROOM_TYPE_CIRCLE:
+                        selection = .circles
+                    case "m.space":
+                        selection = .people
+                    case ROOM_TYPE_GROUP:
+                        selection = .groups
+                    case ROOM_TYPE_PHOTOS:
+                        selection = .photos
+                    default:
+                        print("DEEPLINK Room type doesn't match any of our tabs - doing nothing")
+                    }
+                } else {
+                    // We're not in the room, but we can knock on it to request access
+                    self.knockRoomId = roomId
+                }
+
+            default:
+                print("DEEPLINK Unknown URL prefix [\(prefix)]")
+            }
+            
+        }
+        .sheet(item: $knockRoomId) { roomId in
+            ScanQrCodeAndKnockSheet(session: self.session.matrix, roomId: roomId)
         }
 
     }

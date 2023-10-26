@@ -67,8 +67,25 @@ struct ScanQrCodeAndKnockSheet: View {
                         if let scannedRoomId = RoomId(scannedCode) {
                             print("QR code contains a valid roomId")
                             self.roomId = scannedRoomId
+                        } else if let firstToken = scannedCode.split(separator: " ").first,
+                                  let url = URL(string: firstToken.description)
+                        {
+                            print("QR code contains a valid URL \(url)")
+                            guard let host = url.host(),
+                                  CIRCLES_DOMAINS.contains(host)
+                            else {
+                                print("QR code URL is not for one of our domains (found \(url.host() ?? "nil"))")
+                                return
+                            }
+                            for component in url.pathComponents {
+                                if let pathRoomId = RoomId(component) {
+                                    print("Found roomId \(pathRoomId) in QR code URL path")
+                                    self.roomId = pathRoomId
+                                    return
+                                }
+                            }
                         } else {
-                            print("Not a valid roomId: \(scannedCode)")
+                            print("QR does not contain a valid roomId: \(scannedCode)")
                         }
                     } else {
                         print("QR code scanning failed")

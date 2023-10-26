@@ -156,7 +156,8 @@ struct GroupTimelineScreen: View {
                             MessageComposerSheet(room: room, parentMessage: nilParentMessage, galleries: galleries)
                             
                         case .qrCode:
-                            RoomQrCodeSheet(room: room)
+                            let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/group/\(room.roomId.stringValue)")
+                            RoomQrCodeSheet(room: room, url: url)
                         }
                     }
             }

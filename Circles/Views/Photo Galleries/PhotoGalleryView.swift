@@ -138,7 +138,8 @@ struct PhotoGalleryView: View {
                 case .invite:
                     RoomInviteSheet(room: self.room)
                 case .showQr:
-                    RoomQrCodeSheet(room: self.room)
+                    let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/gallery/\(room.roomId.stringValue)")
+                    RoomQrCodeSheet(room: self.room, url: url)
                 }
             }
             .photosPicker(isPresented: $showCoverImagePicker, selection: $avatarItem, matching: .images)
