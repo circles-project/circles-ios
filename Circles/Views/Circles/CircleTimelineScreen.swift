@@ -136,8 +136,10 @@ struct CircleTimelineScreen: View {
                         MessageComposerSheet(room: space.wall!, galleries: galleries)
                     
                     case .showQr:
-                        if let wall = space.wall {
-                            RoomQrCodeSheet(room: wall)
+                        if let wall = space.wall,
+                           let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/timeline/\(wall.roomId.stringValue)")
+                        {
+                            RoomQrCodeSheet(room: wall, url: url)
                         } else {
                             Text("Error: Unable to generate QR code")
                                 .foregroundColor(.red)

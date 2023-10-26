@@ -10,7 +10,20 @@ import Matrix
 
 struct RoomQrCodeSheet: View {
     @ObservedObject var room: Matrix.Room
+    var url: URL?
     @Environment(\.presentationMode) var presentation
+    
+    var qrImage: UIImage? {
+        if let url = self.url,
+           let urlQR = qrCode(url: url)
+        {
+            return urlQR
+        } else if let roomQR = room.qrImage {
+            return roomQR
+        } else {
+            return nil
+        }
+    }
     
     var body: some View {
         VStack {
@@ -31,9 +44,9 @@ struct RoomQrCodeSheet: View {
             .padding()
             
             Spacer()
-            
-            if let qrImage = room.qrImage {
-                Image(uiImage: qrImage)
+
+            if let image =  qrImage {
+                Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 240, height: 240)

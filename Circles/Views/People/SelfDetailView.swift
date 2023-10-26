@@ -26,7 +26,7 @@ struct SelfDetailView: View {
                         Image(uiImage: matrix.avatar ?? UIImage(systemName: "person.circle")!)
                             .resizable()
                             .scaledToFill()
-                            .frame(width: 180, height: 180)
+                            .frame(width: 240, height: 240)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                         
                         Text(matrix.displayName ?? matrix.creds.userId.username)
@@ -37,12 +37,14 @@ struct SelfDetailView: View {
                             .font(.subheadline)
                             .foregroundColor(.gray)
                         
-                        if let qr = profile.qrImage {
+                        if let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/profile/\(profile.roomId.stringValue)"),
+                           let qr = qrCode(url: url)
+                        {
                              Image(uiImage: qr)
-                                //.resizable()
-                                //.scaledToFit()
-                                //.frame(width: 120, height: 120)
-                                .border(Color.red)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 180, height: 180)
+                                //.border(Color.red)
                          } else {
                              Text("🙁 Failed to generate QR code")
                          }

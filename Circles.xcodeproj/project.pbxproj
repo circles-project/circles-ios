@@ -131,6 +131,7 @@
 		A55F367329EDB66300F46971 /* GalleryInviteCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55F367229EDB66300F46971 /* GalleryInviteCard.swift */; };
 		A55F367529EEE7EA00F46971 /* PhotoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55F367429EEE7EA00F46971 /* PhotoDetailView.swift */; };
 		A55F367729EEFB6900F46971 /* PhotoContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55F367629EEFB6900F46971 /* PhotoContextMenu.swift */; };
+		A565935F2AEAC4920003C244 /* QR.swift in Sources */ = {isa = PBXBuildFile; fileRef = A565935E2AEAC4920003C244 /* QR.swift */; };
 		A56BE1722AD5CBD200B15F51 /* RoomKnockIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56BE1712AD5CBD200B15F51 /* RoomKnockIndicator.swift */; };
 		A56BE1742AD5CEFA00B15F51 /* RoomKnockDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56BE1732AD5CEFA00B15F51 /* RoomKnockDetailsView.swift */; };
 		A56BE1762AD5D0E900B15F51 /* KnockingUserCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56BE1752AD5D0E900B15F51 /* KnockingUserCard.swift */; };
@@ -303,6 +304,7 @@
 		A55F367229EDB66300F46971 /* GalleryInviteCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryInviteCard.swift; sourceTree = "<group>"; };
 		A55F367429EEE7EA00F46971 /* PhotoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailView.swift; sourceTree = "<group>"; };
 		A55F367629EEFB6900F46971 /* PhotoContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoContextMenu.swift; sourceTree = "<group>"; };
+		A565935E2AEAC4920003C244 /* QR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QR.swift; sourceTree = "<group>"; };
 		A56BE1712AD5CBD200B15F51 /* RoomKnockIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomKnockIndicator.swift; sourceTree = "<group>"; };
 		A56BE1732AD5CEFA00B15F51 /* RoomKnockDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomKnockDetailsView.swift; sourceTree = "<group>"; };
 		A56BE1752AD5D0E900B15F51 /* KnockingUserCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnockingUserCard.swift; sourceTree = "<group>"; };
@@ -432,29 +434,30 @@
 		409F42E0265DDFE300690A61 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				A5CC0ACA29D91F3D005935F0 /* zxcvbn */,
-				A5E101F52814FABC000B2C42 /* BCrypt */,
 				40878FBB268E4D9000A66EF0 /* AppStoreInterface.swift */,
+				A509B89B2818A1F80053E5BC /* Array+Extension.swift */,
 				409F42E2265DE00700690A61 /* Array+Sample.swift */,
+				A504DA7228120AF100EFF42E /* AsyncButton.swift */,
+				A5E101F52814FABC000B2C42 /* BCrypt */,
 				40AEA6722678E24100C9CBD1 /* BlurHashDecode.swift */,
 				40AEA6732678E24200C9CBD1 /* BlurHashEncode.swift */,
 				409F4325265DE12600690A61 /* CloudImagePicker.swift */,
+				A52DF68F29E8AB52008860C3 /* Color+background.swift */,
 				4012C54826A752C400BB15E6 /* EmojiPicker.swift */,
+				A5A40B6229D46ABD009A17EE /* HtmlView.swift */,
 				409F4313265DE0F300690A61 /* ImagePicker.swift */,
 				409F4314265DE0F400690A61 /* ImageSaver.swift */,
+				A52DF68429E72CC1008860C3 /* Keychain.swift */,
+				A53EAC562A6F037D00EF18B7 /* LegacySecretStoreKeygen.swift */,
+				A520B6782A9410BE002D88C8 /* Movie.swift */,
 				40CD7F6B2667D3B600DE315F /* PhotoPicker.swift */,
 				4047F3DD26B895B80010B2C3 /* SecureFieldWithEye.swift */,
+				A5D2A3F529C0EED700428C45 /* Sequence+asyncMap.swift */,
 				409F42E5265DE03B00690A61 /* Utils.swift */,
 				40CD7F6E2667E16100DE315F /* VideoPicker.swift */,
 				409F42E8265DE06C00690A61 /* WebView.swift */,
-				A504DA7228120AF100EFF42E /* AsyncButton.swift */,
-				A509B89B2818A1F80053E5BC /* Array+Extension.swift */,
-				A5D2A3F529C0EED700428C45 /* Sequence+asyncMap.swift */,
-				A5A40B6229D46ABD009A17EE /* HtmlView.swift */,
-				A52DF68429E72CC1008860C3 /* Keychain.swift */,
-				A52DF68F29E8AB52008860C3 /* Color+background.swift */,
-				A53EAC562A6F037D00EF18B7 /* LegacySecretStoreKeygen.swift */,
-				A520B6782A9410BE002D88C8 /* Movie.swift */,
+				A5CC0ACA29D91F3D005935F0 /* zxcvbn */,
+				A565935E2AEAC4920003C244 /* QR.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -958,6 +961,7 @@
 				A53E91222A5623F9007B0196 /* ProfileSettingsView.swift in Sources */,
 				409F4315265DE0F400690A61 /* ImagePicker.swift in Sources */,
 				409F4338265DE15F00690A61 /* CircleConnectionsSheet.swift in Sources */,
+				A565935F2AEAC4920003C244 /* QR.swift in Sources */,
 				A52DF68129E59A81008860C3 /* RoomAvatar.swift in Sources */,
 				A52DF68A29E8868C008860C3 /* MessageView.swift in Sources */,
 				409F4385265DE2A400690A61 /* RoomMessageComposer.swift in Sources */,
