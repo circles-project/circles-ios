@@ -1,3 +1,8 @@
+# main
+* Initial support for handling deep links
+* Support for handling QR codes containing deep links
+* Generate QR codes in the new deep link format
+
 # 0.7.0
 * Bugfix: Load emoji reactions correctly
 * Improve pinch-to-zoom for photo galleries
