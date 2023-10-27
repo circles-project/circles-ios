@@ -16,7 +16,7 @@ enum GallerySheetType: String {
     //case settings
     //case avatar
     case invite
-    case showQr
+    case share
 }
 extension GallerySheetType: Identifiable {
     var id: String { rawValue }
@@ -48,8 +48,8 @@ struct PhotoGalleryView: View {
                 }
             }
             
-            Button(action: { self.sheetType = .showQr }) {
-                Label("Show QR code", systemImage: "qrcode")
+            Button(action: { self.sheetType = .share }) {
+                Label("Share", systemImage: "square.and.arrow.up")
             }
             
             if room.iCanInvite {
@@ -137,9 +137,9 @@ struct PhotoGalleryView: View {
                 switch(st) {
                 case .invite:
                     RoomInviteSheet(room: self.room)
-                case .showQr:
+                case .share:
                     let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/gallery/\(room.roomId.stringValue)")
-                    RoomQrCodeSheet(room: self.room, url: url)
+                    RoomShareSheet(room: self.room, url: url)
                 }
             }
             .photosPicker(isPresented: $showCoverImagePicker, selection: $avatarItem, matching: .images)

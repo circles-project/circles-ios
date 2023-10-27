@@ -26,7 +26,7 @@ struct PeopleOverviewScreen: View {
     enum SheetType: String, Identifiable {
         case invite
         case scanQr
-        case showQr
+        case share
         
         var id: String {
             self.rawValue
@@ -84,8 +84,8 @@ struct PeopleOverviewScreen: View {
                     Button(action: { self.sheetType = .invite }) {
                         Label("Invite friends to connect", systemImage: "person.2.fill")
                     }
-                    Button(action: { self.sheetType = .showQr }) {
-                        Label("Show my QR code", systemImage: "qrcode")
+                    Button(action: { self.sheetType = .share }) {
+                        Label("Share my profile", systemImage: "square.and.arrow.up")
                     }
                     Button(action: { self.sheetType = .scanQr }) {
                         Label("Scan a friend's QR code", systemImage: "qrcode.viewfinder")
@@ -128,8 +128,8 @@ struct PeopleOverviewScreen: View {
                 RoomInviteSheet(room: profile, title: "Invite friends to connect")
             case .scanQr:
                 ScanQrCodeAndKnockSheet(session: profile.session)
-            case .showQr:
-                RoomQrCodeSheet(room: profile)
+            case .share:
+                RoomShareSheet(room: profile)
             }
         }
 

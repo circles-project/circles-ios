@@ -8,7 +8,7 @@
 import SwiftUI
 import Matrix
 
-struct RoomQrCodeSheet: View {
+struct RoomShareSheet: View {
     @ObservedObject var room: Matrix.Room
     var url: URL?
     @Environment(\.presentationMode) var presentation
