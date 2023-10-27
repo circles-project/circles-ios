@@ -16,7 +16,7 @@ enum GroupScreenSheetType: String {
     case configure
     case security
     case composer
-    case qrCode
+    case share
     //case pickHeaderImage
     //case pickProfileImage
     //case pickMessageImage
@@ -97,9 +97,9 @@ struct GroupTimelineScreen: View {
             }
             
             Button(action: {
-                self.sheetType = .qrCode
+                self.sheetType = .share
             }) {
-                Label("Show QR code", systemImage: "qrcode")
+                Label("Share", systemImage: "square.and.arrow.up")
             }
             
             Button(action: {
@@ -155,9 +155,9 @@ struct GroupTimelineScreen: View {
                         case .composer:
                             MessageComposerSheet(room: room, parentMessage: nilParentMessage, galleries: galleries)
                             
-                        case .qrCode:
+                        case .share:
                             let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/group/\(room.roomId.stringValue)")
-                            RoomQrCodeSheet(room: room, url: url)
+                            RoomShareSheet(room: room, url: url)
                         }
                     }
             }

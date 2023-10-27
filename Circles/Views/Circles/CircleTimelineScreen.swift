@@ -16,7 +16,7 @@ enum CircleSheetType: String {
     case invite
     //case photo
     case composer
-    case showQr
+    case share
 }
 extension CircleSheetType: Identifiable {
     var id: String { rawValue }
@@ -67,8 +67,8 @@ struct CircleTimelineScreen: View {
                 Label("Post a New Message", systemImage: "plus.bubble")
             }
             
-            Button(action: {self.sheetType = .showQr}) {
-                Label("Show QR code", systemImage: "qrcode")
+            Button(action: {self.sheetType = .share}) {
+                Label("Share", systemImage: "square.and.arrow.up")
             }
         }
         label: {
@@ -135,11 +135,11 @@ struct CircleTimelineScreen: View {
                     case .composer:
                         MessageComposerSheet(room: space.wall!, galleries: galleries)
                     
-                    case .showQr:
+                    case .share:
                         if let wall = space.wall,
                            let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/timeline/\(wall.roomId.stringValue)")
                         {
-                            RoomQrCodeSheet(room: wall, url: url)
+                            RoomShareSheet(room: wall, url: url)
                         } else {
                             Text("Error: Unable to generate QR code")
                                 .foregroundColor(.red)
