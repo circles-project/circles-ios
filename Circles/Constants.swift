@@ -24,6 +24,8 @@ let ROOM_TAG_MY_PROFILE = "org.futo.space.circles.shared"
 let ROOM_TYPE_CIRCLE = APP_PREFIX+".social.timeline"
 let ROOM_TYPE_GROUP = APP_PREFIX+".social.group"
 let ROOM_TYPE_PHOTOS = APP_PREFIX+".social.gallery"
+let ROOM_TYPE_PROFILE = "m.space"
+let ROOM_TYPE_SPACE = "m.space"
 
 //var CIRCLES_DEBUG = false
 
