@@ -13,6 +13,8 @@ struct RoomQrCodeSheet: View {
     var url: URL?
     @Environment(\.presentationMode) var presentation
     
+    @State var copied = false
+    
     var qrImage: UIImage? {
         if let url = self.url,
            let urlQR = qrCode(url: url)
@@ -42,6 +44,32 @@ struct RoomQrCodeSheet: View {
                 
             }
             .padding()
+            
+            Text(room.roomId.stringValue)
+                .font(.subheadline)
+                .fontWeight(.light)
+            
+            if copied {
+                Button(action: {}) {
+                    Text("Copied!")
+                        .frame(width: 220, height: 30)
+                }
+                .buttonStyle(.bordered)
+                .task {
+                    try? await Task.sleep(for: .seconds(2))
+                    copied = false
+                }
+            } else {
+                Button(action: {
+                    let pasteboard = UIPasteboard.general
+                    pasteboard.url = url
+                    copied = true
+                }) {
+                    Label("Copy URL to clipboard", systemImage: "doc.on.doc")
+                        .frame(width: 220, height: 30)
+                }
+                .buttonStyle(.bordered)
+            }
             
             Spacer()
 
