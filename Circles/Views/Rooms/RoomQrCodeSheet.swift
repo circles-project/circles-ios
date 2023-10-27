@@ -49,6 +49,7 @@ struct RoomQrCodeSheet: View {
                 .font(.subheadline)
                 .fontWeight(.light)
             
+            /*
             if copied {
                 Button(action: {}) {
                     Text("Copied!")
@@ -70,6 +71,10 @@ struct RoomQrCodeSheet: View {
                 }
                 .buttonStyle(.bordered)
             }
+            */
+            
+            ShareLink("Share link", item: room.url)
+                .buttonStyle(.bordered)
             
             Spacer()
 
