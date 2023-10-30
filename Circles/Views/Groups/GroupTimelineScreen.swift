@@ -33,6 +33,7 @@ struct GroupTimelineScreen: View {
     //@ObservedObject var group: SocialGroup
     @Environment(\.presentationMode) var presentation
     @EnvironmentObject var galleries: ContainerRoom<GalleryRoom>
+    @AppStorage("debugMode") var debugMode: Bool = false
     
     @State var showComposer = false
 
@@ -102,10 +103,12 @@ struct GroupTimelineScreen: View {
                 Label("Share", systemImage: "square.and.arrow.up")
             }
             
-            Button(action: {
-                self.sheetType = .security
-            }) {
-                Label("Security", systemImage: "shield.fill")
+            if debugMode {
+                Button(action: {
+                    self.sheetType = .security
+                }) {
+                    Label("Security", systemImage: "shield.fill")
+                }
             }
             
         }
