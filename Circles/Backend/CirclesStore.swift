@@ -23,7 +23,8 @@ public class CirclesStore: ObservableObject {
     enum State {
         case starting
         case nothing(CirclesError?)
-        case loggingIn(LoginSession) // Because /login can now take more than a simple username/password
+        case loggingInUIA(UiaLoginSession) // Because /login can now take more than a simple username/password
+        case loggingInNonUIA(LegacyLoginSession)    // For accounts without fancy swiclops authentication
         case haveCreds(Matrix.Credentials)
         case needSSKey(Matrix.Session,String,KeyDescriptionContent)
         case online(CirclesApplicationSession)
@@ -279,40 +280,65 @@ public class CirclesStore: ObservableObject {
             return
         }
         
-        let loginSession = try await LoginSession(userId: userId, completion: { session, data in
-            self.logger.debug("Login was successful")
-            
-            let decoder = JSONDecoder()
-            guard let creds = try? decoder.decode(Matrix.Credentials.self, from: data)
-            else {
-                self.logger.error("Failed to decode credentials")
-                await MainActor.run {
-                    self.state = .nothing(CirclesError("Failed to decode credentials"))
+        // Second - Check wether the server supports UIA on /login
+        guard let wellKnown = try? await Matrix.fetchWellKnown(for: userId.domain),
+              let serverURL = URL(string: wellKnown.homeserver.baseUrl)
+        else {
+            logger.error("Failed to look up a valid homeserver URL for domain \(userId.domain)")
+            throw CirclesError("Failed to look up well known")
+        }
+        
+        let doUIA = try await Matrix.checkForUiaLogin(homeserver: serverURL)
+        
+        if doUIA {
+            // Start the User-Interactive Auth with a LoginSession
+            let loginSession = try await UiaLoginSession(userId: userId, completion: { session, data in
+                self.logger.debug("Login was successful")
+                
+                let decoder = JSONDecoder()
+                guard let creds = try? decoder.decode(Matrix.Credentials.self, from: data)
+                else {
+                    self.logger.error("Failed to decode credentials")
+                    await MainActor.run {
+                        self.state = .nothing(CirclesError("Failed to decode credentials"))
+                    }
+                    return
                 }
-                return
+                self.saveCredentials(creds: creds)
+                //try await self.connect(creds: creds)
+                
+                // Check for a BS-SPEKE session, and if we have one, use it to generate our SSSS key
+                if let bsspeke = session.getBSSpekeClient() {
+                    self.logger.debug("Got BS-SPEKE client")
+                    let s4Key = try self.generateS4Key(bsspeke: bsspeke)
+                    self.logger.debug("BS-SPEKE key: id = \(s4Key.keyId), key = \(s4Key.key.base64EncodedString())")
+                    
+                    // Save the keys into our device Keychain, so they will be available to future Matrix sessions where we load creds and connect, without logging in
+                    let store = Matrix.KeychainSecretStore(userId: creds.userId)
+                    try await store.saveKey(key: s4Key.key, keyId: s4Key.keyId)
+                    
+                    self.logger.debug("Connecting with keyId [\(s4Key.keyId)]")
+                    try await self.connect(creds: creds, s4Key: s4Key)
+                } else {
+                    self.logger.warning("Could not find BS-SPEKE client")
+                    try await self.connect(creds: creds)
+                }
+            })
+            await MainActor.run {
+                self.state = .loggingInUIA(loginSession)
             }
-            self.saveCredentials(creds: creds)
-            //try await self.connect(creds: creds)
             
-            // Check for a BS-SPEKE session, and if we have one, use it to generate our SSSS key
-            if let bsspeke = session.getBSSpekeClient() {
-                self.logger.debug("Got BS-SPEKE client")
-                let s4Key = try self.generateS4Key(bsspeke: bsspeke)
-                self.logger.debug("BS-SPEKE key: id = \(s4Key.keyId), key = \(s4Key.key.base64EncodedString())")
-
-                // Save the keys into our device Keychain, so they will be available to future Matrix sessions where we load creds and connect, without logging in
-                let store = Matrix.KeychainSecretStore(userId: creds.userId)
-                try await store.saveKey(key: s4Key.key, keyId: s4Key.keyId)
-
-                self.logger.debug("Connecting with keyId [\(s4Key.keyId)]")
-                try await self.connect(creds: creds, s4Key: s4Key)
-            } else {
-                self.logger.warning("Could not find BS-SPEKE client")
+        } else {
+            // No UIA
+            
+            let loginSession = LegacyLoginSession(userId: userId, completion: { creds in
+                self.saveCredentials(creds: creds)
                 try await self.connect(creds: creds)
+            })
+            
+            await MainActor.run {
+                self.state = .loggingInNonUIA(loginSession)
             }
-        })
-        await MainActor.run {
-            self.state = .loggingIn(loginSession)
         }
     }
     

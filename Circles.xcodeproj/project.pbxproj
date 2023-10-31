@@ -47,7 +47,7 @@
 		409F4344265DE17500690A61 /* GroupConfigSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F433E265DE17500690A61 /* GroupConfigSheet.swift */; };
 		409F4345265DE17500690A61 /* GroupsOverviewScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F433F265DE17500690A61 /* GroupsOverviewScreen.swift */; };
 		409F435B265DE1EE00690A61 /* LoggedOutScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4359265DE1EE00690A61 /* LoggedOutScreen.swift */; };
-		409F435C265DE1EE00690A61 /* LoginScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F435A265DE1EE00690A61 /* LoginScreen.swift */; };
+		409F435C265DE1EE00690A61 /* UiaLoginScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F435A265DE1EE00690A61 /* UiaLoginScreen.swift */; };
 		409F4362265DE21A00690A61 /* MessageCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F435F265DE21900690A61 /* MessageCard.swift */; };
 		409F4363265DE21A00690A61 /* MessageAuthorHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4360265DE21A00690A61 /* MessageAuthorHeader.swift */; };
 		409F4364265DE21A00690A61 /* MessageReportingSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4361265DE21A00690A61 /* MessageReportingSheet.swift */; };
@@ -133,6 +133,7 @@
 		A55F367729EEFB6900F46971 /* PhotoContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55F367629EEFB6900F46971 /* PhotoContextMenu.swift */; };
 		A565935F2AEAC4920003C244 /* QR.swift in Sources */ = {isa = PBXBuildFile; fileRef = A565935E2AEAC4920003C244 /* QR.swift */; };
 		A56593612AEBE5D30003C244 /* Room+URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56593602AEBE5D30003C244 /* Room+URL.swift */; };
+		A56593632AF17EF90003C244 /* LegacyLoginScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56593622AF17EF90003C244 /* LegacyLoginScreen.swift */; };
 		A56BE1722AD5CBD200B15F51 /* RoomKnockIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56BE1712AD5CBD200B15F51 /* RoomKnockIndicator.swift */; };
 		A56BE1742AD5CEFA00B15F51 /* RoomKnockDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56BE1732AD5CEFA00B15F51 /* RoomKnockDetailsView.swift */; };
 		A56BE1762AD5D0E900B15F51 /* KnockingUserCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56BE1752AD5D0E900B15F51 /* KnockingUserCard.swift */; };
@@ -224,7 +225,7 @@
 		409F433E265DE17500690A61 /* GroupConfigSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupConfigSheet.swift; sourceTree = "<group>"; };
 		409F433F265DE17500690A61 /* GroupsOverviewScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupsOverviewScreen.swift; sourceTree = "<group>"; };
 		409F4359265DE1EE00690A61 /* LoggedOutScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggedOutScreen.swift; sourceTree = "<group>"; };
-		409F435A265DE1EE00690A61 /* LoginScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginScreen.swift; sourceTree = "<group>"; };
+		409F435A265DE1EE00690A61 /* UiaLoginScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiaLoginScreen.swift; sourceTree = "<group>"; };
 		409F435F265DE21900690A61 /* MessageCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageCard.swift; sourceTree = "<group>"; };
 		409F4360265DE21A00690A61 /* MessageAuthorHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageAuthorHeader.swift; sourceTree = "<group>"; };
 		409F4361265DE21A00690A61 /* MessageReportingSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageReportingSheet.swift; sourceTree = "<group>"; };
@@ -307,6 +308,7 @@
 		A55F367629EEFB6900F46971 /* PhotoContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoContextMenu.swift; sourceTree = "<group>"; };
 		A565935E2AEAC4920003C244 /* QR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QR.swift; sourceTree = "<group>"; };
 		A56593602AEBE5D30003C244 /* Room+URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Room+URL.swift"; sourceTree = "<group>"; };
+		A56593622AF17EF90003C244 /* LegacyLoginScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyLoginScreen.swift; sourceTree = "<group>"; };
 		A56BE1712AD5CBD200B15F51 /* RoomKnockIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomKnockIndicator.swift; sourceTree = "<group>"; };
 		A56BE1732AD5CEFA00B15F51 /* RoomKnockDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomKnockDetailsView.swift; sourceTree = "<group>"; };
 		A56BE1752AD5D0E900B15F51 /* KnockingUserCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnockingUserCard.swift; sourceTree = "<group>"; };
@@ -567,9 +569,10 @@
 			isa = PBXGroup;
 			children = (
 				409F4359265DE1EE00690A61 /* LoggedOutScreen.swift */,
-				409F435A265DE1EE00690A61 /* LoginScreen.swift */,
+				409F435A265DE1EE00690A61 /* UiaLoginScreen.swift */,
 				A54BA3A52851222200453D5E /* WelcomeScreen.swift */,
 				A55B8F1D2A8D761A00BAA1FD /* SecretStoragePasswordScreen.swift */,
+				A56593622AF17EF90003C244 /* LegacyLoginScreen.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -876,6 +879,7 @@
 				409F4340265DE17500690A61 /* GroupCreationSheet.swift in Sources */,
 				409F4364265DE21A00690A61 /* MessageReportingSheet.swift in Sources */,
 				4C40ED262AA7CCFB00F58493 /* GalleryInvitationsIndicator.swift in Sources */,
+				A56593632AF17EF90003C244 /* LegacyLoginScreen.swift in Sources */,
 				40F906BB269DF96100287B27 /* MessageSheetType.swift in Sources */,
 				A54346C32A3B785A0025D147 /* GalleryGridView.swift in Sources */,
 				409F43A7265DE43B00690A61 /* RoomMembersSheet.swift in Sources */,
@@ -896,7 +900,7 @@
 				A52C77542A89CCB8005D2C0B /* MessageThumbnail.swift in Sources */,
 				A5EE59C52A5F21C2007C24C7 /* DeviceInfoView.swift in Sources */,
 				40AEA6752678E24200C9CBD1 /* BlurHashEncode.swift in Sources */,
-				409F435C265DE1EE00690A61 /* LoginScreen.swift in Sources */,
+				409F435C265DE1EE00690A61 /* UiaLoginScreen.swift in Sources */,
 				409F4335265DE15F00690A61 /* CirclePicker.swift in Sources */,
 				A521C3F72A68D9390051ED88 /* CircleInvitationsIndicator.swift in Sources */,
 				409F42E9265DE06C00690A61 /* WebView.swift in Sources */,
@@ -1276,7 +1280,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://gitlab.futo.org/circles/matrix.swift.git";
 			requirement = {
-				branch = main;
+				branch = "cvwright/self-hosting";
 				kind = branch;
 			};
 		};

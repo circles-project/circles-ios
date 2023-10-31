@@ -10,8 +10,8 @@ import SwiftUI
 import StoreKit
 import Matrix
 
-struct LoginScreen: View {
-    @ObservedObject var session: LoginSession
+struct UiaLoginScreen: View {
+    @ObservedObject var session: UiaLoginSession
     var store: CirclesStore
     @State var password = ""
     
