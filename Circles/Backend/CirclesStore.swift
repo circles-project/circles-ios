@@ -331,10 +331,16 @@ public class CirclesStore: ObservableObject {
         } else {
             // No UIA
             
-            let loginSession = LegacyLoginSession(userId: userId, completion: { creds in
-                self.saveCredentials(creds: creds)
-                try await self.connect(creds: creds)
-            })
+            let loginSession = LegacyLoginSession(userId: userId, 
+                                                  completion: { creds in
+                                                        self.saveCredentials(creds: creds)
+                                                        try await self.connect(creds: creds)
+                                                    },
+                                                  cancellation: {
+                                                        await MainActor.run {
+                                                            self.state = .nothing(nil)
+                                                        }
+                                                    })
             
             await MainActor.run {
                 self.state = .loggingInNonUIA(loginSession)

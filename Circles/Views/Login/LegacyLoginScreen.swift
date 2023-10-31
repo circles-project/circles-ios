@@ -15,15 +15,28 @@ struct LegacyLoginScreen: View {
     
     var body: some View {
         VStack {
+            Spacer()
+            
             Text("Enter password for \(session.userId.stringValue)")
+                .font(.title2)
+                .fontWeight(.bold)
             
             SecureFieldWithEye(label: "Password", text: $password, showText: showPassword)
-                .onSubmit {
-                    Task {
-                        try await session.login(password: password)
-                    }
-                }
+                .frame(width: 300, height: 40)
+                        
+            AsyncButton(action: {
+                try await session.login(password: password)
+            }) {
+                Text("Log In")
+            }
+            
+            Spacer()
+
+            Button(role: .destructive, action: {}) {
+                Text("Cancel")
+            }
         }
+        .padding()
     }
 }
 
