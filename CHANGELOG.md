@@ -1,4 +1,6 @@
-# main
+# v0.7.1
+* Only show the Group security sheet when in debug mode
+* Added share by link
 * MSC3061: Provide keys for older messages when inviting a new user
 * Initial support for handling deep links
 * Support for handling QR codes containing deep links
