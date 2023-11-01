@@ -1,4 +1,7 @@
-# v0.7.1
+# 0.8.0
+* Added support for regular Matrix accounts on other servers
+
+# 0.7.1
 * Only show the Group security sheet when in debug mode
 * Added share by link
 * MSC3061: Provide keys for older messages when inviting a new user
