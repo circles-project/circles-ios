@@ -19,6 +19,8 @@ struct SecretStoragePasswordScreen: View {
     @AppStorage("debugMode") var debugMode: Bool = false
     
     @State var password = ""
+    @State var base58Key = ""
+    
     @State var showAlert = false
     @State var alertMessage = ""
     @State var alertTitle = ""
@@ -42,8 +44,13 @@ struct SecretStoragePasswordScreen: View {
                info.algorithm == M_PBKDF2
             {
                 
-                Text("Circles needs your passphrase to enable secret storage for this account")
+                Text("Please enter your passphrase for secure backup and recovery")
                     .font(.title2)
+                
+                Text("Note: This passphrase is typically not the same as your login password")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                    .padding()
                 
                 Spacer()
                 
@@ -61,6 +68,7 @@ struct SecretStoragePasswordScreen: View {
                         print("Boo: PBKDF2 key doesn't match :-(")
                         self.showAlert = true
                         self.alertMessage = "Failed to enable secret storage"
+                        self.alertTitle = "Key generation failed"
                         return
                     }
                     print("Yay! PBKDF2 key matches!")
@@ -73,28 +81,36 @@ struct SecretStoragePasswordScreen: View {
                         .background(Color.accentColor)
                         .cornerRadius(10)
                 }
-                .alert("Key generation failed",
-                       isPresented: $showAlert,
-                       actions: {
-                            Button(action: {
-                                self.password = ""
-                            }) {
-                                Text("Try again")
-                            }
-                    
-                            AsyncButton(role: .cancel, action: {
-                                try await store.logout()
-                            }) {
-                                Text("Cancel")
-                            }
-                       },
-                       message: {
-                           Text(alertMessage)
-                       }
-                )
                 
             } else {
-                Label("Sorry, Circles cannot connect to the secret storage in this account", systemImage: "exclamationmark.triangle")
+                Text("Please enter the secure backup key for this account")
+                    .font(.title2)
+                
+                TextField("abcd 1234 wxyz 4567 ...", text: $base58Key, prompt: Text("Backup key"))
+                
+                AsyncButton(action: {
+                    
+                    guard let key = try? Matrix.SecretStorageKey(raw: base58Key, keyId: keyId, description: description)
+                    else {
+                        await MainActor.run {
+                            self.base58Key = ""
+                            self.alertTitle = "Invalid backup key"
+                            self.alertMessage = "There was an error processing your backup key.  Please double check your key and try again."
+                            self.showAlert = true
+                        }
+                        return
+                    }
+                    
+                    
+                }) {
+                    Text("Submit")
+                        .padding()
+                        .frame(width: 300.0, height: 40.0)
+                        .foregroundColor(.white)
+                        .background(Color.accentColor)
+                        .cornerRadius(10)
+                }
+                .disabled(base58Key.isEmpty)
             }
             
             AsyncButton(role: .destructive, action: {
@@ -107,6 +123,25 @@ struct SecretStoragePasswordScreen: View {
                 //.background(Color.red)
                     .cornerRadius(10)
             }
+            .alert(self.alertTitle,
+                   isPresented: $showAlert,
+                   actions: {
+                        Button(action: {
+                            self.password = ""
+                        }) {
+                            Text("Try again")
+                        }
+                
+                        AsyncButton(role: .cancel, action: {
+                            try await store.logout()
+                        }) {
+                            Text("Cancel")
+                        }
+                   },
+                   message: {
+                       Text(alertMessage)
+                   }
+            )
             
             Spacer()
             
