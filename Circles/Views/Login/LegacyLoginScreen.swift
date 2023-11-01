@@ -28,6 +28,11 @@ struct LegacyLoginScreen: View {
                 try await session.login(password: password)
             }) {
                 Text("Log In")
+                    .padding()
+                    .frame(width: 300.0, height: 40.0)
+                    .foregroundColor(.white)
+                    .background(Color.accentColor)
+                    .cornerRadius(10)
             }
             
             Spacer()
