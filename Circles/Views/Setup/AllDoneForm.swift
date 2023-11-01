@@ -10,7 +10,8 @@ import Matrix
 
 struct AllDoneForm: View {
     var store: CirclesStore
-    let userId: UserId
+    var matrix: Matrix.Client
+    var config: CirclesConfigContent
 
     @State var pending = false
 
@@ -20,26 +21,30 @@ struct AllDoneForm: View {
 
             Spacer()
 
-            Text("Registration is complete!")
+            Text("Circles is all set up!")
                 .font(.title)
                 .fontWeight(.bold)
 
 
             Spacer()
             Text("Your user ID is:")
-            Text("\(userId.description)")
+            Text("\(matrix.creds.userId.description)")
                     .fontWeight(.bold)
 
             Spacer()
 
             AsyncButton(action: {
-                do {
-                    try await store.logout()
-                } catch {
-                    
+                // Are we running on an already-fully-set-up account with a stateful session that's already running?
+                if let session = matrix as? Matrix.Session {
+                    // If so, then don't log us out -- just launch the full app interface
+                    try await store.launch(matrix: session, config: config)
+                } else {
+                    // Otherwise, we must be running with a lightweight REST client in the setup UI
+                    // Send the user back to the login screen
+                    try await store.disconnect()
                 }
             }) {
-                Text("Next: Log in")
+                Text("Get Started")
                     .padding()
                     .frame(width: 300.0, height: 40.0)
                     .foregroundColor(.white)

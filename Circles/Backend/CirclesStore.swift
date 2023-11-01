@@ -23,13 +23,13 @@ public class CirclesStore: ObservableObject {
     enum State {
         case starting
         case nothing(CirclesError?)
-        case loggingInUIA(UiaLoginSession) // Because /login can now take more than a simple username/password
+        case signingUp(SignupSession)
+        case loggingInUIA(UiaLoginSession)          // Because /login can now take more than a simple username/password
         case loggingInNonUIA(LegacyLoginSession)    // For accounts without fancy swiclops authentication
         case haveCreds(Matrix.Credentials)
         case needSSKey(Matrix.Session,String,KeyDescriptionContent)
-        case online(CirclesApplicationSession)
-        case signingUp(SignupSession)
         case settingUp(SetupSession)
+        case online(CirclesApplicationSession)
     }
     @Published var state: State
     
@@ -112,6 +112,118 @@ public class CirclesStore: ObservableObject {
         try await keychainStore.saveKey(key: key, keyId: keyId)
     }
     
+    // MARK: Load Config
+    
+    private func loadConfig(matrix: Matrix.Session) async throws -> CirclesConfigContent? {
+        Matrix.logger.debug("Loading Circles configuration")
+        // Easy mode: Do we have our config saved in the Account Data?
+        if let config = try await matrix.getAccountData(for: EVENT_TYPE_CIRCLES_CONFIG, of: CirclesConfigContent.self) {
+            Matrix.logger.debug("Found Circles config in the account data")
+            return config
+        }
+        
+        Matrix.logger.debug("No Circles config in account data.  Looking for rooms based on tags...")
+        
+        // Not so easy mode: Do we have a room with our special tag?
+        var tags = [RoomId: [String]]()
+        let roomIds = try await matrix.getJoinedRoomIds()
+        for roomId in roomIds {
+            tags[roomId] = try await matrix.getTags(roomId: roomId)
+            Matrix.logger.debug("\(roomId): \(tags[roomId]?.joined(separator: " ") ?? "(none)")")
+        }
+        
+        guard let rootId: RoomId = roomIds.filter({
+            if let t = tags[$0] {
+                return t.contains(ROOM_TAG_CIRCLES_SPACE_ROOT)
+            } else {
+                return false
+            }
+        }).first
+        else {
+            Matrix.logger.error("Couldn't find Circles space root")
+            throw CirclesError("Failed to find Circles space root")
+        }
+        Matrix.logger.debug("Found Circles space root \(rootId)")
+        
+        let childRoomIds = try await matrix.getSpaceChildren(rootId)
+        
+        guard let circlesId: RoomId = childRoomIds.filter({
+                if let t = tags[$0] {
+                    return t.contains(ROOM_TAG_MY_CIRCLES)
+                } else {
+                    return false
+                }
+            }).first
+        else {
+            Matrix.logger.error("Failed to find circles space")
+            throw CirclesError("Failed to find circles space")
+        }
+        Matrix.logger.debug("Found circles space \(circlesId)")
+                    
+        guard let groupsId: RoomId = childRoomIds.filter({
+                if let t = tags[$0] {
+                    return t.contains(ROOM_TAG_MY_GROUPS)
+                } else {
+                    return false
+                }
+            }).first
+        else {
+            Matrix.logger.error("Failed to find groups space")
+            throw CirclesError("Failed to find groups space")
+        }
+        Matrix.logger.debug("Found groups space \(groupsId)")
+        
+        guard let photosId: RoomId = childRoomIds.filter({
+                if let t = tags[$0] {
+                    return t.contains(ROOM_TAG_MY_PHOTOS)
+                } else {
+                    return false
+                }
+            }).first
+        else {
+            Matrix.logger.error("Failed to find photos space")
+            throw CirclesError("Failed to find photos space")
+        }
+        Matrix.logger.debug("Found photos space \(photosId)")
+        
+        // People and Profile space are a bit different - They might not exist in previous Circles Android versions
+        // So if we don't find them, it's ok.  Just create them now.
+        
+        func getSpaceId(tag: String, name: String) async throws -> RoomId {
+            if let existingProfileSpaceId = childRoomIds.filter({
+                    if let t = tags[$0] {
+                        return t.contains(tag)
+                    } else {
+                        return false
+                    }
+            }).first {
+                Matrix.logger.debug("Found space \(existingProfileSpaceId) with tag \(tag)")
+                return existingProfileSpaceId
+            }
+            else {
+                let newProfileSpaceId = try await matrix.createSpace(name: name)
+                try await matrix.addTag(roomId: newProfileSpaceId, tag: tag)
+                try await matrix.addSpaceChild(newProfileSpaceId, to: rootId)
+                return newProfileSpaceId
+            }
+        }
+        
+        let displayName = try await matrix.getDisplayName(userId: matrix.creds.userId) ?? matrix.creds.userId.stringValue
+        let profileId = try await getSpaceId(tag: ROOM_TAG_MY_PROFILE, name: displayName)
+        let peopleId = try await getSpaceId(tag: ROOM_TAG_MY_PEOPLE, name: "My People")
+        
+        let config = CirclesConfigContent(root: rootId,
+                                          circles: circlesId,
+                                          groups: groupsId,
+                                          galleries: photosId,
+                                          people: peopleId,
+                                          profile: profileId)
+        // Also save this config for future use
+        try await matrix.putAccountData(config, for: EVENT_TYPE_CIRCLES_CONFIG)
+        
+        return config
+    }
+    
     // MARK: Connect
     
     func connect(creds: Matrix.Credentials, s4Key: Matrix.SecretStorageKey? = nil) async throws {
@@ -149,24 +261,26 @@ public class CirclesStore: ObservableObject {
         }
         
         switch ssss.state {
+            
         case .online(let defaultKeyId):
             logger.debug("Matrix secret storage is online")
+
+            // Ok great we are connected to the Matrix account, and we have a valid Secret Storage key
             
-            guard let session = try? await CirclesApplicationSession(matrix: matrix)
-            else {
-                let error = CirclesError("Failed to connect as \(creds.userId)")
+            // Next thing to check: Do we have a Circles space hierarchy in this account?
+            if let config = try? await loadConfig(matrix: matrix) {
+                // Awesome - Everything should be good to go, so let's get it started
+                try await launch(matrix: matrix, config: config)
+                return
+            } else {
+                // Looks like we haven't configured Circles on this account yet
+                let setupSession = SetupSession(matrix: matrix)
                 await MainActor.run {
-                    self.state = .nothing(error)
+                    self.state = .settingUp(setupSession)
                 }
-                throw error
+                return
             }
-            
-            logger.debug("Set up Matrix+CirclesSession")
-            await MainActor.run {
-                self.state = .online(session)
-            }
-            logger.debug("Set state to .online")
-            return
+
             
         case .error(let msg):
             logger.error("Matrix secret storage failed: \(msg, privacy: .public)")
@@ -193,9 +307,9 @@ public class CirclesStore: ObservableObject {
         }
     }
 
-    // MARK: Finish connecting
+    // MARK: Add missing SSSS key
     
-    func finishConnecting(key: Matrix.SecretStorageKey) async throws {
+    func addMissingKey(key: Matrix.SecretStorageKey) async throws {
         
         guard case .needSSKey(let matrix, let needKeyId, let description) = self.state
         else {
@@ -229,20 +343,16 @@ public class CirclesStore: ObservableObject {
         try await matrix.setupCrossSigning()
         try await matrix.setupKeyBackup()
         
-        guard let session = try? await CirclesApplicationSession(matrix: matrix)
+        guard let config = try? await loadConfig(matrix: matrix)
         else {
-            let err = CirclesError("Failed to initialize Circles session for \(matrix.creds.userId)")
+            let setupSession = SetupSession(matrix: matrix)
             await MainActor.run {
-                self.state = .nothing(err)
+                self.state = .settingUp(setupSession)
             }
             return
         }
         
-        logger.debug("Set up Matrix+CirclesSession")
-        await MainActor.run {
-            self.state = .online(session)
-        }
-        logger.debug("Set state to .online")
+        try await launch(matrix: matrix, config: config)
     }
     
     // MARK: Generate S4 key
@@ -262,6 +372,26 @@ public class CirclesStore: ObservableObject {
         let s4Key = Matrix.SecretStorageKey(key: key, keyId: keyId, description: description)
         
         return s4Key
+    }
+    
+    // MARK: Launch
+    func launch(matrix: Matrix.Session, config: CirclesConfigContent) async throws {
+        guard let session = try? await CirclesApplicationSession(matrix: matrix, config: config)
+        else {
+            // If anything went wrong here, we don't know what it was
+            // Fail and give up :(
+            let error = CirclesError("Failed to establish Circles application session for \(matrix.creds.userId)")
+            await MainActor.run {
+                self.state = .nothing(error)
+            }
+            throw error
+        }
+        logger.debug("Set up Matrix and Circles application session")
+        
+        await MainActor.run {
+            self.state = .online(session)
+        }
+        logger.debug("Set state to .online")
     }
     
     // MARK: Login
@@ -402,7 +532,7 @@ public class CirclesStore: ObservableObject {
             fullCreds.wellKnown = try await Matrix.fetchWellKnown(for: domain)
         }
         
-        let session = try await SetupSession(creds: fullCreds, store: self)
+        let session = try await SetupSession(creds: fullCreds)
         await MainActor.run {
             self.state = .settingUp(session)
         }
@@ -450,11 +580,12 @@ public class CirclesStore: ObservableObject {
             }
             
         case .settingUp(let session):
-            let creds = session.creds
-            if let client = try? await Matrix.Client(creds: creds) {
-                try await client.logout()
-            }
+            let client = session.client
+            let creds = session.client.creds
+            
+            try await client.logout()
             removeCredentials(for: creds.userId)
+
             await MainActor.run {
                 self.state = .nothing(nil)
             }

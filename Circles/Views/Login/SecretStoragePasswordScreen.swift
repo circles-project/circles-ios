@@ -72,7 +72,7 @@ struct SecretStoragePasswordScreen: View {
                         return
                     }
                     print("Yay! PBKDF2 key matches!")
-                    try await store.finishConnecting(key: key)
+                    try await store.addMissingKey(key: key)
                 }) {
                     Text("Submit")
                         .padding()
