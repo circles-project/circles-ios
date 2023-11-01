@@ -58,8 +58,11 @@ struct ContentView: View {
         case .settingUp(let setupSession):
             SetupScreen(session: setupSession, store: store)
             
-        case .loggingIn(let loginSession):
-            LoginScreen(session: loginSession, store: store)
+        case .loggingInUIA(let uiaLoginSession):
+            UiaLoginScreen(session: uiaLoginSession, store: store)
+            
+        case .loggingInNonUIA(let legacyLoginSession):
+            LegacyLoginScreen(session: legacyLoginSession)
             
         case .needSSKey(let matrix, let keyId, let keyDescription):
             SecretStoragePasswordScreen(store: store, matrix: matrix, keyId: keyId, description: keyDescription)

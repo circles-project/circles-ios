@@ -8,12 +8,9 @@
 import SwiftUI
 
 struct SetupScreen: View {
-    /*
-    var creds: MatrixCredentials
-    */
+
     @ObservedObject var session: SetupSession
     var store: CirclesStore
-    @State var displayName: String?
     
     var body: some View {
         switch session.state {
@@ -21,8 +18,8 @@ struct SetupScreen: View {
             AvatarForm(session: session)
         case .circles(let displayName):
             CirclesForm(session: session, displayName: displayName)
-        case .allDone:
-            AllDoneForm(store: store, userId: session.creds.userId)
+        case .allDone(let config):
+            AllDoneForm(store: store, matrix: session.client, config: config)
         }
     }
 }

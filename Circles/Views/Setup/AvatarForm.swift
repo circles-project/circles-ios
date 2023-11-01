@@ -43,11 +43,20 @@ struct AvatarForm: View {
             avatar
                 .resizable()
                 .scaledToFill()
-                .frame(width: 160, height: 160, alignment: .center)
+                .frame(width: 200, height: 200, alignment: .center)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
+                .task {
+                    // Check to see -- Does this user already have an avatar image?
+                    let userId = session.client.creds.userId
+                    if let image = try? await session.client.getAvatarImage(userId: userId) {
+                        await MainActor.run {
+                            self.avatarImage = image
+                        }
+                    }
+                }
 
             PhotosPicker(selection: $selectedItem, matching: .images) {
-                Label("Choose a photo from my device's library", systemImage: "photo.fill")
+                Label("Choose a photo", systemImage: "photo.fill")
             }
             .onChange(of: selectedItem) { newItem in
                 Task {
@@ -78,6 +87,14 @@ struct AvatarForm: View {
                 .textInputAutocapitalization(.words)
                 .frame(width: 300)
                 .padding()
+                .task {
+                    let userId = session.client.creds.userId
+                    if let name = try? await session.client.getDisplayName(userId: userId) {
+                        await MainActor.run {
+                            self.displayName = name
+                        }
+                    }
+                }
 
 
             AsyncButton(action: {

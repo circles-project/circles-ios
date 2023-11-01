@@ -162,7 +162,7 @@ struct CirclesForm: View {
         try await client.addSpaceChild(photosGallery, to: myGalleries)
         
         status = "All done!"
-        await session.setAllDone()
+        await session.setAllDone(config: config)
     }
     
     var body: some View {

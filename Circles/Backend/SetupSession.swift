@@ -12,27 +12,46 @@ import Matrix
 
 class SetupSession: ObservableObject {
     var logger: os.Logger
-    var creds: Matrix.Credentials
-    var store: CirclesStore
     var client: Matrix.Client
     
     enum State {
         case profile
         case circles(String)
-        case allDone
+        case allDone(CirclesConfigContent)
     }
     @Published var state: State
     
-    init(creds: Matrix.Credentials, store: CirclesStore) async throws {
+    init(creds: Matrix.Credentials) async throws {
         let logger = os.Logger(subsystem: "circles", category: "setup")
         self.logger = logger
-        self.creds = creds
-        self.store = store
-        //self.client = try Matrix.Client(creds: creds)
-        //logger.debug("Initializing Matrix session")
-        //self.client = try await Matrix.Session(creds: creds, startSyncing: false, secretStorageKeyInfo: s4keyInfo)
+
         logger.debug("Intialzing Matrix client")
-        self.client = try await Matrix.Client(creds: creds)
+        let client = try await Matrix.Client(creds: creds)
+        self.client = client
+        
+        let userId = client.creds.userId
+        let (displayName, mxc) = try await client.getProfileInfo(userId: userId)
+        
+        if let displayName = displayName,
+           let _ = mxc
+        {
+            if let config = try? await client.getAccountData(for: EVENT_TYPE_CIRCLES_CONFIG, of: CirclesConfigContent.self) {
+                logger.debug("Setting state to .allDone")
+                self.state = .allDone(config)
+            } else {
+                logger.debug("Setting state to .circles")
+                self.state = .circles(displayName)
+            }
+        } else {
+            logger.debug("Setting state to .profile")
+            self.state = .profile
+        }
+    }
+    
+    init(matrix client: Matrix.Client) {
+        self.logger = os.Logger(subsystem: "circles", category: "setup")
+        logger.debug("Intialzing Matrix client")
+        self.client = client
         logger.debug("Setting state to .profile")
         self.state = .profile
     }
@@ -48,10 +67,10 @@ class SetupSession: ObservableObject {
         }
     }
     
-    func setAllDone() async {
+    func setAllDone(config: CirclesConfigContent) async {
         logger.debug("Setting state to .allDone")
         await MainActor.run {
-            self.state = .allDone
+            self.state = .allDone(config)
         }
     }
     
