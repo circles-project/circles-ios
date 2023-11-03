@@ -37,6 +37,8 @@ struct ContentView: View {
             
         case .haveCreds(let creds):
             VStack {
+                Spacer()
+                
                 Text("Connecting as \(creds.userId.description)")
                 ProgressView()
                     .onAppear {
@@ -50,6 +52,14 @@ struct ContentView: View {
                             }
                         }
                     }
+                
+                Spacer()
+                
+                AsyncButton(role: .destructive, action: {
+                    try await store.disconnect()
+                }) {
+                    Text("Cancel")
+                }
             }
             
         case .signingUp(let signupSession):
