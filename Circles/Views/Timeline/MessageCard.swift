@@ -368,32 +368,64 @@ struct MessageCard: MessageView {
     }
 
     var reactions: some View {
-        HStack {
+        VStack {
             //Spacer()
-            let reactionCounts = self.message.reactions.mapValues {
-                $0.count
-            }.sorted(by: >)
+            let allReactionCounts = self.message.reactions
+                .mapValues {
+                    $0.count
+                }
+                .filter { (key,value) in
+                    value > 0
+                }
+                .sorted(by: >)
             
-            if showAllReactions {
-                let columns = [
-                    GridItem(.adaptive(minimum: 45))
-                ]
-                LazyVGrid(columns: columns, spacing: 5) {
-                    ForEach(reactionCounts, id: \.key) { emoji, count in
-                        Text("\(emoji) \(count) ")
+            let limit = 5
+            let reactionCounts = showAllReactions ? allReactionCounts : Array(allReactionCounts.prefix(limit))
+            
+            let columns = [
+                GridItem(.adaptive(minimum: 55))
+            ]
+            
+            LazyVGrid(columns: columns, spacing: 0) {
+                
+                ForEach(reactionCounts, id: \.key) { emoji, count in
+                    let userId = message.room.session.creds.userId
+                    let users = message.reactions[emoji] ?? []
+                    
+                    if users.contains(userId) {
+                        AsyncButton(action: {
+                            // We already sent this reaction...  So redact it
+                            try await message.sendRemoveReaction(emoji)
+                        }) {
+                            Text("\(emoji) \(count)")
+                        }
+                        .buttonStyle(.bordered)
+                    } else {
+                        AsyncButton(action: {
+                            // We have not sent this reaction yet..  Send it
+                            try await message.sendReaction(emoji)
+                        }) {
+                            Text("\(emoji) \(count)")
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
-            } else {
-                let limit = 7
-                ForEach(reactionCounts.prefix(limit), id: \.key) { emoji, count in
-                    Text("\(emoji) \(count) ")
-                }
-                if reactionCounts.count > limit {
-                    Button(action: {self.showAllReactions = true}) {
-                        Text("more")
+                
+                if allReactionCounts.count > limit {
+                    if !showAllReactions {
+                        Button(action: {self.showAllReactions = true}) {
+                            Text("(more)")
+                                .font(.subheadline)
+                        }
+                    } else {
+                        Button(action: {self.showAllReactions = false}) {
+                            Text("(less)")
+                                .font(.subheadline)
+                        }
                     }
                 }
             }
+
         }
         .foregroundColor(.secondary)
         .padding(2)
