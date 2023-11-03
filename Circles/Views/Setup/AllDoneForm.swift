@@ -41,7 +41,7 @@ struct AllDoneForm: View {
                 } else {
                     // Otherwise, we must be running with a lightweight REST client in the setup UI
                     // Send the user back to the login screen
-                    try await store.disconnect()
+                    try await store.logout()
                 }
             }) {
                 Text("Get Started")
