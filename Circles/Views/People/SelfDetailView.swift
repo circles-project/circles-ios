@@ -72,7 +72,7 @@ struct SelfDetailView: View {
                     }
                     .padding(.leading)
                     .sheet(isPresented: $showPicker) {
-                        AdvertisedCirclesPicker(circles: circles, profile: profile)
+                        SharedCirclesPicker(circles: circles, profile: profile)
                     }
                 }
                 if profile.rooms.isEmpty {

@@ -8,7 +8,7 @@
 import SwiftUI
 import Matrix
 
-struct AdvertisedCirclesPicker: View {
+struct SharedCirclesPicker: View {
     @Environment(\.presentationMode) var presentation
     @ObservedObject var circles: ContainerRoom<CircleSpace>
     @ObservedObject var profile: ProfileSpace
