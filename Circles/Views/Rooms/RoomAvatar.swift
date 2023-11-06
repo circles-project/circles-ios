@@ -33,12 +33,12 @@ struct RoomAvatar<Room>: View where Room: BasicRoomProtocol {
                 .renderingMode(.original)
                 .resizable()
                 .scaledToFill()
-                .clipShape(RoundedRectangle(cornerRadius: 6))
+                //.clipShape(RoundedRectangle(cornerRadius: 6))
                 .onAppear {
                     // Fetch the avatar from the url
                     room.updateAvatarImage()
                 }
-                .padding(3)
+                //.padding(3)
         }
         else {
             GeometryReader { geometry in
@@ -65,7 +65,7 @@ struct RoomAvatar<Room>: View where Room: BasicRoomProtocol {
                             // Fetch the avatar from the url
                             room.updateAvatarImage()
                         }
-                        .padding(3)
+                        //.padding(3)
 
                     if avatarText != .none,
                        let name = room.name {
