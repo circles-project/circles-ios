@@ -16,6 +16,9 @@ struct SelfDetailView: View {
     @ObservedObject var profile: ContainerRoom<Matrix.Room>
     @ObservedObject var circles: ContainerRoom<CircleSpace>
     
+    @State var showPicker = false
+    @State var showConfirmRemove = false
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
@@ -53,30 +56,61 @@ struct SelfDetailView: View {
                 }
                 
                 Divider()
-                Text("VISIBLE CIRCLES")
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
-                    .padding(.top, 20)
+                HStack(alignment: .bottom) {
+                    Text("SHARED CIRCLES")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                        .padding(.top, 20)
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        self.showPicker = true
+                    }) {
+                        //Label("Add circle(s)", systemImage: "plus.circle")
+                        Label("Add", systemImage: "plus.circle")
+                    }
+                    .padding(.leading)
+                    .sheet(isPresented: $showPicker) {
+                        AdvertisedCirclesPicker(circles: circles, profile: profile)
+                    }
+                }
                 if profile.rooms.isEmpty {
                     Text("No circles are visible to my connections.")
                         .padding()
-                    Button(action: {}) {
-                        Label("Add circle(s)", systemImage: "plus.circle")
-                    }
-                    .padding(.leading)
                 } else {
                     ForEach(profile.rooms) { room in
                         HStack {
                             RoomAvatar(room: room, avatarText: .roomInitials)
-                                .frame(width: 80, height: 80)
+                                .frame(width: 60, height: 60)
+                                .clipShape(Circle())
+
                             Text(room.name ?? "??")
-                                .font(.title3)
+                                .font(.title2)
+                                .fontWeight(.bold)
+                            
                             Spacer()
+                            
+                            Button(action: {
+                                self.showConfirmRemove = true
+                            }) {
+                                Image(systemName: "trash")
+                            }
+                            .confirmationDialog("Stop sharing circle?", isPresented: $showConfirmRemove) {
+                                AsyncButton(role: .destructive, action: {
+                                    try await profile.removeChildRoom(room.roomId)
+                                }) {
+                                    Text("Stop sharing \(room.name ?? "this circle")")
+                                }
+                            }
                         }
+                        .padding()
                     }
                 }
+
             }
             .padding()
+
         }
         .navigationTitle(Text("Me"))
     }
