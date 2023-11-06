@@ -20,6 +20,9 @@ struct PeopleOverviewScreen: View {
     @State var following: [Matrix.User] = []
     @State var followers: [Matrix.User] = []
     //@State var invitations: [Matrix.InvitedRoom]? = nil
+    
+    @State var friendsOfFriends: [UserId]? = nil
+    
     @State var showInviteSheet = false
     
     @State var sheetType: SheetType?
@@ -203,6 +206,59 @@ struct PeopleOverviewScreen: View {
         }
     }
     
+    func loadFriendsOfFriends() async {
+        let myUserId = profile.session.creds.userId
+        // First find all of the timeline rooms that I'm following
+        let timelines: Set<Matrix.Room> = circles.rooms.reduce([]) { (curr,room) in
+            // Don't include my own timelines in the list
+            if room.creator == myUserId {
+                return curr
+            } else {
+                return curr.union([room])
+            }
+        }
+        
+        let userIds: Set<UserId> = timelines.reduce([]) { (curr,room) in
+            return curr.union(room.joinedMembers)
+        }
+        
+        let sorted = userIds.sorted {
+            $0.stringValue < $1.stringValue
+        }
+        
+        await MainActor.run {
+            self.friendsOfFriends = sorted
+        }
+    }
+    
+    @ViewBuilder
+    var friendsOfFriendsSection: some View {
+        LazyVStack(alignment: .leading, spacing: 10) {
+            Text("FRIENDS OF FRIENDS")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+            Divider()
+            
+            if let userIds = friendsOfFriends {
+                ForEach(userIds, id: \.self) { userId in
+                    if userId != profile.session.creds.userId {
+                        let user = profile.session.getUser(userId: userId)
+                        HStack {
+                            UserAvatarView(user: user)
+                            UserNameView(user: user)
+                        }
+                    }
+                }
+            } else {
+                ProgressView("Loading...")
+                    .task {
+                        await loadFriendsOfFriends()
+                    }
+            }
+        }
+        .padding()
+    }
+    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -219,6 +275,8 @@ struct PeopleOverviewScreen: View {
                     followingSection
                     
                     followersSection
+                    
+                    friendsOfFriendsSection
                 }
             }
             .navigationBarTitle("People", displayMode: .inline)
