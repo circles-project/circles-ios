@@ -44,7 +44,6 @@
 		409F4341265DE17500690A61 /* GroupTimelineScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F433B265DE17300690A61 /* GroupTimelineScreen.swift */; };
 		409F4342265DE17500690A61 /* GroupHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F433C265DE17400690A61 /* GroupHeader.swift */; };
 		409F4343265DE17500690A61 /* GroupOverviewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F433D265DE17400690A61 /* GroupOverviewRow.swift */; };
-		409F4344265DE17500690A61 /* GroupConfigSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F433E265DE17500690A61 /* GroupConfigSheet.swift */; };
 		409F4345265DE17500690A61 /* GroupsOverviewScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F433F265DE17500690A61 /* GroupsOverviewScreen.swift */; };
 		409F435B265DE1EE00690A61 /* LoggedOutScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4359265DE1EE00690A61 /* LoggedOutScreen.swift */; };
 		409F435C265DE1EE00690A61 /* UiaLoginScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F435A265DE1EE00690A61 /* UiaLoginScreen.swift */; };
@@ -228,7 +227,6 @@
 		409F433B265DE17300690A61 /* GroupTimelineScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupTimelineScreen.swift; sourceTree = "<group>"; };
 		409F433C265DE17400690A61 /* GroupHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupHeader.swift; sourceTree = "<group>"; };
 		409F433D265DE17400690A61 /* GroupOverviewRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupOverviewRow.swift; sourceTree = "<group>"; };
-		409F433E265DE17500690A61 /* GroupConfigSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupConfigSheet.swift; sourceTree = "<group>"; };
 		409F433F265DE17500690A61 /* GroupsOverviewScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupsOverviewScreen.swift; sourceTree = "<group>"; };
 		409F4359265DE1EE00690A61 /* LoggedOutScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggedOutScreen.swift; sourceTree = "<group>"; };
 		409F435A265DE1EE00690A61 /* UiaLoginScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiaLoginScreen.swift; sourceTree = "<group>"; };
@@ -545,7 +543,6 @@
 		409F4329265DE14100690A61 /* Groups */ = {
 			isa = PBXGroup;
 			children = (
-				409F433E265DE17500690A61 /* GroupConfigSheet.swift */,
 				409F433A265DE17300690A61 /* GroupCreationSheet.swift */,
 				409F433C265DE17400690A61 /* GroupHeader.swift */,
 				409F433D265DE17400690A61 /* GroupOverviewRow.swift */,
@@ -1006,7 +1003,6 @@
 				409F439C265DE38200690A61 /* UserAvatarView.swift in Sources */,
 				409F4316265DE0F400690A61 /* ImageSaver.swift in Sources */,
 				A54A278A2A843C0300858846 /* GroupInvitationsView.swift in Sources */,
-				409F4344265DE17500690A61 /* GroupConfigSheet.swift in Sources */,
 				A53E912A2A573838007B0196 /* NotificationsSettingsView.swift in Sources */,
 				A53E2E722A74616400B75CDD /* RoomMemberRow.swift in Sources */,
 				A5FB06E32A681079002C5B88 /* CircleInvitationsView.swift in Sources */,

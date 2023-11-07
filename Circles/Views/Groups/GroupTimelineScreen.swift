@@ -11,18 +11,9 @@ import SwiftUI
 import Matrix
 
 enum GroupScreenSheetType: String {
-    case members
     case invite
-    case configure
-    case security
     case composer
     case share
-    //case pickHeaderImage
-    //case pickProfileImage
-    //case pickMessageImage
-    //case confirmHeaderImage
-    //case confirmProfileImage
-    // Don't need to confirm a new image if it's for a message... We put it into the composer, and the user looks at it there before clicking 'Send'
 }
 extension GroupScreenSheetType: Identifiable {
     var id: String { rawValue }
@@ -58,22 +49,8 @@ struct GroupTimelineScreen: View {
     var toolbarMenu: some View {
         Menu {
             
-            if room.iCanChangeState(type: M_ROOM_NAME) || room.iCanChangeState(type: M_ROOM_AVATAR) {
-                Button(action: {self.sheetType = .configure}) {
-                    Label("Configure Group", systemImage: "gearshape")
-                }
-            }
-            
             NavigationLink(destination: GroupSettingsView(room: room)) {
                 Label("Settings", systemImage: "gearshape")
-            }
-
-            if room.iCanBan || room.iCanKick {
-                Button(action: {
-                    self.sheetType = .members
-                }) {
-                    Label("Manage members", systemImage: "person.2.circle.fill")
-                }
             }
             
             if room.iCanInvite {
@@ -90,17 +67,9 @@ struct GroupTimelineScreen: View {
                 Label("Share", systemImage: "square.and.arrow.up")
             }
             
-            if debugMode {
-                Button(action: {
-                    self.sheetType = .security
-                }) {
-                    Label("Security", systemImage: "shield.fill")
-                }
-            }
-            
         }
         label: {
-            Label("More", systemImage: "ellipsis.circle")
+            Label("Settings", systemImage: "gearshape.fill")
         }
     }
     
@@ -131,17 +100,9 @@ struct GroupTimelineScreen: View {
                     timeline
                         .sheet(item: $sheetType) { st in
                             switch(st) {
-                            case .members:
-                                RoomMembersSheet(room: room, title: "Group members for \(room.name ?? "(unnamed group)")")
                                 
                             case .invite:
                                 RoomInviteSheet(room: room, title: "Invite new members to \(room.name ?? "(unnamed group)")")
-                                
-                            case .configure:
-                                GroupConfigSheet(room: room)
-                                
-                            case .security:
-                                RoomSecurityInfoSheet(room: room)
                                 
                             case .composer:
                                 MessageComposerSheet(room: room, parentMessage: nilParentMessage, galleries: galleries)
