@@ -8,9 +8,7 @@
 import SwiftUI
 import Matrix
 
-// This renders a row in a list, showing a user who we have invited to follow one of our circles
-// This needs to be its own type because we need local @State storage
-// We wouldn't need this if the SwiftUI `.confirmationDialog` actually used its `presenting:` argument properly -- then we could just put the confirmation dialog in the parent view -- but oh well
+// This renders a row in a list, showing a user who we have invited to join one of our rooms
 struct RoomInvitedMemberRow: View {
     var room: Matrix.Room
     @ObservedObject var user: Matrix.User
