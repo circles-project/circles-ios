@@ -128,7 +128,7 @@ struct CircleSettingsView: View {
                     ForEach(invited) { userId in
                         let user = wall.session.getUser(userId: userId)
                         
-                        CircleInvitedFollowerRow(wall: wall, user: user)
+                        RoomInvitedMemberRow(room: wall, user: user)
                     }
                 }
             }

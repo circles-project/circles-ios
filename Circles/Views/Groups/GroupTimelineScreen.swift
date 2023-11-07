@@ -51,23 +51,6 @@ struct GroupTimelineScreen: View {
 
     @State var nilParentMessage: Matrix.Message? = nil
     
-    /*
-    var composer: some View {
-        HStack {
-            if showComposer {
-                RoomMessageComposer(room: group.room, isPresented: self.$showComposer)
-                    .padding([.top, .leading, .trailing], 3)
-            }
-            else {
-                Button(action: {self.showComposer = true}) {
-                    Label("Post a New Message", systemImage: "rectangle.badge.plus")
-                }
-            }
-        }
-        .padding(.top, 5)
-    }
-    */
-    
     var timeline: some View {
         TimelineView<MessageCard>(room: room)
     }
@@ -79,6 +62,10 @@ struct GroupTimelineScreen: View {
                 Button(action: {self.sheetType = .configure}) {
                     Label("Configure Group", systemImage: "gearshape")
                 }
+            }
+            
+            NavigationLink(destination: GroupSettingsView(room: room)) {
+                Label("Settings", systemImage: "gearshape")
             }
 
             if room.iCanBan || room.iCanKick {
@@ -123,71 +110,72 @@ struct GroupTimelineScreen: View {
     
     var body: some View {
         
-        ZStack {
-            
-            VStack(alignment: .center) {
+        NavigationStack {
+            ZStack {
                 
-                /*
-                 VStack(alignment: .leading) {
-                 Text("Debug Info")
-                 Text("roomId: \(group.room.id)")
-                 Text("type: \(group.room.type ?? "(none)")")
-                 }
-                 .font(.footnote)
-                 */
-                
-                if !room.knockingMembers.isEmpty {
-                    RoomKnockIndicator(room: room)
+                VStack(alignment: .center) {
+                    
+                    /*
+                     VStack(alignment: .leading) {
+                     Text("Debug Info")
+                     Text("roomId: \(group.room.id)")
+                     Text("type: \(group.room.type ?? "(none)")")
+                     }
+                     .font(.footnote)
+                     */
+                    
+                    if !room.knockingMembers.isEmpty {
+                        RoomKnockIndicator(room: room)
+                    }
+                    
+                    timeline
+                        .sheet(item: $sheetType) { st in
+                            switch(st) {
+                            case .members:
+                                RoomMembersSheet(room: room, title: "Group members for \(room.name ?? "(unnamed group)")")
+                                
+                            case .invite:
+                                RoomInviteSheet(room: room, title: "Invite new members to \(room.name ?? "(unnamed group)")")
+                                
+                            case .configure:
+                                GroupConfigSheet(room: room)
+                                
+                            case .security:
+                                RoomSecurityInfoSheet(room: room)
+                                
+                            case .composer:
+                                MessageComposerSheet(room: room, parentMessage: nilParentMessage, galleries: galleries)
+                                
+                            case .share:
+                                let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/group/\(room.roomId.stringValue)")
+                                RoomShareSheet(room: room, url: url)
+                            }
+                        }
                 }
                 
-                timeline
-                    .sheet(item: $sheetType) { st in
-                        switch(st) {
-                        case .members:
-                            RoomMembersSheet(room: room, title: "Group members for \(room.name ?? "(unnamed group)")")
-                        
-                        case .invite:
-                            RoomInviteSheet(room: room, title: "Invite new members to \(room.name ?? "(unnamed group)")")
-                            
-                        case .configure:
-                            GroupConfigSheet(room: room)
-                            
-                        case .security:
-                            RoomSecurityInfoSheet(room: room)
-                            
-                        case .composer:
-                            MessageComposerSheet(room: room, parentMessage: nilParentMessage, galleries: galleries)
-                            
-                        case .share:
-                            let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/group/\(room.roomId.stringValue)")
-                            RoomShareSheet(room: room, url: url)
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            self.sheetType = .composer
+                        }) {
+                            Image(systemName: "plus.bubble.fill")
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .padding()
                         }
                     }
-            }
-            
-            VStack {
-                Spacer()
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        self.sheetType = .composer
-                    }) {
-                        Image(systemName: "plus.bubble.fill")
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 50, height: 50)
-                            .padding()
-                    }
                 }
             }
-        }
-        .toolbar {
-            ToolbarItemGroup(placement: .automatic) {
-                toolbarMenu
+            .toolbar {
+                ToolbarItemGroup(placement: .automatic) {
+                    toolbarMenu
+                }
             }
+            .navigationBarTitle(title, displayMode: .inline)
         }
-        .navigationBarTitle(title, displayMode: .inline)
-
     }
 }
 

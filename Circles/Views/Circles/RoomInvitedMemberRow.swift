@@ -11,8 +11,8 @@ import Matrix
 // This renders a row in a list, showing a user who we have invited to follow one of our circles
 // This needs to be its own type because we need local @State storage
 // We wouldn't need this if the SwiftUI `.confirmationDialog` actually used its `presenting:` argument properly -- then we could just put the confirmation dialog in the parent view -- but oh well
-struct CircleInvitedFollowerRow: View {
-    var wall: Matrix.Room
+struct RoomInvitedMemberRow: View {
+    var room: Matrix.Room
     @ObservedObject var user: Matrix.User
     
     @State var showConfirmCancel = false
@@ -32,13 +32,13 @@ struct CircleInvitedFollowerRow: View {
             }) {
                 Image(systemName: "trash")
             }
-            .disabled(!wall.iCanKick)
+            .disabled(!room.iCanKick)
             .confirmationDialog(
                 "Cancel invitation?",
                 isPresented: $showConfirmCancel,
                 actions: {
                     AsyncButton(role: .destructive, action: {
-                        try await wall.kick(userId: user.userId, reason: "Canceling invitation")
+                        try await room.kick(userId: user.userId, reason: "Canceling invitation")
                     }) {
                         Text("Cancel invitation")
                     }

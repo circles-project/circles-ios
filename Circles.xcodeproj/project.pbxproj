@@ -144,7 +144,8 @@
 		A5921EB32AFAA83A00C2331D /* CircleSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5921EB22AFAA83A00C2331D /* CircleSettingsView.swift */; };
 		A5921EB52AFAAE8200C2331D /* SimpleCircleAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5921EB42AFAAE8200C2331D /* SimpleCircleAvatar.swift */; };
 		A5921EB72AFAD5E400C2331D /* CircleFollowingRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5921EB62AFAD5E400C2331D /* CircleFollowingRow.swift */; };
-		A5921EB92AFAD7F000C2331D /* CircleInvitedFollowerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5921EB82AFAD7F000C2331D /* CircleInvitedFollowerRow.swift */; };
+		A5921EB92AFAD7F000C2331D /* RoomInvitedMemberRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5921EB82AFAD7F000C2331D /* RoomInvitedMemberRow.swift */; };
+		A5921EBB2AFAED8900C2331D /* GroupSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5921EBA2AFAED8900C2331D /* GroupSettingsView.swift */; };
 		A5A40B6129D468C3009A17EE /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = A5A40B6029D468C3009A17EE /* MarkdownUI */; };
 		A5A40B6329D46ABD009A17EE /* HtmlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A40B6229D46ABD009A17EE /* HtmlView.swift */; };
 		A5A40B6629D608C7009A17EE /* UiaInProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A40B6529D608C7009A17EE /* UiaInProgressView.swift */; };
@@ -323,7 +324,8 @@
 		A5921EB22AFAA83A00C2331D /* CircleSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleSettingsView.swift; sourceTree = "<group>"; };
 		A5921EB42AFAAE8200C2331D /* SimpleCircleAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleCircleAvatar.swift; sourceTree = "<group>"; };
 		A5921EB62AFAD5E400C2331D /* CircleFollowingRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleFollowingRow.swift; sourceTree = "<group>"; };
-		A5921EB82AFAD7F000C2331D /* CircleInvitedFollowerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleInvitedFollowerRow.swift; sourceTree = "<group>"; };
+		A5921EB82AFAD7F000C2331D /* RoomInvitedMemberRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomInvitedMemberRow.swift; sourceTree = "<group>"; };
+		A5921EBA2AFAED8900C2331D /* GroupSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupSettingsView.swift; sourceTree = "<group>"; };
 		A5A40B6229D46ABD009A17EE /* HtmlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HtmlView.swift; sourceTree = "<group>"; };
 		A5A40B6529D608C7009A17EE /* UiaInProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiaInProgressView.swift; sourceTree = "<group>"; };
 		A5A40B6729D60EF3009A17EE /* CirclesConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesConfig.swift; sourceTree = "<group>"; };
@@ -536,7 +538,7 @@
 				A5921EB22AFAA83A00C2331D /* CircleSettingsView.swift */,
 				A5921EB42AFAAE8200C2331D /* SimpleCircleAvatar.swift */,
 				A5921EB62AFAD5E400C2331D /* CircleFollowingRow.swift */,
-				A5921EB82AFAD7F000C2331D /* CircleInvitedFollowerRow.swift */,
+				A5921EB82AFAD7F000C2331D /* RoomInvitedMemberRow.swift */,
 			);
 			path = Circles;
 			sourceTree = "<group>";
@@ -555,6 +557,7 @@
 				A54A27892A843C0300858846 /* GroupInvitationsView.swift */,
 				A54A278B2A843C5F00858846 /* InvitedGroupCard.swift */,
 				A54A278D2A843CC600858846 /* InvitedGroupDetailView.swift */,
+				A5921EBA2AFAED8900C2331D /* GroupSettingsView.swift */,
 			);
 			path = Groups;
 			sourceTree = "<group>";
@@ -933,7 +936,7 @@
 				A54346C92A3BB5BB0025D147 /* PhotoThumbnailCard.swift in Sources */,
 				409F42E3265DE00700690A61 /* Array+Sample.swift in Sources */,
 				A5D3C9C22A708F1300B41CC0 /* DBMatcher.m in Sources */,
-				A5921EB92AFAD7F000C2331D /* CircleInvitedFollowerRow.swift in Sources */,
+				A5921EB92AFAD7F000C2331D /* RoomInvitedMemberRow.swift in Sources */,
 				409F436D265DE24000690A61 /* PeopleOverviewScreen.swift in Sources */,
 				A5D2A3F629C0EED700428C45 /* Sequence+asyncMap.swift in Sources */,
 				40878FBC268E4D9000A66EF0 /* AppStoreInterface.swift in Sources */,
@@ -975,6 +978,7 @@
 				404C72D1265DDF35000473DF /* CirclesApp.swift in Sources */,
 				A55F367729EEFB6900F46971 /* PhotoContextMenu.swift in Sources */,
 				A5A40B6A29D62FC6009A17EE /* BsspekeEnrollOprfForm.swift in Sources */,
+				A5921EBB2AFAED8900C2331D /* GroupSettingsView.swift in Sources */,
 				409F4341265DE17500690A61 /* GroupTimelineScreen.swift in Sources */,
 				A55F367529EEE7EA00F46971 /* PhotoDetailView.swift in Sources */,
 				403CEA9B26E86AA90054DBF4 /* AllDoneForm.swift in Sources */,
