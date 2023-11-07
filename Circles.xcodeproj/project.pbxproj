@@ -538,7 +538,6 @@
 				A5921EB22AFAA83A00C2331D /* CircleSettingsView.swift */,
 				A5921EB42AFAAE8200C2331D /* SimpleCircleAvatar.swift */,
 				A5921EB62AFAD5E400C2331D /* CircleFollowingRow.swift */,
-				A5921EB82AFAD7F000C2331D /* RoomInvitedMemberRow.swift */,
 			);
 			path = Circles;
 			sourceTree = "<group>";
@@ -651,6 +650,7 @@
 		409F43A4265DE41000690A61 /* Rooms */ = {
 			isa = PBXGroup;
 			children = (
+				A5921EB82AFAD7F000C2331D /* RoomInvitedMemberRow.swift */,
 				409F43B9265DE51C00690A61 /* RoomInviteSheet.swift */,
 				409F43A5265DE43B00690A61 /* RoomMembersSheet.swift */,
 				409F43A6265DE43B00690A61 /* RoomSecurityInfoSheet.swift */,
