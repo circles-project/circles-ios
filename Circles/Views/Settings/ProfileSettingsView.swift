@@ -18,20 +18,7 @@ struct ProfileSettingsView: View {
     
     var body: some View {
         VStack {
-            /*
-            VStack {
-                Image(uiImage: session.avatar ?? UIImage(systemName: "person.fill")!)
-                    .resizable()
-                    .scaledToFill()
-                    .clipShape(Circle())
-                    .frame(width: 200, height: 200)
-                    //.padding(-30)
-                Text("\(session.displayName ?? "@\(session.creds.userId.username)")")
-                    .font(.title)
-                    .fontWeight(.bold)
-                Text(session.creds.userId.stringValue)
-            }
-            */
+
             Form {
                 HStack {
                     Text("Profile picture")
