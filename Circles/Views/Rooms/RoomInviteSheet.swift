@@ -84,6 +84,7 @@ struct RoomInviteSheet: View {
                         print("RoomInviteSheet - ERROR:\t \(self.alertMessage)")
                         return
                     }
+                    /* // cvw: Removing this check because Matrix kinda sucks at invitations and users may legitimately need to re-send one from time to time
                     else if room.invitedMembers.contains(userId) {
                         self.alertTitle = "\(userId) has already been invited to this room"
                         self.alertMessage = "\(userId) invite is still pending user decision."
@@ -91,6 +92,7 @@ struct RoomInviteSheet: View {
                         print("RoomInviteSheet - ERROR:\t \(self.alertMessage)")
                         return
                     }
+                    */
                     else if room.bannedMembers.contains(userId) {
                         self.alertTitle = "\(userId) is banned from this room"
                         self.alertMessage = "You must unblock \(userId) before you can invite the user back to the room."

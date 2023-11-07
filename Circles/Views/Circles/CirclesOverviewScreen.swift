@@ -89,16 +89,13 @@ struct CirclesOverviewScreen: View {
                     let circles = container.rooms.sorted(by: { $0.timestamp > $1.timestamp })
                     
                     ForEach(circles) { circle in
-                        NavigationLink(destination: CircleTimelineScreen(space: circle),
+                        NavigationLink(destination: CircleTimelineView(space: circle),
                                        tag: circle.roomId,
                                        selection: $selected)
                         {
                             CircleOverviewCard(space: circle)
                                 .contentShape(Rectangle())
                             //.padding(.top)
-                        }
-                        .onTapGesture {
-                            print("DEBUGUI\tNavigationLink tapped for Circle \(circle.id)")
                         }
                         .contextMenu {
                             Button(role: .destructive, action: {
@@ -215,8 +212,8 @@ struct CirclesOverviewScreen: View {
             .sheet(isPresented: $showHelpText) {
                 help
             }
-            
-            Text("Create or select a circle to view its timeline")
+         
+            Text("Select a circle to see the most recent posts")
         }
     }
 }
