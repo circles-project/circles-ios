@@ -32,14 +32,17 @@ struct RoomShareSheet: View {
             
             HStack {
                 RoomAvatar(room: room, avatarText: .roomInitials)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
                     .frame(width: 120, height: 120)
+                    .padding()
                 
                 if let name = room.name {
                     Text(name)
                         .font(.title)
                         .fontWeight(.bold)
+                        .padding()
                     
-                    Spacer()
+                    //Spacer()
                 }
                 
             }
