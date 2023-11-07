@@ -11,6 +11,8 @@ import Matrix
 
 struct CircleSettingsView: View {
     @ObservedObject var space: CircleSpace
+    
+    @AppStorage("debugMode") var debugMode: Bool = false
 
     @State var newAvatarImageItem: PhotosPickerItem?
 
@@ -53,9 +55,19 @@ struct CircleSettingsView: View {
                 }
             }
             
+            if debugMode {
+                Text("Space roomId")
+                    .badge(space.roomId.stringValue)
+            }
+            
             if let wall = space.wall,
                let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/timeline/\(wall.roomId.stringValue)")
             {
+                
+                if debugMode {
+                    Text("Wall roomId")
+                        .badge(wall.roomId.stringValue)
+                }
                 
                 HStack {
                     Text("Link")
