@@ -18,9 +18,14 @@ struct RoomInvitedMemberRow: View {
     var body: some View {
         HStack {
             UserAvatarView(user: user)
-                .clipShape(RoundedRectangle(cornerRadius: 4))
-                .frame(width: 40, height: 40)
-            UserNameView(user: user)
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+                .frame(width: 60, height: 60)
+            VStack(alignment: .leading) {
+                UserNameView(user: user)
+                Text(user.userId.stringValue)
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+            }
             
             Spacer()
             
