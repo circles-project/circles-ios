@@ -40,12 +40,8 @@ struct PhotoGalleryView: View {
     
     var toolbarMenu: some View {
         Menu {
-            if room.iCanChangeState(type: M_ROOM_AVATAR) {
-                Button(action: {
-                    self.showCoverImagePicker = true
-                }) {
-                    Label("New cover image", systemImage: "photo")
-                }
+            NavigationLink(destination: GallerySettingsView(room: room)) {
+                Label("Settings", systemImage: "gearshape")
             }
             
             Button(action: { self.sheetType = .share }) {
@@ -66,85 +62,88 @@ struct PhotoGalleryView: View {
     }
     
     var body: some View {
-        if uploadItems.isEmpty {
-            
-            ZStack {
-                //TimelineView<PhotoCard>(room: room)
-                VStack {
-                    if room.knockingMembers.count > 0 {
-                        RoomKnockIndicator(room: room)
-                    }
-                    GalleryGridView(room: room)
-                }
+        NavigationStack {
+            if uploadItems.isEmpty {
                 
-                VStack {
-                    Spacer()
-                    HStack {
+                ZStack {
+                    //TimelineView<PhotoCard>(room: room)
+                    VStack {
+                        if room.knockingMembers.count > 0 {
+                            RoomKnockIndicator(room: room)
+                        }
+                        GalleryGridView(room: room)
+                    }
+                    
+                    VStack {
                         Spacer()
-                        /*
-                         Button(action: {
-                         self.sheetType = .new
-                         }) {
-                         Image(systemName: "plus.circle.fill")
-                         .resizable()
-                         .scaledToFill()
-                         .frame(width: 50, height: 50)
-                         .padding()
-                         }
-                         */
-                        PhotosPicker(selection: $selectedItems, matching: .images) {
-                            Image(systemName: "plus.circle.fill")
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .padding()
-                        }
-                        .onChange(of: selectedItems) { newItems in
+                        HStack {
+                            Spacer()
                             /*
-                            Task {
-                                for newItem in newItems {
-                                    if let data = try? await newItem.loadTransferable(type: Data.self),
-                                       let img = UIImage(data: data) {
-                                        try await room.sendImage(image: img)
-                                    }
-                                }
+                             Button(action: {
+                             self.sheetType = .new
+                             }) {
+                             Image(systemName: "plus.circle.fill")
+                             .resizable()
+                             .scaledToFill()
+                             .frame(width: 50, height: 50)
+                             .padding()
+                             }
+                             */
+                            PhotosPicker(selection: $selectedItems, matching: .images) {
+                                Image(systemName: "plus.circle.fill")
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .padding()
                             }
-                            */
-                            uploadItems.append(contentsOf: newItems)
-                            totalUploadItems += uploadItems.count
+                            .onChange(of: selectedItems) { newItems in
+                                /*
+                                 Task {
+                                 for newItem in newItems {
+                                 if let data = try? await newItem.loadTransferable(type: Data.self),
+                                 let img = UIImage(data: data) {
+                                 try await room.sendImage(image: img)
+                                 }
+                                 }
+                                 }
+                                 */
+                                uploadItems.append(contentsOf: newItems)
+                                totalUploadItems += uploadItems.count
+                            }
+                        }
+                    }
+                    .onChange(of: avatarItem) { newItem in
+                        Task {
+                            if let data = try? await newItem?.loadTransferable(type: Data.self),
+                               let img = UIImage(data: data)
+                            {
+                                try await room.setAvatarImage(image: img)
+                            }
                         }
                     }
                 }
-                .onChange(of: avatarItem) { newItem in
-                    Task {
-                        if let data = try? await newItem?.loadTransferable(type: Data.self),
-                           let img = UIImage(data: data)
-                        {
-                            try await room.setAvatarImage(image: img)
+                .navigationBarTitle(room.name ?? "Untitled gallery")
+                .toolbar {
+                    if room.iCanChangeState(type: M_ROOM_AVATAR) || room.iCanInvite {
+                        ToolbarItemGroup(placement: .automatic) {
+                            toolbarMenu
                         }
                     }
                 }
-            }
-            .navigationBarTitle(room.name ?? "Untitled gallery")
-            .toolbar {
-                if room.iCanChangeState(type: M_ROOM_AVATAR) || room.iCanInvite {
-                    ToolbarItemGroup(placement: .automatic) {
-                        toolbarMenu
+                .sheet(item: self.$sheetType) { st in
+                    switch(st) {
+                    case .invite:
+                        RoomInviteSheet(room: self.room)
+                    case .share:
+                        let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/gallery/\(room.roomId.stringValue)")
+                        RoomShareSheet(room: self.room, url: url)
                     }
                 }
+                .photosPicker(isPresented: $showCoverImagePicker, selection: $avatarItem, matching: .images)
+            } else {
+                PhotosUploadView(room: room, items: $uploadItems, total: $totalUploadItems)
+                    .navigationBarTitle("Uploading...")
             }
-            .sheet(item: self.$sheetType) { st in
-                switch(st) {
-                case .invite:
-                    RoomInviteSheet(room: self.room)
-                case .share:
-                    let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/gallery/\(room.roomId.stringValue)")
-                    RoomShareSheet(room: self.room, url: url)
-                }
-            }
-            .photosPicker(isPresented: $showCoverImagePicker, selection: $avatarItem, matching: .images)
-        } else {
-            PhotosUploadView(room: room, items: $uploadItems, total: $totalUploadItems)
         }
     }
 }

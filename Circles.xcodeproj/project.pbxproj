@@ -168,6 +168,8 @@
 		A5E101F82814FAFD000B2C42 /* bcrypt.c in Sources */ = {isa = PBXBuildFile; fileRef = A5E101F72814FAFD000B2C42 /* bcrypt.c */; };
 		A5E101FA2814FB60000B2C42 /* blf.c in Sources */ = {isa = PBXBuildFile; fileRef = A5E101F92814FB60000B2C42 /* blf.c */; };
 		A5E101FE2814FC9F000B2C42 /* PerfectBCrypt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E101FD2814FC9F000B2C42 /* PerfectBCrypt.swift */; };
+		A5EB046D2AFB306B00CC7A6C /* RoomMembersSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5EB046C2AFB306B00CC7A6C /* RoomMembersSection.swift */; };
+		A5EB046F2AFB30D400CC7A6C /* GallerySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5EB046E2AFB30D400CC7A6C /* GallerySettingsView.swift */; };
 		A5EE59C42A5F21C2007C24C7 /* DevicesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5EE59C22A5F21C2007C24C7 /* DevicesScreen.swift */; };
 		A5EE59C52A5F21C2007C24C7 /* DeviceInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5EE59C32A5F21C2007C24C7 /* DeviceInfoView.swift */; };
 		A5EE59C72A5F3A59007C24C7 /* DeviceDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5EE59C62A5F3A59007C24C7 /* DeviceDetailsView.swift */; };
@@ -352,6 +354,8 @@
 		A5E101FC2814FBE3000B2C42 /* pycabcrypt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pycabcrypt.h; sourceTree = "<group>"; };
 		A5E101FD2814FC9F000B2C42 /* PerfectBCrypt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerfectBCrypt.swift; sourceTree = "<group>"; };
 		A5E101FF2814FD6D000B2C42 /* portable_endian.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = portable_endian.h; sourceTree = "<group>"; };
+		A5EB046C2AFB306B00CC7A6C /* RoomMembersSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomMembersSection.swift; sourceTree = "<group>"; };
+		A5EB046E2AFB30D400CC7A6C /* GallerySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GallerySettingsView.swift; sourceTree = "<group>"; };
 		A5EE59C22A5F21C2007C24C7 /* DevicesScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DevicesScreen.swift; sourceTree = "<group>"; };
 		A5EE59C32A5F21C2007C24C7 /* DeviceInfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceInfoView.swift; sourceTree = "<group>"; };
 		A5EE59C62A5F3A59007C24C7 /* DeviceDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDetailsView.swift; sourceTree = "<group>"; };
@@ -574,6 +578,7 @@
 				A54346C82A3BB5BB0025D147 /* PhotoThumbnailCard.swift */,
 				A52ACB922A7969F6005D90C5 /* GalleryInvitationsView.swift */,
 				4C40ED252AA7CCFB00F58493 /* GalleryInvitationsIndicator.swift */,
+				A5EB046E2AFB30D400CC7A6C /* GallerySettingsView.swift */,
 			);
 			path = "Photo Galleries";
 			sourceTree = "<group>";
@@ -658,6 +663,7 @@
 				A56BE1752AD5D0E900B15F51 /* KnockingUserCard.swift */,
 				A56BE17A2AD6ED4000B15F51 /* ScanQrCodeAndKnockSheet.swift */,
 				A56BE17C2AD700E100B15F51 /* RoomShareSheet.swift */,
+				A5EB046C2AFB306B00CC7A6C /* RoomMembersSection.swift */,
 			);
 			path = Rooms;
 			sourceTree = "<group>";
@@ -880,6 +886,7 @@
 				A5E101FA2814FB60000B2C42 /* blf.c in Sources */,
 				A5E101FE2814FC9F000B2C42 /* PerfectBCrypt.swift in Sources */,
 				A5FCF64129CC9B30008278B0 /* GroupRoom.swift in Sources */,
+				A5EB046D2AFB306B00CC7A6C /* RoomMembersSection.swift in Sources */,
 				A509B89E2819B6C90053E5BC /* CirclesError.swift in Sources */,
 				A5FB06E52A6814A8002C5B88 /* InvitedCircleCard.swift in Sources */,
 				A53E912C2A57416B007B0196 /* DeactivateAccountView.swift in Sources */,
@@ -915,6 +922,7 @@
 				A52C77542A89CCB8005D2C0B /* MessageThumbnail.swift in Sources */,
 				A5EE59C52A5F21C2007C24C7 /* DeviceInfoView.swift in Sources */,
 				40AEA6752678E24200C9CBD1 /* BlurHashEncode.swift in Sources */,
+				A5EB046F2AFB30D400CC7A6C /* GallerySettingsView.swift in Sources */,
 				409F435C265DE1EE00690A61 /* UiaLoginScreen.swift in Sources */,
 				409F4335265DE15F00690A61 /* CirclePicker.swift in Sources */,
 				A521C3F72A68D9390051ED88 /* CircleInvitationsIndicator.swift in Sources */,

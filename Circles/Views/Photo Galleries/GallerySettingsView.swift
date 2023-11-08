@@ -1,5 +1,5 @@
 //
-//  GroupSettingsView.swift
+//  GallerySettingsView.swift
 //  Circles
 //
 //  Created by Charles Wright on 11/7/23.
@@ -9,8 +9,8 @@ import SwiftUI
 import PhotosUI
 import Matrix
 
-struct GroupSettingsView: View {
-    @ObservedObject var room: GroupRoom
+struct GallerySettingsView: View {
+    @ObservedObject var room: GalleryRoom
     
     @AppStorage("debugMode") var debugMode: Bool = false
 
@@ -22,7 +22,7 @@ struct GroupSettingsView: View {
     @ViewBuilder
     var generalSection: some View {
         Section("General") {
-            Text("Group name")
+            Text("Gallery name")
                 .badge(room.name ?? "(none)")
             
             HStack {
@@ -57,9 +57,6 @@ struct GroupSettingsView: View {
             Text("Created by")
                 .badge(creator.displayName ?? creator.userId.stringValue)
             
-            Text("Topic")
-                .badge(room.topic ?? "(none)")
-            
             if debugMode {
                 Text("Matrix roomId")
                     .badge(room.roomId.stringValue)
@@ -67,11 +64,11 @@ struct GroupSettingsView: View {
             
         }
     }
-        
+    
     @ViewBuilder
     var sharingSection: some View {
         Section("Sharing") {
-            if let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/group/\(room.roomId.stringValue)")
+            if let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/gallery/\(room.roomId.stringValue)")
             {
                  HStack {
                      Text("Link")
@@ -154,11 +151,11 @@ struct GroupSettingsView: View {
                 Button(role: .destructive, action: {
                     self.showConfirmLeave = true
                 }) {
-                    Label("Leave group", systemImage: "xmark")
+                    Label("Leave gallery", systemImage: "xmark")
                         .foregroundColor(.red) // This is necessary because setting `role: .destructive` only changes the text color, not the icon 🙄
                 }
                 .confirmationDialog(
-                    "Confirm leaving group",
+                    "Confirm leaving gallery",
                     isPresented: $showConfirmLeave
                 ) {
                     AsyncButton(role: .destructive, action: {
@@ -167,12 +164,12 @@ struct GroupSettingsView: View {
                         
                         try await room.leave()
                     }) {
-                        Text("Leave \"\(room.name ?? "this group")\"")
+                        Text("Leave \"\(room.name ?? "this gallery")\"")
                     }
                 }
             }
         }
-        .navigationTitle("Group Settings")
+        .navigationTitle("Gallery Settings")
     }
 }
 
