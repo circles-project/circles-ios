@@ -16,6 +16,9 @@ struct GalleryInviteCard: View {
     @ObservedObject var user: Matrix.User
     var container: ContainerRoom<GalleryRoom>
     
+    @State var roomAvatarBlur = 20.0
+    @State var userAvatarBlur = 20.0
+    
     @ViewBuilder
     var buttonRow: some View {
          HStack {
@@ -50,10 +53,16 @@ struct GalleryInviteCard: View {
     var body: some View {
         VStack(alignment: .leading) {
                 
-            RoomAvatar(room: room, avatarText: .roomName)
+            RoomAvatar(room: room, avatarText: .none)
                 .scaledToFill()
                 //.frame(width: 300, height: 300)
+                .blur(radius: roomAvatarBlur)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
+                .onTapGesture {
+                    if roomAvatarBlur >= 5 {
+                        roomAvatarBlur -= 5
+                    }
+                }
             
             Text("\(room.name ?? "(unknown)")")
                 .font(.title2)
@@ -62,11 +71,15 @@ struct GalleryInviteCard: View {
             HStack(alignment: .top) {
                 Text("From:")
 
-                Image(uiImage: user.avatar ?? UIImage(systemName: "person.circle")!)
-                    .resizable()
-                    .scaledToFill()
+                UserAvatarView(user: user)
                     .frame(width: 40, height: 40)
+                    .blur(radius: userAvatarBlur)
                     .clipShape(Circle())
+                    .onTapGesture {
+                        if userAvatarBlur >= 5 {
+                            userAvatarBlur -= 5
+                        }
+                    }
                 
                 VStack(alignment: .leading) {
                     Text(user.displayName ?? user.userId.username)
@@ -80,8 +93,14 @@ struct GalleryInviteCard: View {
         }
         .padding()
         .onAppear {
-            room.updateAvatarImage()
-            user.refreshProfile()
+            // Check to see if we have any connection to the person who sent this invitation
+            // In that case we don't need to blur the room avatar
+            let commonRooms = container.session.rooms.values.filter { $0.joinedMembers.contains(user.userId) }
+            
+            if !commonRooms.isEmpty {
+                self.userAvatarBlur = 0
+                self.roomAvatarBlur = 0
+            }
         }
     }
 }
