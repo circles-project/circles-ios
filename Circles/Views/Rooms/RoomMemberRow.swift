@@ -11,11 +11,12 @@ import Matrix
 struct RoomMemberRow: View {
     @ObservedObject var user: Matrix.User
     @ObservedObject var room: Matrix.Room
-    var editable: Bool = false
-    //var initialAccess: Int = 0
+    
+    @State var showConfirmModerateSelf = false
+    @State var newPowerLevel: Int?
     
     let roles: [String] = ["Can View", "Can Post", "Moderator", "Owner"]
-    var powerLevels: [Int] = [0, 10, 50, 100]
+    var powerLevels: [Int] = [-10, 0, 50, 100]
     
     var accessLevel: Int {
         let power = room.getPowerLevel(userId: user.userId)
@@ -34,55 +35,115 @@ struct RoomMemberRow: View {
         return access
     }
     
+    @ViewBuilder
+    var menu: some View {
+        let myPowerLevel = room.myPowerLevel
+        let theirPowerLevel = room.getPowerLevel(userId: user.userId)
+        let iCanModerateThem = myPowerLevel >= theirPowerLevel
+        
+        if room.iCanChangeState(type: M_ROOM_POWER_LEVELS) && iCanModerateThem {
+            Menu("Set Access Level") {
+                ForEach(0 ..< roles.count) { index in
+                    AsyncButton(action: {
+                        // Check yourself before you wreck yourself -- Are we setting our own power level here?
+                        if user.userId == room.session.creds.userId {
+                            // If so, then we should confirm that this is really what the user wants to do
+                            await MainActor.run {
+                                self.showConfirmModerateSelf = true
+                                self.newPowerLevel = powerLevels[index]
+                            }
+                        } else {
+                            // If not, we're moderating someone else -- fire away!
+                            try await room.setPowerLevel(userId: user.userId, power: powerLevels[index])
+                        }
+                    }) {
+                        Text(roles[index])
+                    }
+                    .disabled(myPowerLevel < powerLevels[index])
+                }
+            }
+        }
+        
+        // Check yourself before you wreck yourself
+        if user.userId != room.session.creds.userId {
+            Menu("Moderation") {
+                
+                AsyncButton(action: {
+                    try await room.session.ignoreUser(userId: user.userId)
+                }) {
+                    Label("Ignore this user", systemImage: "person.slash")
+                }
+                
+                if iCanModerateThem {
+                    
+                    if room.iCanChangeState(type: M_ROOM_POWER_LEVELS) {
+                        AsyncButton(action: {
+                            try await room.mute(userId: user.userId)
+                        }) {
+                            Text("Mute this user here")
+                            Image(systemName: "speaker.slash")
+                        }
+                    }
+                    
+                    if room.iCanKick {
+                        AsyncButton(action: {
+                            try await room.kick(userId: user.userId)
+                        }) {
+                            Text("Remove this user")
+                            Image(systemName: "person.fill.xmark")
+                        }
+                    }
+                    
+                    if room.iCanBan {
+                        AsyncButton(action: {
+                            try await room.ban(userId: user.userId)
+                        }) {
+                            Text("Ban this user forever")
+                            Image(systemName: "xmark.shield")
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
-                MessageAuthorHeader(user: user)
+                UserAvatarView(user: user)
+                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                    .frame(width: 60, height: 60)
+                VStack(alignment: .leading) {
+                    UserNameView(user: user)
+                    Text(user.userId.stringValue)
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                }
+                
                 Spacer()
                 
                 Text(roles[accessLevel])
                 //Text("\(accessLevel)")
                     .font(.subheadline)
             }
-            .contextMenu(menuItems: {
-                Menu("Set Access Level") {
-                    ForEach(0 ..< roles.count) { index in
-                        AsyncButton(action: {
-                            //self.selection = index
-                            // FIXME Actually make the Matrix API call to change the access level
-                            try await room.setPowerLevel(userId: user.userId, power: powerLevels[index])
-                        }) {
-                            Text(roles[index])
+            .contextMenu { menu }
+            .confirmationDialog(
+                "Change your own access level?",
+                isPresented: $showConfirmModerateSelf,
+                actions: {
+                    AsyncButton(action: {
+                        if let power = self.newPowerLevel {
+                            let myUserId = room.session.creds.userId
+                            try await room.setPowerLevel(userId: myUserId, power: power)
                         }
+                    }) {
+                        Text("Change my access level")
                     }
+                }, message: {
+                    Label("WARNING!  You are modifying your own access level.  This change cannot be undone.", systemImage: "exclamationmark.triangle.fill")
+                        .foregroundColor(.red)
                 }
-                Menu("Moderation") {
-
-                    // Philosophical question: What does it mean to "mute" a user here???
-                    //  * Does it mean just removing their ability to post in my room? (If this is a Circle, and we're following them, we'll still see their posts in their own Room.  But our other followers will no longer have to see anything from them.  Maybe that's what we want.  But then why not just change their access to "Can View" above?
-                    //  * Does it mean allowing them to post, but hiding their posts from *me*?  (This version makes no sense when I'm the room owner.)
-                    // In any case, it probably makes sense to do this somewhere else, ie the context menu on a post
-                    AsyncButton(action: {
-                        try await room.mute(userId: user.userId)
-                    }) {
-                        Text("Mute this user")
-                        Image(systemName: "speaker.slash")
-                    }
-                    
-                    AsyncButton(action: {
-                        try await room.kick(userId: user.userId)
-                    }) {
-                        Text("Remove this user")
-                        Image(systemName: "person.fill.xmark")
-                    }
-                    AsyncButton(action: {
-                        try await room.ban(userId: user.userId)
-                    }) {
-                        Text("Ban this user forever")
-                        Image(systemName: "xmark.shield")
-                    }
-                }
-            })
+            )
         }
 
     }
