@@ -16,14 +16,22 @@ struct InvitedCircleCard: View {
     @State var showAcceptSheet = false
     @State var selectedCircles: Set<CircleSpace> = []
     
+    @State var blur = 20.0
+    
     var body: some View {
         HStack(spacing: 1) {
-            RoomAvatar(room: room, avatarText: .roomInitials)
+            RoomAvatar(room: room, avatarText: .none)
                 //.overlay(Circle().stroke(Color.primary, lineWidth: 2))
                 .frame(width: 180, height: 180)
                 .scaledToFit()
-                .padding(-20)
+                .padding(-15)
+                .blur(radius: blur)
                 .clipShape(Circle())
+                .onTapGesture {
+                    if blur >= 5 {
+                        blur -= 5
+                    }
+                }
             
             VStack(alignment: .leading) {
                 Text(room.name ?? "(unnamed circle)")
@@ -32,7 +40,7 @@ struct InvitedCircleCard: View {
 
                 Text("From:")
                 HStack(alignment: .top) {
-                    VStack {
+                    VStack(alignment: .leading) {
                         if let name = user.displayName {
                             Text(name)
                             Text(user.userId.stringValue)
@@ -94,7 +102,13 @@ struct InvitedCircleCard: View {
             }
         }
         .onAppear {
-             room.updateAvatarImage()
+            // Check to see if we have any connection to the person who sent this invitation
+            // In that case we don't need to blur the room avatar
+            let commonRooms = container.session.rooms.values.filter { $0.joinedMembers.contains(user.userId) }
+            
+            if !commonRooms.isEmpty {
+                self.blur = 0
+            }
         }
     }
 }

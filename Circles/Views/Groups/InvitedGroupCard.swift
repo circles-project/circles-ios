@@ -13,14 +13,22 @@ struct InvitedGroupCard: View {
     @ObservedObject var user: Matrix.User
     @ObservedObject var container: ContainerRoom<GroupRoom>
     
+    @State var blur = 20.0
+    
     var body: some View {
         HStack(spacing: 1) {
             RoomAvatar(room: room, avatarText: .roomInitials)
                 //.overlay(Circle().stroke(Color.primary, lineWidth: 2))
                 .scaledToFill()
                 .frame(width: 120, height: 120)
+                .blur(radius: blur)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .padding()
+                .onTapGesture {
+                    if blur >= 5 {
+                        blur -= 5
+                    }
+                }
             
             VStack(alignment: .leading) {
                 Text(room.name ?? "(unnamed group)")
@@ -29,7 +37,7 @@ struct InvitedGroupCard: View {
 
                 Text("From:")
                 HStack(alignment: .top) {
-                    VStack {
+                    VStack(alignment: .leading) {
                         if let name = user.displayName {
                             Text(name)
                             Text(user.userId.stringValue)
@@ -70,7 +78,13 @@ struct InvitedGroupCard: View {
             }
         }
         .onAppear {
-             room.updateAvatarImage()
+            // Check to see if we have any connection to the person who sent this invitation
+            // In that case we don't need to blur the room avatar
+            let commonRooms = container.session.rooms.values.filter { $0.joinedMembers.contains(user.userId) }
+            
+            if !commonRooms.isEmpty {
+                self.blur = 0
+            }
         }
     }
 }
