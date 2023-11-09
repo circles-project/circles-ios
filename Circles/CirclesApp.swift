@@ -13,7 +13,6 @@ import Matrix
 @main
 struct CirclesApp: App {
     @StateObject private var store = CirclesStore()
-    @StateObject private var iapObserver = AppStoreInterface()
     private var paymentQueue = SKPaymentQueue.default()
     private var countryCode = SKPaymentQueue.default().storefront?.countryCode
     
