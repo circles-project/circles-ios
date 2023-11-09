@@ -646,6 +646,14 @@ public class CirclesStore: ObservableObject {
         SKPaymentQueue.default().storefront?.countryCode
     }
     
+    public var defaultDomain: String {
+        if let code = countryCode {
+            return getOurDomain(countryCode: code)
+        } else {
+            return CIRCLES_PRIMARY_DOMAIN
+        }
+    }
+    
     public func getOurDomain(countryCode: String) -> String {
 
         switch countryCode {

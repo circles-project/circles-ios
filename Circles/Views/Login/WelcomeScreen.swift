@@ -34,51 +34,7 @@ struct WelcomeScreen: View {
                    alignment: .center)
 
     }
-    
-    // Try to create a valid UserId from the given input string
-    func suggestUserId(_ input: String) -> UserId? {
         
-        let lower = input.lowercased()
-        
-        // If we already have a valid UserId, let's just stick with that
-        if let userId = UserId(lower) {
-            return userId
-        }
-
-        // Case 1 - User just forgot the leading "@"
-        if !lower.localizedStandardContains("@") {
-            // Do we have a country code and a default domain?
-            guard let countryCode = store.countryCode
-            else {
-                // If no, then the best we can do is to add the @ and give it a shot
-                return UserId("@\(lower)")
-            }
-            
-            let domain = store.getOurDomain(countryCode: countryCode)
-            
-            if !lower.contains(":") {
-                return UserId("@\(lower):\(domain)")
-            } else {
-                return UserId("@\(lower)")
-            }
-            
-        }
-        // Case 2 - User transposed their Matrix UserId into an email address
-        else if lower.localizedStandardContains("@") && !lower.starts(with: "@") {
-            let toks = lower.split(separator: "@")
-            guard toks.count == 2,
-                  let userpart = toks.first,
-                  let domainAndPort = toks.last
-            else {
-                return nil
-            }
-            return UserId("@\(userpart):\(domainAndPort)")
-        }
-        
-        // If we didn't match any of the cases above, then we don't know what to do with this one
-        return nil
-    }
-    
     var body: some View {
         VStack(alignment: .center) {
                     
@@ -104,7 +60,7 @@ struct WelcomeScreen: View {
                     if let userId = UserId(username) {
                         try await store.login(userId: userId)
                     } else {
-                        if let suggestion = suggestUserId(username) {
+                        if let suggestion = UserId.autoCorrect(username, domain: store.defaultDomain) {
                             self.suggestedUserId = suggestion
                             self.showSuggestion = true
                         } else {
@@ -133,9 +89,12 @@ struct WelcomeScreen: View {
                                     }) {
                                         Text("Log in as \(userId.stringValue)")
                                     }
+                                    Button(role: .cancel, action: {}) {
+                                        Text("No, let me try again")
+                                    }
                                 },
                                 message: { userId in
-                                    Text("It looks like you might have mis-typed your user id.  Did you mean \(userId.stringValue)?")
+                                    Text("Did you mean \(userId.stringValue)?")
                                 }
             )
             .alert(isPresented: $showUsernameError) {

@@ -18,9 +18,13 @@ struct RoomInviteSheet: View {
     @State var pending = false
     @State var suggestions = [UserId]()
     @State var searchTask: Task<Void,Swift.Error>?
+
     @State private var alertTitle: String = ""
     @State private var alertMessage: String = ""
     @State private var showAlert = false
+
+    @State var showConfirmAutocorrect = false
+    @State var suggestedUserId: UserId?
     
     var inputForm: some View {
         VStack(alignment: .center) {
@@ -68,13 +72,18 @@ struct RoomInviteSheet: View {
                     }
                     .frame(maxWidth: 300)
 
-                AsyncButton(action: {
+                Button(action: {
                     guard let userId = UserId(newestUserIdString)
                     else {
-                        self.alertTitle = "Invalid User ID"
-                        self.alertMessage = "Circles user ID's should start with an @ and have a domain at the end, like @username:example.com"
-                        self.showAlert = true
-                        print("RoomInviteSheet - ERROR:\t \(self.alertMessage)")
+                        if let suggestion = UserId.autoCorrect(newestUserIdString, domain: room.session.creds.userId.domain) {
+                            self.showConfirmAutocorrect = true
+                            self.suggestedUserId = suggestion
+                        } else {
+                            self.alertTitle = "Invalid User ID"
+                            self.alertMessage = "Circles user ID's should start with an @ and have a domain at the end, like @username:example.com"
+                            self.showAlert = true
+                            print("RoomInviteSheet - ERROR:\t \(self.alertMessage)")
+                        }
                         return
                     }
                     if room.joinedMembers.contains(userId) {
@@ -104,10 +113,8 @@ struct RoomInviteSheet: View {
                     print("RoomInviteSheet - INFO:\t Adding \(userId) to invite list")
                     let user = room.session.getUser(userId: userId)
 
-                    await MainActor.run {
-                        self.newUsers.append(user)
-                        self.newestUserIdString = ""
-                    }
+                    self.newUsers.append(user)
+                    self.newestUserIdString = ""
                 }) {
                     Text("Add")
                 }
@@ -118,7 +125,36 @@ struct RoomInviteSheet: View {
                 Alert(title: Text(alertTitle),
                       message: Text(alertMessage),
                       dismissButton: .default(Text("OK")))
-            }            
+            }
+            .confirmationDialog(
+                "It looks like you may have mis-typed the user id",
+                isPresented: $showConfirmAutocorrect,
+                actions: {
+                    if let userId = self.suggestedUserId {
+                        Button(action: {
+                            let user = room.session.getUser(userId: userId)
+                            self.newUsers.append(user)
+                            self.newestUserIdString = ""
+                            self.suggestedUserId = nil
+                        }) {
+                            Text("Add \(userId.stringValue)")
+                        }
+                    }
+                    
+                    Button(role: .cancel, action: {
+                        self.suggestedUserId = nil
+                    }) {
+                        Text("No, let me try that again")
+                    }
+                },
+                message: {
+                    if let userId = self.suggestedUserId {
+                        Text("Did you mean \(userId.stringValue)?")
+                    } else {
+                        Text("It looks like you may have mis-typed that user id")
+                    }
+                }
+            )
             
             if !self.suggestions.isEmpty {
                 List {
