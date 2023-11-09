@@ -23,7 +23,6 @@
 		404C72D8265DDF35000473DF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 404C72D7265DDF35000473DF /* Preview Assets.xcassets */; };
 		4069F79826729DD200FB6090 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4069F79726729DD200FB6090 /* StoreKit.framework */; };
 		4073E7C4267915AF001A80CF /* RepliesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4073E7C3267915AF001A80CF /* RepliesView.swift */; };
-		40878FBC268E4D9000A66EF0 /* AppStoreInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40878FBB268E4D9000A66EF0 /* AppStoreInterface.swift */; };
 		40878FC72694C00000A66EF0 /* MessageContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40878FC62694C00000A66EF0 /* MessageContextMenu.swift */; };
 		40878FCA2694DBC400A66EF0 /* MessageComposerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40878FC92694DBC400A66EF0 /* MessageComposerSheet.swift */; };
 		409F42E3265DE00700690A61 /* Array+Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F42E2265DE00700690A61 /* Array+Sample.swift */; };
@@ -71,7 +70,6 @@
 		40AEA6752678E24200C9CBD1 /* BlurHashEncode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AEA6732678E24200C9CBD1 /* BlurHashEncode.swift */; };
 		40CD7F6C2667D3B600DE315F /* PhotoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40CD7F6B2667D3B600DE315F /* PhotoPicker.swift */; };
 		40CD7F6F2667E16100DE315F /* VideoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40CD7F6E2667E16100DE315F /* VideoPicker.swift */; };
-		40E4D887268A76070055968A /* AppStoreSubscriptionForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E4D886268A76070055968A /* AppStoreSubscriptionForm.swift */; };
 		40E4D88A268A76CF0055968A /* SignupScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E4D889268A76CF0055968A /* SignupScreen.swift */; };
 		40F906BB269DF96100287B27 /* MessageSheetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F906BA269DF96100287B27 /* MessageSheetType.swift */; };
 		4C40ED262AA7CCFB00F58493 /* GalleryInvitationsIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C40ED252AA7CCFB00F58493 /* GalleryInvitationsIndicator.swift */; };
@@ -150,7 +148,6 @@
 		A5A40B6829D60EF3009A17EE /* CirclesConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A40B6729D60EF3009A17EE /* CirclesConfig.swift */; };
 		A5A40B6A29D62FC6009A17EE /* BsspekeEnrollOprfForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A40B6929D62FC6009A17EE /* BsspekeEnrollOprfForm.swift */; };
 		A5A7E228282B06FD001A528D /* ApplicationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A7E227282B06FD001A528D /* ApplicationState.swift */; };
-		A5BECC35280F7A1100B1FCC6 /* TPInAppReceipt in Frameworks */ = {isa = PBXBuildFile; productRef = A5BECC34280F7A1100B1FCC6 /* TPInAppReceipt */; };
 		A5BECC38280F7A2400B1FCC6 /* KeyboardKit in Frameworks */ = {isa = PBXBuildFile; productRef = A5BECC37280F7A2400B1FCC6 /* KeyboardKit */; };
 		A5CC0ACC29D91F7C005935F0 /* Zxcvbn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CC0ACB29D91F7C005935F0 /* Zxcvbn.swift */; };
 		A5CC0ACE29DB6E26005935F0 /* BsspekeLoginOprfForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CC0ACD29DB6E26005935F0 /* BsspekeLoginOprfForm.swift */; };
@@ -207,7 +204,6 @@
 		405F8E682698E8620057E970 /* Circles.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Circles.entitlements; sourceTree = "<group>"; };
 		4069F79726729DD200FB6090 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		4073E7C3267915AF001A80CF /* RepliesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepliesView.swift; sourceTree = "<group>"; };
-		40878FBB268E4D9000A66EF0 /* AppStoreInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreInterface.swift; sourceTree = "<group>"; };
 		40878FC62694C00000A66EF0 /* MessageContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageContextMenu.swift; sourceTree = "<group>"; };
 		40878FC92694DBC400A66EF0 /* MessageComposerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageComposerSheet.swift; sourceTree = "<group>"; };
 		409F42E2265DE00700690A61 /* Array+Sample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Sample.swift"; sourceTree = "<group>"; };
@@ -255,7 +251,6 @@
 		40AEA6732678E24200C9CBD1 /* BlurHashEncode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlurHashEncode.swift; sourceTree = "<group>"; };
 		40CD7F6B2667D3B600DE315F /* PhotoPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPicker.swift; sourceTree = "<group>"; };
 		40CD7F6E2667E16100DE315F /* VideoPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPicker.swift; sourceTree = "<group>"; };
-		40E4D886268A76070055968A /* AppStoreSubscriptionForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreSubscriptionForm.swift; sourceTree = "<group>"; };
 		40E4D889268A76CF0055968A /* SignupScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupScreen.swift; sourceTree = "<group>"; };
 		40F906BA269DF96100287B27 /* MessageSheetType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSheetType.swift; sourceTree = "<group>"; };
 		4C40ED252AA7CCFB00F58493 /* GalleryInvitationsIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryInvitationsIndicator.swift; sourceTree = "<group>"; };
@@ -381,7 +376,6 @@
 				A5D2A3EC29BA643C00428C45 /* Matrix in Frameworks */,
 				4069F79826729DD200FB6090 /* StoreKit.framework in Frameworks */,
 				A54346C12A1D485D0025D147 /* KeychainAccess in Frameworks */,
-				A5BECC35280F7A1100B1FCC6 /* TPInAppReceipt in Frameworks */,
 				A5481C2528108DC7006F782F /* AnyCodable in Frameworks */,
 				A509B89A28189E950053E5BC /* BlindSaltSpeke in Frameworks */,
 				A56BE1792AD6DE0800B15F51 /* CodeScanner in Frameworks */,
@@ -450,7 +444,6 @@
 		409F42E0265DDFE300690A61 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				40878FBB268E4D9000A66EF0 /* AppStoreInterface.swift */,
 				A509B89B2818A1F80053E5BC /* Array+Extension.swift */,
 				409F42E2265DE00700690A61 /* Array+Sample.swift */,
 				A504DA7228120AF100EFF42E /* AsyncButton.swift */,
@@ -596,7 +589,6 @@
 			isa = PBXGroup;
 			children = (
 				403CEA9826E868F30054DBF4 /* AccountInfoForm.swift */,
-				40E4D886268A76070055968A /* AppStoreSubscriptionForm.swift */,
 				40E4D889268A76CF0055968A /* SignupScreen.swift */,
 				403CEAA026E90DE10054DBF4 /* SignupStartForm.swift */,
 				403CEA9226E864160054DBF4 /* TermsOfServiceForm.swift */,
@@ -788,7 +780,6 @@
 			);
 			name = Circles;
 			packageProductDependencies = (
-				A5BECC34280F7A1100B1FCC6 /* TPInAppReceipt */,
 				A5BECC37280F7A2400B1FCC6 /* KeyboardKit */,
 				A5481C2428108DC7006F782F /* AnyCodable */,
 				A509B89928189E950053E5BC /* BlindSaltSpeke */,
@@ -826,7 +817,6 @@
 			);
 			mainGroup = 404C72C4265DDF35000473DF;
 			packageReferences = (
-				A5BECC33280F7A1100B1FCC6 /* XCRemoteSwiftPackageReference "TPInAppReceipt" */,
 				A5BECC36280F7A2400B1FCC6 /* XCRemoteSwiftPackageReference "KeyboardKit" */,
 				A5481C2328108DC7006F782F /* XCRemoteSwiftPackageReference "AnyCodable" */,
 				A509B89828189E950053E5BC /* XCRemoteSwiftPackageReference "BlindSaltSpeke" */,
@@ -941,7 +931,6 @@
 				A5921EB92AFAD7F000C2331D /* RoomInvitedMemberRow.swift in Sources */,
 				409F436D265DE24000690A61 /* PeopleOverviewScreen.swift in Sources */,
 				A5D2A3F629C0EED700428C45 /* Sequence+asyncMap.swift in Sources */,
-				40878FBC268E4D9000A66EF0 /* AppStoreInterface.swift in Sources */,
 				409F4382265DE29600690A61 /* SetupCircleCard.swift in Sources */,
 				A5F2E95C2A4497E30097DBF8 /* UiaView.swift in Sources */,
 				409F4390265DE2CE00690A61 /* SystemNoticesView.swift in Sources */,
@@ -950,7 +939,6 @@
 				403CEA9526E865740054DBF4 /* TokenForm.swift in Sources */,
 				409F438C265DE2C200690A61 /* CircleTimeline.swift in Sources */,
 				409F4337265DE15F00690A61 /* CirclesOverviewScreen.swift in Sources */,
-				40E4D887268A76070055968A /* AppStoreSubscriptionForm.swift in Sources */,
 				A5A40B6329D46ABD009A17EE /* HtmlView.swift in Sources */,
 				409F4336265DE15F00690A61 /* CircleTimelineView.swift in Sources */,
 				A52ACB8F2A786974005D90C5 /* UnconnectedPersonDetailView.swift in Sources */,
@@ -1284,14 +1272,6 @@
 				minimumVersion = 2.0.0;
 			};
 		};
-		A5BECC33280F7A1100B1FCC6 /* XCRemoteSwiftPackageReference "TPInAppReceipt" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/tikhop/TPInAppReceipt";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.0.0;
-			};
-		};
 		A5BECC36280F7A2400B1FCC6 /* XCRemoteSwiftPackageReference "KeyboardKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/KeyboardKit/KeyboardKit";
@@ -1335,11 +1315,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A5A40B5F29D468C3009A17EE /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
 			productName = MarkdownUI;
-		};
-		A5BECC34280F7A1100B1FCC6 /* TPInAppReceipt */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A5BECC33280F7A1100B1FCC6 /* XCRemoteSwiftPackageReference "TPInAppReceipt" */;
-			productName = TPInAppReceipt;
 		};
 		A5BECC37280F7A2400B1FCC6 /* KeyboardKit */ = {
 			isa = XCSwiftPackageProductDependency;
