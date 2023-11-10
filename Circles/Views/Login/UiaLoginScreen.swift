@@ -13,6 +13,9 @@ import Matrix
 struct UiaLoginScreen: View {
     @ObservedObject var session: UiaLoginSession
     var store: CirclesStore
+    
+    @AppStorage("previousUserIds") var previousUserIds: [UserId] = []
+    
     @State var password = ""
     
     
@@ -75,22 +78,11 @@ struct UiaLoginScreen: View {
                 if let creds = try? JSONDecoder().decode(Matrix.Credentials.self, from: data) {
                     Text("Success!")
                     ProgressView()
-                        /*
                         .onAppear {
-                            /*
-                            // Moving this stuff into the callback that we provide when we create the session in the `CirclesStore`
-                            var keys = [String: Data]()
-                            if let bsspeke = session.getBSSpekeClient() {
-                                let ssssKey = bsspeke.generateHashedKey(label: "matrix_ssss")
-                                keys["0x1234"] = Data(ssssKey)
-                            }
-                            */
-                            print("LoginScreen:\tLogin success - Telling the Store to connect()")
-                            Task {
-                                try await store.connect(creds: creds)
-                            }
+                            // Add our user id to the list, for easy login in the future
+                            let allUserIds: Set<UserId> = Set(previousUserIds).union([creds.userId])
+                            previousUserIds = allUserIds.sorted { $0.stringValue < $1.stringValue }
                         }
-                        */
                 } else {
                     Text("Login success, but there was a problem...")
                 }
