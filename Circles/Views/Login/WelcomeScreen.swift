@@ -126,25 +126,45 @@ struct WelcomeScreen: View {
             } else {
                 
                 if !previousUserIds.isEmpty {
-                    VStack(alignment: .leading) {
-                        Text("Or, log in again")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-                        ScrollView {
+
+                    List {
+                        Section("Log in again") {
                             ForEach(previousUserIds) { userId in
+                                
                                 AsyncButton(action: {
                                     try await store.login(userId: userId)
                                     await MainActor.run {
                                         self.suggestedUserId = nil
                                     }
                                 }) {
-                                    Text("Log in as \(userId.stringValue)")
+                                    Text(userId.stringValue)
                                 }
-                                .buttonStyle(.bordered)
+                                //.buttonStyle(.bordered)
+
                             }
+                            .onDelete { offsets in
+                                //print("Deleting entries at offsets: \(offsets)")
+                                var tmp = previousUserIds
+                                //print("Original tmp = \(tmp)")
+                                tmp.remove(atOffsets: offsets)
+                                //print("Modified tmp = \(tmp)")
+                                self.previousUserIds = tmp
+                            }
+                            .listRowBackground(
+                                Capsule()
+                                    .fill(Color.tertiaryBackground.opacity(0.50))
+                                    .padding(1)
+                            )
+                            .listRowSeparator(.hidden)
+
                         }
+                        
                     }
+                    .listStyle(.insetGrouped)
+                    .scrollContentBackground(.hidden)
+                    .frame(maxWidth: 350)
                     .padding(.top)
+
                 }
                 
                 Spacer()
@@ -160,7 +180,7 @@ struct WelcomeScreen: View {
                         .background(Color.accentColor)
                         .cornerRadius(10)
                 }
-                .padding(.bottom, 50)
+                .padding(.bottom, 20)
                 .confirmationDialog("Select a region", isPresented: $showDomainPicker) {
                     AsyncButton(action: {
                         print("LOGIN\tSigning up on user-selected US domain")
@@ -178,7 +198,7 @@ struct WelcomeScreen: View {
             }
 
         }
-        .padding(.horizontal)
+        //.padding(.horizontal)
         /*
         .alert(isPresented: $showAlert) {
             Alert(title: Text(alertTitle),
