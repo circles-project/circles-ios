@@ -27,9 +27,7 @@ struct SecretStoragePasswordScreen: View {
     
     var body: some View {
         VStack(alignment: .center) {
-            Image("circles-icon-transparent")
-                .resizable()
-                .scaledToFit()
+            CirclesLogoView()
                 .frame(minWidth: 60,
                        idealWidth: 90,
                        maxWidth: 120,

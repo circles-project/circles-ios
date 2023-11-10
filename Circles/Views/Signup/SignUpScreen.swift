@@ -77,9 +77,7 @@ struct SignupScreen: View {
     
     var body: some View {
         VStack {
-            Image("circles-icon-transparent")
-                .resizable()
-                .scaledToFit()
+            CirclesLogoView()
                 .frame(minWidth: 100,
                        idealWidth: 150,
                        maxWidth: 200,

@@ -19,26 +19,18 @@ struct WelcomeScreen: View {
     @State var suggestedUserId: UserId? = nil
     
     @State var showUsernameError = false
-    
-    var logo: some View {
-        //RandomizedCircles()
-        Image("circles-icon-transparent")
-            .resizable()
-            .scaledToFit()
-            .frame(minWidth: 100,
-                   idealWidth: 200,
-                   maxWidth: 300,
-                   minHeight: 100,
-                   idealHeight: 200,
-                   maxHeight: 300,
-                   alignment: .center)
-
-    }
         
     var body: some View {
         VStack(alignment: .center) {
                     
-            logo
+            CirclesLogoView()
+                .frame(minWidth: 100,
+                       idealWidth: 200,
+                       maxWidth: 300,
+                       minHeight: 100,
+                       idealHeight: 200,
+                       maxHeight: 300,
+                       alignment: .center)
             
             Text("FUTO Circles")
                 .font(.largeTitle)
