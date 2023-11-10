@@ -34,7 +34,7 @@ struct EmailEnrollSubmitTokenForm: View {
                     .textInputAutocapitalization(.never)
                     .frame(width: 300.0, height: 40.0)
                 AsyncButton(action: {
-                    try await session.doEmailSubmitTokenStage(token: token, secret: secret)
+                    try await session.doEmailEnrollSubmitTokenStage(token: token, secret: secret)
                 }) {
                     Text("Submit")
                         .padding()
