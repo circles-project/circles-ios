@@ -10,6 +10,9 @@ import Matrix
 
 struct LegacyLoginScreen: View {
     @ObservedObject var session: LegacyLoginSession
+    
+    @AppStorage("previousUserIds") var previousUserIds: [UserId] = []
+    
     @State var password: String = ""
     @State var showPassword = false
     
@@ -26,6 +29,10 @@ struct LegacyLoginScreen: View {
                         
             AsyncButton(action: {
                 try await session.login(password: password)
+                
+                // Add our user id to the list, for easy login in the future
+                let allUserIds: Set<UserId> = Set(previousUserIds).union([session.userId])
+                previousUserIds = allUserIds.sorted { $0.stringValue < $1.stringValue }
             }) {
                 Text("Log In")
                     .padding()
