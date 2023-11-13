@@ -1,3 +1,17 @@
+# 0.8.1
+* Support for subscribing to email updates when enrolling a new email address
+* Remember previously-used user id's on the login screen
+* Updated Circles icons
+* Clean up the UI for inviting users
+* Suggest corrections when the user mis-types a user id
+* Blur images in invitations from unknown users
+* Clean up permissions and power levels
+* New settings screens for circles, groups, and photo galleries
+* Use a master/detail view on the Settings tab
+* Show friends of friends on the People tab
+* New UI for managing which circles are advertised to friends in your profile
+* Emoji reactions are now tappable buttons
+
 # 0.8.0
 * Added support for regular Matrix accounts on other servers
 
