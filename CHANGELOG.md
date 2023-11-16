@@ -1,3 +1,10 @@
+# 0.8.3
+* Store keys locally in the Keychain
+* Don't require room version 11, in case the server doesn't support it
+
+# 0.8.2
+* Internal-only build for testing Keychain
+
 # 0.8.1
 * Support for subscribing to email updates when enrolling a new email address
 * Remember previously-used user id's on the login screen
