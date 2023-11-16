@@ -108,8 +108,8 @@ public class CirclesStore: ObservableObject {
     private func saveS4Key(key: Data, keyId: String, for userId: UserId) async throws {
         UserDefaults.standard.set(keyId, forKey: "bsspeke_ssss_keyid[\(userId)]")
         
-        let keychainStore = Matrix.KeychainSecretStore(userId: userId)
-        try await keychainStore.saveKey(key: key, keyId: keyId)
+        let keyStore = Matrix.LocalKeyStore(userId: userId)
+        try await keyStore.saveKey(key: key, keyId: keyId)
     }
     
     // MARK: Load Config
@@ -444,7 +444,7 @@ public class CirclesStore: ObservableObject {
                     self.logger.debug("BS-SPEKE key: id = \(s4Key.keyId), key = \(s4Key.key.base64EncodedString())")
                     
                     // Save the keys into our device Keychain, so they will be available to future Matrix sessions where we load creds and connect, without logging in
-                    let store = Matrix.KeychainSecretStore(userId: creds.userId)
+                    let store = Matrix.LocalKeyStore(userId: creds.userId)
                     try await store.saveKey(key: s4Key.key, keyId: s4Key.keyId)
                     
                     self.logger.debug("Connecting with keyId [\(s4Key.keyId)]")
@@ -507,7 +507,7 @@ public class CirclesStore: ObservableObject {
                 self.logger.debug("BS-SPEKE key: id = \(s4Key.keyId), key = \(s4Key.key.base64EncodedString())")
 
                 // Save the keys into our device Keychain, so they will be available to future Matrix sessions where we load creds and connect, without logging in
-                let store = Matrix.KeychainSecretStore(userId: creds.userId)
+                let store = Matrix.LocalKeyStore(userId: creds.userId)
                 try await store.saveKey(key: s4Key.key, keyId: s4Key.keyId)
 
                 self.logger.debug("Configuring with keyId [\(s4Key.keyId)]")
