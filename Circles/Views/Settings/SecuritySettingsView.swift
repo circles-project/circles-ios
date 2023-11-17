@@ -36,7 +36,7 @@ struct SecuritySettingsView: View {
                     try await store.addNewDefaultKey(newKey)
                     
                     // Save the keys into our device Keychain, so they will be available to future Matrix sessions where we load creds and connect, without logging in
-                    let keychain = Matrix.KeychainSecretStore(userId: session.creds.userId)
+                    let keychain = Matrix.LocalKeyStore(userId: session.creds.userId)
                     try await keychain.saveKey(key: key, keyId: keyId)
                 }
                 else {

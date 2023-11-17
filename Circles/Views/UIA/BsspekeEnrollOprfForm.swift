@@ -18,6 +18,11 @@ struct BsspekeEnrollOprfForm: View {
     @State var passwordStrengthColors: [Color] = []
     let checker = DBZxcvbn()
 
+    #if DEBUG
+    let MINIMUM_PASSWORD_ZXCVBN_SCORE = 2
+    #else
+    let MINIMUM_PASSWORD_ZXCVBN_SCORE = 4
+    #endif
     
     private func getUserId() -> UserId? {
         if let userId = session.creds?.userId {
@@ -104,7 +109,7 @@ struct BsspekeEnrollOprfForm: View {
                         .background(Color.accentColor)
                         .cornerRadius(10)
                 }
-                .disabled(password.isEmpty || password != repeatPassword || score < 4)
+                .disabled(password.isEmpty || password != repeatPassword || score < MINIMUM_PASSWORD_ZXCVBN_SCORE)
             }
             Spacer()
             VStack {
