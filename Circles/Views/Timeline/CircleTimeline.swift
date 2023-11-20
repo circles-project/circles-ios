@@ -76,11 +76,7 @@ struct CircleTimeline: View {
                                     Text("\(index)")
                                 }
                                 
-                                // To handle message replacements (aka edits) we need to always display the latest version of the message
-                                // * If there's a replacement, show it
-                                // * Otherwise, show the original message
-                                let currentMessage = message.replacement ?? message
-                                MessageCard(message: currentMessage)
+                                MessageCard(message: message)
                             }
                             RepliesView(room: message.room, parent: message)
                         }

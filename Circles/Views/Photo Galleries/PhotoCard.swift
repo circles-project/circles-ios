@@ -83,8 +83,13 @@ struct PhotoCard: MessageView {
     
     @ViewBuilder
     var mainCard: some View {
+        // If the message has been edited/replaced, then we should display the new version
+        // Otherwise show the original
+        // But in any case, we use the original message for all the logic -- finding and sending replies, etc
+        let current = message.replacement ?? message
+
         ZStack {
-            if let img = message.thumbnail {
+            if let img = current.thumbnail {
                 Image(uiImage: img)
                     .resizable()
                     .scaledToFill()
@@ -102,7 +107,7 @@ struct PhotoCard: MessageView {
                 Spacer()
                 
                 if debugMode {
-                    if let content = message.content as? Matrix.mImageContent {
+                    if let content = current.content as? Matrix.mImageContent {
                         Text(content.file?.url.mediaId ?? "none")
                             .font(.title)
                             .fontWeight(.bold)
@@ -167,11 +172,11 @@ struct PhotoCard: MessageView {
             }
         }
         .fullScreenCover(isPresented: $showFullScreen) {
-            PhotoDetailView(message: message)
+            PhotoDetailView(message: current)
         }
         .onAppear {
             Task {
-                try await message.fetchThumbnail()
+                try await current.fetchThumbnail()
             }
         }
     }

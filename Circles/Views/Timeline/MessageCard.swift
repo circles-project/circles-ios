@@ -254,7 +254,11 @@ struct MessageCard: MessageView {
     
     var content: some View {
         VStack {
-            if let content = message.content as? Matrix.MessageContent {
+            // If the message has been edited/replaced, then we should show the new content
+            // Otherwise we should show the original content
+            let current = message.replacement ?? message
+            
+            if let content = current.content as? Matrix.MessageContent {
                 switch(content.msgtype) {
                 case M_TEXT:
                     if let textContent = content as? Matrix.mTextContent {
@@ -267,10 +271,10 @@ struct MessageCard: MessageView {
                     }
                     
                 case M_IMAGE:
-                    ImageContentView(message: message)
+                    ImageContentView(message: current)
                     
                 case M_VIDEO:
-                    VideoContentView(message: message)
+                    VideoContentView(message: current)
                     
                 default:
                     Text("This version of Circles can't display this message yet (\"\(message.type)\")")
@@ -278,7 +282,7 @@ struct MessageCard: MessageView {
                 
                 } // end switch
                 
-            } else if message.type == M_ROOM_ENCRYPTED {
+            } else if current.type == M_ROOM_ENCRYPTED {
                 VStack {
                     let bgColor = colorScheme == .dark ? Color.black : Color.white
                     Image(systemName: "lock.rectangle")
@@ -304,13 +308,13 @@ struct MessageCard: MessageView {
                     .padding(.bottom, 2)
                 }
                  .onAppear {
-                     print("Trying to decrypt message \(message.eventId) ...")
+                     print("Trying to decrypt message \(current.eventId) ...")
                      Task {
-                         try await message.decrypt()
+                         try await current.decrypt()
                      }
                  }
             } else {
-                Text("Something went wrong.  Circles failed to parse a message of type \"\(message.type)\".")
+                Text("Something went wrong.  Circles failed to parse a message of type \"\(current.type)\".")
                     .foregroundColor(.red)
             }
         }
