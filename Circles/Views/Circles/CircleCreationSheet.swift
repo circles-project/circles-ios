@@ -71,7 +71,7 @@ struct CircleCreationSheet: View {
     
     var mockup: some View {
         HStack {
-            let cardSize: CGFloat = 120
+            let cardSize: CGFloat = 90
             
             ZStack {
                 if let img = avatarImage {
@@ -95,7 +95,7 @@ struct CircleCreationSheet: View {
                 .buttonStyle(.borderless)
             }
             .shadow(radius: 5)
-            .padding(5)
+            .padding(.horizontal, 5)
             .onChange(of: item) { newItem in
                 Task {
                     if let data = try? await newItem?.loadTransferable(type: Data.self) {
@@ -125,10 +125,6 @@ struct CircleCreationSheet: View {
     var body: some View {
         VStack {
             buttonBar
-                        
-            Text("New Circle")
-                .font(.headline)
-                .fontWeight(.bold)
             
             mockup
                 .padding()
@@ -141,41 +137,8 @@ struct CircleCreationSheet: View {
             VStack(alignment: .leading) {
                 Text("Invite Followers")
                     .fontWeight(.bold)
-                HStack {
-                    TextField("User ID (e.g. @alice)", text: $newestUserId)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .autocapitalization(.none)
-                    
-                    Button(action: {
-                        guard let userId = UserId(newestUserId)
-                        else {
-                            self.alertTitle = "Invalid User ID"
-                            self.alertMessage = "Circles user ID's should start with an @ and have a domain at the end, like @username:example.com"
-                            self.showAlert = true
-                            self.newestUserId = ""
-                            print("CircleCreationSheet - ERROR:\t \(self.alertMessage)")
-                            return
-                        }
-                        if container.joinedMembers.contains(userId) {
-                            self.alertTitle = "\(userId) is already a member of this room"
-                            self.alertMessage = ""
-                            self.showAlert = true
-                            print("CircleCreationSheet - ERROR:\t \(self.alertMessage)")
-                            return
-                        }
-                        
-                        print("CircleCreationSheet - INFO:\t Adding \(userId) to invite list")
-                        let user = container.session.getUser(userId: userId)
-                        users.append(user)
-                        self.newestUserId = ""
-                    }) {
-                        Text("Add")
-                    }
-                }
-                
-                List($users, editActions: .delete) { $user in
-                    MessageAuthorHeader(user: user)
-                }
+ 
+                UsersToInviteView(session: container.session, users: $users)
                 
             }
             .alert(isPresented: $showAlert) {

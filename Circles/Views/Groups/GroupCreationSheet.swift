@@ -84,24 +84,16 @@ struct GroupCreationSheet: View {
     var body: some View {
         VStack {
             buttonbar
-            
-            Text("New Group")
-                .font(.headline)
-                .fontWeight(.bold)
-            
-            HStack {
-                /*
-                Text("Name:")
-                    .fontWeight(.bold)
-                */
-                TextField("Group name", text: $groupName)
-            }
+            let frameWidth = 200.0
+            let frameHeight = 120.0
       
             ZStack {
                 if let img = self.headerImage {
                     Image(uiImage: img)
                         .resizable()
-                        .scaledToFit()
+                        .scaledToFill()
+                        .frame(maxWidth: frameWidth, maxHeight: frameHeight)
+
                 } else {
                     Color.gray
                 }
@@ -125,6 +117,7 @@ struct GroupCreationSheet: View {
                 }
             }
             .clipShape(RoundedRectangle(cornerRadius: 10))
+            .frame(maxWidth: frameWidth, maxHeight: frameHeight)
             .overlay(alignment: .bottomTrailing) {
                 
                 PhotosPicker(selection: $selectedItem, matching: .images) {
@@ -148,59 +141,13 @@ struct GroupCreationSheet: View {
                 }
             }
             
+            TextField("Group name", text: $groupName)
+            
             Spacer()
             
             Text("Users to invite:")
                 .fontWeight(.bold)
-            HStack {
-                TextField("User ID", text: $newestUserId)
-                    .autocapitalization(.none)
-                
-                AsyncButton(action: {
-                    guard let userId = UserId(newestUserId)
-                    else {
-                        self.alertTitle = "Invalid User ID"
-                        self.alertMessage = "Circles user ID's should start with an @ and have a domain at the end, like @username:example.com"
-                        self.showAlert = true
-                        self.newestUserId = ""
-                        print("GroupCreationSheet - ERROR:\t \(self.alertMessage)")
-                        return
-                    }
-                    if groups.joinedMembers.contains(userId) {
-                        self.alertTitle = "\(userId) is already a member of this room"
-                        self.alertMessage = ""
-                        self.showAlert = true
-                        self.newestUserId = ""
-                        print("GroupCreationSheet - ERROR:\t \(self.alertMessage)")
-                        return
-                    }
-                    
-                    print("GroupCreationSheet - INFO:\t Adding \(userId) to invite list")
-                    
-                    let user = groups.session.getUser(userId: userId)
-                    self.users.append(user)
-                    self.newestUserId = ""
-                }) {
-                    Text("Add")
-                        .fontWeight(.bold)
-                }
-            }
-            .padding(.horizontal)
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text(alertTitle),
-                      message: Text(alertMessage),
-                      dismissButton: .default(Text("OK")))
-            }
-            
-            VStack(alignment: .leading) {
-
-                List($users, editActions: .delete) { $user in
-                    MessageAuthorHeader(user: user)
-                }
-
-            }
-            .padding(.leading)
-                
+            UsersToInviteView(session: groups.session, users: $users)
             
         }
         .padding()

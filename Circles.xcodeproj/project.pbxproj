@@ -129,6 +129,7 @@
 		A55F367729EEFB6900F46971 /* PhotoContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55F367629EEFB6900F46971 /* PhotoContextMenu.swift */; };
 		A562C08E2AFE8EA800522FCB /* CirclesLogoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A562C08D2AFE8EA800522FCB /* CirclesLogoView.swift */; };
 		A562C0902AFE9A7200522FCB /* Array+RawRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A562C08F2AFE9A7200522FCB /* Array+RawRepresentable.swift */; };
+		A562C0922B0BEC2000522FCB /* UsersToInviteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A562C0912B0BEC2000522FCB /* UsersToInviteView.swift */; };
 		A565935F2AEAC4920003C244 /* QR.swift in Sources */ = {isa = PBXBuildFile; fileRef = A565935E2AEAC4920003C244 /* QR.swift */; };
 		A56593612AEBE5D30003C244 /* Room+URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56593602AEBE5D30003C244 /* Room+URL.swift */; };
 		A56593632AF17EF90003C244 /* LegacyLoginScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56593622AF17EF90003C244 /* LegacyLoginScreen.swift */; };
@@ -309,6 +310,7 @@
 		A55F367629EEFB6900F46971 /* PhotoContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoContextMenu.swift; sourceTree = "<group>"; };
 		A562C08D2AFE8EA800522FCB /* CirclesLogoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesLogoView.swift; sourceTree = "<group>"; };
 		A562C08F2AFE9A7200522FCB /* Array+RawRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+RawRepresentable.swift"; sourceTree = "<group>"; };
+		A562C0912B0BEC2000522FCB /* UsersToInviteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersToInviteView.swift; sourceTree = "<group>"; };
 		A565935E2AEAC4920003C244 /* QR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QR.swift; sourceTree = "<group>"; };
 		A56593602AEBE5D30003C244 /* Room+URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Room+URL.swift"; sourceTree = "<group>"; };
 		A56593622AF17EF90003C244 /* LegacyLoginScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyLoginScreen.swift; sourceTree = "<group>"; };
@@ -546,14 +548,14 @@
 			children = (
 				409F433A265DE17300690A61 /* GroupCreationSheet.swift */,
 				409F433C265DE17400690A61 /* GroupHeader.swift */,
-				409F433D265DE17400690A61 /* GroupOverviewRow.swift */,
-				409F433F265DE17500690A61 /* GroupsOverviewScreen.swift */,
-				409F433B265DE17300690A61 /* GroupTimelineScreen.swift */,
 				A54A27872A843BB200858846 /* GroupInvitationsIndicator.swift */,
 				A54A27892A843C0300858846 /* GroupInvitationsView.swift */,
+				409F433D265DE17400690A61 /* GroupOverviewRow.swift */,
+				A5921EBA2AFAED8900C2331D /* GroupSettingsView.swift */,
+				409F433F265DE17500690A61 /* GroupsOverviewScreen.swift */,
+				409F433B265DE17300690A61 /* GroupTimelineScreen.swift */,
 				A54A278B2A843C5F00858846 /* InvitedGroupCard.swift */,
 				A54A278D2A843CC600858846 /* InvitedGroupDetailView.swift */,
-				A5921EBA2AFAED8900C2331D /* GroupSettingsView.swift */,
 			);
 			path = Groups;
 			sourceTree = "<group>";
@@ -659,6 +661,7 @@
 				409F43A6265DE43B00690A61 /* RoomSecurityInfoSheet.swift */,
 				A56BE17C2AD700E100B15F51 /* RoomShareSheet.swift */,
 				A56BE17A2AD6ED4000B15F51 /* ScanQrCodeAndKnockSheet.swift */,
+				A562C0912B0BEC2000522FCB /* UsersToInviteView.swift */,
 			);
 			path = Rooms;
 			sourceTree = "<group>";
@@ -947,6 +950,7 @@
 				409F438C265DE2C200690A61 /* CircleTimeline.swift in Sources */,
 				409F4337265DE15F00690A61 /* CirclesOverviewScreen.swift in Sources */,
 				A5A40B6329D46ABD009A17EE /* HtmlView.swift in Sources */,
+				A562C0922B0BEC2000522FCB /* UsersToInviteView.swift in Sources */,
 				409F4336265DE15F00690A61 /* CircleTimelineView.swift in Sources */,
 				A52ACB8F2A786974005D90C5 /* UnconnectedPersonDetailView.swift in Sources */,
 				A56593612AEBE5D30003C244 /* Room+URL.swift in Sources */,
