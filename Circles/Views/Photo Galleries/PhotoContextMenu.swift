@@ -17,8 +17,9 @@ struct PhotoContextMenu: View {
     @Binding var showDetail: Bool
     
     var body: some View {
+        let current = message.replacement ?? message
         
-        if let content = message.content as? Matrix.MessageContent,
+        if let content = current.content as? Matrix.MessageContent,
             content.msgtype == M_IMAGE
         {
             Button(action: {

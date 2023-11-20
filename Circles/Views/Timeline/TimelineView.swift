@@ -91,12 +91,7 @@ struct TimelineView<V: MessageView>: View {
                             
                             VStack(alignment: .leading) {
                                 
-                                // To handle event replacements, we need to get the latest version
-                                // * If there's a replacement of the original message, then that's the one we want
-                                // * Otherwise we take the original
-                                let currentMessage = message.replacement ?? message
-                                
-                                V(message: currentMessage, isLocalEcho: false, isThreaded: false)
+                                V(message: message, isLocalEcho: false, isThreaded: false)
                                     .padding(.top, 5)
 
                                 RepliesView(room: room, parent: message)
