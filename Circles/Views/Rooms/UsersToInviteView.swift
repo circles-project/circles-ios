@@ -145,30 +145,32 @@ struct UsersToInviteView: View {
     @ViewBuilder
     var currentList: some View {
         VStack(alignment: .leading) {
-            Text("USERS TO INVITE")
-                .font(.subheadline)
-                .foregroundColor(.gray)
-            
-            let columns = [
-                GridItem(.adaptive(minimum: 150))
-            ]
-            
-            LazyVGrid(columns: columns) {
-                
-                ForEach(users) { user in
-                    Button(action: {
-                        let userId = user.userId
-                        self.users.removeAll(where: {$0.userId == userId})
-                    }) {
-                        Label(user.userId.stringValue, systemImage: "xmark")
-                            .lineLimit(1)
-                            .font(.subheadline)
-                    }
-                    .buttonStyle(.bordered)
+            if !users.isEmpty {
+                Text("USERS TO INVITE")
+                    .font(.subheadline)
                     .foregroundColor(.gray)
+                
+                let columns = [
+                    GridItem(.adaptive(minimum: 150))
+                ]
+                
+                LazyVGrid(columns: columns) {
+                    
+                    ForEach(users) { user in
+                        Button(action: {
+                            let userId = user.userId
+                            self.users.removeAll(where: {$0.userId == userId})
+                        }) {
+                            Label(user.userId.stringValue, systemImage: "xmark")
+                                .lineLimit(1)
+                                .font(.subheadline)
+                        }
+                        .buttonStyle(.bordered)
+                        .foregroundColor(.gray)
+                    }
                 }
+                .padding(.bottom)
             }
-            .padding(.bottom)
         }
     }
     
@@ -203,12 +205,13 @@ struct UsersToInviteView: View {
                     .padding(.leading)
                     //Divider()
                 }
-                
-                Spacer()
-                
+                                
                 if !searchFocused {
                     currentList
                 }
+
+                Spacer()
+
             }
             .padding(.leading)
             
