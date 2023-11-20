@@ -125,10 +125,6 @@ struct CircleCreationSheet: View {
     var body: some View {
         VStack {
             buttonBar
-                        
-            Text("New Circle")
-                .font(.headline)
-                .fontWeight(.bold)
             
             mockup
                 .padding()

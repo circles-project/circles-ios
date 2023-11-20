@@ -85,10 +85,6 @@ struct GroupCreationSheet: View {
         VStack {
             buttonbar
             
-            Text("New Group")
-                .font(.headline)
-                .fontWeight(.bold)
-            
             HStack {
                 /*
                 Text("Name:")
