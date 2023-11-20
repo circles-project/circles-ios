@@ -14,34 +14,22 @@ struct MessageContextMenu: View {
     @Binding var sheetType: MessageSheetType?
 
     var body: some View {
-        /* // Moved the Reply button into the MessageCard itself
-        // Only allow replies for top-level posts
-        // Otherwise it gets too crazy trying to display a threaded view on mobile
-        if message.relatesToId == nil {
-            Button(action: {
-                //self.selectedMessage = self.message
-                //self.showReplyComposer = true
-                self.sheetType = .composer
-            }) {
-                HStack {
-                    Text("Reply")
-                    Image(systemName: "bubble.right")
-                }
-            }
-        }
-        */
 
-        if let content = message.content as? Matrix.MessageContent,
-           content.msgtype == M_IMAGE
+        let current = message.replacement ?? message
+        if let content = current.content as? Matrix.MessageContent,
+           content.msgtype == M_IMAGE,
+           let imageContent = content as? Matrix.mImageContent
         {
-            Button(action: saveImage) {
+            AsyncButton(action: {
+                try await saveImage(content: imageContent)
+            }) {
                 Label("Save image", systemImage: "square.and.arrow.down")
             }
 
-            if message.sender.userId == message.room.session.creds.userId {
-                Button(action: {}) {
-                    Label("Share", systemImage: "square.and.arrow.up")
-                }
+            if let thumbnail = current.thumbnail
+            {
+                let image = Image(uiImage: thumbnail)
+                ShareLink(item: image, preview: SharePreview(imageContent.caption ?? "", image: image))
             }
         }
 
@@ -114,73 +102,65 @@ struct MessageContextMenu: View {
         }
     }
 
-    func saveEncryptedImage(content: Matrix.mImageContent) {
-        /*
-        guard let file = content.file ?? content.info.thumbnail_file else {
-            print("SAVEIMAGE\tError: Encrypted image doesn't have an encrypted file :(")
-            return
-        }
-        let url = file.url
-        let matrix = message.room.session
+    func saveEncryptedImage(file: Matrix.mEncryptedFile) async throws {
 
-        guard let cachedImage = matrix.getCachedEncryptedImage(mxURI: url.absoluteString) else {
-            matrix.downloadEncryptedImage(fileinfo: file, mimetype: content.info.mimetype) { response in
-                switch response {
-                case .failure(let err):
-                    print("SAVEIMAGE\tError: Failed to download encrypted image - \(err)")
-                case .success(let img):
-                    print("SAVEIMAGE\tSuccess!  Downloaded encrypted file.  Saving...")
-                    let imageSaver = ImageSaver()
-                    imageSaver.writeToPhotoAlbum(image: img)
-                }
-            }
+        let session = message.room.session
+
+        guard let data = try? await session.downloadAndDecryptData(file),
+              let image = UIImage(data: data)
+        else {
+            print("Failed to get image for encrypted URL \(file.url)")
             return
         }
-        print("SAVEIMAGE\tEncrypted image was already in cache.  Saving...")
+        
+        print("Saving image...")
         let imageSaver = ImageSaver()
-        imageSaver.writeToPhotoAlbum(image: cachedImage)
-        */
+        await imageSaver.writeToPhotoAlbum(image: image)
+        print("Successfully saved image from \(file.url)")
     }
 
-    func savePlaintextImage(content: Matrix.mImageContent) {
-        /*
-        guard let fullresUrl: URL = content.url ?? content.info.thumbnail_url else {
+    func savePlaintextImage(url: MXC) async throws {
+        print("Trying to save image from URL \(url)")
+        guard let data = try? await message.room.session.downloadData(mxc: url),
+              let image = UIImage(data: data)
+        else {
+            print("Failed to get image for url \(url)")
             return
         }
-        print("Trying to save image from URL \(fullresUrl)")
-        // Are we really lucky and we already have it in cache?
-        guard let cachedImage = message.matrix.getCachedImage(mxURI: fullresUrl.absoluteString) else {
-            // If not, no worries, we just download it before we save it
-            print("Need to download image from URL \(fullresUrl)")
-            message.matrix.downloadImage(mxURI: fullresUrl.absoluteString) { image in
-                print("Downloaded image from URL \(fullresUrl), saving...")
-                let imageSaver = ImageSaver()
-                imageSaver.writeToPhotoAlbum(image: image)
-            }
-            return
-        }
-        print("Image was in cache, saving...")
+        
+        print("Saving image...")
         let imageSaver = ImageSaver()
-        imageSaver.writeToPhotoAlbum(image: cachedImage)
-        */
+        await imageSaver.writeToPhotoAlbum(image: image)
+        print("Successfully saved image from \(url)")
     }
 
-    func saveImage() {
-        /*
-        switch(message.content) {
-        case .image(let imageContent):
-            if message.isEncrypted {
-                saveEncryptedImage(content: imageContent)
-                return
-            }
-            else {
-                savePlaintextImage(content: imageContent)
-            }
-        default:
-            print("SAVEIMAGE\tTried to saveImage on something that wasn't an m.image (eventId = \(message.id))")
-            return
+    func saveImage(content: Matrix.mImageContent) async throws {
+        // Coming in, we have no idea what this m.image content may contain
+        // It may have any mix of encrypted / unencrypted full-res image and thumbnail
+        // So we try to be a little bit smart
+        //   - We prefer the full-res image over the thumbnail
+        //   - When trying to find an image (either full-res or thumbnail) we prefer the encrypted version over unencrypted
+        // In other words, our preferences are:
+        //   1. Full-res, encrypted
+        //   2. Full-res, non encrypted
+        //   3. Thumbnail, encrypted
+        //   4. Thumbnail, non encrypted
+        
+        if let fullResFile = content.file {
+            try await saveEncryptedImage(file: fullResFile)
         }
-        */
+        else if let fullResUrl = content.url {
+            try await savePlaintextImage(url: fullResUrl)
+        }
+        else if let thumbnailFile = content.thumbnail_file {
+            try await saveEncryptedImage(file: thumbnailFile)
+        }
+        else if let thumbnailUrl = content.thumbnail_url {
+            try await savePlaintextImage(url: thumbnailUrl)
+        }
+        else {
+            print("Error: Can't save image -- No encrypted file or URL")
+        }
     }
 
 }
