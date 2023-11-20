@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 import Matrix
 
 
@@ -76,6 +77,39 @@ struct MessageContextMenu: View {
                     Text("Report")
                 }
             }
+        }
+        
+        Button(action: {
+            guard let content = message.content as? Matrix.MessageContent
+            else {
+                print("Failed to copy message \(message.eventId)")
+                return
+            }
+            
+            let pasteboard = UIPasteboard.general
+            
+            switch content.msgtype {
+            case M_TEXT:
+                guard let textContent = content as? Matrix.mTextContent
+                else {
+                    print("Failed to get content to copy m.text message \(message.eventId)")
+                    return
+                }
+                pasteboard.string = textContent.body
+
+            case M_IMAGE:
+                guard let imageContent = content as? Matrix.mImageContent
+                else {
+                    print("Failed to get content to copy m.image message \(message.eventId)")
+                    return
+                }
+                pasteboard.image = message.thumbnail
+                
+            default:
+                print("Cannot copy msgtype \(content.msgtype)")
+            }
+        }) {
+            Label("Copy", systemImage: "doc.on.doc")
         }
         
         if message.sender.userId == message.room.session.creds.userId {
