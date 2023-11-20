@@ -22,12 +22,10 @@ enum MessageDisplayStyle {
 
 struct TextContentView: View {
     var text: String
-    var paragraphs: [Substring]
     var markdown: MarkdownContent
     
     init(_ text: String) {
         self.text = text
-        self.paragraphs = text.split(separator: "\n")
         self.markdown = MarkdownContent(text)
     }
     
