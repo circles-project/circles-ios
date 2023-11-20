@@ -93,7 +93,7 @@ struct TimelineView<V: MessageView>: View {
                                 
                                 // To handle event replacements, we need to get the latest version
                                 // * If there's a replacement of the original message, then that's the one we want
-                                // * sOtherwise we take the original
+                                // * Otherwise we take the original
                                 let currentMessage = message.replacement ?? message
                                 
                                 V(message: currentMessage, isLocalEcho: false, isThreaded: false)
