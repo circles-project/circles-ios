@@ -50,7 +50,7 @@ public class CirclesStore: ObservableObject {
         // .nothing - if there are no creds to be found
 
         let _ = Task {
-            guard let creds = loadCredentials()
+            guard let creds = try? loadCredentials()
             else {
                 // Apparently we're offline, waiting for (valid) credentials to log in
                 logger.info("Didn't find valid login credentials - Setting state to .nothing")
@@ -81,33 +81,37 @@ public class CirclesStore: ObservableObject {
     
     // MARK: Credentials
     
-    private func loadCredentials(_ user: String? = nil) -> Matrix.Credentials? {
+    private func loadCredentials(_ user: String? = nil) throws -> Matrix.Credentials? {
         
         guard let uid = user ?? UserDefaults.standard.string(forKey: "user_id"),
               let userId = UserId(uid)
         else {
             return nil
         }
-        guard let deviceId = UserDefaults.standard.string(forKey: "device_id[\(userId)]"),
-              let accessToken = UserDefaults.standard.string(forKey: "access_token[\(userId)]")
-        else {
-            return nil
-        }
         
-        return Matrix.Credentials(userId: userId,
-                                  accessToken: accessToken,
-                                  deviceId: deviceId)
+        return try Matrix.Credentials.load(for: userId)
     }
     
-    private func saveCredentials(creds: Matrix.Credentials) {
+    private func saveCredentials(creds: Matrix.Credentials) throws {
         UserDefaults.standard.set("\(creds.userId)", forKey: "user_id")
-        UserDefaults.standard.set(creds.deviceId, forKey: "device_id[\(creds.userId)]")
-        UserDefaults.standard.set(creds.accessToken, forKey: "access_token[\(creds.userId)]")
+        
+        try creds.save()
+    }
+        
+    public func removeCredentials(for userId: UserId) {
+        UserDefaults.standard.removeObject(forKey: "user_id")
+        UserDefaults.standard.removeObject(forKey: "credentials[\(userId)]")
+        UserDefaults.standard.removeObject(forKey: "device_id[\(userId)]")
+        UserDefaults.standard.removeObject(forKey: "access_token[\(userId)]")
+        UserDefaults.standard.removeObject(forKey: "expiration[\(userId)]")
+        UserDefaults.standard.removeObject(forKey: "refresh_token[\(userId)]")
     }
     
     private func saveS4Key(key: Data, keyId: String, for userId: UserId) async throws {
+        // Save the keyId -- but NOT the key itself -- in user defaults, so we know which key to use in the future
         UserDefaults.standard.set(keyId, forKey: "bsspeke_ssss_keyid[\(userId)]")
         
+        // Save the actual key in the Keychain
         let keyStore = Matrix.LocalKeyStore(userId: userId)
         try await keyStore.saveKey(key: key, keyId: keyId)
     }
@@ -401,11 +405,11 @@ public class CirclesStore: ObservableObject {
         
         // First - Check to see if we already have a device_id and access_token for this user
         //         e.g. maybe they didn't log out, but only "switched"
-        if let creds = loadCredentials(userId.stringValue) {
+        if let creds = try? loadCredentials(userId.stringValue) {
             logger.debug("Found saved credentials for \(userId)")
             
             // Save the full credentials including the userId, so we can automatically connect next time
-            self.saveCredentials(creds: creds)
+            try self.saveCredentials(creds: creds)
             try await self.connect(creds: creds)
             return
         }
@@ -422,7 +426,7 @@ public class CirclesStore: ObservableObject {
         
         if doUIA {
             // Start the User-Interactive Auth with a LoginSession
-            let loginSession = try await UiaLoginSession(userId: userId, completion: { session, data in
+            let loginSession = try await UiaLoginSession(userId: userId, refreshToken: true, completion: { session, data in
                 self.logger.debug("Login was successful")
                 
                 let decoder = JSONDecoder()
@@ -434,7 +438,7 @@ public class CirclesStore: ObservableObject {
                     }
                     return
                 }
-                self.saveCredentials(creds: creds)
+                try self.saveCredentials(creds: creds)
                 //try await self.connect(creds: creds)
                 
                 // Check for a BS-SPEKE session, and if we have one, use it to generate our SSSS key
@@ -461,9 +465,10 @@ public class CirclesStore: ObservableObject {
         } else {
             // No UIA
             
-            let loginSession = LegacyLoginSession(userId: userId, 
+            let loginSession = LegacyLoginSession(userId: userId,
+                                                  refreshToken: true,
                                                   completion: { creds in
-                                                        self.saveCredentials(creds: creds)
+                                                        try self.saveCredentials(creds: creds)
                                                         try await self.connect(creds: creds)
                                                     },
                                                   cancellation: {
@@ -498,7 +503,7 @@ public class CirclesStore: ObservableObject {
                 }
                 return
             }
-            self.saveCredentials(creds: creds)
+            try self.saveCredentials(creds: creds)
             
             // Check for a BS-SPEKE session, and if we have one, use it to generate our SSSS key
             if let bsspeke = session.getBSSpekeClient() {
@@ -537,14 +542,7 @@ public class CirclesStore: ObservableObject {
             self.state = .settingUp(session)
         }
     }
-    
-    // MARK: Remove credentials
-    
-    public func removeCredentials(for userId: UserId) {
-        UserDefaults.standard.removeObject(forKey: "user_id")
-        UserDefaults.standard.removeObject(forKey: "device_id[\(userId)]")
-        UserDefaults.standard.removeObject(forKey: "access_token[\(userId)]")
-    }
+
     
     // MARK: Logout
     
