@@ -1,3 +1,11 @@
+# In progress
+* Use refresh tokens if the server provides them
+* Show search suggestions when inviting friends to a new circle or group
+* Save image now works again
+* New Share button for image posts
+* New Copy button for text posts
+* Bugfix: Enable replying to an edited post
+
 # 0.8.3
 * Store keys locally in the Keychain
 * Don't require room version 11, in case the server doesn't support it
