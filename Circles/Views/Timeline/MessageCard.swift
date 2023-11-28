@@ -289,7 +289,7 @@ struct MessageCard: MessageView {
                         .scaledToFit()
                         .padding()
                     VStack {
-                        Label("Could not to decrypt message", systemImage: "exclamationmark.triangle")
+                        Label("Could not decrypt message", systemImage: "exclamationmark.triangle")
                             .font(.title2)
                             .fontWeight(.semibold)
                         if debugMode {
