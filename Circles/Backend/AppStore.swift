@@ -234,8 +234,26 @@ class AppStore: ObservableObject {
                         }
                     }
                 case .autoRenewable:
+                    guard let status = await transaction.subscriptionStatus
+                    else {
+                        print("Found auto-renewable transaction \(transaction.id) for product \(transaction.productID) but it has no subscription status")
+                        continue
+                    }
+                    guard status.state == .subscribed || status.state == .inGracePeriod
+                    else {
+                        print("Found auto-renewable transaction \(transaction.id) for product \(transaction.productID) but it's in state \(status.state.localizedDescription)")
+                        continue
+                    }
+                    guard !transaction.isUpgraded
+                    else {
+                        print("Found auto-renewable transaction \(transaction.id) for product \(transaction.productID) but it's been upgraded")
+                        continue
+                    }
                     if let groupId = transaction.subscriptionGroupID {
+                        print("Auto-renewable transaction \(transaction.id) has group id \(groupId) -- Setting active product to \(transaction.productID)")
                         purchasedSubscriptions[groupId] = transaction.productID
+                    } else {
+                        print("Found auto-renewable transaction \(transaction.id) for product \(transaction.productID) but it has no group id")
                     }
                 default:
                     break
