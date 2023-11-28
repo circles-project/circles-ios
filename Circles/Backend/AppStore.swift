@@ -54,7 +54,7 @@ class AppStore: ObservableObject {
     
     @Published private(set) var purchasedProducts: [Product] = []
     @Published private(set) var purchasedNonRenewableSubscriptions: [Product] = []
-    @Published private(set) var purchasedSubscriptions: [Product] = []
+    @Published private(set) var purchasedSubscriptions: [String: String] = [:]
     @Published private(set) var subscriptionGroupStatus: RenewalState?
     
     var updateListenerTask: Task<Void, Error>? = nil
@@ -105,7 +105,7 @@ class AppStore: ObservableObject {
 
     @MainActor
     func requestProducts(for identifiers: [String]) async throws -> [Product] {
-        //Request products from the App Store using the identifiers that the Products.plist file defines.
+        //Request products from the App Store using the identifiers that the caller provides.
         let storeProducts = try await Product.products(for: identifiers)
 
         var newNonConsumables: [Product] = []
@@ -155,6 +155,10 @@ class AppStore: ObservableObject {
             //Always finish a transaction.
             await transaction.finish()
 
+            await MainActor.run {
+                self.objectWillChange.send()
+            }
+            
             return transaction
         case .userCancelled, .pending:
             return nil
@@ -163,7 +167,7 @@ class AppStore: ObservableObject {
         }
     }
 
-    func isPurchased(_ product: Product) async throws -> Bool {
+    func isPurchased(_ product: Product) -> Bool {
         //Determine whether the user purchases a given product.
         switch product.type {
         case .nonRenewable:
@@ -171,7 +175,13 @@ class AppStore: ObservableObject {
         case .nonConsumable:
             return purchasedProducts.contains(product)
         case .autoRenewable:
-            return purchasedSubscriptions.contains(product)
+            guard let groupId = product.subscription?.subscriptionGroupID
+            else {
+                print("Invalid subscription product \(product.id) -- No subscription info")
+                //throw CirclesError("Invalid subscription product")
+                return false
+            }
+            return purchasedSubscriptions[groupId] == product.id
         default:
             return false
         }
@@ -192,7 +202,7 @@ class AppStore: ObservableObject {
     @MainActor
     func updateCustomerProductStatus() async {
         var purchasedNonConsumables: [Product] = []
-        var purchasedSubscriptions: [Product] = []
+        var purchasedSubscriptions: [String: String] = [:]
         var purchasedNonRenewableSubscriptions: [Product] = []
 
         //Iterate through all of the user's purchased products.
@@ -224,8 +234,8 @@ class AppStore: ObservableObject {
                         }
                     }
                 case .autoRenewable:
-                    if let subscription = subscriptions.first(where: { $0.id == transaction.productID }) {
-                        purchasedSubscriptions.append(subscription)
+                    if let groupId = transaction.subscriptionGroupID {
+                        purchasedSubscriptions[groupId] = transaction.productID
                     }
                 default:
                     break

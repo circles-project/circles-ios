@@ -45,7 +45,7 @@ struct SettingsScreen: View {
                     }
                     
                     if CIRCLES_DOMAINS.contains(session.matrix.creds.userId.domain) {
-                        NavigationLink(destination: SubscriptionSettingsView(store: store)) {
+                        NavigationLink(destination: SubscriptionSettingsView(store: store.appStore)) {
                             Label("Subscription Status", systemImage: "folder.badge.person.crop")
                         }
                     }

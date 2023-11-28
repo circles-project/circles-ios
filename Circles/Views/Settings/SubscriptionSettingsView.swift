@@ -24,9 +24,8 @@ struct SubscriptionProductView: View {
     
     @ObservedObject var store: AppStore
     var product: Product
-
-    @State var isPurchased: Bool = false
-
+    @Binding var selected: String?
+    
     @State var errorTitle = ""
     @State var isShowingError: Bool = false
     
@@ -56,7 +55,7 @@ struct SubscriptionProductView: View {
         do {
             if try await store.purchase(product) != nil {
                 withAnimation {
-                    isPurchased = true
+                    selected = product.id
                 }
             }
         } catch StoreError.failedVerification {
@@ -70,7 +69,7 @@ struct SubscriptionProductView: View {
     @ViewBuilder
     var subscribeButton: some View {
         AsyncButton(action: {
-            print("User tapped \"\(product.description)\"")
+            print("User tapped \"\(product.displayName)\"")
             await buy()
         }) {
             VStack {
@@ -123,11 +122,12 @@ struct SubscriptionProductView: View {
                 Text(product.displayName)
                     .bold()
                 Text(product.description)
+                    .font(.subheadline)
             }
             
             Spacer()
             
-            if isPurchased {
+            if selected == product.id {
                 checkBox
             } else {
                 subscribeButton
@@ -136,17 +136,13 @@ struct SubscriptionProductView: View {
         .alert(isPresented: $isShowingError, content: {
             Alert(title: Text(errorTitle), message: nil, dismissButton: .default(Text("Okay")))
         })
-        .onAppear {
-            Task {
-                isPurchased = (try? await store.isPurchased(product)) ?? false
-            }
-        }
 
     }
 }
 
 struct SubscriptionSettingsView: View {
-    @ObservedObject var store: CirclesStore
+    @ObservedObject var store: AppStore
+    @State var selected: String?
     
     // FIXME Hard-coding this for initial development - Get this from the UIA session params
     let productIds = [
@@ -165,7 +161,7 @@ struct SubscriptionSettingsView: View {
                 let individualProducts = products.filter({ !$0.isFamilyShareable }).sorted(by: { $0.price < $1.price })
                 Section("Individual Subscriptions") {
                     ForEach(individualProducts) { product in
-                        SubscriptionProductView(store: store.appStore, product: product)
+                        SubscriptionProductView(store: store, product: product, selected: $selected)
                             .padding(.vertical, 5)
                     }
                 }
@@ -174,7 +170,7 @@ struct SubscriptionSettingsView: View {
                 let familyShareableProducts = products.filter({ $0.isFamilyShareable }).sorted(by: { $0.price < $1.price })
                 Section("Family Shareable Subscriptions") {
                     ForEach(familyShareableProducts) { product in
-                        SubscriptionProductView(store: store.appStore, product: product)
+                        SubscriptionProductView(store: store, product: product, selected: $selected)
                             .padding(.vertical, 5)
                     }
                 }
@@ -184,10 +180,19 @@ struct SubscriptionSettingsView: View {
             Spacer()
         }
         .task {
-            if let products = try? await store.appStore.requestProducts(for: productIds) {
+            if let products = try? await store.requestProducts(for: productIds) {
                 print("Loaded \(products.count) products")
                 await MainActor.run {
                     self.products = products
+                }
+                
+                for product in products {
+                    if store.isPurchased(product) {
+                        print("Product \(product.id) is purchased")
+                        await MainActor.run {
+                            self.selected = product.id
+                        }
+                    }
                 }
             } else {
                 print("Failed to load products from the App Store")
