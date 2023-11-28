@@ -44,6 +44,12 @@ struct SettingsScreen: View {
                         Label("Account Security", systemImage: "lock.fill")
                     }
                     
+                    if CIRCLES_DOMAINS.contains(session.matrix.creds.userId.domain) {
+                        NavigationLink(destination: SubscriptionSettingsView(store: store)) {
+                            Label("Subscription Status", systemImage: "folder.badge.person.crop")
+                        }
+                    }
+                    
                     NavigationLink(destination: NotificationsSettingsView(store: store)) {
                         Label("Notifications", systemImage: "bell.fill")
                     }

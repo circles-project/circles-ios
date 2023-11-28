@@ -1,0 +1,230 @@
+{
+  "identifier" : "D2EB4603",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "2.99",
+      "familyShareable" : false,
+      "internalID" : "111DE1B5",
+      "localizations" : [
+        {
+          "description" : "Our first test item",
+          "displayName" : "Test Non-con A",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.temporary.id.nonconsumable.a",
+      "referenceName" : "Test Non-Consumable A",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "0.99",
+      "familyShareable" : false,
+      "internalID" : "71D5506C",
+      "localizations" : [
+        {
+          "description" : "Our second testing item, also for purchase",
+          "displayName" : "Test Non-com B",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.temporary.id.nonconsumable.b",
+      "referenceName" : "Test Non-Consumable B",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_askToBuyEnabled" : false,
+    "_compatibilityTimeRate" : {
+      "3" : 6
+    },
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      {
+        "current" : {
+          "index" : 2,
+          "type" : "generic"
+        },
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ],
+    "_timeRate" : 13
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "9168B5F2",
+      "localizations" : [
+
+      ],
+      "name" : "Online Accounts",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "1.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "699D8EAD",
+          "introductoryOffer" : {
+            "displayPrice" : "0.99",
+            "internalID" : "4B6B698A",
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P2M"
+          },
+          "localizations" : [
+            {
+              "description" : "A Circles account with 10GB secure storage",
+              "displayName" : "Individual - Monthly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "org.futo.circles.individual_monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Individual Monthly",
+          "subscriptionGroupID" : "9168B5F2",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "4.99",
+          "familyShareable" : true,
+          "groupNumber" : 1,
+          "internalID" : "5D5BBE46",
+          "introductoryOffer" : {
+            "internalID" : "25385A69",
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P2M"
+          },
+          "localizations" : [
+            {
+              "description" : "Up to 6 accounts with 10GB storage each",
+              "displayName" : "Family Plan - Monthly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "org.futo.circles.family_monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Family Monthly",
+          "subscriptionGroupID" : "9168B5F2",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "19.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "4E251E0E",
+          "introductoryOffer" : {
+            "internalID" : "3FC49FB4",
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1M"
+          },
+          "localizations" : [
+            {
+              "description" : "A Circles account with 10GB secure storage",
+              "displayName" : "Individual - Yearly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "org.futo.circles.individual_yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Individual Yearly",
+          "subscriptionGroupID" : "9168B5F2",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "49.99",
+          "familyShareable" : true,
+          "groupNumber" : 1,
+          "internalID" : "8EF3877E",
+          "introductoryOffer" : {
+            "internalID" : "CE53A01A",
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1M"
+          },
+          "localizations" : [
+            {
+              "description" : "Up to 6 accounts with 10GB storage each",
+              "displayName" : "Family Plan - Yearly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "org.futo.circles.family_yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Family Yearly",
+          "subscriptionGroupID" : "9168B5F2",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}
