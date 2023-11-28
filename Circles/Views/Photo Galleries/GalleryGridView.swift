@@ -101,6 +101,11 @@ struct GalleryGridView: View {
         let messages = room.timeline.values.filter { (message) in
             //message.relatedEventId == nil && message.replyToEventId == nil
 
+            // Allow events that fail decryption to be displayed to the user
+            if message.type == M_ROOM_ENCRYPTED {
+                return true
+            }
+            
             guard message.relatedEventId == nil,
                   message.replyToEventId == nil,
                   message.type == M_ROOM_MESSAGE,
