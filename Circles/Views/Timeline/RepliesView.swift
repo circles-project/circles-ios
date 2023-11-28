@@ -59,6 +59,7 @@ struct RepliesView: View {
             }
         }
         .padding(.leading)
+        .frame(maxWidth: 800)
     }
 }
 
