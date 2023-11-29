@@ -84,6 +84,7 @@ struct TimelineView<V: MessageView>: View {
                         V(message: msg, isLocalEcho: true, isThreaded: false)
                             .border(Color.red)
                             .padding([.top, .leading, .trailing], 3)
+                            .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
                     }
                     
                     ForEach(messages) { message in
