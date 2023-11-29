@@ -12,6 +12,7 @@ import Matrix
 
 struct SubscriptionProductView: View {
     // From Apple's SKDemo https://developer.apple.com/videos/play/wwdc2021/10114/
+    // https://developer.apple.com/documentation/storekit/in-app_purchase/implementing_a_store_in_your_app_using_the_storekit_api
     /*
     Copyright © 2023 Apple Inc.
 
