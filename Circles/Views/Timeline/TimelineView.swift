@@ -104,6 +104,13 @@ struct TimelineView<V: MessageView>: View {
                         } else if debugMode && message.stateKey != nil {
                             StateEventView(message: message)
                         }
+                        // Stub until proper support for polls is implemented
+                        else if message.type == ORG_MATRIX_MSC3381_POLL_START ||
+                                message.type == ORG_MATRIX_MSC3381_POLL_RESPONSE ||
+                                message.type == ORG_MATRIX_MSC3381_POLL_END {
+                            let sender = message.sender.displayName ?? "\(message.sender.userId)"
+                            Text("*\(sender) sent a \(message.type) event*")
+                        }
                     }
                     .padding([.leading, .trailing], 3)
                     .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
