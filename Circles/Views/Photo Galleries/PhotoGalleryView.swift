@@ -66,7 +66,7 @@ struct PhotoGalleryView: View {
             if uploadItems.isEmpty {
                 
                 ZStack {
-                    //TimelineView<PhotoCard>(room: room)
+
                     VStack {
                         if room.knockingMembers.count > 0 {
                             RoomKnockIndicator(room: room)
@@ -78,17 +78,7 @@ struct PhotoGalleryView: View {
                         Spacer()
                         HStack {
                             Spacer()
-                            /*
-                             Button(action: {
-                             self.sheetType = .new
-                             }) {
-                             Image(systemName: "plus.circle.fill")
-                             .resizable()
-                             .scaledToFill()
-                             .frame(width: 50, height: 50)
-                             .padding()
-                             }
-                             */
+
                             PhotosPicker(selection: $selectedItems, matching: .images) {
                                 Image(systemName: "plus.circle.fill")
                                     .resizable()
@@ -97,16 +87,6 @@ struct PhotoGalleryView: View {
                                     .padding()
                             }
                             .onChange(of: selectedItems) { newItems in
-                                /*
-                                 Task {
-                                 for newItem in newItems {
-                                 if let data = try? await newItem.loadTransferable(type: Data.self),
-                                 let img = UIImage(data: data) {
-                                 try await room.sendImage(image: img)
-                                 }
-                                 }
-                                 }
-                                 */
                                 uploadItems.append(contentsOf: newItems)
                                 totalUploadItems += uploadItems.count
                             }

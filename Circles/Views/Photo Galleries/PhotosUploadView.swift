@@ -12,17 +12,21 @@ import Matrix
 
 struct PhotosUploadView: View {
     typealias UploadTask = Task<Void,Error>
-    
+        
     var room: Matrix.Room
     @State var task: UploadTask?
     @Binding var items: [PhotosPickerItem]
     @Binding var total: Int
-    @State var current: PhotosPickerItem?
-
+    @State var currentItem: PhotosPickerItem?
+    @State var currentImage: UIImage?
+    @State var canceled = false
     
     var body: some View {
         VStack(alignment: .center) {
-            if items.isEmpty && current != nil {
+            if canceled {
+                Text("Upload canceled")
+            }
+            else if items.isEmpty && currentItem != nil {
                 Text("Done!")
                     .font(.headline)
                     .fontWeight(.bold)
@@ -30,15 +34,27 @@ struct PhotosUploadView: View {
                     .resizable()
                     .frame(width: 80, height: 80, alignment: .center)
             } else {
+                if let image = currentImage {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 200, height: 200)
+                }
                 let ratio = Float(total-items.count) / Float(total)
                 ProgressView(value: ratio) {
                     Text("Uploading \(total-items.count) of \(total)...")
                 }
                 .padding(10)
-                AsyncButton(role: .destructive, action: {
+                Button(role: .destructive, action: {
                     if let t = task {
                         t.cancel()
                     }
+                    self.task = nil
+                    self.total = 0
+                    self.currentItem = nil
+                    self.currentImage = nil
+                    self.canceled = true
+                    self.items.removeAll()
                 }) {
                     Text("Cancel")
                 }
@@ -50,13 +66,16 @@ struct PhotosUploadView: View {
             task = task ?? UploadTask(priority: .background) {
 
                 while !items.isEmpty {
-                    current = items.removeFirst()
-                    if let data = try? await current?.loadTransferable(type: Data.self),
+                    currentItem = items.removeFirst()
+                    if let data = try? await currentItem?.loadTransferable(type: Data.self),
                        let img = UIImage(data: data) {
-                        try await room.sendImage(image: img)
+                        await MainActor.run {
+                            self.currentImage = img
+                        }
+                        try await room.sendImage(image: img, withBlurhash: false)
                     }
                 }
-                current = nil
+                currentItem = nil
                 task = nil
                 total = 0
             }
