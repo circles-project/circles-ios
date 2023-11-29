@@ -105,6 +105,7 @@ struct TimelineView<V: MessageView>: View {
                         }
                     }
                     .padding([.leading, .trailing], 3)
+                    .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
 
 
                     Spacer()

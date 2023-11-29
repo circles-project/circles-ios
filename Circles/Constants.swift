@@ -38,6 +38,7 @@ let DECRYPTED_CACHE_FOLDER: String = "decrypted"
 let BLURHASH_WIDTH: Int = 6
 
 let RECOVERY_MIN_INTERVAL = 60.0
+let TIMELINE_FRAME_MAXWIDTH = 800.0
 
 let DEFAULT_DOMAIN = "circu.li"
 
