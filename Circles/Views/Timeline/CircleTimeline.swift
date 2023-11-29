@@ -83,6 +83,7 @@ struct CircleTimeline: View {
                     }
                     .padding([.top, .leading, .trailing], 3)
                 }
+                .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
             
                 HStack(alignment: .bottom) {
                     Spacer()
