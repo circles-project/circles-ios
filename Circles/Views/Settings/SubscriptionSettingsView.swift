@@ -11,7 +11,7 @@ import StoreKit
 import Matrix
 
 struct SubscriptionProductView: View {
-    // From Apple's SKDemo
+    // From Apple's SKDemo https://developer.apple.com/videos/play/wwdc2021/10114/
     /*
     Copyright © 2023 Apple Inc.
 
