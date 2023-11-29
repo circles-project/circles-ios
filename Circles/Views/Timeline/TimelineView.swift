@@ -104,12 +104,18 @@ struct TimelineView<V: MessageView>: View {
                         } else if debugMode && message.stateKey != nil {
                             StateEventView(message: message)
                         }
-                        // Stub until proper support for polls is implemented
-                        else if message.type == ORG_MATRIX_MSC3381_POLL_START ||
-                                message.type == ORG_MATRIX_MSC3381_POLL_RESPONSE ||
-                                message.type == ORG_MATRIX_MSC3381_POLL_END {
+                        // Poll event handling is temporary until proper support is implemented
+                        else if message.type == ORG_MATRIX_MSC3381_POLL_START {
                             let sender = message.sender.displayName ?? "\(message.sender.userId)"
-                            Text("*\(sender) sent a \(message.type) event*")
+                            Text("*\(sender) created a poll*")
+                        }
+                        else if message.type == ORG_MATRIX_MSC3381_POLL_RESPONSE {
+                            let sender = message.sender.displayName ?? "\(message.sender.userId)"
+                            Text("*\(sender) responded to a poll*")
+                        }
+                        else if message.type == ORG_MATRIX_MSC3381_POLL_END {
+                            let sender = message.sender.displayName ?? "\(message.sender.userId)"
+                            Text("*\(sender) ended a poll*")
                         }
                     }
                     .padding([.leading, .trailing], 3)
