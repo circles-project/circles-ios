@@ -23,7 +23,7 @@ struct SubscriptionProductView: View {
     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     */
     
-    @ObservedObject var store: AppStore
+    @ObservedObject var store: AppStoreInterface
     var product: Product
     @Binding var selected: String?
     
@@ -142,7 +142,7 @@ struct SubscriptionProductView: View {
 }
 
 struct SubscriptionSettingsView: View {
-    @ObservedObject var store: AppStore
+    @ObservedObject var store: AppStoreInterface
     @State var selected: String?
     
     // FIXME Hard-coding this for initial development - Get this from the UIA session params

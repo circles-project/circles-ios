@@ -32,7 +32,7 @@ public class CirclesStore: ObservableObject {
         case online(CirclesApplicationSession)
     }
     @Published var state: State
-    var appStore: AppStore
+    var appStore: AppStoreInterface
     
     var logger: os.Logger
     
@@ -41,7 +41,7 @@ public class CirclesStore: ObservableObject {
     init() {
         self.logger = Logger(subsystem: "Circles", category: "Store")
         
-        self.appStore = AppStore()
+        self.appStore = AppStoreInterface()
         
         // Ok, we're just starting out
         self.state = .starting

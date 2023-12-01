@@ -132,7 +132,7 @@
 		A562C0922B0BEC2000522FCB /* UsersToInviteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A562C0912B0BEC2000522FCB /* UsersToInviteView.swift */; };
 		A562C0942B15287F00522FCB /* SubscriptionForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A562C0932B15287F00522FCB /* SubscriptionForm.swift */; };
 		A562C0962B165E5C00522FCB /* SubscriptionSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A562C0952B165E5C00522FCB /* SubscriptionSettingsView.swift */; };
-		A562C0982B16981C00522FCB /* AppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A562C0972B16981C00522FCB /* AppStore.swift */; };
+		A562C0982B16981C00522FCB /* AppStoreInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = A562C0972B16981C00522FCB /* AppStoreInterface.swift */; };
 		A565935F2AEAC4920003C244 /* QR.swift in Sources */ = {isa = PBXBuildFile; fileRef = A565935E2AEAC4920003C244 /* QR.swift */; };
 		A56593612AEBE5D30003C244 /* Room+URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56593602AEBE5D30003C244 /* Room+URL.swift */; };
 		A56593632AF17EF90003C244 /* LegacyLoginScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56593622AF17EF90003C244 /* LegacyLoginScreen.swift */; };
@@ -316,7 +316,7 @@
 		A562C0912B0BEC2000522FCB /* UsersToInviteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersToInviteView.swift; sourceTree = "<group>"; };
 		A562C0932B15287F00522FCB /* SubscriptionForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionForm.swift; sourceTree = "<group>"; };
 		A562C0952B165E5C00522FCB /* SubscriptionSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionSettingsView.swift; sourceTree = "<group>"; };
-		A562C0972B16981C00522FCB /* AppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStore.swift; sourceTree = "<group>"; };
+		A562C0972B16981C00522FCB /* AppStoreInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreInterface.swift; sourceTree = "<group>"; };
 		A565935E2AEAC4920003C244 /* QR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QR.swift; sourceTree = "<group>"; };
 		A56593602AEBE5D30003C244 /* Room+URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Room+URL.swift"; sourceTree = "<group>"; };
 		A56593622AF17EF90003C244 /* LegacyLoginScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyLoginScreen.swift; sourceTree = "<group>"; };
@@ -736,7 +736,7 @@
 				A54BA3A12850108300453D5E /* CirclesStore.swift */,
 				A54BA3AA28592D2000453D5E /* SetupSession.swift */,
 				A52FEBFC2862521F00AE4E3A /* CirclesApplicationSession.swift */,
-				A562C0972B16981C00522FCB /* AppStore.swift */,
+				A562C0972B16981C00522FCB /* AppStoreInterface.swift */,
 			);
 			path = Backend;
 			sourceTree = "<group>";
@@ -903,7 +903,7 @@
 				A54A27882A843BB200858846 /* GroupInvitationsIndicator.swift in Sources */,
 				409F4333265DE15F00690A61 /* CircleAvatar.swift in Sources */,
 				A5A7E228282B06FD001A528D /* ApplicationState.swift in Sources */,
-				A562C0982B16981C00522FCB /* AppStore.swift in Sources */,
+				A562C0982B16981C00522FCB /* AppStoreInterface.swift in Sources */,
 				409F4340265DE17500690A61 /* GroupCreationSheet.swift in Sources */,
 				409F4364265DE21A00690A61 /* MessageReportingSheet.swift in Sources */,
 				4C40ED262AA7CCFB00F58493 /* GalleryInvitationsIndicator.swift in Sources */,

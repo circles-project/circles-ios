@@ -48,7 +48,7 @@ public enum SubscriptionTier: Int, Comparable {
     }
 }
 
-class AppStore: ObservableObject {
+class AppStoreInterface: ObservableObject {
 
     @Published private(set) var nonConsumables: [Product]
     @Published private(set) var consumables: [Product]
@@ -255,9 +255,15 @@ class AppStore: ObservableObject {
                     if let groupId = transaction.subscriptionGroupID {
                         print("Auto-renewable transaction \(transaction.id) has group id \(groupId) -- Setting active product to \(transaction.productID)")
                         purchasedSubscriptions[groupId] = transaction.productID
+                        if let json = String(data: transaction.jsonRepresentation, encoding: .utf8) {
+                            print("This transaction is: \(json)")
+                        } else {
+                            print("Failed to get JSON representation")
+                        }
                     } else {
                         print("Found auto-renewable transaction \(transaction.id) for product \(transaction.productID) but it has no group id")
                     }
+                    let otid = transaction.originalID
                 default:
                     break
                 }
