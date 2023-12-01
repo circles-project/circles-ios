@@ -1,7 +1,21 @@
 {
   "identifier" : "D2EB4603",
   "nonRenewingSubscriptions" : [
-
+    {
+      "displayPrice" : "199.99",
+      "familyShareable" : false,
+      "internalID" : "F2DFC2C2",
+      "localizations" : [
+        {
+          "description" : "A Circles account that never expires",
+          "displayName" : "Lifetime Account",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "org.futo.circles.individual_lifetime",
+      "referenceName" : "Lifetime Account",
+      "type" : "NonRenewingSubscription"
+    }
   ],
   "products" : [
     {
