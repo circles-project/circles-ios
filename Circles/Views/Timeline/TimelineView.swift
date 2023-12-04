@@ -107,15 +107,38 @@ struct TimelineView<V: MessageView>: View {
                         // Poll event handling is temporary until proper support is implemented
                         else if message.type == ORG_MATRIX_MSC3381_POLL_START {
                             let sender = message.sender.displayName ?? "\(message.sender.userId)"
-                            Text("*\(sender) created a poll*")
+                            if let content = message.event.content as? PollStartContent {
+                                Text("*\(sender) created a \(content.start.kind.rawValue) poll: '\(content.message)'*")
+
+                                let answerTextArray = content.start.answers.map { $0.answer.body }
+                                ForEach(Array(answerTextArray.enumerated()), id: \.element) { i, element in
+                                    Text("*Option \(i): \(element)*")
+                                }
+                            }
                         }
                         else if message.type == ORG_MATRIX_MSC3381_POLL_RESPONSE {
                             let sender = message.sender.displayName ?? "\(message.sender.userId)"
-                            Text("*\(sender) responded to a poll*")
+                            if let content = message.event.content as? PollResponseContent,
+                               let pollId = content.relatesTo.eventId,
+                               let poll = room.timeline[pollId]?.event.content as? PollStartContent,
+                               let vote = poll.start.answers.filter({ $0.id == content.selections.first }).first {
+                                
+                                if poll.start.kind == PollStartContent.PollStart.Kind.open {
+                                    Text("*\(sender) voted for \(vote.answer.body) in poll '\(poll.message)'*")
+                                }
+                                else {
+                                    Text("*\(sender) voted in poll '\(poll.message)'*")
+                                }
+                            }
                         }
                         else if message.type == ORG_MATRIX_MSC3381_POLL_END {
                             let sender = message.sender.displayName ?? "\(message.sender.userId)"
-                            Text("*\(sender) ended a poll*")
+                            if let content = message.event.content as? PollEndContent,
+                               let pollId = content.relatesTo.eventId,
+                               let poll = room.timeline[pollId]?.event.content as? PollStartContent {
+                                
+                                Text("*\(sender) \(content.text): '\(poll.message)'*")
+                            }
                         }
                     }
                     .padding([.leading, .trailing], 3)
