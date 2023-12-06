@@ -119,10 +119,27 @@
       "subscriptions" : [
         {
           "adHocOffers" : [
-
+            {
+              "displayPrice" : "0.99",
+              "internalID" : "F2F28C97",
+              "offerID" : "XYZ",
+              "paymentMode" : "free",
+              "referenceName" : "Test Promotional",
+              "subscriptionPeriod" : "P6M"
+            }
           ],
           "codeOffers" : [
-
+            {
+              "eligibility" : [
+                "expired",
+                "new"
+              ],
+              "internalID" : "C8848896",
+              "isStackable" : false,
+              "paymentMode" : "free",
+              "referenceName" : "One Year Free",
+              "subscriptionPeriod" : "P1Y"
+            }
           ],
           "displayPrice" : "1.99",
           "familyShareable" : false,

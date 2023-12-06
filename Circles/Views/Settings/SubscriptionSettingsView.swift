@@ -154,6 +154,7 @@ struct SubscriptionSettingsView: View {
     ]
     @State var products: [Product] = []
     
+    @State private var redeemSheetIsPresented = false
 
     
     var body: some View {
@@ -176,7 +177,28 @@ struct SubscriptionSettingsView: View {
                     }
                 }
                 .listRowInsets(.init(top: 5, leading: 5, bottom: 5, trailing: 5))
+                
+                Section("Testing") {
+                    Button(action: {
+                        redeemSheetIsPresented = true
+                    }) {
+                        Text("Present offer sheet")
+                    }
+                    .offerCodeRedemption(isPresented: $redeemSheetIsPresented) { result in
+                        // Handle result
+                        print("Got result")
+                        switch result {
+                        case .success:
+                            print("Yay offer code redemption was successful")
+                        case .failure(let error):
+                            print("Boo offer code redemtion failed: \(error)")
+                        }
+                        
+                    }
+                }
             }
+            
+
             
             Spacer()
         }
