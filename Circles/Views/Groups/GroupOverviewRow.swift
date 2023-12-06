@@ -19,6 +19,7 @@ struct GroupOverviewRow: View {
             RoomAvatar(room: room, avatarText: .roomInitials)
                 .frame(width: 110, height: 110)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
+                .padding(.leading, 5)
             
             VStack(alignment: .leading) {
                 HStack(alignment: .center, spacing: 3) {
