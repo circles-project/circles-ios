@@ -30,7 +30,7 @@ struct SignupStartForm: View {
 
             let freeFlow = state.flows.first(where: { flow in
                     !flow.stages.contains(AUTH_TYPE_GOOGLE_SUBSCRIPTION) &&
-                    !flow.stages.contains(AUTH_TYPE_APPLE_SUBSCRIPTION)
+                    !flow.stages.contains(AUTH_TYPE_APPSTORE_SUBSCRIPTION)
             })
             if freeFlow == nil {
                 Label("Subscriptionless signup is not available at this time.  Please try again later.", systemImage: "exclamationmark.triangle")
@@ -54,7 +54,7 @@ struct SignupStartForm: View {
             Spacer()
 
             let appleFlow = state.flows.first(where: {
-                $0.stages.contains(AUTH_TYPE_APPLE_SUBSCRIPTION)
+                $0.stages.contains(AUTH_TYPE_APPSTORE_SUBSCRIPTION)
             })
             if appleFlow == nil {
                 Label("New paid subscriptions are currently unavailable.  Please try again later.", systemImage: "exclamationmark.triangle")

@@ -146,10 +146,9 @@
           "groupNumber" : 1,
           "internalID" : "699D8EAD",
           "introductoryOffer" : {
-            "displayPrice" : "0.99",
             "internalID" : "4B6B698A",
             "paymentMode" : "free",
-            "subscriptionPeriod" : "P2M"
+            "subscriptionPeriod" : "P3M"
           },
           "localizations" : [
             {
@@ -176,13 +175,14 @@
           "groupNumber" : 1,
           "internalID" : "5D5BBE46",
           "introductoryOffer" : {
+            "displayPrice" : "0.99",
             "internalID" : "25385A69",
             "paymentMode" : "free",
-            "subscriptionPeriod" : "P2M"
+            "subscriptionPeriod" : "P3M"
           },
           "localizations" : [
             {
-              "description" : "Up to 6 accounts with 10GB storage each",
+              "description" : "Accounts for you and up to 5 family members",
               "displayName" : "Family Plan - Monthly",
               "locale" : "en_US"
             }
@@ -240,7 +240,7 @@
           },
           "localizations" : [
             {
-              "description" : "Up to 6 accounts with 10GB storage each",
+              "description" : "Accounts for you and up to 5 family members",
               "displayName" : "Family Plan - Yearly",
               "locale" : "en_US"
             }
