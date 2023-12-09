@@ -27,6 +27,7 @@ The store class is responsible for requesting products from the App Store and st
 
 import Foundation
 import StoreKit
+import os
 
 typealias Transaction = StoreKit.Transaction
 typealias RenewalInfo = StoreKit.Product.SubscriptionInfo.RenewalInfo
@@ -61,8 +62,12 @@ class AppStoreInterface: ObservableObject {
     @Published private(set) var subscriptionGroupStatus: RenewalState?
     
     var updateListenerTask: Task<Void, Error>? = nil
+    
+    var logger: os.Logger
 
     init() {
+        
+        logger = .init(subsystem: "AppStore", category: "AppStore")
 
         //Initialize empty products, and then do a product request asynchronously to fill them in.
         nonConsumables = []
@@ -87,11 +92,15 @@ class AppStoreInterface: ObservableObject {
     }
 
     func listenForTransactions() -> Task<Void, Error> {
+        logger.debug("Listening for transactions")
         return Task.detached {
+            self.logger.debug("Transaction listener task is running")
             //Iterate through any transactions that don't come from a direct call to `purchase()`.
             for await result in Transaction.updates {
+                self.logger.debug("Got a transaction update")
                 do {
                     let transaction = try self.checkVerified(result)
+                    self.logger.debug("Transaction is verified")
 
                     //Deliver products to the user.
                     await self.updateCustomerProductStatus()
@@ -100,7 +109,7 @@ class AppStoreInterface: ObservableObject {
                     await transaction.finish()
                 } catch {
                     //StoreKit has a transaction that fails verification. Don't deliver content to the user.
-                    print("Transaction failed verification")
+                    self.logger.error("Transaction failed verification")
                 }
             }
         }
@@ -129,7 +138,7 @@ class AppStoreInterface: ObservableObject {
                 newNonRenewables.append(product)
             default:
                 //Ignore this product.
-                print("Unknown product")
+                self.logger.debug("Unknown product \(product.id)")
             }
         }
 
@@ -143,11 +152,23 @@ class AppStoreInterface: ObservableObject {
     }
 
     func purchase(_ product: Product) async throws -> Transaction? {
+        logger.debug("Purchasing product \(product.id)")
+        
         //Begin purchasing the `Product` the user selects.
-        let result = try await product.purchase()
+        guard let result = try? await product.purchase()
+        else {
+            logger.error("Purchase failed for \(product.id)")
+            throw CirclesError("Purchase failed")
+        }
+        logger.debug("Purchase success for \(product.id)")
+        
 
         switch result {
         case .success(let verification):
+            
+            let jws = verification.jwsRepresentation
+            logger.debug("Got JWS representation: \(jws)")
+            
             //Check whether the transaction is verified. If it isn't,
             //this function rethrows the verification error.
             let transaction = try checkVerified(verification)
@@ -180,7 +201,7 @@ class AppStoreInterface: ObservableObject {
         case .autoRenewable:
             guard let groupId = product.subscription?.subscriptionGroupID
             else {
-                print("Invalid subscription product \(product.id) -- No subscription info")
+                logger.error("Invalid subscription product \(product.id) -- No subscription info")
                 //throw CirclesError("Invalid subscription product")
                 return false
             }
@@ -192,6 +213,7 @@ class AppStoreInterface: ObservableObject {
 
     func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
         //Check whether the JWS passes StoreKit verification.
+        logger.debug("Checking verification")
         switch result {
         case .unverified:
             //StoreKit parses the JWS, but it fails verification.

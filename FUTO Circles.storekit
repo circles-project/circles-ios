@@ -1,0 +1,104 @@
+{
+  "identifier" : "D07CD12F",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6451446720",
+    "_developerTeamID" : "2W7AC6T8T5",
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 723742617.266168,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21418018",
+      "localizations" : [
+
+      ],
+      "name" : "Online Accounts",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "1.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6473546488",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "A Circles account with 10GB secure storage",
+              "displayName" : "Individual - Monthly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "org.futo.circles.individual_monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Individual Monthly",
+          "subscriptionGroupID" : "21418018",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}
