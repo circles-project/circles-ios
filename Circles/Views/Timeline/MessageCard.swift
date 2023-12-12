@@ -232,20 +232,16 @@ struct MessageCard: MessageView {
         formatter.dateStyle = .medium
         formatter.timeStyle = .short
         
-        let edited: String = message.relationType == M_REPLACE ? "Edited " : ""
-        let formattedTimestampString: String = formatter.string(from: message.timestamp)
+        // If the message has been edited/replaced, then we should show the new timestamp
+        // Otherwise we should show the original timestamp
+        let current = message.replacement ?? message
+        
+        let edited: String = current.relationType == M_REPLACE ? "Edited " : ""
+        let formattedTimestampString: String = formatter.string(from: current.timestamp)
         
         let text = edited + formattedTimestampString
         
         return Text(text)
-            .font(.footnote)
-            .foregroundColor(.gray)
-    }
-    
-    var relativeTimestamp: some View {
-        // From https://noahgilmore.com/blog/swiftui-relativedatetimeformatter/
-        let formatter = RelativeDateTimeFormatter()
-        return Text("\(message.timestamp, formatter: formatter)")
             .font(.footnote)
             .foregroundColor(.gray)
     }
