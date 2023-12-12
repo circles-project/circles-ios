@@ -156,7 +156,6 @@
 		A5A7E228282B06FD001A528D /* ApplicationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A7E227282B06FD001A528D /* ApplicationState.swift */; };
 		A5BECC38280F7A2400B1FCC6 /* KeyboardKit in Frameworks */ = {isa = PBXBuildFile; productRef = A5BECC37280F7A2400B1FCC6 /* KeyboardKit */; };
 		A5CC0ACC29D91F7C005935F0 /* Zxcvbn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CC0ACB29D91F7C005935F0 /* Zxcvbn.swift */; };
-		A5CC0ACE29DB6E26005935F0 /* BsspekeLoginOprfForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CC0ACD29DB6E26005935F0 /* BsspekeLoginOprfForm.swift */; };
 		A5CC0AD029DB7001005935F0 /* BsspekeLoginVerifyForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CC0ACF29DB7001005935F0 /* BsspekeLoginVerifyForm.swift */; };
 		A5CF39D52A73299500134969 /* ThreadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CF39D42A73299500134969 /* ThreadView.swift */; };
 		A5D2A3EC29BA643C00428C45 /* Matrix in Frameworks */ = {isa = PBXBuildFile; productRef = A5D2A3EB29BA643C00428C45 /* Matrix */; };
@@ -337,7 +336,6 @@
 		A5A40B6929D62FC6009A17EE /* BsspekeEnrollOprfForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BsspekeEnrollOprfForm.swift; sourceTree = "<group>"; };
 		A5A7E227282B06FD001A528D /* ApplicationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationState.swift; sourceTree = "<group>"; };
 		A5CC0ACB29D91F7C005935F0 /* Zxcvbn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zxcvbn.swift; sourceTree = "<group>"; };
-		A5CC0ACD29DB6E26005935F0 /* BsspekeLoginOprfForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BsspekeLoginOprfForm.swift; sourceTree = "<group>"; };
 		A5CC0ACF29DB7001005935F0 /* BsspekeLoginVerifyForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BsspekeLoginVerifyForm.swift; sourceTree = "<group>"; };
 		A5CF39D42A73299500134969 /* ThreadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadView.swift; sourceTree = "<group>"; };
 		A5D2A3F529C0EED700428C45 /* Sequence+asyncMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sequence+asyncMap.swift"; sourceTree = "<group>"; };
@@ -718,16 +716,15 @@
 			children = (
 				A5A40B6929D62FC6009A17EE /* BsspekeEnrollOprfForm.swift */,
 				A5F0148729D789B3000D57B3 /* BsspekeEnrollSaveForm.swift */,
-				A5CC0ACD29DB6E26005935F0 /* BsspekeLoginOprfForm.swift */,
+				A54A27852A81735F00858846 /* BsspekeLoginForm.swift */,
 				A5CC0ACF29DB7001005935F0 /* BsspekeLoginVerifyForm.swift */,
 				A5F0148129D72371000D57B3 /* EmailEnrollRequestTokenForm.swift */,
 				A5F0148329D7436E000D57B3 /* EmailEnrollSubmitTokenForm.swift */,
+				A562C0932B15287F00522FCB /* SubscriptionUIaForm.swift */,
 				A5A40B6529D608C7009A17EE /* UiaInProgressView.swift */,
+				A53E912D2A5C95DC007B0196 /* UiaOverlayView.swift */,
 				A5F2E95B2A4497E30097DBF8 /* UiaView.swift */,
 				A5F0148529D75899000D57B3 /* UsernameEnrollForm.swift */,
-				A53E912D2A5C95DC007B0196 /* UiaOverlayView.swift */,
-				A54A27852A81735F00858846 /* BsspekeLoginForm.swift */,
-				A562C0932B15287F00522FCB /* SubscriptionUIaForm.swift */,
 			);
 			path = UIA;
 			sourceTree = "<group>";
@@ -915,7 +912,6 @@
 				409F43A7265DE43B00690A61 /* RoomMembersSheet.swift in Sources */,
 				A5F0148229D72371000D57B3 /* EmailEnrollRequestTokenForm.swift in Sources */,
 				A54BA3A928529BE500453D5E /* SetupScreen.swift in Sources */,
-				A5CC0ACE29DB6E26005935F0 /* BsspekeLoginOprfForm.swift in Sources */,
 				A53EAC572A6F037D00EF18B7 /* LegacySecretStoreKeygen.swift in Sources */,
 				A56BE1722AD5CBD200B15F51 /* RoomKnockIndicator.swift in Sources */,
 				A56BE17D2AD700E100B15F51 /* RoomShareSheet.swift in Sources */,

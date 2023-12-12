@@ -11,8 +11,8 @@ import Matrix
 
 struct BsspekeEnrollOprfForm: View {
     var session: UIAuthSession
-    @State var password: String = ""
-    @State var repeatPassword: String = ""
+    @State var passphrase: String = ""
+    @State var repeatPassphrase: String = ""
     //@State var passwordStrength: Int = 0
     @State var score: Int = 1
     @State var passwordStrengthColors: [Color] = []
@@ -78,9 +78,9 @@ struct BsspekeEnrollOprfForm: View {
                     }
                 }
 
-                SecureField("correct horse battery staple", text: $password, prompt: Text("New passphrase"))
+                SecureField("correct horse battery staple", text: $passphrase, prompt: Text("New passphrase"))
                     .textContentType(.newPassword)
-                    .onChange(of: password) { newPassword in
+                    .onChange(of: passphrase) { newPassword in
                         if let result = checker.passwordStrength(newPassword) {
                             print("Password score: \(result.score)")
                             score = Int(min(result.score, 4)) + 1
@@ -91,7 +91,7 @@ struct BsspekeEnrollOprfForm: View {
                         }
                     }
                     .frame(width: 300.0, height: 40.0)
-                SecureField("correct horse battery staple", text: $repeatPassword, prompt: Text("Repeat passphrase"))
+                SecureField("correct horse battery staple", text: $repeatPassphrase, prompt: Text("Repeat passphrase"))
                     .textContentType(.newPassword)
                     .frame(width: 300.0, height: 40.0)
                 AsyncButton(action: {
@@ -100,7 +100,7 @@ struct BsspekeEnrollOprfForm: View {
                         print("Couldn't get user id")
                         return
                     }
-                    try await session.doBSSpekeEnrollOprfStage(userId: userId, password: password)
+                    try await session.doBSSpekeEnrollOprfStage(userId: userId, password: passphrase)
                 }) {
                     Text("Submit")
                         .padding()
@@ -109,7 +109,7 @@ struct BsspekeEnrollOprfForm: View {
                         .background(Color.accentColor)
                         .cornerRadius(10)
                 }
-                .disabled(password.isEmpty || password != repeatPassword || score < MINIMUM_PASSWORD_ZXCVBN_SCORE)
+                .disabled(passphrase.isEmpty || passphrase != repeatPassphrase || score < MINIMUM_PASSWORD_ZXCVBN_SCORE)
             }
             Spacer()
             VStack {
