@@ -1,5 +1,5 @@
 //
-//  AppStore.swift
+//  AppStoreInterface.swift
 //  Circles
 //
 //  Created by Charles Wright on 11/28/23.
