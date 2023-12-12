@@ -10,7 +10,7 @@ import Combine
 import os
 import Matrix
 
-class ContainerRoom<T: Matrix.Room>: Matrix.Room {
+class ContainerRoom<T: Matrix.Room>: Matrix.SpaceRoom {
     @Published private(set) public var rooms: [T]
     var logger: os.Logger
     var sinks: [RoomId: Cancellable]

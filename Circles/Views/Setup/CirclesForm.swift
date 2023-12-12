@@ -120,11 +120,19 @@ struct CirclesForm: View {
         logger.debug("- Adding Space child relationships")
         status = "Initializing spaces"
         try await Task.sleep(for: .seconds(1))
+        // Space child relations
         try await client.addSpaceChild(myCircles, to: topLevelSpace)
         try await client.addSpaceChild(myGroups, to: topLevelSpace)
         try await client.addSpaceChild(myGalleries, to: topLevelSpace)
         try await client.addSpaceChild(myPeople, to: topLevelSpace)
         try await client.addSpaceChild(myProfile, to: topLevelSpace)
+        // Space parent relations
+        try await client.addSpaceParent(topLevelSpace, to: myCircles, canonical: true)
+        try await client.addSpaceParent(topLevelSpace, to: myGroups, canonical: true)
+        try await client.addSpaceParent(topLevelSpace, to: myGalleries, canonical: true)
+        try await client.addSpaceParent(topLevelSpace, to: myPeople, canonical: true)
+        // Don't add the parent event to the profile space, because we will share that one with others and we don't need them to know our private room id for the top-level space
+        // It's not a big deal but this is probably safer...  otherwise the user might somehow be tricked into accepting a knock for the top-level space
         
         logger.debug("- Adding tags to spaces")
         status = "Tagging spaces"

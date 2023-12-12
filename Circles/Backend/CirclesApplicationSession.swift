@@ -25,9 +25,6 @@ class CirclesApplicationSession: ObservableObject {
     // IDEA: We could store any Circles-specific configuration info in our account data in the root "Circles" space room
     var config: CirclesConfigContent
     
-    //typealias CircleRoom = ContainerRoom<Matrix.Room> // Each circle is a space, where we know we are joined in every child room
-    //typealias PersonRoom = Matrix.SpaceRoom // Each person's profile room is a space, where we may or may not be members of the child rooms
-    
     var circles: ContainerRoom<CircleSpace>     // Our top-level circles space contains the spaces for each of our circles
     var groups: ContainerRoom<GroupRoom>        // Groups space contains the individual rooms for each of our groups
     var galleries: ContainerRoom<GalleryRoom>   // Galleries space contains the individual rooms for each of our galleries
@@ -135,6 +132,54 @@ class CirclesApplicationSession: ObservableObject {
         
         let totalTime = endTS.timeIntervalSince(startTS)
         logger.debug("\(totalTime, privacy: .public) sec to initialize Circles Session")
+        
+        Task {
+            logger.debug("Verifying Matrix Space relations")
+            let rootRoomId = config.root
+            
+            guard let root = try await matrix.getSpaceRoom(roomId: rootRoomId)
+            else {
+                logger.error("Failed to get Space room for the Circles root")
+                return
+            }
+            
+            for child in root.children {
+                logger.debug("Found child space \(child)")
+            }
+            
+            if !groups.parents.contains(rootRoomId) {
+                logger.debug("Adding space parent for Groups space")
+                try await matrix.addSpaceParent(rootRoomId, to: groups.roomId, canonical: true)
+            }
+            
+            if !galleries.parents.contains(rootRoomId) {
+                logger.debug("Adding space parent for Galleries space")
+                try await matrix.addSpaceParent(rootRoomId, to: galleries.roomId, canonical: true)
+            }
+            
+            if !circles.parents.contains(rootRoomId) {
+                logger.debug("Adding space parent for Circles space")
+                try await matrix.addSpaceParent(rootRoomId, to: circles.roomId, canonical: true)
+            }
+            
+            if !people.parents.contains(rootRoomId) {
+                logger.debug("Adding space parent for People space")
+                try await matrix.addSpaceParent(rootRoomId, to: people.roomId, canonical: true)
+            }
+            
+            // Don't add the parent space event to the profile space -- We don't want others to see it
+            
+            let spaceChildRoomIds = [groups.roomId, galleries.roomId, circles.roomId, people.roomId, profile.roomId]
+            
+            for childRoomId in spaceChildRoomIds {
+                if !root.children.contains(childRoomId) {
+                    logger.debug("Adding child space \(childRoomId, privacy: .public) to Circles root space")
+                    try await root.addChild(childRoomId)
+                }
+            }
+            
+            logger.debug("Done verifying space relations")
+        }
         
         logger.debug("Starting Matrix background sync")
         try await matrix.startBackgroundSync()
