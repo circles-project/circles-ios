@@ -16,7 +16,7 @@ struct BsspekeLoginVerifyForm: View {
         VStack {
             Spacer()
             ProgressView {
-                Text("Verifying password")
+                Text("Verifying passphrase")
             }
             Spacer()
         }
