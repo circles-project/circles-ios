@@ -272,9 +272,8 @@ struct MessageCard: MessageView {
                 
                 // Poll event handling is temporary until proper support is implemented
                 case ORG_MATRIX_MSC3381_POLL_START:
-                    let sender = current.sender.displayName ?? "\(current.sender.userId)"
                     if let pollContent = content as? PollStartContent {
-                        let pollText = "*\(sender) created a \(pollContent.start.kind.rawValue) poll: '\(pollContent.message)'*\n\n"
+                        let pollText = "Poll: \(pollContent.message)\n\n"
                         let answersText = pollContent.start.answers.enumerated().map { "\t\($0): \($1.answer.body)\n" }.joined()
                                                 
                         TextContentView(pollText + answersText)
@@ -286,20 +285,18 @@ struct MessageCard: MessageView {
                     }
 
                 case ORG_MATRIX_MSC3381_POLL_RESPONSE:
-                    let sender = current.sender.displayName ?? "\(current.sender.userId)"
-                    
                     if let pollContent = current.event.content as? PollResponseContent,
                        let pollId = pollContent.relatesTo.eventId,
                        let poll = current.room.timeline[pollId]?.event.content as? PollStartContent,
                        let vote = poll.start.answers.filter({ $0.id == pollContent.selections.first }).first {
 
                         if poll.start.kind == PollStartContent.PollStart.Kind.open {
-                            TextContentView("*\(sender) voted for \(vote.answer.body) in poll '\(poll.message)'*")
+                            TextContentView("Voted for \(vote.answer.body)")
                                 .padding(.horizontal, 3)
                                 .padding(.vertical, 5)
                         }
                         else {
-                            TextContentView("*\(sender) voted in poll '\(poll.message)'*")
+                            TextContentView("Voted")
                                 .padding(.horizontal, 3)
                                 .padding(.vertical, 5)
                         }
@@ -309,12 +306,8 @@ struct MessageCard: MessageView {
                     }
                 
                 case ORG_MATRIX_MSC3381_POLL_END:
-                    let sender = current.sender.displayName ?? "\(message.sender.userId)"
-                    if let pollContent = current.event.content as? PollEndContent,
-                       let pollId = pollContent.relatesTo.eventId,
-                       let poll = current.room.timeline[pollId]?.event.content as? PollStartContent {
-                        
-                        TextContentView("*\(sender) \(pollContent.text): '\(poll.message)'*")
+                    if let pollContent = current.event.content as? PollEndContent {
+                        TextContentView(pollContent.text)
                             .padding(.horizontal, 3)
                             .padding(.vertical, 5)
                     }
