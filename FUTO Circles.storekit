@@ -1,43 +1,16 @@
 {
-  "identifier" : "D2EB4603",
+  "identifier" : "D07CD12F",
   "nonRenewingSubscriptions" : [
 
   ],
   "products" : [
-    {
-      "displayPrice" : "2.99",
-      "familyShareable" : false,
-      "internalID" : "111DE1B5",
-      "localizations" : [
-        {
-          "description" : "Our first test item",
-          "displayName" : "Test Non-con A",
-          "locale" : "en_US"
-        }
-      ],
-      "productID" : "com.temporary.id.nonconsumable.a",
-      "referenceName" : "Test Non-Consumable A",
-      "type" : "NonConsumable"
-    },
-    {
-      "displayPrice" : "0.99",
-      "familyShareable" : false,
-      "internalID" : "71D5506C",
-      "localizations" : [
-        {
-          "description" : "Our second testing item, also for purchase",
-          "displayName" : "Test Non-com B",
-          "locale" : "en_US"
-        }
-      ],
-      "productID" : "com.temporary.id.nonconsumable.b",
-      "referenceName" : "Test Non-Consumable B",
-      "type" : "NonConsumable"
-    }
+
   ],
   "settings" : {
-    "_askToBuyEnabled" : false,
+    "_applicationInternalID" : "6451446720",
+    "_developerTeamID" : "2W7AC6T8T5",
     "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 723742617.266168,
     "_locale" : "en_US",
     "_storefront" : "USA",
     "_storeKitErrors" : [
@@ -86,12 +59,11 @@
         "enabled" : false,
         "name" : "Offer Code Redeem Sheet"
       }
-    ],
-    "_timeRate" : 5
+    ]
   },
   "subscriptionGroups" : [
     {
-      "id" : "9168B5F2",
+      "id" : "21418018",
       "localizations" : [
 
       ],
@@ -104,26 +76,22 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "0.99",
+          "displayPrice" : "1.99",
           "familyShareable" : false,
           "groupNumber" : 1,
-          "internalID" : "699D8EAD",
-          "introductoryOffer" : {
-            "internalID" : "4B6B698A",
-            "paymentMode" : "free",
-            "subscriptionPeriod" : "P1M"
-          },
+          "internalID" : "6473546488",
+          "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "A standard Circles account on our server",
-              "displayName" : "Standard - 1 Month",
+              "description" : "A Circles account with 10GB secure storage",
+              "displayName" : "Individual - Monthly",
               "locale" : "en_US"
             }
           ],
-          "productID" : "org.futo.circles.standard_01_month",
+          "productID" : "org.futo.circles.individual_monthly",
           "recurringSubscriptionPeriod" : "P1M",
-          "referenceName" : "Standard 1 Month",
-          "subscriptionGroupID" : "9168B5F2",
+          "referenceName" : "Individual Monthly",
+          "subscriptionGroupID" : "21418018",
           "type" : "RecurringSubscription"
         }
       ]

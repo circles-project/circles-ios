@@ -14,6 +14,8 @@ struct UiaInProgressView: View {
     var state: UIAA.SessionState
     var stages: [String]
     
+    @EnvironmentObject var store: CirclesStore
+    
     @State var emailSecret = ""
     
     var body: some View {
@@ -39,23 +41,17 @@ struct UiaInProgressView: View {
             else if stage == AUTH_TYPE_ENROLL_BSSPEKE_SAVE {
                 BsspekeEnrollSaveForm(session: session)
             }
-            /*
-            else if stage == AUTH_TYPE_LOGIN_BSSPEKE_OPRF {
-                BsspekeLoginOprfForm(session: session)
-            }
-            else if stage == AUTH_TYPE_LOGIN_BSSPEKE_VERIFY {
-                BsspekeLoginVerifyForm(session: session)
-            }
-            */
             else if stage == AUTH_TYPE_LOGIN_BSSPEKE_OPRF || stage == AUTH_TYPE_LOGIN_BSSPEKE_VERIFY {
                 BsspekeLoginForm(session: session, stage: stage)
             }
-
             else if stage == AUTH_TYPE_ENROLL_EMAIL_REQUEST_TOKEN {
                 EmailEnrollRequestTokenForm(session: session, secret: $emailSecret)
             }
             else if stage == AUTH_TYPE_ENROLL_EMAIL_SUBMIT_TOKEN {
                 EmailEnrollSubmitTokenForm(session: session, secret: emailSecret)
+            }
+            else if stage == AUTH_TYPE_APPSTORE_SUBSCRIPTION {
+                SubscriptionUIaForm(session: session, appStore: store.appStore)
             }
             else {
                 Text("Stage = \(stage)")
