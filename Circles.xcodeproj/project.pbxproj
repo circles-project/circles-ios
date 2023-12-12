@@ -1310,7 +1310,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://gitlab.futo.org/circles/matrix.swift.git";
 			requirement = {
-				branch = cvwright/subscriptions;
+				branch = main;
 				kind = branch;
 			};
 		};
