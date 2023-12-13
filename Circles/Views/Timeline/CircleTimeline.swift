@@ -89,7 +89,6 @@ struct CircleTimeline: View {
                     Spacer()
                     if loading {
                         ProgressView("Loading...")
-                            .progressViewStyle(LinearProgressViewStyle())
                     }
                     else if space.canPaginateRooms {
                         AsyncButton(action: {
@@ -107,6 +106,7 @@ struct CircleTimeline: View {
                     
                     Spacer()
                 }
+                .frame(minHeight: 60)
             }
             .onAppear {
                 _ = Task {
