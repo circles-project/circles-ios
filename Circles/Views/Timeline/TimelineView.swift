@@ -117,6 +117,24 @@ struct TimelineView<V: MessageView>: View {
                 
             }
         }
+        .refreshable {
+            print("REFRESH\tGetting latest messages for room \(room.name ?? room.roomId.stringValue)")
+            if let msgs = try? await room.getMessages(forward: false) {
+                print("REFRESH\tGot response from server")
+            }
+            
+            print("REFRESH\tUpdating room state")
+            room.updateAvatarImage()
+            
+            print("REFRESH\tSleeping to let network requests come in")
+            try? await Task.sleep(for: .seconds(1))
+            
+            print("REFRESH\tSending Combine update")
+            await MainActor.run {
+                room.objectWillChange.send()
+            }
+            print("REFRESH\tDone")
+        }
 
     }
 }

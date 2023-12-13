@@ -113,6 +113,28 @@ struct CircleTimeline: View {
                     try await space.paginateEmptyTimelines(limit: 25)
                 }
             }
+            .refreshable {
+                if let wall = space.wall {
+                    print("REFRESH\tUpdating Circle avatar image")
+                    wall.updateAvatarImage()
+                }
+                
+                async let results = space.rooms.map { room in
+                    print("REFRESH\tLoading latest messages from \(room.name ?? room.roomId.stringValue)")
+
+                    return try? await room.getMessages(forward: false)
+                }
+                let responses = await results
+                print("REFRESH\tGot \(responses.count) responses from \(space.rooms.count) rooms")
+                
+                print("REFRESH\tWaiting for network requests to come in")
+                try? await Task.sleep(for: .seconds(1))
+                
+                print("REFRESH\tSending Combine update")
+                await MainActor.run {
+                    space.objectWillChange.send()
+                }
+            }
 
 
 
