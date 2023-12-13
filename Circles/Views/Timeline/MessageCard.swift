@@ -269,6 +269,51 @@ struct MessageCard: MessageView {
                     
                 case M_VIDEO:
                     VideoContentView(message: current)
+                
+                // Poll event handling is temporary until proper support is implemented
+                case ORG_MATRIX_MSC3381_POLL_START:
+                    if let pollContent = content as? PollStartContent {
+                        let pollText = "Poll: \(pollContent.message)\n\n"
+                        let answersText = pollContent.start.answers.enumerated().map { "\t\($0): \($1.answer.body)\n" }.joined()
+                                                
+                        TextContentView(pollText + answersText)
+                            .padding(.horizontal, 3)
+                            .padding(.vertical, 5)
+                    }
+                    else {
+                        EmptyView()
+                    }
+
+                case ORG_MATRIX_MSC3381_POLL_RESPONSE:
+                    if let pollContent = current.event.content as? PollResponseContent,
+                       let pollId = pollContent.relatesTo.eventId,
+                       let poll = current.room.timeline[pollId]?.event.content as? PollStartContent,
+                       let vote = poll.start.answers.filter({ $0.id == pollContent.selections.first }).first {
+
+                        if poll.start.kind == PollStartContent.PollStart.Kind.open {
+                            TextContentView("Voted for \(vote.answer.body)")
+                                .padding(.horizontal, 3)
+                                .padding(.vertical, 5)
+                        }
+                        else {
+                            TextContentView("Voted")
+                                .padding(.horizontal, 3)
+                                .padding(.vertical, 5)
+                        }
+                    }
+                    else {
+                        EmptyView()
+                    }
+                
+                case ORG_MATRIX_MSC3381_POLL_END:
+                    if let pollContent = current.event.content as? PollEndContent {
+                        TextContentView(pollContent.text)
+                            .padding(.horizontal, 3)
+                            .padding(.vertical, 5)
+                    }
+                    else {
+                        EmptyView()
+                    }
                     
                 default:
                     Text("This version of Circles can't display this message yet (\"\(message.type)\")")

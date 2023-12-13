@@ -88,7 +88,9 @@ struct TimelineView<V: MessageView>: View {
                     }
                     
                     ForEach(messages) { message in
-                        if message.type == M_ROOM_MESSAGE || message.type == M_ROOM_ENCRYPTED {
+                        if message.type == M_ROOM_MESSAGE ||
+                            message.type == M_ROOM_ENCRYPTED ||
+                            message.type == ORG_MATRIX_MSC3381_POLL_START {
                             
                             VStack(alignment: .leading) {
                                 
