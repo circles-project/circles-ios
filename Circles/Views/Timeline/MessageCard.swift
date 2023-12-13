@@ -328,6 +328,7 @@ struct MessageCard: MessageView {
                         .resizable()
                         .foregroundColor(Color.gray)
                         .scaledToFit()
+                        .frame(width: 240, height: 240)
                         .padding()
                     VStack {
                         Label("Could not decrypt message", systemImage: "exclamationmark.triangle")
