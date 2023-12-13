@@ -23,7 +23,6 @@ struct TimelineView<V: MessageView>: View {
                 Spacer()
                 if loading {
                     ProgressView("Loading...")
-                        .progressViewStyle(LinearProgressViewStyle())
                 }
                 else if room.canPaginate {
                     AsyncButton(action: {
@@ -45,6 +44,7 @@ struct TimelineView<V: MessageView>: View {
                 }
                 Spacer()
             }
+            .frame(minHeight: 60)
             
             if debugMode {
                 VStack(alignment: .leading) {
