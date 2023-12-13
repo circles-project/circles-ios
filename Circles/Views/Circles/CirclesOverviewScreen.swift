@@ -94,6 +94,7 @@ struct CirclesOverviewScreen: View {
                                 .contentShape(Rectangle())
                                 //.padding(.top)
                         }
+                        .buttonStyle(.plain)
                         .contextMenu {
                             Button(role: .destructive, action: {
                                 //try await deleteCircle(circle: circle)
@@ -103,7 +104,6 @@ struct CirclesOverviewScreen: View {
                                 Label("Delete", systemImage: "xmark.circle")
                             }
                         }
-                        .buttonStyle(PlainButtonStyle())
                          
                     }
                 }

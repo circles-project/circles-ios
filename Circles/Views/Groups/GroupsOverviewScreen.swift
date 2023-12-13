@@ -47,22 +47,19 @@ struct GroupsOverviewScreen: View {
         let groupInvitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_GROUP }
         
         if !container.rooms.isEmpty || !groupInvitations.isEmpty  {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    GroupInvitationsIndicator(session: container.session, container: container)
-                    
-                    // Sort into _reverse_ chronological order
-                    let rooms = container.rooms.sorted(by: { $0.timestamp > $1.timestamp })
-                    
+            VStack(alignment: .leading, spacing: 0) {
+                GroupInvitationsIndicator(session: container.session, container: container)
+                
+                // Sort into _reverse_ chronological order
+                let rooms = container.rooms.sorted(by: { $0.timestamp > $1.timestamp })
+                
+                List(selection: $selected) {
                     ForEach(rooms) { room in
-                        NavigationLink(destination: GroupTimelineScreen(room: room),
-                                       tag: room.roomId,
-                                       selection: $selected
-                        ) {
+                        NavigationLink(value: room.roomId) {
                             GroupOverviewRow(container: container, room: room)
                                 .contentShape(Rectangle())
                         }
-                        .buttonStyle(PlainButtonStyle())
+                        .buttonStyle(.plain)
                         .contextMenu {
                             Button(role: .destructive, action: {
                                 self.showConfirmLeave = true
@@ -71,10 +68,9 @@ struct GroupsOverviewScreen: View {
                                 Label("Leave group", systemImage: "xmark.bin")
                             }
                         }
-                        .padding(.vertical, 2)
-                        Divider()
                     }
                 }
+                .listStyle(.plain)
             }
         }
         else {
@@ -112,79 +108,88 @@ struct GroupsOverviewScreen: View {
         }
     }
     
-    var body: some View {
-        //let groups = container.groups
-        NavigationView {
-            ZStack {
-                baseLayer
-                
-                overlay
-            }
-            .padding(.top)
-            .navigationBarTitle(Text("Groups"), displayMode: .inline)
-            .toolbar {
-                ToolbarItemGroup(placement: .automatic) {
-                    Menu {
-                        Button(action: {
-                            self.sheetType = .create
-                        }) {
-                            Label("New Group", systemImage: "plus.circle")
-                        }
-                        Button(action: {
-                            self.sheetType = .scanQR
-                        }) {
-                            Label("Scan QR code", systemImage: "qrcode")
-                        }
-                        Button(action: {
-                            self.showHelpText = true
-                        }) {
-                            Label("Help", systemImage: "questionmark.circle")
-                        }
+    var master: some View {
+        ZStack {
+            baseLayer
+            
+            overlay
+        }
+        .padding(.top)
+        .navigationBarTitle(Text("Groups"), displayMode: .inline)
+        .toolbar {
+            ToolbarItemGroup(placement: .automatic) {
+                Menu {
+                    Button(action: {
+                        self.sheetType = .create
+                    }) {
+                        Label("New Group", systemImage: "plus.circle")
                     }
-                    label: {
-                        Label("More", systemImage: "ellipsis.circle")
+                    Button(action: {
+                        self.sheetType = .scanQR
+                    }) {
+                        Label("Scan QR code", systemImage: "qrcode")
+                    }
+                    Button(action: {
+                        self.showHelpText = true
+                    }) {
+                        Label("Help", systemImage: "questionmark.circle")
                     }
                 }
+                label: {
+                    Label("More", systemImage: "ellipsis.circle")
+                }
             }
-            .confirmationDialog(Text("Confirm Leaving Group"),
-                                isPresented: $showConfirmLeave,
-                                actions: { //rm in
-                                    if let room = self.roomToLeave {
-                                        AsyncButton(role: .destructive, action: {
-                                            try await container.leaveChildRoom(room.roomId)
-                                        }) {
-                                            Text("Leave \(room.name ?? "this group")")
-                                        }
+        }
+        .confirmationDialog(Text("Confirm Leaving Group"),
+                            isPresented: $showConfirmLeave,
+                            actions: { //rm in
+                                if let room = self.roomToLeave {
+                                    AsyncButton(role: .destructive, action: {
+                                        try await container.leaveChildRoom(room.roomId)
+                                    }) {
+                                        Text("Leave \(room.name ?? "this group")")
                                     }
-                                })
-            .sheet(item: $sheetType) { st in
-                // Figure out what kind of sheet we need
-                switch(st) {
-                case .create:
-                    GroupCreationSheet(groups: container)
-                case .scanQR:
-                    ScanQrCodeAndKnockSheet(session: container.session)
-                }
+                                }
+                            })
+        .sheet(item: $sheetType) { st in
+            // Figure out what kind of sheet we need
+            switch(st) {
+            case .create:
+                GroupCreationSheet(groups: container)
+            case .scanQR:
+                ScanQrCodeAndKnockSheet(session: container.session)
             }
-            .sheet(isPresented: $showHelpText) {
-                VStack {
-                    Image("iStock-1176559812")
-                        .resizable()
-                        .scaledToFit()
-                    
-                    Markdown(helpTextMarkdown)
-                    
-                    Button(action: {self.showHelpText = false}) {
-                        Label("Got it", systemImage: "hand.thumbsup.fill")
-                            .padding()
-                    }
-                    .buttonStyle(.bordered)
-                    .padding()
+        }
+        .sheet(isPresented: $showHelpText) {
+            VStack {
+                Image("iStock-1176559812")
+                    .resizable()
+                    .scaledToFit()
+                
+                Markdown(helpTextMarkdown)
+                
+                Button(action: {self.showHelpText = false}) {
+                    Label("Got it", systemImage: "hand.thumbsup.fill")
+                        .padding()
                 }
+                .buttonStyle(.bordered)
                 .padding()
             }
-            
-            Text("Create or select a group to view its timeline")
+            .padding()
+        }
+    }
+    
+    var body: some View {
+        NavigationSplitView {
+            master
+        } detail: {
+            if let roomId = selected,
+               let room = container.rooms.first(where: { $0.roomId == roomId })
+            {
+                GroupTimelineScreen(room: room)
+            } else {
+                Text("Select a group to see the most recent posts, or create a new group")
+            }
         }
     }
 }
