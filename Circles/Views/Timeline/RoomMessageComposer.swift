@@ -224,27 +224,47 @@ struct RoomMessageComposer: View {
                     
                 case .text:
                     if let parentMessage = self.parent {
-                        print("REPLY\tSending threaded reply")
-                        let replyEventId = try await parentMessage.room.sendReply(to: parentMessage.event, text: self.newMessageText, threaded: true)
-                        print("REPLY\tSent eventId = \(replyEventId)")
-                        self.presentation.wrappedValue.dismiss()
+                        let replyEventId = try await room.sendText(text: self.newMessageText, inReplyTo: parentMessage)
+                        print("REPLY\tSent m.text reply with eventId = \(replyEventId)")
+                    } else if let oldMessage = self.editing {
+                        let replacementEventId = try await room.sendText(text: self.newMessageText, replacing: oldMessage)
+                        print("EDIT\tSent edited m.text with eventId = \(replacementEventId)")
                     } else {
-                        let eventId = try await self.room.sendText(text: self.newMessageText, replacing: self.editing)
-                        print("COMPOSER\tSent m.text with eventId = \(eventId)")
-                        self.presentation.wrappedValue.dismiss()
+                        let newEventId = try await room.sendText(text: self.newMessageText)
+                        print("COMPOSER\tSent m.text with eventId = \(newEventId)")
                     }
+                    self.presentation.wrappedValue.dismiss()
+
                     
                 case .newImage(let img):
                     let caption: String? = !self.newMessageText.isEmpty ? self.newMessageText : nil
-                    let eventId = try await self.room.sendImage(image: img, caption: caption, withBlurhash: false, withThumbhash: true, replacing: self.editing)
-                    print("COMPOSER\tSent m.image with eventId = \(eventId)")
+
+                    if let parentMessage = self.parent {
+                        let replyEventId = try await self.room.sendImage(image: img, caption: caption, withBlurhash: false, withThumbhash: true, inReplyTo: parentMessage)
+                        print("COMPOSER\tSent m.image reply with eventId = \(replyEventId)")
+                    } else if let oldMessage = self.editing {
+                        let replacementEventId = try await self.room.sendImage(image: img, caption: caption, withBlurhash: false, withThumbhash: true, replacing: oldMessage)
+                        print("EDIT\tSent edited m.image with eventId = \(replacementEventId)")
+                    } else {
+                        let newEventId = try await self.room.sendImage(image: img, caption: caption, withBlurhash: false, withThumbhash: true)
+                        print("COMPOSER\tSent m.image with eventId = \(newEventId)")
+                    }
                     self.presentation.wrappedValue.dismiss()
                     
                     
                 case .newVideo(let movie, let thumbnail):
                     let caption: String? = !self.newMessageText.isEmpty ? self.newMessageText : nil
-                    let eventId = try await self.room.sendVideo(url: movie.url, thumbnail: thumbnail, caption: caption, replacing: self.editing)
-                    print("COMPOSER\tSent m.video with eventId = \(eventId)")
+                    
+                    if let parentMessage = self.parent {
+                        let replyEventId = try await room.sendVideo(url: movie.url, thumbnail: thumbnail, caption: caption, inReplyTo: parentMessage)
+                        print("COMPOSER\tSent m.video reply with eventId = \(replyEventId)")
+                    } else if let oldMessage = self.editing {
+                        let eventId = try await room.sendVideo(url: movie.url, thumbnail: thumbnail, caption: caption, replacing: oldMessage)
+                        print("COMPOSER\tSent edited m.video with eventId = \(eventId)")
+                    } else {
+                        let newEventId = try await room.sendVideo(url: movie.url, thumbnail: thumbnail, caption: caption)
+                        print("COMPOSER\tSent m.video with eventId = \(newEventId)")
+                    }
                     self.presentation.wrappedValue.dismiss()
                     
                 case .oldImage(let oldImageContent, _):
