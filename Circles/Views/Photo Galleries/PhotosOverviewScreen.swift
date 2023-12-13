@@ -52,71 +52,76 @@ struct PhotosOverviewScreen: View {
         let invitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_PHOTOS }
         
         if !container.rooms.isEmpty || !invitations.isEmpty {
-            ScrollView {
-                VStack(alignment: .leading) {
-                    GalleryInvitationsIndicator(session: container.session, container: container)
+            VStack(alignment: .leading) {
+                GalleryInvitationsIndicator(session: container.session, container: container)
+                
+                List(selection: $selected) {
                     
                     let myGalleries = container.rooms
-                                               .filter { $0.creator == container.session.creds.userId }
-                                               .sorted(by: {$0.timestamp > $1.timestamp }) // Reverse chronological ordering
+                        .filter { $0.creator == container.session.creds.userId }
+                        .sorted(by: {$0.timestamp > $1.timestamp }) // Reverse chronological ordering
+                    /*
                     Text("MY GALLERIES")
                         .font(.subheadline)
                         .foregroundColor(.gray)
-                    ForEach(myGalleries) { room in
-                        //Text("Found room \(room.roomId.string)")
-                        NavigationLink(destination: PhotoGalleryView(room: room),
-                                       tag: room.roomId,
-                                       selection: $selected
-                        ) {
-                            PhotoGalleryCard(room: room)
-                            // FIXME Add a longPress gesture
-                            //       for setting/changing the
-                            //       avatar image for the gallery
-                        }
-                        .contextMenu {
-                            Button(role: .destructive, action: {
-                                self.showConfirmLeave = true
-                                self.roomToLeave = room
-                            }) {
-                                Label("Leave gallery", systemImage: "xmark.bin")
+                    */
+                    Section("My Galleries") {
+                        ForEach(myGalleries) { room in
+                            //Text("Found room \(room.roomId.string)")
+                            NavigationLink(value: room.roomId) {
+                                PhotoGalleryCard(room: room)
+                                // FIXME Add a longPress gesture
+                                //       for setting/changing the
+                                //       avatar image for the gallery
+                            }
+                            .buttonStyle(.plain)
+                            .contextMenu {
+                                Button(role: .destructive, action: {
+                                    self.showConfirmLeave = true
+                                    self.roomToLeave = room
+                                }) {
+                                    Label("Leave gallery", systemImage: "xmark.bin")
+                                }
                             }
                         }
-                        //.padding(1)
                     }
                     
-                    Divider()
+                    //Divider()
                     
                     let sharedGalleries = container.rooms
-                                                   .filter { $0.creator != container.session.creds.userId }
-                                                   .sorted(by: {$0.timestamp > $1.timestamp }) // Reverse chronological ordering
+                        .filter { $0.creator != container.session.creds.userId }
+                        .sorted(by: {$0.timestamp > $1.timestamp }) // Reverse chronological ordering
+                    /*
                     Text("SHARED GALLERIES")
                         .font(.subheadline)
                         .foregroundColor(.gray)
-                    ForEach(sharedGalleries) { room in
-                        //Text("Found room \(room.roomId.string)")
-                        NavigationLink(destination: PhotoGalleryView(room: room),
-                                       tag: room.roomId,
-                                       selection: $selected
-                        ) {
-                            PhotoGalleryCard(room: room)
-                            // FIXME Add a longPress gesture
-                            //       for setting/changing the
-                            //       avatar image for the gallery
-                        }
-                        .contextMenu {
-                            Button(role: .destructive, action: {
-                                self.showConfirmLeave = true
-                                self.roomToLeave = room
-                            }) {
-                                Label("Leave gallery", systemImage: "xmark.bin")
+                    */
+                    Section("Shared Galleries") {
+                        ForEach(sharedGalleries) { room in
+                            //Text("Found room \(room.roomId.string)")
+                            NavigationLink(value: room.roomId) {
+                                PhotoGalleryCard(room: room)
+                                // FIXME Add a longPress gesture
+                                //       for setting/changing the
+                                //       avatar image for the gallery
+                            }
+                            .buttonStyle(.plain)
+                            .contextMenu {
+                                Button(role: .destructive, action: {
+                                    self.showConfirmLeave = true
+                                    self.roomToLeave = room
+                                }) {
+                                    Label("Leave gallery", systemImage: "xmark.bin")
+                                }
                             }
                         }
-                        //.padding(1)
                     }
+                    
                 }
-                .padding()
-
+                .listStyle(.plain)
             }
+            .padding()
+
         }
         else {
             Text("Create a photo gallery to get started")
@@ -148,42 +153,51 @@ struct PhotosOverviewScreen: View {
         }
     }
     
-    var body: some View {
-        NavigationView {
-            ZStack {
-                baseLayer
-                
-                overlay
+    var master: some View {
+        ZStack {
+            baseLayer
+            
+            overlay
+        }
+        .navigationBarTitle("Photo Galleries", displayMode: .inline)
+        .toolbar {
+            ToolbarItemGroup(placement: .automatic) {
+                toolbarMenu
             }
-            .navigationBarTitle("Photo Galleries", displayMode: .inline)
-            .toolbar {
-                ToolbarItemGroup(placement: .automatic) {
-                    toolbarMenu
-                }
+        }
+        .sheet(item: $sheetType) { st in
+            switch(st) {
+            case .create:
+                PhotoGalleryCreationSheet(container: container)
+            case .scanQr:
+                ScanQrCodeAndKnockSheet(session: container.session)
             }
-            .sheet(item: $sheetType) { st in
-                switch(st) {
-                case .create:
-                    PhotoGalleryCreationSheet(container: container)
-                case .scanQr:
-                    ScanQrCodeAndKnockSheet(session: container.session)
-                }
-            }
-            .confirmationDialog(Text("Confirm Leaving Gallery"),
-                                isPresented: $showConfirmLeave,
-                                actions: {
-                                    if let room = self.roomToLeave {
-                                        AsyncButton(role: .destructive, action: {
-                                            try await container.leaveChildRoom(room.roomId)
-                                        }) {
-                                            Text("Leave \(room.name ?? "this gallery")")
-                                        }
+        }
+        .confirmationDialog(Text("Confirm Leaving Gallery"),
+                            isPresented: $showConfirmLeave,
+                            actions: {
+                                if let room = self.roomToLeave {
+                                    AsyncButton(role: .destructive, action: {
+                                        try await container.leaveChildRoom(room.roomId)
+                                    }) {
+                                        Text("Leave \(room.name ?? "this gallery")")
                                     }
                                 }
-            )
-            //.navigationViewStyle(StackNavigationViewStyle())
-            
-            Text("Create or select a photo gallery to view an album")
+                            }
+        )
+    }
+    
+    var body: some View {
+        NavigationSplitView {
+            master
+        } detail: {
+            if let roomId = selected,
+               let room = container.rooms.first(where: { $0.roomId == roomId })
+            {
+                PhotoGalleryView(room: room)
+            } else {
+                Text("Create or select a photo gallery to view an album")
+            }
         }
     }
 }
