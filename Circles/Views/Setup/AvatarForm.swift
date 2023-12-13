@@ -39,7 +39,7 @@ struct AvatarForm: View {
             Text("Set up your profile")
                 .font(.title)
                 .fontWeight(.bold)
-
+                
             avatar
                 .resizable()
                 .scaledToFill()
@@ -54,32 +54,50 @@ struct AvatarForm: View {
                         }
                     }
                 }
+                .overlay(alignment: .bottomTrailing) {
+                    Menu {
+                        
+                        Button(action: {
+                            self.showPicker = true
+                        }) {
+                            Label("Choose a photo", systemImage: "photo.fill")
 
-            PhotosPicker(selection: $selectedItem, matching: .images) {
-                Label("Choose a photo", systemImage: "photo.fill")
-            }
-            .onChange(of: selectedItem) { newItem in
-                Task {
-                    if let data = try? await newItem?.loadTransferable(type: Data.self),
-                       let img = UIImage(data: data)
-                    {
-                        await MainActor.run {
-                            self.avatarImage = img
+                        }
+                        
+                        Button(action: {
+                            self.showCamera = true
+                        }) {
+                            Label("Take a new photo", systemImage: "camera")
+                        }
+                        .sheet(isPresented: $showCamera) {
+                            ImagePicker(selectedImage: $avatarImage, sourceType: .camera)
+                        }
+                    }
+                    label: {
+                        Image(systemName: "pencil.circle.fill")
+                            .symbolRenderingMode(.multicolor)
+                            .font(.system(size: 30))
+                            .foregroundColor(.accentColor)
+                    }
+                }
+                .photosPicker(isPresented: $showPicker, selection: $selectedItem)
+                .onChange(of: selectedItem) { newItem in
+                    Task {
+                        if let data = try? await newItem?.loadTransferable(type: Data.self),
+                           let img = UIImage(data: data)
+                        {
+                            await MainActor.run {
+                                self.avatarImage = img
+                            }
                         }
                     }
                 }
-            }
-            .padding()
+                
 
-            Button(action: {
-                self.showCamera = true
-            }) {
-                Label("Take a new photo", systemImage: "camera")
-            }
-            .sheet(isPresented: $showCamera) {
-                ImagePicker(selectedImage: $avatarImage, sourceType: .camera)
-            }
-            .padding()
+                
+            Label("NOTE: Profile photos are not encrypted", systemImage: "exclamationmark.triangle")
+                .foregroundColor(.orange)
+
             
             TextField("First Last", text: $displayName, prompt: Text("Your name"))
                 .textContentType(.name)
@@ -87,6 +105,7 @@ struct AvatarForm: View {
                 .textInputAutocapitalization(.words)
                 .frame(width: 300)
                 .padding()
+                /*
                 .task {
                     let userId = session.client.creds.userId
                     if let name = try? await session.client.getDisplayName(userId: userId) {
@@ -95,16 +114,10 @@ struct AvatarForm: View {
                         }
                     }
                 }
-
+                */
 
             AsyncButton(action: {
-                if let image = avatarImage {
-                    do {
-                        try await session.setupProfile(name: displayName, avatar: image)
-                    } catch {
-                        
-                    }
-                }
+                try await session.setupProfile(name: displayName, avatar: avatarImage)
             }) {
                 Text("Next")
                     .padding()
@@ -113,7 +126,7 @@ struct AvatarForm: View {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
-            .disabled(avatarImage == nil || displayName.isEmpty)
+            .disabled(displayName.isEmpty)
             .padding()
 
             Spacer()
