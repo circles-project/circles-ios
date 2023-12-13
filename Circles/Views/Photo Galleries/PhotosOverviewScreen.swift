@@ -84,9 +84,10 @@ struct PhotosOverviewScreen: View {
                                 }
                             }
                         }
+                        .listRowSeparator(.hidden)
+
                     }
-                    
-                    //Divider()
+
                     
                     let sharedGalleries = container.rooms
                         .filter { $0.creator != container.session.creds.userId }
@@ -115,12 +116,14 @@ struct PhotosOverviewScreen: View {
                                 }
                             }
                         }
+                        .listRowSeparator(.hidden)
                     }
                     
                 }
                 .listStyle(.plain)
+
             }
-            .padding()
+            //.padding()
 
         }
         else {
