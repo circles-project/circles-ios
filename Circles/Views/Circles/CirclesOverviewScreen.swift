@@ -78,25 +78,23 @@ struct CirclesOverviewScreen: View {
     var baseLayer: some View {
         
         if !container.rooms.isEmpty || !circleInvitations.isEmpty {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
+                            
+                if circleInvitations.count > 0 {
+                    CircleInvitationsIndicator(session: container.session, container: container)
+                }
                 
-                    if circleInvitations.count > 0 {
-                        CircleInvitationsIndicator(session: container.session, container: container)
-                    }
-                    
-                    // Sort intro _reverse_ chronological order
-                    let circles = container.rooms.sorted(by: { $0.timestamp > $1.timestamp })
-                    
+                // Sort intro _reverse_ chronological order
+                let circles = container.rooms.sorted(by: { $0.timestamp > $1.timestamp })
+                                
+                List(selection: $selected) {
                     ForEach(circles) { circle in
-                        NavigationLink(destination: CircleTimelineView(space: circle),
-                                       tag: circle.roomId,
-                                       selection: $selected)
-                        {
+                        NavigationLink(value: circle.roomId) {
                             CircleOverviewCard(space: circle)
                                 .contentShape(Rectangle())
-                            //.padding(.top)
+                                //.padding(.top)
                         }
+                        .buttonStyle(.plain)
                         .contextMenu {
                             Button(role: .destructive, action: {
                                 //try await deleteCircle(circle: circle)
@@ -106,10 +104,10 @@ struct CirclesOverviewScreen: View {
                                 Label("Delete", systemImage: "xmark.circle")
                             }
                         }
-                        .buttonStyle(PlainButtonStyle())
-                        Divider()
+                         
                     }
                 }
+                .listStyle(.plain)
             }
         }
         else {
@@ -177,43 +175,53 @@ struct CirclesOverviewScreen: View {
         .padding()
     }
     
+    var master: some View {
+        ZStack {
+            baseLayer
+            
+            overlay
+        }
+        .padding(.top)
+        .navigationBarTitle("Circles", displayMode: .inline)
+        .toolbar {
+            ToolbarItemGroup(placement: .automatic) {
+                toolbarMenu
+            }
+        }
+        .onAppear {
+            circleInvitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_CIRCLE }
+        }
+        .sheet(item: $sheetType) { st in
+            switch(st) {
+            case .create:
+                CircleCreationSheet(container: container)
+            case .scanQr:
+                ScanQrCodeAndKnockSheet(session: container.session)
+            }
+        }
+        .confirmationDialog("Confirm deleting circle", isPresented: $confirmDeleteCircle, presenting: circleToDelete) { circle in
+            AsyncButton(role: .destructive, action: {
+                try await deleteCircle(circle: circle)
+            }) {
+                Label("Delete circle \"\(circle.name ?? "??")\"", systemImage: "xmark.bin")
+            }
+        }
+        .sheet(isPresented: $showHelpText) {
+            help
+        }
+    }
+    
     var body: some View {
-        NavigationView {
-            ZStack {
-                baseLayer
-                
-                overlay
+        NavigationSplitView {
+            master
+        } detail: {
+            if let roomId = selected,
+               let space = container.rooms.first(where: { $0.roomId == roomId })
+            {
+                CircleTimelineView(space: space)
+            } else {
+                Text("Select a circle to see the most recent posts")
             }
-            .padding(.top)
-            .navigationBarTitle("Circles", displayMode: .inline)
-            .toolbar {
-                ToolbarItemGroup(placement: .automatic) {
-                    toolbarMenu
-                }
-            }
-            .onAppear {
-                circleInvitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_CIRCLE }
-            }
-            .sheet(item: $sheetType) { st in
-                switch(st) {
-                case .create:
-                    CircleCreationSheet(container: container)
-                case .scanQr:
-                    ScanQrCodeAndKnockSheet(session: container.session)
-                }
-            }
-            .confirmationDialog("Confirm deleting circle", isPresented: $confirmDeleteCircle, presenting: circleToDelete) { circle in
-                AsyncButton(role: .destructive, action: {
-                    try await deleteCircle(circle: circle)
-                }) {
-                    Label("Delete circle \"\(circle.name ?? "??")\"", systemImage: "xmark.bin")
-                }
-            }
-            .sheet(isPresented: $showHelpText) {
-                help
-            }
-         
-            Text("Select a circle to see the most recent posts")
         }
     }
 }
