@@ -56,11 +56,13 @@ class SetupSession: ObservableObject {
         self.state = .profile
     }
     
-    func setupProfile(name: String, avatar: UIImage) async throws {
+    func setupProfile(name: String, avatar: UIImage?) async throws {
         logger.debug("Setting displayname")
         try await client.setMyDisplayName(name)
-        logger.debug("Setting avatar image")
-        try await client.setMyAvatarImage(avatar)
+        if let image = avatar {
+            logger.debug("Setting avatar image")
+            try await client.setMyAvatarImage(image)
+        }
         logger.debug("Setting state to .circles")
         await MainActor.run {
             self.state = .circles(name)
