@@ -153,7 +153,7 @@ struct RoomMessageComposer: View {
                 Image(systemName: "doc.plaintext")
                     .scaleEffect(1.5)
             }
-            .disabled(messageState.isText)
+            .disabled(messageState.isText || editing != nil)
             .padding(1)
 
             Menu(content: {
@@ -180,7 +180,7 @@ struct RoomMessageComposer: View {
                 Image(systemName: "photo.fill")
                     .scaleEffect(1.5)
             })
-            .disabled(messageState.isImage)
+            .disabled(messageState.isImage || editing != nil)
             .padding(1)
 
             
@@ -196,7 +196,7 @@ struct RoomMessageComposer: View {
                 Image(systemName: "film")
                     .scaleEffect(1.5)
             })
-            .disabled(messageState.isVideo)
+            .disabled(messageState.isVideo || editing != nil)
             .padding(1)
 
             
