@@ -147,7 +147,7 @@ struct PeopleOverviewScreen: View {
             Divider()
 
             ForEach(following) { user in
-                NavigationLink(destination: UnconnectedPersonDetailView(user: user, room: profile),
+                NavigationLink(destination: UnconnectedPersonDetailView(user: user, myProfileRoom: profile),
                                tag: user.userId,
                                selection: $selectedUserId
                 ) {
@@ -181,7 +181,7 @@ struct PeopleOverviewScreen: View {
             Divider()
 
             ForEach(followers) { user in
-                NavigationLink(destination: UnconnectedPersonDetailView(user: user, room: profile),
+                NavigationLink(destination: UnconnectedPersonDetailView(user: user, myProfileRoom: profile),
                                tag: user.userId,
                                selection: $selectedUserId
                 ) {

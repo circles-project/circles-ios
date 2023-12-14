@@ -16,10 +16,9 @@ struct CircleFollowingRow: View {
     @ObservedObject var room: Matrix.Room
     @ObservedObject var user: Matrix.User
     
-    @State var showConfirmUnfollow = false
     
     var body: some View {
-        HStack {
+        NavigationLink(destination: FollowingTimelineDetailsView(room: room, user: user, circle: space)) {
             RoomAvatar(room: room, avatarText: .none)
                 .clipShape(RoundedRectangle(cornerRadius: 4))
                 .frame(width: 40, height: 40)
@@ -27,27 +26,14 @@ struct CircleFollowingRow: View {
                     room.updateAvatarImage()
                 }
             
-            Text("\(user.displayName ?? user.userId.username) - \(room.name ?? "(???)")")
-                .onAppear {
-                    user.refreshProfile()
-                }
-            
-            Spacer()
-            Button(role: .destructive, action: {
-                self.showConfirmUnfollow = true
-            }) {
-                Label("Unfollow", systemImage: "trash")
+            VStack(alignment: .leading) {
+                Text("\(user.displayName ?? user.userId.username)")
+                Text("\(room.name ?? "(???)")")
             }
-            .confirmationDialog(
-                Text("Confirm un-follow"),
-                isPresented: $showConfirmUnfollow) {
-                    AsyncButton(action: {
-                        print("Un-following roomId = \(room.roomId)")
-                        try await space.removeChildRoom(room.roomId)
-                    }) {
-                        Text("Un-follow")
-                    }
-                }
+            .onAppear {
+                user.refreshProfile()
+            }
+            
         }
     }
 }
