@@ -12,17 +12,19 @@ struct RoomKnockIndicator: View {
     @ObservedObject var room: Matrix.Room
     
     var body: some View {
-        HStack {
-            Spacer()
-            NavigationLink(destination: RoomKnockDetailsView(room: room)) {
-                Label("Review \(room.knockingMembers.count) request(s) for invitations", systemImage: "star.fill")
-                    .fontWeight(.bold)
-                    .foregroundColor(.white)
-                    .padding()
+        if room.iCanInvite {
+            HStack {
+                Spacer()
+                NavigationLink(destination: RoomKnockDetailsView(room: room)) {
+                    Label("Review \(room.knockingMembers.count) request(s) for invitations", systemImage: "star.fill")
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .padding()
+                }
+                Spacer()
             }
-            Spacer()
+            .background(Color.accentColor)
+            .frame(maxHeight: 60)
         }
-        .background(Color.accentColor)
-        .frame(maxHeight: 60)
     }
 }
