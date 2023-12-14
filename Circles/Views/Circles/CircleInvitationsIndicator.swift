@@ -12,25 +12,39 @@ struct CircleInvitationsIndicator: View {
     //@Binding var invitations: [Matrix.InvitedRoom]
     @ObservedObject var session: Matrix.Session
     @ObservedObject var container: ContainerRoom<CircleSpace>
-    
-    @State var invitations: [Matrix.InvitedRoom] = []
+    @AppStorage("debugMode") var debugMode: Bool = false
+
     
     var body: some View {
-        HStack {
-            Spacer()
-            NavigationLink(destination: CircleInvitationsView(session: session, container: container)) {
-                Text("You have \(invitations.count) pending invitation(s)")
-                    .fontWeight(.bold)
+        VStack {
+            let invitations = session.invitations.values.filter { $0.type == ROOM_TYPE_CIRCLE }
+            
+            if invitations.count > 0 {
+
+                NavigationLink(destination: CircleInvitationsView(session: session, container: container)) {
+                    HStack {
+                        Spacer()
+                        Label("You have \(invitations.count) pending invitation(s)", systemImage: "star")
+                            .fontWeight(.bold)
+                            .padding()
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 24))
+                            .padding()
+                    }
                     .foregroundColor(.white)
+                    .background(Color.accentColor)
+                    .frame(maxHeight: 60)
+                }
+
+            }
+            if debugMode {
+                Text("Debug: \(invitations.count) invitations here; \(session.invitations.count) total in the session")
+                    .foregroundColor(.red)
                     .padding()
             }
-            Spacer()
         }
-        .background(Color.accentColor)
-        .frame(maxHeight: 60)
-        .onAppear {
-            invitations = session.invitations.values.filter { $0.type == ROOM_TYPE_CIRCLE }
-        }
+
     }
 }
 

@@ -14,24 +14,30 @@ struct GalleryInvitationsIndicator: View {
     @ObservedObject var session: Matrix.Session
     var container: ContainerRoom<GalleryRoom>
     
-    @State var invitations: [Matrix.InvitedRoom] = []
     
     var body: some View {
         VStack(alignment: .leading) {
+            let invitations = session.invitations.values.filter { $0.type == ROOM_TYPE_PHOTOS }
             if !invitations.isEmpty {
-                Text("INVITATIONS")
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
-                
+    
                 NavigationLink(destination: GalleryInvitationsView(session: session, container: container)) {
-                    Label("\(invitations.count) invitation(s) to shared photo galleries", systemImage: "envelope.open.fill")
+                    HStack {
+                        Spacer()
+                        Label("\(invitations.count) invitation(s) to shared galleries", systemImage: "star")
+                            .fontWeight(.bold)
+                            .padding()
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 24))
+                            .padding()
+                    }
+                    .foregroundColor(.white)
+                    .background(Color.accentColor)
+                    .frame(maxHeight: 80)
                 }
 
                 .padding()
             }
-        }
-        .onAppear {
-            invitations = session.invitations.values.filter { $0.type == ROOM_TYPE_PHOTOS }
         }
     }
 }

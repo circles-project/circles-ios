@@ -156,6 +156,7 @@ struct PhotosOverviewScreen: View {
         }
     }
     
+    @ViewBuilder
     var master: some View {
         ZStack {
             baseLayer
@@ -166,6 +167,11 @@ struct PhotosOverviewScreen: View {
         .toolbar {
             ToolbarItemGroup(placement: .automatic) {
                 toolbarMenu
+            }
+        }
+        .refreshable {
+            await MainActor.run {
+                container.objectWillChange.send()
             }
         }
         .sheet(item: $sheetType) { st in

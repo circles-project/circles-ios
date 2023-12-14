@@ -27,6 +27,8 @@ struct GroupsOverviewScreen: View {
     @State var showConfirmLeave = false
     @State var roomToLeave: GroupRoom?
     
+    @State var invitations: [Matrix.InvitedRoom] = []
+    
     //@State var selectedRoom: Matrix.Room?
     @Binding var selected: RoomId?
     
@@ -44,9 +46,9 @@ struct GroupsOverviewScreen: View {
     
     @ViewBuilder
     var baseLayer: some View {
-        let groupInvitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_GROUP }
+       // let groupInvitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_GROUP }
         
-        if !container.rooms.isEmpty || !groupInvitations.isEmpty  {
+        if !container.rooms.isEmpty || !invitations.isEmpty  {
             VStack(alignment: .leading, spacing: 0) {
                 GroupInvitationsIndicator(session: container.session, container: container)
                 
@@ -75,7 +77,18 @@ struct GroupsOverviewScreen: View {
         }
         else {
             Text("Create a group to get started")
+                .onAppear {
+                    self.reload()
+                }
         }
+    }
+    
+    @MainActor
+    func reload() {
+        print("RELOAD\tSession has \(container.session.invitations.count) invitations total")
+        self.invitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_GROUP }
+        print("RELOAD\tFound \(self.invitations.count) invitations for this screen")
+        container.objectWillChange.send()
     }
     
     @ViewBuilder
@@ -108,6 +121,7 @@ struct GroupsOverviewScreen: View {
         }
     }
     
+    @ViewBuilder
     var master: some View {
         ZStack {
             baseLayer
@@ -116,6 +130,9 @@ struct GroupsOverviewScreen: View {
         }
         .padding(.top)
         .navigationBarTitle(Text("Groups"), displayMode: .inline)
+        .refreshable {
+            self.reload()
+        }
         .toolbar {
             ToolbarItemGroup(placement: .automatic) {
                 Menu {
@@ -191,6 +208,7 @@ struct GroupsOverviewScreen: View {
                 Text("Select a group to see the most recent posts, or create a new group")
             }
         }
+
     }
 }
 

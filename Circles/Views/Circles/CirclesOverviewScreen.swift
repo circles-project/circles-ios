@@ -22,9 +22,7 @@ struct CirclesOverviewScreen: View {
     @ObservedObject var container: ContainerRoom<CircleSpace>
     //@State var selectedSpace: CircleSpace?
     @Binding var selected: RoomId?
-    
-    @State var circleInvitations: [Matrix.InvitedRoom] = []
-    
+        
     @State private var sheetType: CirclesOverviewSheetType? = nil
     
     @State var confirmDeleteCircle = false
@@ -76,11 +74,12 @@ struct CirclesOverviewScreen: View {
     
     @ViewBuilder
     var baseLayer: some View {
-        
-        if !container.rooms.isEmpty || !circleInvitations.isEmpty {
+        let invitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_CIRCLE }
+
+        if !container.rooms.isEmpty || !invitations.isEmpty {
             VStack(alignment: .leading, spacing: 0) {
                             
-                if circleInvitations.count > 0 {
+                if invitations.count > 0 {
                     CircleInvitationsIndicator(session: container.session, container: container)
                 }
                 
@@ -188,9 +187,6 @@ struct CirclesOverviewScreen: View {
                 toolbarMenu
             }
         }
-        .onAppear {
-            circleInvitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_CIRCLE }
-        }
         .sheet(item: $sheetType) { st in
             switch(st) {
             case .create:
@@ -214,6 +210,11 @@ struct CirclesOverviewScreen: View {
     var body: some View {
         NavigationSplitView {
             master
+                .refreshable {
+                    await MainActor.run {
+                        container.objectWillChange.send()
+                    }
+                }
         } detail: {
             if let roomId = selected,
                let space = container.rooms.first(where: { $0.roomId == roomId })
