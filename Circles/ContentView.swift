@@ -64,6 +64,7 @@ struct ContentView: View {
             
         case .signingUp(let signupSession):
             SignupScreen(session: signupSession, store: store)
+                .environmentObject(store.appStore)
         
         case .settingUp(let setupSession):
             SetupScreen(session: setupSession, store: store)
@@ -80,6 +81,7 @@ struct ContentView: View {
         case .online(let circlesSession):
             CirclesTabbedInterface(store: store, session: circlesSession)
                 .environmentObject(circlesSession)
+                .environmentObject(store.appStore)
             
         default:
             errorView

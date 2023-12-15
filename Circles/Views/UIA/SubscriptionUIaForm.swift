@@ -144,7 +144,7 @@ struct SubscriptionUiaProductView: View {
 
 struct SubscriptionUIaForm: View {
     var session: UIAuthSession
-    @ObservedObject var appStore: AppStoreInterface
+    @EnvironmentObject var appStore: AppStoreInterface
     
     @State var productIds: [String] = []
     @State var products: [Product] = []
