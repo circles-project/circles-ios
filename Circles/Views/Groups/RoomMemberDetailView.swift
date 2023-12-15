@@ -8,7 +8,7 @@
 import SwiftUI
 import Matrix
 
-struct GroupMemberDetailView: View {
+struct RoomMemberDetailView: View {
     @ObservedObject var user: Matrix.User
     @ObservedObject var room: Matrix.Room
     

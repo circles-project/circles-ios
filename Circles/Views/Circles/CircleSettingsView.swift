@@ -110,7 +110,7 @@ struct CircleSettingsView: View {
             Section("My Followers (\(followers.count))") {
                 ForEach(followers) { userId in
                     let user = wall.session.getUser(userId: userId)
-                    NavigationLink(destination: GroupMemberDetailView(user: user, room: wall)) {
+                    NavigationLink(destination: RoomMemberDetailView(user: user, room: wall)) {
                         RoomMemberRow(user: user, room: wall)
                     }
                 }

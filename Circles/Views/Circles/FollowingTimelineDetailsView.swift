@@ -56,7 +56,7 @@ struct FollowingTimelineDetailsView: View {
                 
                 Section("Creator") {
                     // NavigationLink(destination: GenericPersonDetailView(user: user)) {
-                    NavigationLink(destination: GroupMemberDetailView(user: user, room: room)) {
+                    NavigationLink(destination: RoomMemberDetailView(user: user, room: room)) {
 
                         MessageAuthorHeader(user: user)
                     }
@@ -68,7 +68,7 @@ struct FollowingTimelineDetailsView: View {
                         let follower = session.getUser(userId: followerId)
                         //Text(follower.displayName ?? follower.userId.stringValue)
                         
-                        NavigationLink(destination: GroupMemberDetailView(user: follower, room: room)) {
+                        NavigationLink(destination: RoomMemberDetailView(user: follower, room: room)) {
                             MessageAuthorHeader(user: follower)
                         }
                     }
