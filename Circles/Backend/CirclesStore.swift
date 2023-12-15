@@ -277,7 +277,7 @@ public class CirclesStore: ObservableObject {
             // Next thing to check: Do we have a Circles space hierarchy in this account?
             if let config = try? await loadConfig(matrix: matrix) {
                 // Awesome - Everything should be good to go, so let's get it started
-                try await launch(store: self, matrix: matrix, config: config)
+                try await launch(matrix: matrix, config: config)
                 return
             } else {
                 // Looks like we haven't configured Circles on this account yet
@@ -359,7 +359,7 @@ public class CirclesStore: ObservableObject {
             return
         }
         
-        try await launch(store: self, matrix: matrix, config: config)
+        try await launch(matrix: matrix, config: config)
     }
     
     // MARK: Generate S4 key
@@ -382,8 +382,8 @@ public class CirclesStore: ObservableObject {
     }
     
     // MARK: Launch
-    func launch(store: CirclesStore, matrix: Matrix.Session, config: CirclesConfigContent) async throws {
-        guard let session = try? await CirclesApplicationSession(store: store, matrix: matrix, config: config)
+    func launch(matrix: Matrix.Session, config: CirclesConfigContent) async throws {
+        guard let session = try? await CirclesApplicationSession(store: self, matrix: matrix, config: config)
         else {
             // If anything went wrong here, we don't know what it was
             // Fail and give up :(
