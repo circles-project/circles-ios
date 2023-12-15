@@ -79,8 +79,7 @@ struct ContentView: View {
 
         case .online(let circlesSession):
             CirclesTabbedInterface(store: store, session: circlesSession)
-                .environmentObject(circlesSession.galleries)
-                //.environmentObject(circlesSession)
+                .environmentObject(circlesSession)
             
         default:
             errorView

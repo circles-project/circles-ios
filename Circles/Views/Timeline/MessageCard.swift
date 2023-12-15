@@ -202,7 +202,7 @@ struct MessageCard: MessageView {
     var isThreaded = false
     @AppStorage("debugMode") var debugMode: Bool = false
     @Environment(\.colorScheme) var colorScheme
-    @EnvironmentObject var galleries: ContainerRoom<GalleryRoom>
+    @EnvironmentObject var appSession: CirclesApplicationSession
     //@State var showReplyComposer = false
     @State var reporting = false
     private let debug = false
@@ -590,10 +590,10 @@ struct MessageCard: MessageView {
                 switch(st) {
 
                 case .reply:
-                    MessageComposerSheet(room: message.room, parentMessage: message, galleries: galleries)
+                    MessageComposerSheet(room: message.room, parentMessage: message, galleries: appSession.galleries)
                     
                 case .edit:
-                    MessageComposerSheet(room: message.room, editingMessage: message, galleries: galleries)
+                    MessageComposerSheet(room: message.room, editingMessage: message, galleries: appSession.galleries)
 
                 case .reactions:
                     EmojiPicker(message: message)

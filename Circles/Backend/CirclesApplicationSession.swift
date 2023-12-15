@@ -19,7 +19,7 @@ import UIKit
 class CirclesApplicationSession: ObservableObject {
     var logger: os.Logger
     
-    
+    var store: CirclesStore
     var matrix: Matrix.Session
 
     // IDEA: We could store any Circles-specific configuration info in our account data in the root "Circles" space room
@@ -57,9 +57,10 @@ class CirclesApplicationSession: ObservableObject {
         logger.debug("Received \(data.count) bytes of response with status \(response.statusCode)")
     }
     
-    init(matrix: Matrix.Session, config: CirclesConfigContent) async throws {
+    init(store: CirclesStore, matrix: Matrix.Session, config: CirclesConfigContent) async throws {
         let logger = Logger(subsystem: "Circles", category: "Session")
         self.logger = logger
+        self.store = store
         self.matrix = matrix
         self.config = config
         

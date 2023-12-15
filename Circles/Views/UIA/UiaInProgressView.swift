@@ -14,7 +14,7 @@ struct UiaInProgressView: View {
     var state: UIAA.SessionState
     var stages: [String]
     
-    @EnvironmentObject var store: CirclesStore
+    @EnvironmentObject var appSession: CirclesApplicationSession
     
     @State var emailSecret = ""
     
@@ -51,7 +51,7 @@ struct UiaInProgressView: View {
                 EmailEnrollSubmitTokenForm(session: session, secret: emailSecret)
             }
             else if stage == AUTH_TYPE_APPSTORE_SUBSCRIPTION {
-                SubscriptionUIaForm(session: session, appStore: store.appStore)
+                SubscriptionUIaForm(session: session, appStore: appSession.store.appStore)
             }
             else {
                 Text("Stage = \(stage)")

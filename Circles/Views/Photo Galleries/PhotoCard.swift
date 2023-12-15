@@ -27,7 +27,7 @@ struct PhotoCard: MessageView {
     var isLocalEcho: Bool
     var isThreaded: Bool
     @Environment(\.colorScheme) var colorScheme
-    @EnvironmentObject var galleries: ContainerRoom<GalleryRoom>
+    @EnvironmentObject var appSession: CirclesApplicationSession
     
     @AppStorage("debugMode") var debugMode: Bool = false
     
@@ -164,7 +164,7 @@ struct PhotoCard: MessageView {
         .sheet(item: $sheetType) { st in
             switch st {
             case .composer:
-                MessageComposerSheet(room: message.room, parentMessage: message, galleries: galleries)
+                MessageComposerSheet(room: message.room, parentMessage: message, galleries: appSession.galleries)
             case .reactions:
                 EmojiPicker(message: message)
             case .reporting:
