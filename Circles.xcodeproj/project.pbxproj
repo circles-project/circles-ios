@@ -570,7 +570,6 @@
 				A54A278B2A843C5F00858846 /* InvitedGroupCard.swift */,
 				A54A278D2A843CC600858846 /* InvitedGroupDetailView.swift */,
 				A51ABE6B2B2B8B0900039276 /* GenericPersonDetailView.swift */,
-				A51ABE6D2B2B9BD500039276 /* RoomMemberDetailView.swift */,
 			);
 			path = Groups;
 			sourceTree = "<group>";
@@ -664,6 +663,7 @@
 		409F43A4265DE41000690A61 /* Rooms */ = {
 			isa = PBXGroup;
 			children = (
+				A51ABE6D2B2B9BD500039276 /* RoomMemberDetailView.swift */,
 				A56BE1752AD5D0E900B15F51 /* KnockingUserCard.swift */,
 				A52DF68029E59A81008860C3 /* RoomAvatar.swift */,
 				A5921EB82AFAD7F000C2331D /* RoomInvitedMemberRow.swift */,
