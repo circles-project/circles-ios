@@ -25,11 +25,39 @@ struct FollowingTimelineDetailsView: View {
                 Section("General") {
                     Label("Name", systemImage: "circles.hexagonpath.fill")
                         .badge(room.name ?? "(unknown)")
+                    
+                    if let avatar = room.avatar {
+                        HStack {
+                            Text("Cover image")
+                            Spacer()
+                            Image(uiImage: avatar)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 120, height: 120)
+                                .clipShape(RoundedRectangle(cornerRadius: 4))
 
+                        }
+                    }
+                    
+                    if room.joinRule == .knock,
+                       let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/timeline/\(room.roomId.stringValue)"),
+                       let qr = qrCode(url: url)
+                    {
+                        HStack {
+                            Text("QR code")
+                            Spacer()
+                            Image(uiImage: qr)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 80, height: 80)
+                        }
+                    }
                 }
                 
                 Section("Creator") {
-                    NavigationLink(destination: GenericPersonDetailView(user: user)) {
+                    // NavigationLink(destination: GenericPersonDetailView(user: user)) {
+                    NavigationLink(destination: GroupMemberDetailView(user: user, room: room)) {
+
                         MessageAuthorHeader(user: user)
                     }
                 }
@@ -39,7 +67,10 @@ struct FollowingTimelineDetailsView: View {
                     ForEach(followerIds) { followerId in
                         let follower = session.getUser(userId: followerId)
                         //Text(follower.displayName ?? follower.userId.stringValue)
-                        MessageAuthorHeader(user: follower)
+                        
+                        NavigationLink(destination: GroupMemberDetailView(user: follower, room: room)) {
+                            MessageAuthorHeader(user: follower)
+                        }
                     }
                 }
                 

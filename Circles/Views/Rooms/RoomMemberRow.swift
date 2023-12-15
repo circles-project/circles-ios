@@ -119,12 +119,6 @@ struct RoomMemberRow: View {
                         .font(.subheadline)
                         .foregroundColor(.gray)
                 }
-                
-                Spacer()
-                
-                Text(roles[accessLevel])
-                //Text("\(accessLevel)")
-                    .font(.subheadline)
             }
             .contextMenu { menu }
             .confirmationDialog(

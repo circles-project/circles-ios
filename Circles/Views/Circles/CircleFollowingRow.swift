@@ -20,8 +20,8 @@ struct CircleFollowingRow: View {
     var body: some View {
         NavigationLink(destination: FollowingTimelineDetailsView(room: room, user: user, circle: space)) {
             RoomAvatar(room: room, avatarText: .none)
-                .clipShape(RoundedRectangle(cornerRadius: 4))
                 .frame(width: 40, height: 40)
+                .clipShape(RoundedRectangle(cornerRadius: 4))
                 .onAppear {
                     room.updateAvatarImage()
                 }

@@ -95,7 +95,7 @@ struct VideoContentView: View {
                                          self.status = .downloaded(url)
                                          */
                                         let data = try await message.room.session.downloadAndDecryptData(file)
-                                        print("VIDEO\tDownloaded data")
+                                        print("VIDEO\tDownloaded \(data.count) bytes of data")
                                         try data.write(to: localUrl)
                                         print("VIDEO\tWrote data to local URL")
                                         self.status = .downloaded(AVPlayer(url: localUrl))

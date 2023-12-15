@@ -17,7 +17,9 @@ struct RoomMembersSection: View {
         Section(title) {
             ForEach(users) { userId in
                 let user = room.session.getUser(userId: userId)
-                RoomMemberRow(user: user, room: room)
+                NavigationLink(destination: GroupMemberDetailView(user: user, room: room)) {
+                    RoomMemberRow(user: user, room: room)
+                }
             }
         }
     }
