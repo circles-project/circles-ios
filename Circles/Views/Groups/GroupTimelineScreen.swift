@@ -23,7 +23,6 @@ struct GroupTimelineScreen: View {
     @ObservedObject var room: Matrix.Room
     //@ObservedObject var group: SocialGroup
     @Environment(\.presentationMode) var presentation
-    @EnvironmentObject var appSession: CirclesApplicationSession
     @AppStorage("debugMode") var debugMode: Bool = false
     
     @State var showComposer = false
@@ -105,7 +104,7 @@ struct GroupTimelineScreen: View {
                                 RoomInviteSheet(room: room, title: "Invite new members to \(room.name ?? "(unnamed group)")")
                                 
                             case .composer:
-                                MessageComposerSheet(room: room, parentMessage: nilParentMessage, galleries: appSession.galleries)
+                                MessageComposerSheet(room: room, parentMessage: nilParentMessage)
                                 
                             case .share:
                                 let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/group/\(room.roomId.stringValue)")

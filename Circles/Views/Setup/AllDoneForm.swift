@@ -37,7 +37,7 @@ struct AllDoneForm: View {
                 // Are we running on an already-fully-set-up account with a stateful session that's already running?
                 if let session = matrix as? Matrix.Session {
                     // If so, then don't log us out -- just launch the full app interface
-                    try await store.launch(matrix: session, config: config)
+                    try await store.launch(store: store, matrix: session, config: config)
                 } else {
                     // Otherwise, we must be running with a lightweight REST client in the setup UI
                     // Send the user back to the login screen
