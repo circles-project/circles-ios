@@ -192,6 +192,7 @@ struct RoomMemberDetailView: View {
                     }) {
                         Text(name)
                     }
+                    .disabled(wall.joinedMembers.contains(user.userId))
                 }
             }
         } label:
@@ -212,6 +213,7 @@ struct RoomMemberDetailView: View {
                     }) {
                         Text(name)
                     }
+                    .disabled(group.joinedMembers.contains(user.userId))
                 }
             }
         } label: {
@@ -231,6 +233,7 @@ struct RoomMemberDetailView: View {
                     }) {
                         Text(name)
                     }
+                    .disabled(gallery.joinedMembers.contains(user.userId))
                 }
             }
         } label: {
@@ -247,7 +250,7 @@ struct RoomMemberDetailView: View {
             }) {
                 Label("Invite to connect", systemImage: "link")
             }
-            //.disabled(session.profile.joinedMembers.contains(where: {$0 == user.userId })) // WTF Swift, figure it out
+            .disabled(session.profile.joinedMembers.contains(user.userId))
             
             circlesMenu
             
