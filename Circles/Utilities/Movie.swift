@@ -18,6 +18,7 @@ class Movie: Transferable {
     public private(set) var thumbnail: UIImage?
     
     required init(url: URL) {
+        Matrix.logger.debug("MOVIE Creating from url \(url)")
         self.url = url
         self.asset = AVAsset(url: url)
         self.thumbnail = nil
@@ -62,14 +63,24 @@ class Movie: Transferable {
     
     static var transferRepresentation: some TransferRepresentation {
         FileRepresentation(contentType: .movie) { movie in
-            SentTransferredFile(movie.url)
-            } importing: { received in
-                let filename = received.file.lastPathComponent
-                let copy: URL = FileManager.default.temporaryDirectory.appendingPathComponent(filename)
-                if FileManager.default.fileExists(atPath: copy.path) {
-                    try FileManager.default.removeItem(at: copy)
-                }
-                try FileManager.default.copyItem(at: received.file, to: copy)
-                return Self.init(url: copy) }
+            Matrix.logger.debug("MOVIE Returning file representation")
+            return SentTransferredFile(movie.url, allowAccessingOriginalFile: true)
+        } importing: { received in
+            Matrix.logger.debug("MOVIE Importing from \(received.file)")
+            if received.isOriginalFile {
+                Matrix.logger.debug("MOVIE Received file IS the original file")
+            } else {
+                Matrix.logger.debug("MOVIE Received file is NOT the original file")
+            }
+            let filename = received.file.lastPathComponent
+            let copy: URL = FileManager.default.temporaryDirectory.appendingPathComponent(filename)
+            if FileManager.default.fileExists(atPath: copy.path) {
+                Matrix.logger.debug("MOVIE Removing old file")
+                try FileManager.default.removeItem(at: copy)
+            }
+            Matrix.logger.debug("MOVIE Copying item")
+            try FileManager.default.copyItem(at: received.file, to: copy)
+            return Self.init(url: copy)
+        }
     }
 }
