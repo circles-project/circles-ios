@@ -61,6 +61,7 @@ struct CircleSettingsView: View {
             }
             
             if let wall = space.wall,
+               wall.joinRule == .knock,
                let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/timeline/\(wall.roomId.stringValue)")
             {
                 
@@ -109,13 +110,14 @@ struct CircleSettingsView: View {
             Section("My Followers (\(followers.count))") {
                 ForEach(followers) { userId in
                     let user = wall.session.getUser(userId: userId)
-                    
-                    RoomMemberRow(user: user, room: wall)
+                    NavigationLink(destination: RoomMemberDetailView(user: user, room: wall)) {
+                        RoomMemberRow(user: user, room: wall)
+                    }
                 }
                 Button(action: {
                     self.showInviteSheet = true
                 }) {
-                    Label("Invite followers", systemImage: "person.badge.plus")
+                    Label("Invite more followers", systemImage: "person.badge.plus")
                 }
                 .sheet(isPresented: $showInviteSheet) {
                     RoomInviteSheet(room: wall, title: "Invite followers")

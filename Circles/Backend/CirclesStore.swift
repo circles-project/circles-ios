@@ -383,7 +383,7 @@ public class CirclesStore: ObservableObject {
     
     // MARK: Launch
     func launch(matrix: Matrix.Session, config: CirclesConfigContent) async throws {
-        guard let session = try? await CirclesApplicationSession(matrix: matrix, config: config)
+        guard let session = try? await CirclesApplicationSession(store: self, matrix: matrix, config: config)
         else {
             // If anything went wrong here, we don't know what it was
             // Fail and give up :(

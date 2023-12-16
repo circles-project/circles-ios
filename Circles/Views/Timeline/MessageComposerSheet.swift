@@ -12,7 +12,6 @@ struct MessageComposerSheet: View {
     var room: Matrix.Room
     var parentMessage: Matrix.Message?
     var editingMessage: Matrix.Message?
-    @ObservedObject var galleries: ContainerRoom<GalleryRoom>
     @State var isPresented = true
 
     var body: some View {
@@ -26,7 +25,7 @@ struct MessageComposerSheet: View {
                     .padding(3)
             }
             let pad: CGFloat = parentMessage == nil ? 0 : 10
-            RoomMessageComposer(room: room, galleries: galleries, parent: parentMessage, editing: editingMessage)
+            RoomMessageComposer(room: room, parent: parentMessage, editing: editingMessage)
                 .padding(.horizontal, 3)
                 .padding(.leading, pad)
         }

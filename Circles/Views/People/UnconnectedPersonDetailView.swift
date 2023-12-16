@@ -10,7 +10,7 @@ import Matrix
 
 struct UnconnectedPersonDetailView: View {
     @ObservedObject var user: Matrix.User
-    @ObservedObject var room: Matrix.Room
+    @ObservedObject var myProfileRoom: Matrix.Room
     @State var mutualFriends: [Matrix.User]? = nil
 
     @State private var alertTitle: String = ""
@@ -43,7 +43,7 @@ struct UnconnectedPersonDetailView: View {
                     .frame(width: 180, height: 180, alignment: .center)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                 //.padding(.leading)
-                Text(user.displayName ?? user.userId.username)
+                Text(user.displayName ?? "")
                     .font(.title)
                     .fontWeight(.bold)
                 Text(user.userId.stringValue)
@@ -51,7 +51,7 @@ struct UnconnectedPersonDetailView: View {
                     .foregroundColor(.gray)
                 AsyncButton(action: {
                     do {
-                        try await room.invite(userId: user.userId)
+                        try await myProfileRoom.invite(userId: user.userId)
                     } catch {
                         print("UnconnectedPersonDetailView - ERROR:\t \(error)")
 

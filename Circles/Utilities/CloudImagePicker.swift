@@ -162,7 +162,6 @@ struct GalleryPicker: View {
 
 struct CloudImagePicker: View {
     @ObservedObject var galleries: ContainerRoom<GalleryRoom>
-    //@EnvironmentObject var session: CirclesSession
     
     @Binding var selectedImage: UIImage?
     @Environment(\.presentationMode) private var presentation

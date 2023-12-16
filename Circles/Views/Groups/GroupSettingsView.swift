@@ -70,9 +70,11 @@ struct GroupSettingsView: View {
         
     @ViewBuilder
     var sharingSection: some View {
-        Section("Sharing") {
-            if let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/group/\(room.roomId.stringValue)")
-            {
+        if room.joinRule == .knock,
+           let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/group/\(room.roomId.stringValue)")
+        {
+            Section("Sharing") {
+                
                  HStack {
                      Text("Link")
                      Spacer()

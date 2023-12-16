@@ -25,7 +25,6 @@ extension CircleSheetType: Identifiable {
 struct CircleTimelineView: View {
     @ObservedObject var space: CircleSpace
     @Environment(\.presentationMode) var presentation
-    @EnvironmentObject var galleries: ContainerRoom<GalleryRoom>
     
     //@State var showComposer = false
     @State var sheetType: CircleSheetType? = nil
@@ -99,7 +98,7 @@ struct CircleTimelineView: View {
                             RoomInviteSheet(room: space.wall!)
 
                         case .composer:
-                            MessageComposerSheet(room: space.wall!, galleries: galleries)
+                            MessageComposerSheet(room: space.wall!)
                             
                         case .share:
                             if let wall = space.wall,

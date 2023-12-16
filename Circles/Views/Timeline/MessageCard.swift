@@ -95,7 +95,7 @@ struct VideoContentView: View {
                                          self.status = .downloaded(url)
                                          */
                                         let data = try await message.room.session.downloadAndDecryptData(file)
-                                        print("VIDEO\tDownloaded data")
+                                        print("VIDEO\tDownloaded \(data.count) bytes of data")
                                         try data.write(to: localUrl)
                                         print("VIDEO\tWrote data to local URL")
                                         self.status = .downloaded(AVPlayer(url: localUrl))
@@ -202,7 +202,6 @@ struct MessageCard: MessageView {
     var isThreaded = false
     @AppStorage("debugMode") var debugMode: Bool = false
     @Environment(\.colorScheme) var colorScheme
-    @EnvironmentObject var galleries: ContainerRoom<GalleryRoom>
     //@State var showReplyComposer = false
     @State var reporting = false
     private let debug = false
@@ -590,10 +589,10 @@ struct MessageCard: MessageView {
                 switch(st) {
 
                 case .reply:
-                    MessageComposerSheet(room: message.room, parentMessage: message, galleries: galleries)
+                    MessageComposerSheet(room: message.room, parentMessage: message)
                     
                 case .edit:
-                    MessageComposerSheet(room: message.room, editingMessage: message, galleries: galleries)
+                    MessageComposerSheet(room: message.room, editingMessage: message)
 
                 case .reactions:
                     EmojiPicker(message: message)

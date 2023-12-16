@@ -13,7 +13,7 @@ import Matrix
 
 struct RoomMessageComposer: View {
     @ObservedObject var room: Matrix.Room
-    @ObservedObject var galleries: ContainerRoom<GalleryRoom>
+    @EnvironmentObject var appSession: CirclesApplicationSession
     //@Binding var isPresented: Bool
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.presentationMode) var presentation
@@ -79,12 +79,10 @@ struct RoomMessageComposer: View {
     @State var selectedItem: PhotosPickerItem? = nil
     
     init(room: Matrix.Room,
-         galleries: ContainerRoom<GalleryRoom>,
          parent: Matrix.Message? = nil,
          editing: Matrix.Message? = nil
     ) {
         self.room = room
-        self.galleries = galleries
         self.parent = parent
         self.editing = editing
 
@@ -545,7 +543,7 @@ struct RoomMessageComposer: View {
             case .camera:
                 ImagePicker(selectedImage: $newImage, sourceType: .camera)
             case .cloud:
-                CloudImagePicker(galleries: galleries, selectedImage: self.$newImage)
+                CloudImagePicker(galleries: appSession.galleries, selectedImage: self.$newImage)
             }
         })
         .photosPicker(isPresented: $showNewPicker, selection: $selectedItem, matching: self.newPickerFilter)

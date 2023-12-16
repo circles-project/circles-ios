@@ -18,17 +18,8 @@ struct SignupAccountInfo {
 }
 
 struct SignupScreen: View {
-    //@EnvironmentObject var appStore: AppStoreInterface
-
-    //var matrix: MatrixInterface
-    //@Binding var uiaaState: UiaaSessionState?
     @ObservedObject var session: SignupSession
     var store: CirclesStore
-
-    //@State var selectedFlow: UIAA.Flow?
-    //@State var creds: Matrix.Credentials?
-    //@State var emailSessionId: String?
-    //@State var emailSessionInfo: SignupSession.LegacyEmailRequestTokenResponse?
 
     @State var accountInfo = SignupAccountInfo()
     @State var showConfirmCancel = false
