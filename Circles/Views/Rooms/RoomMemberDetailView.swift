@@ -12,6 +12,8 @@ struct RoomMemberDetailView: View {
     @ObservedObject var user: Matrix.User
     @ObservedObject var room: Matrix.Room
     
+    @EnvironmentObject var session: CirclesApplicationSession
+    
     @State private var selectedPower: Int
     
     @State private var showConfirmChangeSelf = false
@@ -20,6 +22,8 @@ struct RoomMemberDetailView: View {
     @State private var showConfirmIgnore = false
     @State private var showConfirmKick = false
     @State private var showConfirmBan = false
+    
+    @State private var inviteRoom: Matrix.Room?
     
     private var userIsMe: Bool
     
@@ -91,7 +95,7 @@ struct RoomMemberDetailView: View {
                 showConfirmIgnore = true
             }) {
                 Label {
-                    Text("Ignore user everywhere")
+                    Text("Ignore this user everywhere")
                 } icon: {
                     Image(systemName: "speaker.slash.fill")
                         .foregroundColor(.red)
@@ -114,7 +118,7 @@ struct RoomMemberDetailView: View {
                 }) {
                     if let name = room.name {
                         Label {
-                            Text("Remove user from \(name)")
+                            Text("Remove from \(name)")
                         } icon: {
                             Image(systemName: "minus.circle.fill")
                                 .foregroundColor(.red)
@@ -122,7 +126,7 @@ struct RoomMemberDetailView: View {
                             
                     } else {
                         Label {
-                            Text("Remove user")
+                            Text("Remove this user")
                         } icon: {
                             Image(systemName: "minus.circle.fill")
                                 .foregroundColor(.red)
@@ -147,7 +151,7 @@ struct RoomMemberDetailView: View {
                 }) {
                     if let name = room.name {
                         Label {
-                            Text("Ban user from \(name)")
+                            Text("Ban from \(name)")
                         } icon: {
                             Image(systemName: "xmark.circle.fill")
                                 .foregroundColor(.red)
@@ -155,7 +159,7 @@ struct RoomMemberDetailView: View {
                             
                     } else {
                         Label {
-                            Text("Ban user")
+                            Text("Ban this user")
                         } icon: {
                             Image(systemName: "xmark.circle.fill")
                                 .foregroundColor(.red)
@@ -177,23 +181,82 @@ struct RoomMemberDetailView: View {
     }
     
     @ViewBuilder
+    var circlesMenu: some View {
+        Menu {
+            ForEach(session.circles.rooms) { space in
+                if let wall = space.wall,
+                   let name = space.name
+                {
+                    Button(action: {
+                        inviteRoom = wall
+                    }) {
+                        Text(name)
+                    }
+                }
+            }
+        } label:
+        {
+            Label("Invite to follow me", systemImage: "person.line.dotted.person.fill")
+        }
+    }
+    
+    @ViewBuilder
+    var groupsMenu: some View {
+        Menu {
+            ForEach(session.groups.rooms) { group in
+                if group.iCanInvite,
+                   let name = group.name
+                {
+                    Button(action: {
+                        inviteRoom = group
+                    }) {
+                        Text(name)
+                    }
+                }
+            }
+        } label: {
+            Label("Invite to join a group", systemImage: "person.3.fill")
+        }
+    }
+    
+    @ViewBuilder
+    var photosMenu: some View {
+        Menu {
+            ForEach(session.galleries.rooms) { gallery in
+                if gallery.iCanInvite,
+                   let name = gallery.name
+                {
+                    Button(action: {
+                        inviteRoom = gallery
+                    }) {
+                        Text(name)
+                    }
+                }
+            }
+        } label: {
+            Label("Share a photo gallery", systemImage: "photo.on.rectangle")
+        }
+    }
+    
+    @ViewBuilder
     var invitationSection: some View {
         Section("Invitations") {
-            Button(action: {}) {
-                Label("Invite user to connect", systemImage: "link")
-            }
             
-            Button(action: {}) {
-                Label("Invite user to follow me", systemImage: "person.line.dotted.person.fill")
+            Button(action: {
+                inviteRoom = session.profile
+            }) {
+                Label("Invite to connect", systemImage: "link")
             }
+            //.disabled(session.profile.joinedMembers.contains(where: {$0 == user.userId })) // WTF Swift, figure it out
             
-            Button(action: {}) {
-                Label("Invite user to join a group", systemImage: "person.3.fill")
-            }
+            circlesMenu
             
-            Button(action: {}) {
-                Label("Share a photo gallery", systemImage: "photo.on.rectangle")
-            }
+            groupsMenu
+            
+            photosMenu
+        }
+        .sheet(item: $inviteRoom) { ir in
+            RoomInviteOneUserSheet(room: ir, user: user)
         }
     }
 
