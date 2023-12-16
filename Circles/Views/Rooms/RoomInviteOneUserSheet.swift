@@ -62,6 +62,7 @@ struct RoomInviteOneUserSheet: View {
                 
                 AsyncButton(action: {
                     try await room.invite(userId: user.userId, reason: message.isEmpty ? nil : message)
+                    self.presentation.wrappedValue.dismiss()
                 }) {
                     Text("Send invitation")
                         .padding(5)
