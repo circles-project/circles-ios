@@ -44,7 +44,7 @@ struct TimelineView<V: MessageView>: View {
                 }
                 Spacer()
             }
-            .frame(minHeight: 60)
+            .frame(minHeight: TIMELINE_BOTTOM_PADDING)
             
             if debugMode {
                 VStack(alignment: .leading) {

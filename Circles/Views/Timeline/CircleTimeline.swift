@@ -106,7 +106,7 @@ struct CircleTimeline: View {
                     
                     Spacer()
                 }
-                .frame(minHeight: 60)
+                .frame(minHeight: TIMELINE_BOTTOM_PADDING)
             }
             .onAppear {
                 _ = Task {
