@@ -1,5 +1,5 @@
 //
-//  MessageComposerSheet.swift
+//  PostComposerSheet.swift
 //  Circles
 //
 //  Created by Charles Wright on 7/6/21.
@@ -8,7 +8,7 @@
 import SwiftUI
 import Matrix
 
-struct MessageComposerSheet: View {
+struct PostComposerSheet: View {
     var room: Matrix.Room
     var parentMessage: Matrix.Message?
     var editingMessage: Matrix.Message?
@@ -25,7 +25,7 @@ struct MessageComposerSheet: View {
                     .padding(3)
             }
             let pad: CGFloat = parentMessage == nil ? 0 : 10
-            RoomMessageComposer(room: room, parent: parentMessage, editing: editingMessage)
+            PostComposer(room: room, parent: parentMessage, editing: editingMessage)
                 .padding(.horizontal, 3)
                 .padding(.leading, pad)
         }

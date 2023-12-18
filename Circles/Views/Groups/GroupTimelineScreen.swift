@@ -104,7 +104,7 @@ struct GroupTimelineScreen: View {
                                 RoomInviteSheet(room: room, title: "Invite new members to \(room.name ?? "(unnamed group)")")
                                 
                             case .composer:
-                                MessageComposerSheet(room: room, parentMessage: nilParentMessage)
+                                PostComposerSheet(room: room, parentMessage: nilParentMessage)
                                 
                             case .share:
                                 let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/group/\(room.roomId.stringValue)")
