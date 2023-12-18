@@ -470,20 +470,16 @@
 				A5E101F52814FABC000B2C42 /* BCrypt */,
 				40AEA6722678E24100C9CBD1 /* BlurHashDecode.swift */,
 				40AEA6732678E24200C9CBD1 /* BlurHashEncode.swift */,
-				409F4325265DE12600690A61 /* CloudImagePicker.swift */,
 				A52DF68F29E8AB52008860C3 /* Color+background.swift */,
 				4012C54826A752C400BB15E6 /* EmojiPicker.swift */,
 				A5A40B6229D46ABD009A17EE /* HtmlView.swift */,
-				409F4313265DE0F300690A61 /* ImagePicker.swift */,
 				409F4314265DE0F400690A61 /* ImageSaver.swift */,
 				A52DF68429E72CC1008860C3 /* Keychain.swift */,
 				A53EAC562A6F037D00EF18B7 /* LegacySecretStoreKeygen.swift */,
 				A520B6782A9410BE002D88C8 /* Movie.swift */,
-				40CD7F6B2667D3B600DE315F /* PhotoPicker.swift */,
 				4047F3DD26B895B80010B2C3 /* SecureFieldWithEye.swift */,
 				A5D2A3F529C0EED700428C45 /* Sequence+asyncMap.swift */,
 				409F42E5265DE03B00690A61 /* Utils.swift */,
-				40CD7F6E2667E16100DE315F /* VideoPicker.swift */,
 				409F42E8265DE06C00690A61 /* WebView.swift */,
 				A5CC0ACA29D91F3D005935F0 /* zxcvbn */,
 				A565935E2AEAC4920003C244 /* QR.swift */,
@@ -630,14 +626,12 @@
 				409F438A265DE2C200690A61 /* CircleTimeline.swift */,
 				409F4360265DE21A00690A61 /* MessageAuthorHeader.swift */,
 				409F435F265DE21900690A61 /* MessageCard.swift */,
-				40878FC92694DBC400A66EF0 /* MessageComposerSheet.swift */,
 				40878FC62694C00000A66EF0 /* MessageContextMenu.swift */,
 				409F4361265DE21A00690A61 /* MessageReportingSheet.swift */,
 				40F906BA269DF96100287B27 /* MessageSheetType.swift */,
 				A52C77532A89CCB8005D2C0B /* MessageThumbnail.swift */,
 				A52DF68929E8868C008860C3 /* MessageView.swift */,
 				4073E7C3267915AF001A80CF /* RepliesView.swift */,
-				409F4384265DE2A400690A61 /* RoomMessageComposer.swift */,
 				A52DF68229E59C32008860C3 /* StateEventView.swift */,
 				A5CF39D42A73299500134969 /* ThreadView.swift */,
 				409F4392265DE2DE00690A61 /* TimelineView.swift */,
@@ -796,6 +790,12 @@
 		A5EAAC1B2B30CEAF00476B94 /* Composer */ = {
 			isa = PBXGroup;
 			children = (
+				40CD7F6B2667D3B600DE315F /* PhotoPicker.swift */,
+				409F4325265DE12600690A61 /* CloudImagePicker.swift */,
+				409F4313265DE0F300690A61 /* ImagePicker.swift */,
+				40CD7F6E2667E16100DE315F /* VideoPicker.swift */,
+				409F4384265DE2A400690A61 /* RoomMessageComposer.swift */,
+				40878FC92694DBC400A66EF0 /* MessageComposerSheet.swift */,
 			);
 			path = Composer;
 			sourceTree = "<group>";
