@@ -589,10 +589,10 @@ struct MessageCard: MessageView {
                 switch(st) {
 
                 case .reply:
-                    MessageComposerSheet(room: message.room, parentMessage: message)
+                    PostComposerSheet(room: message.room, parentMessage: message)
                     
                 case .edit:
-                    MessageComposerSheet(room: message.room, editingMessage: message)
+                    PostComposerSheet(room: message.room, editingMessage: message)
 
                 case .reactions:
                     EmojiPicker(message: message)

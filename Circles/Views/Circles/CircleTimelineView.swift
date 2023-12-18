@@ -98,7 +98,7 @@ struct CircleTimelineView: View {
                             RoomInviteSheet(room: space.wall!)
 
                         case .composer:
-                            MessageComposerSheet(room: space.wall!)
+                            PostComposerSheet(room: space.wall!)
                             
                         case .share:
                             if let wall = space.wall,

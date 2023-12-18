@@ -163,7 +163,7 @@ struct PhotoCard: MessageView {
         .sheet(item: $sheetType) { st in
             switch st {
             case .composer:
-                MessageComposerSheet(room: message.room, parentMessage: message)
+                PostComposerSheet(room: message.room, parentMessage: message)
             case .reactions:
                 EmojiPicker(message: message)
             case .reporting:
