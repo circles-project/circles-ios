@@ -27,6 +27,7 @@ struct RoomMessageComposer: View {
         case newImage(UIImage)
         case newVideo(Movie, UIImage)
         case loadingVideo(Task<Void,Error>)
+        case cloudImage(Matrix.mImageContent, UIImage?)
         case oldImage(Matrix.mImageContent, UIImage?)
         case oldVideo(Matrix.mVideoContent, UIImage?)
         
@@ -70,22 +71,29 @@ struct RoomMessageComposer: View {
     //@State private var newMessageType: String = M_TEXT
     @State private var newMessageText: String
     @State private var newImage: UIImage? = nil
-    @State private var showPicker = false
+    //@State private var showPicker = false
     @State private var showNewPicker = false
     @State private var newPickerFilter: PHPickerFilter = .images
     //@State private var imageSourceType: UIImagePickerController.SourceType = .photoLibrary
     @State private var inProgress = false
     
+    @State private var selectedImageContent: Matrix.mImageContent?
+    
     @State private var alertTitle: String = ""
     @State private var alertMessage: String = ""
     @State private var showAlert = false
 
-    enum ImageSourceType {
+    enum ImageSourceType: String, Identifiable {
         case cloud
         case camera
+        
+        var id: String {
+            self.rawValue
+        }
     }
     
-    @State private var imageSourceType: ImageSourceType = .camera
+    //@State private var imageSourceType: ImageSourceType?
+    @State private var showPickerOfType: ImageSourceType?
     @State var selectedItem: PhotosPickerItem? = nil
     
     init(room: Matrix.Room,
@@ -172,14 +180,16 @@ struct RoomMessageComposer: View {
                     Label("Upload a photo", systemImage: "photo.fill")
                 }
                 Button(action: {
-                    self.imageSourceType = .camera
-                    self.showPicker = true
+                    //self.imageSourceType = .camera
+                    //self.showPicker = true
+                    self.showPickerOfType = .camera
                 }) {
                     Label("Take a new photo", systemImage: "camera.fill")
                 }
                 Button(action: {
-                    self.imageSourceType = .cloud
-                    self.showPicker = true
+                    //self.imageSourceType = .cloud
+                    //self.showPicker = true
+                    self.showPickerOfType = .cloud
                 }) {
                     Label("Choose an already uploaded photo", systemImage: "photo")
                 }
@@ -263,6 +273,7 @@ struct RoomMessageComposer: View {
                 case .loadingVideo:
                     print("COMPOSER\tError: Can't send until the video is done loading")
                     
+                    
                 case .newVideo(let movie, let thumbnail):
                     let caption: String? = !self.newMessageText.isEmpty ? self.newMessageText : nil
                     
@@ -283,6 +294,13 @@ struct RoomMessageComposer: View {
                     let newContent = Matrix.mImageContent(oldImageContent, caption: caption, relatesTo: self.relatesTo)
                     let eventId = try await self.room.sendMessage(content: newContent)
                     print("COMPOSER\tSent edited m.image with new eventId = \(eventId)")
+                    self.presentation.wrappedValue.dismiss()
+                    
+                case .cloudImage(let cloudImageContent, _):
+                    let caption: String? = !self.newMessageText.isEmpty ? self.newMessageText : nil
+                    let newContent = Matrix.mImageContent(cloudImageContent, caption: caption, relatesTo: self.relatesTo)
+                    let eventId = try await self.room.sendMessage(content: newContent)
+                    print("COMPOSER\tSent cloud m.image with new eventId = \(eventId)")
                     self.presentation.wrappedValue.dismiss()
                     
                 case .oldVideo(let oldVideoContent, _):
@@ -396,6 +414,63 @@ struct RoomMessageComposer: View {
                                         .foregroundColor(.accentColor)
                                 }
                             }
+                        TextEditor(text: $newMessageText)
+                            .lineLimit(2)
+                            .multilineTextAlignment(.leading)
+                            .padding(5)
+                    }
+                    
+                case .cloudImage(let cloudImageContent, let thumbnail):
+                    VStack(alignment: .center, spacing: 2) {
+                        if let image = thumbnail {
+                            Image(uiImage: image)
+                                .resizable()
+                                .scaledToFit()
+                                .clipShape(RoundedRectangle(cornerRadius: 6))
+                                .overlay(alignment: .bottomTrailing) {
+                                    PhotosPicker(selection: $selectedItem, matching: .images) {
+                                        Image(systemName: "pencil.circle.fill")
+                                            .symbolRenderingMode(.multicolor)
+                                            .font(.system(size: 30))
+                                            .foregroundColor(.accentColor)
+                                    }
+                                }
+                        } else {
+                            ZStack {
+                                Image(systemName: "photo.artframe")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                                
+                                ProgressView()
+                                    .onAppear {
+                                        // Start fetching the thumbnail
+                                        Task {
+                                            if let file = cloudImageContent.thumbnail_file ?? cloudImageContent.file {
+                                                let data = try await self.room.session.downloadAndDecryptData(file)
+                                                let thumbnail = UIImage(data: data)
+                                                await MainActor.run {
+                                                    self.messageState = .cloudImage(cloudImageContent, thumbnail)
+                                                }
+                                            } else if let mxc = cloudImageContent.thumbnail_url ?? cloudImageContent.url {
+                                                let data = try await self.room.session.downloadData(mxc: mxc)
+                                                let thumbnail = UIImage(data: data)
+                                                await MainActor.run {
+                                                    self.messageState = .cloudImage(cloudImageContent, thumbnail)
+                                                }
+                                            }
+                                        }
+                                    }
+                            }
+                            .overlay(alignment: .bottomTrailing) {
+                                PhotosPicker(selection: $selectedItem, matching: .images) {
+                                    Image(systemName: "pencil.circle.fill")
+                                        .symbolRenderingMode(.multicolor)
+                                        .font(.system(size: 30))
+                                        .foregroundColor(.accentColor)
+                                }
+                            }
+                        }
                         TextEditor(text: $newMessageText)
                             .lineLimit(2)
                             .multilineTextAlignment(.leading)
@@ -598,12 +673,20 @@ struct RoomMessageComposer: View {
                 .shadow(color: .gray, radius: 2, x: 0, y: 1)
         )
         //.border(Color.red, width: 1)
-        .sheet(isPresented: $showPicker, content: {
-            switch self.imageSourceType {
+        .sheet(item: $showPickerOfType, content: { type in
+            switch type {
             case .camera:
                 ImagePicker(selectedImage: $newImage, sourceType: .camera)
+                    .onAppear {
+                        print("Showing picker of type = \(self.showPickerOfType?.rawValue ?? "nil") -- type = \(type)")
+                    }
             case .cloud:
-                CloudImagePicker(galleries: appSession.galleries, selectedImage: self.$newImage)
+                CloudImagePicker(galleries: appSession.galleries, selected: self.$selectedImageContent) { content, image in
+                    self.messageState = .cloudImage(content, image)
+                }
+                    .onAppear {
+                        print("Showing picker of type = \(self.showPickerOfType?.rawValue ?? "nil") -- type = \(type)")
+                    }
             }
         })
         .photosPicker(isPresented: $showNewPicker, selection: $selectedItem, matching: self.newPickerFilter)

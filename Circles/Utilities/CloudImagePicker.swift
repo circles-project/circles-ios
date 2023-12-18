@@ -53,7 +53,7 @@ struct GalleryPicker: View {
     @State var loading = false
     @State var finishing = false
     
-    var completion: (UIImage) -> Void = { _ in }
+    var completion: (Matrix.mImageContent, UIImage) -> Void = { _,_ in }
     
     func downloadImageFromMessage(message: Matrix.Message) async throws {
         // Download the image
@@ -74,7 +74,7 @@ struct GalleryPicker: View {
                 // FIXME: Set error message
                 return
             }
-            completion(img)
+            completion(content, img)
             return
         }
 
@@ -85,7 +85,7 @@ struct GalleryPicker: View {
                 // FIXME: Set error message
                 return
             }
-            completion(img)
+            completion(content, img)
             return
         }
         
@@ -163,11 +163,11 @@ struct GalleryPicker: View {
 struct CloudImagePicker: View {
     @ObservedObject var galleries: ContainerRoom<GalleryRoom>
     
-    @Binding var selectedImage: UIImage?
+    @Binding var selected: Matrix.mImageContent?
     @Environment(\.presentationMode) private var presentation
     
     @State var selectedRoom: Matrix.Room? = nil
-    var completion: (UIImage) -> Void = { _ in }
+    var completion: ((Matrix.mImageContent, UIImage) -> Void)? = nil
     
     struct GalleryCard: View {
         @ObservedObject var room: Matrix.Room
@@ -213,16 +213,21 @@ struct CloudImagePicker: View {
     var roomList: some View {
         ScrollView {
             let columns = [
-                GridItem(.adaptive(minimum: 300, maximum: 300))
-           ]
+                GridItem(.adaptive(minimum: 150, maximum: 300)),
+                GridItem(.adaptive(minimum: 150, maximum: 300)),
+            ]
             LazyVGrid(columns: columns, alignment: .center) {
                 ForEach(galleries.rooms) { room in
                     Button(action: {
                         self.selectedRoom = room
                     }) {
-                        GalleryCard(room: room)
+                        //GalleryCard(room: room)
+                        
+                        RoomAvatar(room: room, avatarText: .roomName)
+                            .scaledToFill()
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
-                    .frame(width: 300, height: 225)
+                    //.frame(width: 300, height: 225)
                 }
             }
         }
@@ -246,9 +251,12 @@ struct CloudImagePicker: View {
                     }
                 }
                 
-                GalleryPicker(room: room, completion: { image in
-                    //self.completion(image)
-                    self.selectedImage = image
+                GalleryPicker(room: room, completion: { content, image in
+                    print("Setting selected to m.image content")
+                    self.selected = content
+                    if let handler = self.completion {
+                        handler(content, image)
+                    }
                     self.presentation.wrappedValue.dismiss()
                 })
                 

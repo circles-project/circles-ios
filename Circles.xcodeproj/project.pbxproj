@@ -511,6 +511,7 @@
 		409F430C265DE0CE00690A61 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				A5EAAC1B2B30CEAF00476B94 /* Composer */,
 				A52DF68629E73299008860C3 /* Settings */,
 				A5A40B6429D6088A009A17EE /* UIA */,
 				409F4328265DE13B00690A61 /* Circles */,
@@ -790,6 +791,13 @@
 				A5E101FF2814FD6D000B2C42 /* portable_endian.h */,
 			);
 			path = BCrypt;
+			sourceTree = "<group>";
+		};
+		A5EAAC1B2B30CEAF00476B94 /* Composer */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Composer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
