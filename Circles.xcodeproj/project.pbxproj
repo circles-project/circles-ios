@@ -668,6 +668,7 @@
 				A56BE1752AD5D0E900B15F51 /* KnockingUserCard.swift */,
 				A52DF68029E59A81008860C3 /* RoomAvatar.swift */,
 				A5921EB82AFAD7F000C2331D /* RoomInvitedMemberRow.swift */,
+				A5A6A5862B2D0E7C00849B38 /* RoomInviteOneUserSheet.swift */,
 				409F43B9265DE51C00690A61 /* RoomInviteSheet.swift */,
 				A56BE1732AD5CEFA00B15F51 /* RoomKnockDetailsView.swift */,
 				A56BE1712AD5CBD200B15F51 /* RoomKnockIndicator.swift */,
@@ -679,7 +680,6 @@
 				A56BE17C2AD700E100B15F51 /* RoomShareSheet.swift */,
 				A56BE17A2AD6ED4000B15F51 /* ScanQrCodeAndKnockSheet.swift */,
 				A562C0912B0BEC2000522FCB /* UsersToInviteView.swift */,
-				A5A6A5862B2D0E7C00849B38 /* RoomInviteOneUserSheet.swift */,
 			);
 			path = Rooms;
 			sourceTree = "<group>";

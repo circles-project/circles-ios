@@ -26,6 +26,7 @@ struct RoomMessageComposer: View {
         case text                // For m.text it doesn't matter if the content is old or new, since there's no complicated media to juggle
         case newImage(UIImage)
         case newVideo(Movie, UIImage)
+        case loadingVideo(Task<Void,Error>)
         case oldImage(Matrix.mImageContent, UIImage?)
         case oldVideo(Matrix.mVideoContent, UIImage?)
         
@@ -49,6 +50,15 @@ struct RoomMessageComposer: View {
         var isVideo: Bool {
             switch self {
             case .newVideo, .oldVideo:
+                return true
+            default:
+                return false
+            }
+        }
+        
+        var isLoading: Bool {
+            switch self {
+            case .loadingVideo:
                 return true
             default:
                 return false
@@ -250,6 +260,9 @@ struct RoomMessageComposer: View {
                     self.presentation.wrappedValue.dismiss()
                     
                     
+                case .loadingVideo:
+                    print("COMPOSER\tError: Can't send until the video is done loading")
+                    
                 case .newVideo(let movie, let thumbnail):
                     let caption: String? = !self.newMessageText.isEmpty ? self.newMessageText : nil
                     
@@ -290,6 +303,7 @@ struct RoomMessageComposer: View {
                     //.background(RoundedRectangle(cornerRadius: 4).stroke(Color.blue, lineWidth: 1))
             }
             .buttonStyle(.bordered)
+            .disabled(self.messageState.isLoading)
             .padding(3)
 
         }
@@ -335,6 +349,33 @@ struct RoomMessageComposer: View {
                                         .foregroundColor(.accentColor)
                                 }
                             }
+                        TextEditor(text: $newMessageText)
+                            .lineLimit(2)
+                            .multilineTextAlignment(.leading)
+                            .padding(5)
+                    }
+                    
+                case .loadingVideo(let task):
+                    VStack(alignment: .center, spacing: 2) {
+                        ZStack {
+                            Color.secondaryBackground
+                                .clipShape(RoundedRectangle(cornerRadius: 6))
+                                .overlay(alignment: .bottomTrailing) {
+                                    Button(action: {
+                                        print("COMPOSER\tCanceling loading video")
+                                        task.cancel()
+                                        self.messageState = .text
+                                    }) {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .symbolRenderingMode(.multicolor)
+                                            .font(.system(size: 30))
+                                            .foregroundColor(.red)
+                                    }
+                                    .disabled(task.isCancelled)
+                                }
+                            
+                            ProgressView("Loading video...")
+                        }
                         TextEditor(text: $newMessageText)
                             .lineLimit(2)
                             .multilineTextAlignment(.leading)
@@ -514,14 +555,33 @@ struct RoomMessageComposer: View {
                         }
                         
                         if self.newPickerFilter == .videos {
-                            if let movie = try? await newItem?.loadTransferable(type: Movie.self) {
-                                print("PICKER User picked a video: \(movie.url.absoluteString)")
-                                let thumb = try await movie.loadThumbnail()
-                                await MainActor.run {
-                                    self.messageState = .newVideo(movie, thumb)
+                            let task = Task {
+                                if let movie = try? await newItem?.loadTransferable(type: Movie.self) {
+                                    print("PICKER User picked a video: \(movie.url.absoluteString)")
+
+                                    // It can take soooo long to load the video that the user might have given up on us
+                                    if !Task.isCancelled {
+                                        let thumb = try await movie.loadThumbnail()
+                                        
+                                        // Check again to make sure that the user didn't give up while we were loading the thumbnail
+                                        if !Task.isCancelled {
+                                            await MainActor.run {
+                                                self.messageState = .newVideo(movie, thumb)
+                                            }
+                                        }
+                                    }
+
+                                } else {
+                                    print("PICKER Failed to get a new video")
+                                    if !Task.isCancelled {
+                                        await MainActor.run {
+                                            self.messageState = .text
+                                        }
+                                    }
                                 }
-                            } else {
-                                print("PICKER Failed to get a new video")
+                            }
+                            await MainActor.run {
+                                self.messageState = .loadingVideo(task)
                             }
                         }
                     }
