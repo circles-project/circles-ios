@@ -1,4 +1,16 @@
 # In progress
+* Add screens to find and invite friends of friends in circles and groups
+* Bugfix: Fix new invitations not appearing until restart
+* Enable sending multimedia (image/video) replies
+* Don't require uploading a photo on account setup
+* Add "pull down to refresh"
+* Improved navigation: Reduce wasted space at the top of the screen on iPhone
+* Show basic information about polls
+* More consistent wording: "passphrase" instead of "password"
+* Show when a message has been edited
+* Initial support for in-app subscriptions
+* Clean up landscape view for iPad
+* Stop sending Blurhash for image posts
 * Use refresh tokens if the server provides them
 * Show search suggestions when inviting friends to a new circle or group
 * Save image now works again
