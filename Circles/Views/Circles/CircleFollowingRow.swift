@@ -28,7 +28,9 @@ struct CircleFollowingRow: View {
             
             VStack(alignment: .leading) {
                 Text("\(user.displayName ?? user.userId.username)")
-                Text("\(room.name ?? "(???)")")
+                let followerCount = max(0, room.joinedMembers.count-1)
+                let unit = followerCount > 1 ? "followers" : "follower"
+                Text("\(room.name ?? "(???)") (\(followerCount) \(unit))")
             }
             .onAppear {
                 user.refreshProfile()
