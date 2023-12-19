@@ -1,4 +1,6 @@
-# In progress
+# 0.9.0
+* Show follower count for each timeline you're following
+* Don't show direct follows as friends of friends
 * Add screens to find and invite friends of friends in circles and groups
 * Bugfix: Fix new invitations not appearing until restart
 * Enable sending multimedia (image/video) replies
@@ -17,6 +19,7 @@
 * New Share button for image posts
 * New Copy button for text posts
 * Bugfix: Enable replying to an edited post
+* Various UI clean-up and bug fixes
 
 # 0.8.3
 * Store keys locally in the Keychain
