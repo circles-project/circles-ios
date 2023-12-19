@@ -33,7 +33,7 @@ struct SharedCirclesPicker: View {
                             Divider()
                             
                             AsyncButton(action: {
-                                try await profile.addChildRoom(wall.roomId)
+                                try await profile.addChild(wall.roomId)
                                 self.presentation.wrappedValue.dismiss()
                             }) {
                                 HStack {

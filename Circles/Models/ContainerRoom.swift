@@ -147,11 +147,12 @@ class ContainerRoom<T: Matrix.Room>: Matrix.SpaceRoom {
         }
     }
     
-    public func leaveChildRoom(_ childRoomId: RoomId) async throws {
+    public func leaveChild(_ childRoomId: RoomId) async throws {
         try await self.session.removeSpaceChild(childRoomId, from: self.roomId)
         try await self.session.leave(roomId: childRoomId)
     }
     
+    /*
     public func removeChildRoom(_ childRoomId: RoomId) async throws {
         try await self.session.removeSpaceChild(childRoomId, from: self.roomId)
         // NOTE: We don't have to do anything to the `rooms` object here.
@@ -167,17 +168,18 @@ class ContainerRoom<T: Matrix.Room>: Matrix.SpaceRoom {
         //       m.space.child event on our next sync, and then we will
         //       automatically create the Room object and add it to our list.
     }
+    */
     
-    public func createChildRoom(name: String,
-                                type: String?,
-                                encrypted: Bool,
-                                avatar: Matrix.NativeImage?
+    public func createChild(name: String,
+                            type: String?,
+                            encrypted: Bool,
+                            avatar: Matrix.NativeImage?
     ) async throws -> RoomId {
         let powerLevels = RoomPowerLevelsContent(invite: 50)
         let childRoomId = try await self.session.createRoom(name: name, type: type, encrypted: encrypted,
                                                             joinRule: .knock,
                                                             powerLevelContentOverride: powerLevels)
-        try await self.addChildRoom(childRoomId)
+        try await self.addChild(childRoomId)
         if let image = avatar {
             try await self.session.setAvatarImage(roomId: childRoomId, image: image)
         }

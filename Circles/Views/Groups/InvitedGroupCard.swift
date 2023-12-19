@@ -60,7 +60,7 @@ struct InvitedGroupCard: View {
                     
                     AsyncButton(action: {
                         try await room.accept()
-                        try await container.addChildRoom(room.roomId)
+                        try await container.addChild(room.roomId)
                     }) {
                         Label("Accept", systemImage: "hand.thumbsup.fill")
                     }

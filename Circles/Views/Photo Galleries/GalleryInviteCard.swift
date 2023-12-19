@@ -37,7 +37,7 @@ struct GalleryInviteCard: View {
             AsyncButton(action: {
                 let roomId = room.roomId
                 try await room.accept()
-                try await container.addChildRoom(roomId)
+                try await container.addChild(roomId)
             }) {
                 Label("Accept", systemImage: "hand.thumbsup.fill")
             }

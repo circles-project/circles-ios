@@ -50,7 +50,7 @@ struct PeopleInvitationsView: View {
                                 AsyncButton(action: {
                                     let roomId = invite.roomId
                                     try await invite.accept()
-                                    try await people.addChildRoom(roomId)
+                                    try await people.addChild(roomId)
                                 }) {
                                     Label("Accept", systemImage: "hand.thumbsup.fill")
                                         .padding(5)

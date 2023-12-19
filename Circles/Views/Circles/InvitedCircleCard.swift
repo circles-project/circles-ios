@@ -78,7 +78,7 @@ struct InvitedCircleCard: View {
                                 AsyncButton(action: {
                                     try await room.accept()
                                     for circle in selectedCircles {
-                                        try await circle.addChildRoom(room.roomId)
+                                        try await circle.addChild(room.roomId)
                                     }
                                 }) {
                                     Label("Accept invite and follow", systemImage: "thumbsup")

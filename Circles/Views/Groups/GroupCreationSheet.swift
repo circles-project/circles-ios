@@ -42,10 +42,10 @@ struct GroupCreationSheet: View {
             
             AsyncButton(action: {
                 
-                guard let roomId = try? await groups.createChildRoom(name: self.groupName,
-                                                                     type: ROOM_TYPE_GROUP,
-                                                                     encrypted: true,
-                                                                     avatar: self.headerImage),
+                guard let roomId = try? await groups.createChild(name: self.groupName,
+                                                                 type: ROOM_TYPE_GROUP,
+                                                                 encrypted: true,
+                                                                 avatar: self.headerImage),
                       let room = try await groups.session.getRoom(roomId: roomId)
                 else {
                     // Set error message
