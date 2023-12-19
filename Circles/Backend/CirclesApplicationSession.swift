@@ -179,6 +179,12 @@ class CirclesApplicationSession: ObservableObject {
                 }
             }
             
+            // Remove the Shared Circles / My Profile space from My Circles if it's there
+            if circles.children.contains(profile.roomId) {
+                logger.debug("Removing Shared Circles / Profile space from My Circles")
+                try await circles.removeChild(profile.roomId)
+            }
+            
             logger.debug("Done verifying space relations")
         }
         
