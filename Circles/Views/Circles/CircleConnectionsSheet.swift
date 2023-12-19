@@ -34,7 +34,7 @@ struct CircleConnectionsSheet: View {
     
     func leaveRoom() async throws {
         if let room = roomToLeave {
-            try await space.leaveChildRoom(room.roomId)
+            try await space.leaveChild(room.roomId)
             roomToLeave = nil
         }
     }
@@ -89,7 +89,7 @@ struct CircleConnectionsSheet: View {
                                 presenting: roomToLeave,
                                 actions: {room in
                                     AsyncButton(role: .destructive, action: {
-                                        try await space.leaveChildRoom(room.roomId)
+                                        try await space.leaveChild(room.roomId)
                                     }) {
                                         Label("Yes, unfollow them", systemImage: "xmark.bin")
                                     }

@@ -22,10 +22,10 @@ struct PhotoGalleryCreationSheet: View {
     @State var selectedItem: PhotosPickerItem?
     
     func create() async throws {
-        let roomId = try await self.container.createChildRoom(name: self.galleryName,
-                                                              type: ROOM_TYPE_PHOTOS,
-                                                              encrypted: true,
-                                                              avatar: self.avatarImage)
+        let roomId = try await self.container.createChild(name: self.galleryName,
+                                                          type: ROOM_TYPE_PHOTOS,
+                                                          encrypted: true,
+                                                          avatar: self.avatarImage)
 
         self.presentation.wrappedValue.dismiss()
     }

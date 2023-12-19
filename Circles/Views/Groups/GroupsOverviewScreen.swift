@@ -162,7 +162,7 @@ struct GroupsOverviewScreen: View {
                             actions: { //rm in
                                 if let room = self.roomToLeave {
                                     AsyncButton(role: .destructive, action: {
-                                        try await container.leaveChildRoom(room.roomId)
+                                        try await container.leaveChild(room.roomId)
                                     }) {
                                         Text("Leave \(room.name ?? "this group")")
                                     }

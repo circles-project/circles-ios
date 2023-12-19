@@ -147,7 +147,7 @@ class ContainerRoom<T: Matrix.Room>: Matrix.SpaceRoom {
         }
     }
     
-    public func leaveChildRoom(_ childRoomId: RoomId) async throws {
+    public func leaveChild(_ childRoomId: RoomId) async throws {
         try await self.session.removeSpaceChild(childRoomId, from: self.roomId)
         try await self.session.leave(roomId: childRoomId)
     }
@@ -170,10 +170,10 @@ class ContainerRoom<T: Matrix.Room>: Matrix.SpaceRoom {
     }
     */
     
-    public func createChildRoom(name: String,
-                                type: String?,
-                                encrypted: Bool,
-                                avatar: Matrix.NativeImage?
+    public func createChild(name: String,
+                            type: String?,
+                            encrypted: Bool,
+                            avatar: Matrix.NativeImage?
     ) async throws -> RoomId {
         let powerLevels = RoomPowerLevelsContent(invite: 50)
         let childRoomId = try await self.session.createRoom(name: name, type: type, encrypted: encrypted,
