@@ -219,7 +219,9 @@ struct PeopleOverviewScreen: View {
         }
         
         let userIds: Set<UserId> = timelines.reduce([]) { (curr,room) in
-            return curr.union(room.joinedMembers)
+            let creator = room.creator
+            let followers = room.joinedMembers.filter { $0 != creator && $0 != room.session.creds.userId }
+            return curr.union(followers)
         }
         
         let sorted = userIds.sorted {
