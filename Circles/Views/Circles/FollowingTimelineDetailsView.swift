@@ -86,7 +86,7 @@ struct FollowingTimelineDetailsView: View {
                         isPresented: $showConfirmUnfollow) {
                             AsyncButton(role: .destructive, action: {
                                 print("Un-following roomId = \(room.roomId)")
-                                try await circle.removeChildRoom(room.roomId)
+                                try await circle.removeChild(room.roomId)
                             }) {
                                 Text("Unfollow")
                             }

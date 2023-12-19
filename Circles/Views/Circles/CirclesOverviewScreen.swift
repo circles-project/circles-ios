@@ -62,7 +62,7 @@ struct CirclesOverviewScreen: View {
     
     private func deleteCircle(circle: CircleSpace) async throws {
         print("Removing circle \(circle.name ?? "??") (\(circle.roomId))")
-        try await container.removeChildRoom(circle.roomId)
+        try await container.removeChild(circle.roomId)
         print("Leaving \(circle.rooms.count) rooms that were in the circle")
         for room in circle.rooms {
             print("Leaving timeline room \(room.name ?? "??") (\(room.roomId))")

@@ -98,7 +98,7 @@ struct SelfDetailView: View {
                             }
                             .confirmationDialog("Stop sharing circle?", isPresented: $showConfirmRemove) {
                                 AsyncButton(role: .destructive, action: {
-                                    try await profile.removeChildRoom(room.roomId)
+                                    try await profile.removeChild(room.roomId)
                                 }) {
                                     Text("Stop sharing \(room.name ?? "this circle")")
                                 }
