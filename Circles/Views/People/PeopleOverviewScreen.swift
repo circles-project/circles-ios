@@ -277,6 +277,9 @@ struct PeopleOverviewScreen: View {
                     followersSection
                     
                     friendsOfFriendsSection
+                    
+                    Spacer()
+                        .frame(minHeight: TIMELINE_BOTTOM_PADDING)
                 }
             }
             .navigationBarTitle("People", displayMode: .inline)
