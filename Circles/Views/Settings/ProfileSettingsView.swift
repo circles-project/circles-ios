@@ -25,9 +25,8 @@ struct ProfileSettingsView: View {
                     Spacer()
                     
                     PhotosPicker(selection: $newAvatarImageItem, matching: .images) {
-                        Image(uiImage: session.avatar ?? UIImage(systemName: "person.fill")!)
-                            .resizable()
-                            .scaledToFill()
+                        let user = session.getUser(userId: session.creds.userId)
+                        UserAvatarView(user: user)
                             .clipShape(Circle())
                             .frame(width: 80, height: 80)
                     }

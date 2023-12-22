@@ -17,12 +17,6 @@ struct UnconnectedPersonDetailView: View {
     @State private var alertMessage: String = ""
     @State private var showAlert = false
     
-    var avatar: Image {
-        return (user.avatar != nil)
-            ? Image(uiImage: user.avatar!)
-            : Image(systemName: "person.crop.square")
-    }
-    
     var status: some View {
         HStack {
             Text("Latest Status:")
@@ -37,10 +31,8 @@ struct UnconnectedPersonDetailView: View {
             Spacer()
             
             VStack {
-                avatar
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 180, height: 180, alignment: .center)
+                UserAvatarView(user: user)
+                    .frame(width: 160, height: 160, alignment: .center)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                 //.padding(.leading)
                 Text(user.displayName ?? "")

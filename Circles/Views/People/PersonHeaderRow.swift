@@ -18,7 +18,7 @@ struct PersonHeaderRow: View {
     @State private var showAlert = false
     
     var image: Image {
-        guard let img = user.avatar else {
+        guard let img = user.avatar ?? user.jdenticon else {
             return Image(systemName: "person.crop.square")
         }
         
