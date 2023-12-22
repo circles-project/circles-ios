@@ -25,10 +25,16 @@ struct UserAvatarView: View {
                 .resizable()
                 .scaledToFit()
         }
-        else {
-            Image(systemName: "person.fill")
+        else if let jdenticon = user.jdenticon {
+            Image(uiImage: jdenticon)
                 .resizable()
                 .scaledToFit()
+                .onAppear {
+                    user.fetchAvatarImage()
+                }
+        } else {
+            Image(systemName: "person.fill")
+
                 .foregroundColor(defaultImageColor)
                 .onAppear {
                     user.fetchAvatarImage()

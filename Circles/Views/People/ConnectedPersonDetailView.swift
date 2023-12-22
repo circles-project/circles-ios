@@ -19,12 +19,6 @@ struct ConnectedPersonDetailView: View {
         self.user = space.session.getUser(userId: space.creator)
     }
     
-    var avatar: Image {
-        return (user.avatar != nil)
-            ? Image(uiImage: user.avatar!)
-            : Image(systemName: "person.crop.square")
-    }
-    
     var status: some View {
         HStack {
             Text("Latest Status:")
@@ -96,9 +90,7 @@ struct ConnectedPersonDetailView: View {
     
     var header: some View {
         HStack {
-            avatar
-                .resizable()
-                .scaledToFill()
+            UserAvatarView(user: user)
                 .frame(width: 160, height: 160, alignment: .center)
                 .clipShape(RoundedRectangle(cornerRadius: 40))
                 //.padding(.leading)
