@@ -619,6 +619,7 @@ struct PostComposer: View {
                     //.foregroundColor(.gray)
                         .multilineTextAlignment(.leading)
                         .lineLimit(10)
+                        .frame(minHeight: 120)
                 }
 
                 if inProgress {

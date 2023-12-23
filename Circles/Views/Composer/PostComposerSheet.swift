@@ -19,15 +19,18 @@ struct PostComposerSheet: View {
             Text("New Post")
                 .font(.title2)
                 .fontWeight(.bold)
+                .padding(5)
             
-            if let parent = parentMessage {
-                MessageCard(message: parent)
+            ScrollView {
+                if let parent = parentMessage {
+                    MessageCard(message: parent)
+                        .padding(3)
+                        .padding(.bottom, 5)
+                }
+                PostComposer(room: room, parent: parentMessage, editing: editingMessage)
                     .padding(3)
+                    .padding(.leading, 10)
             }
-            let pad: CGFloat = parentMessage == nil ? 0 : 10
-            PostComposer(room: room, parent: parentMessage, editing: editingMessage)
-                .padding(.horizontal, 3)
-                .padding(.leading, pad)
         }
     }
 }
