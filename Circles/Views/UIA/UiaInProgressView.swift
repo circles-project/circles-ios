@@ -50,8 +50,9 @@ struct UiaInProgressView: View {
             }
             else if stage == AUTH_TYPE_APPSTORE_SUBSCRIPTION {
                 SubscriptionUIaForm(session: session)
-            }
-            else {
+            } else if stage == AUTH_TYPE_FREE_SUBSCRIPTION {
+                
+            } else {
                 Text("Stage = \(stage)")
             }
         } else {

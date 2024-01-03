@@ -139,6 +139,7 @@
 		A565935F2AEAC4920003C244 /* QR.swift in Sources */ = {isa = PBXBuildFile; fileRef = A565935E2AEAC4920003C244 /* QR.swift */; };
 		A56593612AEBE5D30003C244 /* Room+URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56593602AEBE5D30003C244 /* Room+URL.swift */; };
 		A56593632AF17EF90003C244 /* LegacyLoginScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56593622AF17EF90003C244 /* LegacyLoginScreen.swift */; };
+		A5698A422B46043E000CB2A4 /* FreeSubscriptionForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5698A412B46043E000CB2A4 /* FreeSubscriptionForm.swift */; };
 		A56BE1722AD5CBD200B15F51 /* RoomKnockIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56BE1712AD5CBD200B15F51 /* RoomKnockIndicator.swift */; };
 		A56BE1742AD5CEFA00B15F51 /* RoomKnockDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56BE1732AD5CEFA00B15F51 /* RoomKnockDetailsView.swift */; };
 		A56BE1762AD5D0E900B15F51 /* KnockingUserCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56BE1752AD5D0E900B15F51 /* KnockingUserCard.swift */; };
@@ -326,6 +327,7 @@
 		A565935E2AEAC4920003C244 /* QR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QR.swift; sourceTree = "<group>"; };
 		A56593602AEBE5D30003C244 /* Room+URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Room+URL.swift"; sourceTree = "<group>"; };
 		A56593622AF17EF90003C244 /* LegacyLoginScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyLoginScreen.swift; sourceTree = "<group>"; };
+		A5698A412B46043E000CB2A4 /* FreeSubscriptionForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeSubscriptionForm.swift; sourceTree = "<group>"; };
 		A56BE1712AD5CBD200B15F51 /* RoomKnockIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomKnockIndicator.swift; sourceTree = "<group>"; };
 		A56BE1732AD5CEFA00B15F51 /* RoomKnockDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomKnockDetailsView.swift; sourceTree = "<group>"; };
 		A56BE1752AD5D0E900B15F51 /* KnockingUserCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnockingUserCard.swift; sourceTree = "<group>"; };
@@ -732,6 +734,7 @@
 				A53E912D2A5C95DC007B0196 /* UiaOverlayView.swift */,
 				A5F2E95B2A4497E30097DBF8 /* UiaView.swift */,
 				A5F0148529D75899000D57B3 /* UsernameEnrollForm.swift */,
+				A5698A412B46043E000CB2A4 /* FreeSubscriptionForm.swift */,
 			);
 			path = UIA;
 			sourceTree = "<group>";
@@ -910,6 +913,7 @@
 				A5E101FA2814FB60000B2C42 /* blf.c in Sources */,
 				A5E101FE2814FC9F000B2C42 /* PerfectBCrypt.swift in Sources */,
 				A5FCF64129CC9B30008278B0 /* GroupRoom.swift in Sources */,
+				A5698A422B46043E000CB2A4 /* FreeSubscriptionForm.swift in Sources */,
 				A5EB046D2AFB306B00CC7A6C /* RoomMembersSection.swift in Sources */,
 				A509B89E2819B6C90053E5BC /* CirclesError.swift in Sources */,
 				A5FB06E52A6814A8002C5B88 /* InvitedCircleCard.swift in Sources */,
