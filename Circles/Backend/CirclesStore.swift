@@ -244,9 +244,15 @@ public class CirclesStore: ObservableObject {
             logger.debug("No s4 key / keyId")
         }
         
+        // If the user is joined to any large rooms (eg Matrix HQ) then the default initial sync can be brutal
+        // Lazy-loading room members and opting in to per-thread unread notifications made this bearable on Circles Android
+        // So we do the same thing here
+        let filter = Matrix.SyncFilter(room: Matrix.RoomFilter(state: Matrix.StateFilter(lazyLoadMembers: true, unreadThreadNotifications: true)))
+        
         guard let matrix = try? await Matrix.Session(creds: creds,
                                                      syncToken: token,
                                                      startSyncing: false,
+                                                     initialSyncFilter: filter,
                                                      secretStorageKey: s4Key)
         else {
             logger.error("Failed to initialize Matrix session")
