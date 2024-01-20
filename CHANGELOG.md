@@ -1,3 +1,11 @@
+# 0.9.1
+* Clean up the group creation dialog
+* Change default domain from circu.li to circles.futo.org
+* Better handling of accounts that are in very large Matrix chat rooms
+* New free subscription type for free accounts
+* Make the reply composer scrollable
+* Use jdenticons as profile image for users who don't upload a photo
+
 # 0.9.0
 * Show follower count for each timeline you're following
 * Don't show direct follows as friends of friends
