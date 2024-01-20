@@ -141,7 +141,11 @@ struct GroupCreationSheet: View {
                 }
             }
             
-            TextField("Group name", text: $groupName)
+            Text("Group name:")
+                .fontWeight(.bold)
+            TextField("My awesome group", text: $groupName)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.horizontal)
             
             Spacer()
             

@@ -31,7 +31,7 @@ struct UsersToInviteView: View {
     
     @ViewBuilder
     var searchField: some View {
-        TextField("User ID", text: $newestUserIdString)
+        TextField("@user:example.com", text: $newestUserIdString)
             .textFieldStyle(RoundedBorderTextFieldStyle())
             .autocapitalization(.none)
             .autocorrectionDisabled()
