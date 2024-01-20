@@ -58,8 +58,8 @@ let CIRCLES_DOMAINS = [
     let usDomain = "us.circles-dev.net"
     let euDomain = "nl.circles-dev.net"
 #else
-    let usDomain = "circu.li"
-    let euDomain = "eu.circu.li"
+    let usDomain = "circles.futo.org"
+    let euDomain = "eu.circles.futo.org"
 #endif
 
 let ORG_FUTO_BCRYPT_SHA2 = "org.futo.bcrypt-sha2"
