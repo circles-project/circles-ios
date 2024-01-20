@@ -46,8 +46,10 @@ let DEFAULT_DOMAIN = "circu.li"
 let MATRIX_SSSS_KEY_LABEL = "matrix_ssss"
 let MATRIX_SSSS_KEYID_LABEL = "matrix_ssss_key_id"
 
-let CIRCLES_PRIMARY_DOMAIN = "circu.li"
+let CIRCLES_PRIMARY_DOMAIN = "circles.futo.org"
 let CIRCLES_DOMAINS = [
+    "circles.futo.org",
+    "eu.circles.futo.org",
     "circu.li",
     "eu.circu.li",
     "us.circles-dev.net",
