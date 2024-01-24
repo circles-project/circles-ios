@@ -14,15 +14,19 @@ struct BsspekeEnrollOprfForm: View {
     @State var passphrase: String = ""
     @State var repeatPassphrase: String = ""
     //@State var passwordStrength: Int = 0
-    @State var score: Int = 1
-    @State var passwordStrengthColors: [Color] = []
+    @State var score: Double = 0.0
+    @State var color: Color = .red
+    @State var promise: Bool = false
+    //@State var passwordStrengthColors: [Color] = []
     let checker = DBZxcvbn()
 
     #if DEBUG
-    let MINIMUM_PASSWORD_ZXCVBN_SCORE = 2
+    let MINIMUM_PASSWORD_ZXCVBN_SCORE = 2.0
     #else
-    let MINIMUM_PASSWORD_ZXCVBN_SCORE = 4
+    let MINIMUM_PASSWORD_ZXCVBN_SCORE = 4.0
     #endif
+    
+    @State var showRepeat = false
     
     private func getUserId() -> UserId? {
         if let userId = session.creds?.userId {
@@ -58,69 +62,152 @@ struct BsspekeEnrollOprfForm: View {
         }
     }
     
-    var body: some View {
+    @ViewBuilder
+    var introView: some View {
         VStack {
             Spacer()
-            VStack {
-                Text("Set Passphrase")
-                    .font(.title2)
-                    .fontWeight(.bold)
-            }
+            
+            Label("Circles is different!", systemImage: "exclamationmark.shield.fill")
+                .font(.title2)
+            
+            Text("On the next screen, we will ask you to set up a passphrase for your account.")
+                .padding()
+            
+            Text("Circles uses your passphrase to log in AND to protect your encryption keys.")
+                .padding()
+            
+            Text("If you forget your passphrase, you won't be able to recover posts or photos on a new device.")
+                .foregroundColor(.red)
+                .padding(.vertical)
+            
             Spacer()
-            VStack(alignment: .leading) {
-                HStack {
-                    Text("Strength:")
-                    ForEach(passwordStrengthColors, id: \.self) { color in
-                        //RoundedRectangle(cornerRadius: 8)
-                        Rectangle()
-                            .fill(color)
-                            .frame(width: 20, height: 40)
-                    }
-                }
-
-                SecureField("correct horse battery staple", text: $passphrase, prompt: Text("New passphrase"))
-                    .textContentType(.newPassword)
-                    .onChange(of: passphrase) { newPassword in
-                        if let result = checker.passwordStrength(newPassword) {
-                            print("Password score: \(result.score)")
-                            score = Int(min(result.score, 4)) + 1
-                            let color = colorForScore(score: score)
-                            self.passwordStrengthColors = Array<Color>.init(repeating: color, count: score) + Array<Color>.init(repeating: .background, count: 5-score)
-                        } else {
-                            self.passwordStrengthColors = []
-                        }
-                    }
-                    .frame(width: 300.0, height: 40.0)
-                SecureField("correct horse battery staple", text: $repeatPassphrase, prompt: Text("Repeat passphrase"))
-                    .textContentType(.newPassword)
-                    .frame(width: 300.0, height: 40.0)
-                AsyncButton(action: {
-                    guard let userId = getUserId()
-                    else {
-                        print("Couldn't get user id")
-                        return
-                    }
-                    try await session.doBSSpekeEnrollOprfStage(userId: userId, password: passphrase)
-                }) {
-                    Text("Submit")
-                        .padding()
-                        .frame(width: 300.0, height: 40.0)
-                        .foregroundColor(.white)
-                        .background(Color.accentColor)
-                        .cornerRadius(10)
-                }
-                .disabled(passphrase.isEmpty || passphrase != repeatPassphrase || score < MINIMUM_PASSWORD_ZXCVBN_SCORE)
+            
+            Toggle(isOn: $promise) {
+                Text("I understand")
             }
+            
             Spacer()
-            VStack {
-                Label("Tip: Choosing a strong passphrase", systemImage: "lightbulb")
-                    .font(.headline)
-                    .padding()
-                Text("It's easier to remember a strong passphrase if you use more than one word")
-            }
-            .padding()
+            
+            Label("Tip: It's OK to write your passphrase down and store it in a secure location", systemImage: "lightbulb.fill")
+            
             Spacer()
         }
         .padding()
+    }
+    
+    @ViewBuilder
+    var passwordView: some View {
+        VStack {
+            Spacer()
+
+            Text("Set Passphrase")
+                .font(.title2)
+                .fontWeight(.bold)
+            
+            Label("Tip: Use more than one word!", systemImage: "lightbulb.fill")
+                .padding()
+            
+            Spacer()
+
+            VStack(alignment: .leading) {
+                SecureField("correct horse battery staple", text: $passphrase, prompt: Text("New passphrase"))
+                    .textContentType(.newPassword)
+                    .onChange(of: passphrase) { newPassword in
+                        if newPassword.isEmpty {
+                            score = 0.0
+                            color = .red
+                        }
+                        else if let result = checker.passwordStrength(newPassword) {
+                            print("Password score: \(result.score)")
+                            score = Double(min(result.score, 4)) + 1
+                            color = colorForScore(score: Int(score))
+                        }
+                        else {
+                            score = 1.0
+                            color = .red
+                        }
+                    }
+                    .frame(width: 300.0, height: 40.0)
+                
+                ProgressView("Strength", value: 1.0 * self.score, total: 5.0)
+                    .tint(self.color)
+                    .padding(.top)
+            }
+            .padding()
+
+
+            Spacer()
+
+            Button(action: {
+                self.showRepeat = true
+            }) {
+                Text("Next")
+                    .padding()
+                    .frame(width: 300.0, height: 40.0)
+                    .foregroundColor(.white)
+                    .background(Color.accentColor)
+                    .cornerRadius(10)
+            }
+            .disabled(passphrase.isEmpty || score < MINIMUM_PASSWORD_ZXCVBN_SCORE)
+        }
+    }
+    
+    @ViewBuilder
+    var repeatPasswordView: some View {
+        VStack {
+            Spacer()
+            Text("Confirm Passphrase")
+                .font(.title2)
+                .fontWeight(.bold)
+            Text("or")
+            Button(action: {
+                self.passphrase = ""
+                self.score = 0.0
+                self.color = .red
+                self.showRepeat = false
+            }) {
+                Label("Choose a different passphrase", systemImage: "arrowshape.turn.up.backward.fill")
+            }
+            Spacer()
+
+            SecureField("same passphrase as before", text: $repeatPassphrase, prompt: Text("Repeat passphrase"))
+                .textContentType(.newPassword)
+                .frame(width: 300.0, height: 40.0)
+                
+
+            Spacer()
+            
+            AsyncButton(action: {
+                guard let userId = getUserId()
+                else {
+                    print("Couldn't get user id")
+                    return
+                }
+                try await session.doBSSpekeEnrollOprfStage(userId: userId, password: passphrase)
+            }) {
+                Text("Submit")
+                    .padding()
+                    .frame(width: 300.0, height: 40.0)
+                    .foregroundColor(.white)
+                    .background(Color.accentColor)
+                    .cornerRadius(10)
+            }
+            .disabled(passphrase.isEmpty || passphrase != repeatPassphrase || score < MINIMUM_PASSWORD_ZXCVBN_SCORE)
+        }
+        .padding()
+    }
+    
+    
+    var body: some View {
+        VStack {
+            if promise == false {
+                introView
+            } else if passphrase.isEmpty || showRepeat == false {
+                passwordView
+            } else {
+                repeatPasswordView
+            }
+            
+        }
     }
 }
