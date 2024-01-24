@@ -231,6 +231,14 @@ public class CirclesStore: ObservableObject {
         return config
     }
     
+    // MARK: Sync filter
+    // If the user is joined to any large rooms (eg Matrix HQ) then the default initial sync can be brutal
+    // Lazy-loading room members and opting in to per-thread unread notifications made this bearable on Circles Android
+    // So we do the same thing here
+    var filter: Matrix.SyncFilter {
+        Matrix.SyncFilter(room: Matrix.RoomFilter(state: Matrix.StateFilter(lazyLoadMembers: true, unreadThreadNotifications: true)))
+    }
+    
     // MARK: Connect
     
     func connect(creds: Matrix.Credentials, s4Key: Matrix.SecretStorageKey? = nil) async throws {
@@ -244,15 +252,10 @@ public class CirclesStore: ObservableObject {
             logger.debug("No s4 key / keyId")
         }
         
-        // If the user is joined to any large rooms (eg Matrix HQ) then the default initial sync can be brutal
-        // Lazy-loading room members and opting in to per-thread unread notifications made this bearable on Circles Android
-        // So we do the same thing here
-        let filter = Matrix.SyncFilter(room: Matrix.RoomFilter(state: Matrix.StateFilter(lazyLoadMembers: true, unreadThreadNotifications: true)))
-        
         guard let matrix = try? await Matrix.Session(creds: creds,
                                                      syncToken: token,
                                                      startSyncing: false,
-                                                     initialSyncFilter: filter,
+                                                     initialSyncFilter: self.filter,
                                                      secretStorageKey: s4Key)
         else {
             logger.error("Failed to initialize Matrix session")
@@ -525,7 +528,20 @@ public class CirclesStore: ObservableObject {
                 try await store.saveKey(key: s4Key.key, keyId: s4Key.keyId)
 
                 self.logger.debug("Configuring with keyId [\(s4Key.keyId)]")
-                try await self.beginSetup(creds: creds)
+                
+                guard let matrix = try? await Matrix.Session(creds: creds,
+                                                             syncToken: nil,
+                                                             startSyncing: false,
+                                                             initialSyncFilter: self.filter,
+                                                             secretStorageKey: s4Key)
+                else {
+                    await MainActor.run {
+                        self.state = .nothing(CirclesError("Could not connect to the Matrix server"))
+                    }
+                    return
+                }
+                
+                try await self.beginSetup(matrix: matrix)
             } else {
                 self.logger.warning("Could not find BS-SPEKE client")
             }
@@ -537,16 +553,8 @@ public class CirclesStore: ObservableObject {
     
     // MARK: Begin setup
     
-    func beginSetup(creds: Matrix.Credentials) async throws {
-        
-        var fullCreds = creds
-        
-        if fullCreds.wellKnown == nil {
-            let domain = creds.userId.domain
-            fullCreds.wellKnown = try await Matrix.fetchWellKnown(for: domain)
-        }
-        
-        let session = try await SetupSession(creds: fullCreds)
+    func beginSetup(matrix: Matrix.Session) async throws {
+        let session = SetupSession(matrix: matrix)
         await MainActor.run {
             self.state = .settingUp(session)
         }
