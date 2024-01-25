@@ -1,3 +1,10 @@
+# 0.9.2
+* Relax password strength requirements
+* Use shared web credentials and Keychain for passwords
+* Save secret-storage keys in iCloud Keychain for account recovery
+* Bugfix: Use new jdenticon avatar on the People tab self-view
+* Bugfix: Remove TESTING section on subscription settings
+
 # 0.9.1
 * Clean up the group creation dialog
 * Change default domain from circu.li to circles.futo.org
