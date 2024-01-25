@@ -50,8 +50,7 @@ struct PeopleOverviewScreen: View {
                            selection: $selectedUserId
             ) {
                 HStack(alignment: .top) {
-                    Image(uiImage: matrix.avatar ?? UIImage(systemName: "person.crop.square")!)
-                        .resizable()
+                    UserAvatarView(user: people.session.me)
                         .scaledToFill()
                         .frame(width: 80, height: 80)
                         .clipShape(RoundedRectangle(cornerRadius: 7))
