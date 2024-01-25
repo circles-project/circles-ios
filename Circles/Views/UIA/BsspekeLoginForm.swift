@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Matrix
+import KeychainAccess
 
 struct BsspekeLoginForm: View {
     var session: any UIASession
@@ -28,7 +29,21 @@ struct BsspekeLoginForm: View {
             
             VStack {
                 SecureField("Passphrase", text: $passphrase, prompt: Text("Passphrase"))
+                    .textContentType(.password)
                     .frame(width: 300.0, height: 40.0)
+                    .onAppear {
+                        if let userId = session.userId {
+                            // Attempt to load the saved password that Matrix.swift should have saved in our Keychain
+                            let keychain = Keychain(server: "https://\(userId.domain)", protocolType: .https)
+                            keychain.getSharedPassword(userId.stringValue) { (password, error) in
+                                if self.passphrase.isEmpty,
+                                   let savedPassword = password
+                                {
+                                    self.passphrase = savedPassword
+                                }
+                            }
+                        }
+                    }
                 AsyncButton(action: {
                     print("Doing BS-SPEKE OPRF stage for UIA")
                     try await session.doBSSpekeLoginOprfStage(password: passphrase)

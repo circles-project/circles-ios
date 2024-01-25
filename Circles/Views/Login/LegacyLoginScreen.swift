@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Matrix
+import KeychainAccess
 
 struct LegacyLoginScreen: View {
     @ObservedObject var session: LegacyLoginSession
@@ -25,7 +26,19 @@ struct LegacyLoginScreen: View {
                 .fontWeight(.bold)
             
             SecureFieldWithEye(label: "Password", text: $password, showText: showPassword)
+                .textContentType(.password)
                 .frame(width: 300, height: 40)
+                .onAppear {
+                    // Attempt to load the saved password that Matrix.swift should have saved in our Keychain
+                    let keychain = Keychain(server: "https://\(session.userId.domain)", protocolType: .https)
+                    keychain.getSharedPassword(session.userId.stringValue) { (passwd, error) in
+                        if self.password.isEmpty,
+                           let savedPassword = passwd
+                        {
+                            self.password = savedPassword
+                        }
+                    }
+                }
                         
             AsyncButton(action: {
                 try await session.login(password: password)
@@ -33,6 +46,10 @@ struct LegacyLoginScreen: View {
                 // Add our user id to the list, for easy login in the future
                 let allUserIds: Set<UserId> = Set(previousUserIds).union([session.userId])
                 previousUserIds = allUserIds.sorted { $0.stringValue < $1.stringValue }
+                
+                // Save our password in the Keychain
+                let keychain = Keychain(server: "https://\(session.userId.domain)", protocolType: .https)
+                keychain.setSharedPassword(password, account: session.userId.stringValue)
             }) {
                 Text("Log In")
                     .padding()

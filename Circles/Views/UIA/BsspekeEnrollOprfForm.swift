@@ -23,7 +23,7 @@ struct BsspekeEnrollOprfForm: View {
     #if DEBUG
     let MINIMUM_PASSWORD_ZXCVBN_SCORE = 2.0
     #else
-    let MINIMUM_PASSWORD_ZXCVBN_SCORE = 4.0
+    let MINIMUM_PASSWORD_ZXCVBN_SCORE = 3.0
     #endif
     
     @State var showRepeat = false
