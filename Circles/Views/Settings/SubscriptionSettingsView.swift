@@ -178,6 +178,7 @@ struct SubscriptionSettingsView: View {
                 }
                 .listRowInsets(.init(top: 5, leading: 5, bottom: 5, trailing: 5))
                 
+                #if DEBUG
                 Section("Testing") {
                     Button(action: {
                         redeemSheetIsPresented = true
@@ -196,6 +197,7 @@ struct SubscriptionSettingsView: View {
                         
                     }
                 }
+                #endif
             }
             
 
