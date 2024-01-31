@@ -6,20 +6,20 @@
 //
 
 import SwiftUI
+import Matrix
 
 struct SetupScreen: View {
-
-    @ObservedObject var session: SetupSession
     var store: CirclesStore
+    @ObservedObject var matrix: Matrix.Session
+    
+    @State var displayName: String?
     
     var body: some View {
-        switch session.state {
-        case .profile:
-            AvatarForm(session: session)
-        case .circles(let displayName):
-            CirclesForm(session: session, displayName: displayName)
-        case .allDone(let config):
-            AllDoneForm(store: store, matrix: session.client, config: config)
+        
+        if let name = displayName {
+            CirclesForm(store: store, matrix: matrix, displayName: name)
+        } else {
+            AvatarForm(matrix: matrix, displayName: $displayName)
         }
     }
 }

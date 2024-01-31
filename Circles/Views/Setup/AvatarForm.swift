@@ -7,11 +7,14 @@
 
 import SwiftUI
 import PhotosUI
+import Matrix
 
 struct AvatarForm: View {
-    var session: SetupSession
+    var matrix: Matrix.Session
 
-    @State var displayName = ""
+    @Binding var displayName: String?
+    
+    @State var newName: String = ""
     @State var avatarImage: UIImage?
     @State var showPicker = false
     @State var showCamera = false
@@ -47,8 +50,8 @@ struct AvatarForm: View {
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .task {
                     // Check to see -- Does this user already have an avatar image?
-                    let userId = session.client.creds.userId
-                    if let image = try? await session.client.getAvatarImage(userId: userId) {
+                    let userId = matrix.creds.userId
+                    if let image = try? await matrix.getAvatarImage(userId: userId) {
                         await MainActor.run {
                             self.avatarImage = image
                         }
@@ -99,7 +102,7 @@ struct AvatarForm: View {
                 .foregroundColor(.orange)
 
             
-            TextField("First Last", text: $displayName, prompt: Text("Your name"))
+            TextField("First Last", text: $newName, prompt: Text("Your name"))
                 .textContentType(.name)
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(.words)
@@ -116,8 +119,8 @@ struct AvatarForm: View {
                 }
                 */
 
-            AsyncButton(action: {
-                try await session.setupProfile(name: displayName, avatar: avatarImage)
+            Button(action: {
+                displayName = newName
             }) {
                 Text("Next")
                     .padding()
@@ -126,7 +129,7 @@ struct AvatarForm: View {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
-            .disabled(displayName.isEmpty)
+            .disabled(newName.isEmpty)
             .padding()
 
             Spacer()

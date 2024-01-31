@@ -118,7 +118,8 @@ struct ContentView: View {
                 }
             
         case .needSpaceHierarchy(let matrix):
-            Text("Need space hierarchy")
+            //Text("Need space hierarchy")
+            SetupScreen(store: store, matrix: matrix)
 
         case .haveSpaceHierarchy(let matrix, let config):
             //Text("Have space hierarchy")

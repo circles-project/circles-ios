@@ -283,22 +283,6 @@ public class CirclesStore: ObservableObject {
             }
             return
             
-            /* // FIXME: Move this into its own function
-            // Next thing to check: Do we have a Circles space hierarchy in this account?
-            if let config = try? await loadConfig(matrix: matrix) {
-                // Awesome - Everything should be good to go, so let's get it started
-                try await launch(matrix: matrix, config: config)
-                return
-            } else {
-                // Looks like we haven't configured Circles on this account yet
-                let setupSession = SetupSession(matrix: matrix)
-                await MainActor.run {
-                    self.state = .settingUp(setupSession)
-                }
-                return
-            }
-            */
-            
         case .error(let msg):
             logger.error("Matrix secret storage failed: \(msg, privacy: .public)")
             let error = CirclesError("Matrix secret storage failed")
@@ -389,7 +373,7 @@ public class CirclesStore: ObservableObject {
         }
     }
 
-    // MARK: Cross Signing and Key Backup
+    // MARK: Cross Signing
     
     func ensureCrossSigning() async throws {
         guard case .haveSecretStorageAndKey(let matrix) = state else {
@@ -405,6 +389,8 @@ public class CirclesStore: ObservableObject {
             self.state = .haveCrossSigning(matrix)
         }
     }
+    
+    // MARK: Key Backup
     
     func ensureKeyBackup() async throws {
         guard case .haveCrossSigning(let matrix) = state else {
