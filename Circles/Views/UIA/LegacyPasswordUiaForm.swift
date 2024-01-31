@@ -1,23 +1,21 @@
 //
-//  BsspekeLoginForm.swift
+//  PasswordLoginForm.swift
 //  Circles
 //
-//  Created by Charles Wright on 8/7/23.
+//  Created by Charles Wright on 1/31/24.
 //
 
 import SwiftUI
 import Matrix
 import KeychainAccess
 
-struct BsspekeLoginForm: View {
+struct LegacyPasswordUiaForm: View {
     var session: UIAuthSession
-    var stage: String
 
     @State var passphrase: String = ""
     @State var failed = false
 
-    @ViewBuilder
-    var oprfForm: some View {
+    var body: some View {
         VStack {
             Spacer()
             
@@ -44,9 +42,10 @@ struct BsspekeLoginForm: View {
                             }
                         }
                     }
+                
                 AsyncButton(action: {
-                    print("Doing BS-SPEKE OPRF stage for UIA")
-                    try await session.doBSSpekeLoginOprfStage(password: passphrase)
+                    print("Doing m.login.password stage for UIA")
+                    try await session.doPasswordAuthStage(password: passphrase)
                 }) {
                     Text("Submit")
                         .padding()
@@ -66,49 +65,6 @@ struct BsspekeLoginForm: View {
                     )
                 }
             }
-            .padding()
-            
-            Spacer()
-        }
-    }
-    
-    @ViewBuilder
-    var verifyForm: some View {
-        VStack {
-            Spacer()
-            ProgressView {
-                Text("Verifying passphrase")
-            }
-            Spacer()
-        }
-        .onAppear {
-            self.failed = false
-            Task {
-                do {
-                    try await session.doBSSpekeLoginVerifyStage()
-                } catch {
-                    await MainActor.run {
-                        self.failed = true
-                    }
-                }
-            }
-        }
-
-    }
-
-    var body: some View {
-        if stage == AUTH_TYPE_LOGIN_BSSPEKE_VERIFY {
-            verifyForm
-        } else {
-            oprfForm
         }
     }
 }
-
-/*
-struct BsspekeLoginForm_Previews: PreviewProvider {
-    static var previews: some View {
-        BsspekeLoginForm()
-    }
-}
-*/

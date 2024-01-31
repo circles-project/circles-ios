@@ -52,6 +52,8 @@ struct UiaInProgressView: View {
                 SubscriptionUIaForm(session: session)
             } else if stage == AUTH_TYPE_FREE_SUBSCRIPTION {
                 FreeSubscriptionForm(session: session)
+            } else if stage == AUTH_TYPE_LOGIN_PASSWORD {
+                LegacyPasswordUiaForm(session: session)
             } else {
                 Text("Stage = \(stage)")
             }
