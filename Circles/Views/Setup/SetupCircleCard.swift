@@ -8,9 +8,10 @@
 
 import SwiftUI
 import PhotosUI
+import Matrix
 
 struct SetupCircleCard: View {
-    var session: SetupSession
+    var matrix: Matrix.Session
     var circleName: String
     var userDisplayName: String
     

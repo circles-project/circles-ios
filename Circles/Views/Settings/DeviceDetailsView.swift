@@ -113,24 +113,32 @@ struct DeviceDetailsView: View {
                     .badge(verificationStatusDescription)
             }
             
-            Section("Last Seen Online") {
-                if let ts = lastSeenTS {
-                    Text("Date & Time")
-                        .badge("\(self.formatter.string(from: ts))")
+            if device.userId == session.creds.userId.stringValue {
+                Section("Last Seen Online") {
+                    if let ts = lastSeenTS {
+                        Text("Date & Time")
+                            .badge("\(self.formatter.string(from: ts))")
+                    }
+                    if let ip = lastSeenIP {
+                        Text("IP Address")
+                            .badge(ip)
+                    }
                 }
-                if let ip = lastSeenIP {
-                    Text("IP Address")
-                        .badge(ip)
-                }
-            }
-            .onAppear() {
-                let _ = Task {
-                    if let basicDevice = try? await session.getDevice(deviceId: device.deviceId) {
-                        await MainActor.run {
-                            self.lastSeenTS = basicDevice.lastSeenTs
-                            self.lastSeenIP = basicDevice.lastSeenIp
+                .onAppear() {
+                    let _ = Task {
+                        if let basicDevice = try? await session.getDevice(deviceId: device.deviceId) {
+                            await MainActor.run {
+                                self.lastSeenTS = basicDevice.lastSeenTs
+                                self.lastSeenIP = basicDevice.lastSeenIp
+                            }
                         }
                     }
+                }
+            } else {
+                Section("First Seen Online") {
+                    let ts = Date(timeIntervalSince1970: Double(device.firstTimeSeenTs)/1000.0)
+                    Text("Date & Time")
+                        .badge("\(self.formatter.string(from: ts))")
                 }
             }
             
@@ -143,29 +151,31 @@ struct DeviceDetailsView: View {
             
             keysSection
             
-            Section("Delete") {
-                Button(role: .destructive, action: {
-                    isConfirmingDelete = true
-                }) {
-                    Text("Delete Session")
-                }
-                .confirmationDialog(
-                    "Are you sure you want to delete this session?",
-                    isPresented: $isConfirmingDelete,
-                    presenting: device.displayName ?? device.deviceId,
-                    actions: { deviceName in
-                        AsyncButton(role: .destructive, action: {
-                            try await session.deleteDevice(deviceId: device.deviceId) { (_,_) in
-                                self.presentation.wrappedValue.dismiss()
+            if device.userId == session.creds.userId.stringValue {
+                Section("Delete") {
+                    Button(role: .destructive, action: {
+                        isConfirmingDelete = true
+                    }) {
+                        Text("Delete Session")
+                    }
+                    .confirmationDialog(
+                        "Are you sure you want to delete this session?",
+                        isPresented: $isConfirmingDelete,
+                        presenting: device.displayName ?? device.deviceId,
+                        actions: { deviceName in
+                            AsyncButton(role: .destructive, action: {
+                                try await session.deleteDevice(deviceId: device.deviceId) { (_,_) in
+                                    self.presentation.wrappedValue.dismiss()
+                                }
+                            }) {
+                                Text("Delete session \(deviceName)")
                             }
-                        }) {
-                            Text("Delete session \(deviceName)")
-                        }
-                    },
-                    message: { deviceName in
+                        },
+                        message: { deviceName in
+                            
+                        })
                     
-                    })
-                
+                }
             }
         }
         .navigationTitle(Text("Session Details"))

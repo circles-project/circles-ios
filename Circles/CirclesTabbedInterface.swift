@@ -8,9 +8,32 @@
 import SwiftUI
 import Matrix
 
+struct SyncDebugView: View {
+    @ObservedObject var matrix: Matrix.Session
+    
+    var body: some View {
+        HStack {
+            Text(matrix.syncToken ?? "no sync token")
+            
+            Spacer()
+            
+            Text("\(matrix.syncSuccessCount)")
+            
+            Spacer()
+            
+            Text("\(matrix.syncFailureCount)")
+        }
+        .font(.caption)
+        .padding(.horizontal)
+    }
+}
+
 struct CirclesTabbedInterface: View {
     @ObservedObject var store: CirclesStore
     @ObservedObject var session: CirclesApplicationSession
+    
+    @AppStorage("debugMode") var debugMode: Bool = false
+
     
     /*
     init(store: CirclesStore, session: CirclesApplicationSession) {
@@ -35,6 +58,17 @@ struct CirclesTabbedInterface: View {
     @State var selectedCircleId: RoomId?
     @State var selectedGalleryId: RoomId?
 
+    #if DEBUG
+    @ViewBuilder
+    var debugTabView: some View {
+        VStack(spacing: 0) {
+            SyncDebugView(matrix: session.matrix)
+            
+            tabview
+        }
+    }
+    #endif
+    
     @ViewBuilder
     var tabview: some View {
         TabView(selection: $selection) {
@@ -194,8 +228,16 @@ struct CirclesTabbedInterface: View {
 
     var body: some View {
         ZStack {
+            #if DEBUG
+            if debugMode {
+                debugTabView
+            } else {
+                tabview
+            }
+            #else
             tabview
-            
+            #endif
+
             UiaOverlayView(circles: session, matrix: session.matrix)
         }
     }

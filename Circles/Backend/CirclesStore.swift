@@ -21,14 +21,20 @@ import Matrix
 public class CirclesStore: ObservableObject {
     
     enum State {
-        case starting
-        case nothing(CirclesError?)
+        case startingUp
+        case error(CirclesError)
+        case needCreds
         case signingUp(SignupSession)
         case loggingInUIA(UiaLoginSession)          // Because /login can now take more than a simple username/password
         case loggingInNonUIA(LegacyLoginSession)    // For accounts without fancy swiclops authentication
-        case haveCreds(Matrix.Credentials)
-        case needSSKey(Matrix.Session,String,KeyDescriptionContent)
-        case settingUp(SetupSession)
+        case haveCreds(Matrix.Credentials, Matrix.SecretStorageKey?, String?)
+        case needSecretStorage(Matrix.Session)
+        case needSecretStorageKey(Matrix.Session, String, Matrix.KeyDescriptionContent)
+        case haveSecretStorageAndKey(Matrix.Session)
+        case haveCrossSigning(Matrix.Session)
+        case haveKeyBackup(Matrix.Session)
+        case needSpaceHierarchy(Matrix.Session)
+        case haveSpaceHierarchy(Matrix.Session, CirclesConfigContent)
         case online(CirclesApplicationSession)
     }
     @Published var state: State
@@ -44,32 +50,7 @@ public class CirclesStore: ObservableObject {
         self.appStore = AppStoreInterface()
         
         // Ok, we're just starting out
-        self.state = .starting
-
-        // We can realistically be in one of just two states.
-        // Either:
-        // .haveCreds - if we can find credentials in the user defaults
-        // or
-        // .nothing - if there are no creds to be found
-
-        let _ = Task {
-            guard let creds = try? loadCredentials()
-            else {
-                // Apparently we're offline, waiting for (valid) credentials to log in
-                logger.info("Didn't find valid login credentials - Setting state to .nothing")
-                await MainActor.run {
-                    self.state = .nothing(nil)
-                }
-                return
-            }
-                     
-            // Woo we have credentials
-            await MainActor.run {
-                self.state = .haveCreds(creds)
-            }
-            
-            // Don't connect yet.  Let the UI call connect() on its own.
-        }
+        self.state = .startingUp
     }
     
     // MARK: Sync tokens
@@ -231,6 +212,19 @@ public class CirclesStore: ObservableObject {
         return config
     }
     
+    func lookForCreds() async throws {
+        if let creds = try? loadCredentials() {
+            let token = loadSyncToken(userId: creds.userId, deviceId: creds.deviceId)
+            await MainActor.run {
+                self.state = .haveCreds(creds, nil, token)
+            }
+        } else {
+            await MainActor.run {
+                self.state = .needCreds
+            }
+        }
+    }
+    
     // MARK: Sync filter
     // If the user is joined to any large rooms (eg Matrix HQ) then the default initial sync can be brutal
     // Lazy-loading room members and opting in to per-thread unread notifications made this bearable on Circles Android
@@ -241,10 +235,11 @@ public class CirclesStore: ObservableObject {
     
     // MARK: Connect
     
-    func connect(creds: Matrix.Credentials, s4Key: Matrix.SecretStorageKey? = nil) async throws {
+    func connect(creds: Matrix.Credentials,
+                 s4Key: Matrix.SecretStorageKey? = nil,
+                 token: String? = nil
+    ) async throws {
         logger.debug("connect()")
-        let token = loadSyncToken(userId: creds.userId, deviceId: creds.deviceId)
-        logger.debug("Got token = \(token ?? "none")")
         
         if let key = s4Key {
             logger.debug("Connecting with s4 keyId [\(key.keyId)]")
@@ -254,14 +249,14 @@ public class CirclesStore: ObservableObject {
         
         guard let matrix = try? await Matrix.Session(creds: creds,
                                                      syncToken: token,
-                                                     startSyncing: false,
+                                                     startSyncing: true,
                                                      initialSyncFilter: self.filter,
                                                      secretStorageKey: s4Key)
         else {
             logger.error("Failed to initialize Matrix session")
             let error = CirclesError("Failed to initialize Matrix session")
             await MainActor.run {
-                self.state = .nothing(error)
+                self.state = .error(error)
             }
             throw error
         }
@@ -269,11 +264,10 @@ public class CirclesStore: ObservableObject {
         guard let ssss = matrix.secretStore
         else {
             logger.warning("Matrix session needs secret storage")
-            let error = CirclesError("Matrix session has no secret storage")
             await MainActor.run {
-                self.state = .nothing(error)
+                self.state = .needSecretStorage(matrix)
             }
-            throw error
+            return
         }
         
         switch ssss.state {
@@ -282,44 +276,62 @@ public class CirclesStore: ObservableObject {
             logger.debug("Matrix secret storage is online")
 
             // Ok great we are connected to the Matrix account, and we have a valid Secret Storage key
-            
-            // Next thing to check: Do we have a Circles space hierarchy in this account?
-            if let config = try? await loadConfig(matrix: matrix) {
-                // Awesome - Everything should be good to go, so let's get it started
-                try await launch(matrix: matrix, config: config)
-                return
-            } else {
-                // Looks like we haven't configured Circles on this account yet
-                let setupSession = SetupSession(matrix: matrix)
-                await MainActor.run {
-                    self.state = .settingUp(setupSession)
-                }
-                return
+            // Don't worry about making everything perfect right now
+            // Just set our status to the next step.  The UI will drive the next steps.
+            await MainActor.run {
+                self.state = .haveSecretStorageAndKey(matrix)
             }
-
+            return
             
         case .error(let msg):
             logger.error("Matrix secret storage failed: \(msg, privacy: .public)")
             let error = CirclesError("Matrix secret storage failed")
             await MainActor.run {
-                self.state = .nothing(error)
+                self.state = .error(error)
             }
             throw error
             
         case .uninitialized:
+            // FIXME: This is an easy case!  Just initialize the Secret Storage with a new key!
             logger.error("Matrix secret storage did not initialize")
-            let error = CirclesError("Matrix secret storage did not initialize")
             await MainActor.run {
-                self.state = .nothing(error)
+                self.state = .needSecretStorage(matrix)
             }
-            throw error
+            return
             
         case .needKey(let keyId, let keyDescription):
             logger.info("Matrix secret storage needs a key")
             await MainActor.run {
-                self.state = .needSSKey(matrix, keyId, keyDescription)
+                self.state = .needSecretStorageKey(matrix, keyId, keyDescription)
             }
             return
+        }
+    }
+    
+    // MARK: Initialize secret storage
+    
+    func initSecretStorage(key: Matrix.SecretStorageKey) async throws {
+        // Sanity check -- Are we in the right state to do this?
+        guard case .needSecretStorage(let matrix) = state else {
+            logger.error("Can't initialize secret storage unless we're in the 'need secret storage' state")
+            throw CirclesError("Can't initialize secret storage unless we're in the 'need secret storage' state")
+        }
+        
+        // Set up SSSS with our new default key
+        try await matrix.enableSecretStorage(defaultKey: key)
+
+        // Check to make sure that SSSS is now set up like we wanted
+        guard let ssss = matrix.secretStore,
+              case .online(let defaultKeyId) = ssss.state,
+              defaultKeyId == key.keyId
+        else {
+            logger.error("Failed to initialize secret storage with default key id \(key.keyId, privacy: .public)")
+            throw CirclesError("Failed to initialize secret storage")
+        }
+        
+        // Set our state to the next step in our sequence of checks
+        await MainActor.run {
+            self.state = .haveSecretStorageAndKey(matrix)
         }
     }
 
@@ -327,7 +339,7 @@ public class CirclesStore: ObservableObject {
     
     func addMissingKey(key: Matrix.SecretStorageKey) async throws {
         
-        guard case .needSSKey(let matrix, let needKeyId, let description) = self.state
+        guard case .needSecretStorageKey(let matrix, let needKeyId, let description) = self.state
         else {
             logger.error("Can't finish connecting unless we're waiting on a secret storage key")
             throw CirclesError("Can't finish connecting unless we're waiting on a secret storage key")
@@ -354,21 +366,66 @@ public class CirclesStore: ObservableObject {
             throw CirclesError("Secret storage is still not online")
         }
         
-        // Yay we're online with secret storage
-        // Make sure that our Matrix session has cross-signing and encrypted key backup enabled
-        try await matrix.setupCrossSigning()
-        try await matrix.setupKeyBackup()
+
         
-        guard let config = try? await loadConfig(matrix: matrix)
-        else {
-            let setupSession = SetupSession(matrix: matrix)
-            await MainActor.run {
-                self.state = .settingUp(setupSession)
-            }
-            return
+        await MainActor.run {
+            self.state = .haveSecretStorageAndKey(matrix)
+        }
+    }
+
+    // MARK: Cross Signing
+    
+    func ensureCrossSigning() async throws {
+        guard case .haveSecretStorageAndKey(let matrix) = state else {
+            logger.error("Can't do cross signing before SSSS")
+            throw CirclesError("Can't do cross signing before SSSS")
         }
         
-        try await launch(matrix: matrix, config: config)
+        try await matrix.setupCrossSigning()
+    
+        // FIXME: Check to verify that it succeeded
+        
+        await MainActor.run {
+            self.state = .haveCrossSigning(matrix)
+        }
+    }
+    
+    // MARK: Key Backup
+    
+    func ensureKeyBackup() async throws {
+        guard case .haveCrossSigning(let matrix) = state else {
+            logger.error("Can't do key backup before cross signing")
+            throw CirclesError("Can't do key backup before cross signing")
+        }
+        
+        try await matrix.setupKeyBackup()
+        
+        // FIXME: Check to verify that it succeeded
+        
+        await MainActor.run {
+            self.state = .haveKeyBackup(matrix)
+        }
+    }
+    
+    // MARK: Check for Circles config
+    
+    func checkForSpaceHierarchy() async throws {
+        guard case .haveKeyBackup(let matrix) = state else {
+            logger.error("Don't check for space hierarchy before key backup")
+            throw CirclesError("Don't check for space hierarchy before key backup")
+        }
+
+        if let config = try await matrix.getAccountData(for: EVENT_TYPE_CIRCLES_CONFIG, of: CirclesConfigContent.self) {
+            logger.debug("Found space hierarchy with root at \(config.root.stringValue)")
+            await MainActor.run {
+                self.state = .haveSpaceHierarchy(matrix, config)
+            }
+        } else {
+            logger.debug("Failed to retrieve Circles config object from account data")
+            await MainActor.run {
+                self.state = .needSpaceHierarchy(matrix)
+            }
+        }
     }
     
     // MARK: Generate S4 key
@@ -390,24 +447,146 @@ public class CirclesStore: ObservableObject {
         return s4Key
     }
     
-    // MARK: Launch
-    func launch(matrix: Matrix.Session, config: CirclesConfigContent) async throws {
-        guard let session = try? await CirclesApplicationSession(store: self, matrix: matrix, config: config)
-        else {
-            // If anything went wrong here, we don't know what it was
-            // Fail and give up :(
-            let error = CirclesError("Failed to establish Circles application session for \(matrix.creds.userId)")
-            await MainActor.run {
-                self.state = .nothing(error)
-            }
-            throw error
+    // MARK: Space hierarchy
+    func createSpaceHierarchy(displayName: String,
+                              circles: [(String,UIImage?)],
+                              onProgress: ((Int,Int,String) -> Void)? = nil
+    ) async throws {
+        
+        guard case .needSpaceHierarchy(let matrix) = state else {
+            logger.error("Can't create space hierarchy unless we're in the 'need space hierarchy' state")
+            throw CirclesError("Invalid state transition (create space hierarchy)")
         }
-        logger.debug("Set up Matrix and Circles application session")
+
+        let total: Int = 13
+        
+        logger.debug("Creating Spaces hierarchy for Circles rooms")
+        onProgress?(0, total, "Creating Matrix Spaces")
+
+        try await Task.sleep(for: .seconds(1))
+        let topLevelSpace = try await matrix.createSpace(name: "Circles")
+        logger.debug("Created top-level Circles space \(topLevelSpace)")
+        onProgress?(1, total, "Creating Matrix Spaces")
+
+        try await Task.sleep(for: .seconds(1))
+        let myCircles = try await matrix.createSpace(name: "My Circles")
+        logger.debug("Created My Circles space \(myCircles)")
+        onProgress?(2, total, "Creating Matrix Spaces")
+
+        try await Task.sleep(for: .seconds(1))
+        let myGroups = try await matrix.createSpace(name: "My Groups")
+        logger.debug("Created My Groups space \(myGroups)")
+        onProgress?(3, total, "Creating Matrix Spaces")
+
+        try await Task.sleep(for: .seconds(1))
+        let myGalleries = try await matrix.createSpace(name: "My Photo Galleries")
+        logger.debug("Created My Galleries space \(myGalleries)")
+        onProgress?(4, total, "Creating Matrix Spaces")
+
+        try await Task.sleep(for: .seconds(1))
+        let myPeople = try await matrix.createSpace(name: "My People")
+        logger.debug("Created My People space \(myPeople)")
+        onProgress?(5, total, "Creating Matrix Spaces")
+
+        try await Task.sleep(for: .seconds(1))
+        let myProfile = try await matrix.createSpace(name: displayName, joinRule: .knock)  // Profile room is m.knock because we might share it with other users
+        logger.debug("Created My Profile space \(myProfile)")
+        onProgress?(6, total, "Creating Matrix Spaces")
+
+        logger.debug("- Adding Space child relationships")
+        onProgress?(6, total, "Initializing Spaces")
+        try await Task.sleep(for: .seconds(1))
+        // Space child relations
+        try await matrix.addSpaceChild(myCircles, to: topLevelSpace)
+        try await matrix.addSpaceChild(myGroups, to: topLevelSpace)
+        try await matrix.addSpaceChild(myGalleries, to: topLevelSpace)
+        try await matrix.addSpaceChild(myPeople, to: topLevelSpace)
+        try await matrix.addSpaceChild(myProfile, to: topLevelSpace)
+        // Space parent relations
+        try await matrix.addSpaceParent(topLevelSpace, to: myCircles, canonical: true)
+        try await matrix.addSpaceParent(topLevelSpace, to: myGroups, canonical: true)
+        try await matrix.addSpaceParent(topLevelSpace, to: myGalleries, canonical: true)
+        try await matrix.addSpaceParent(topLevelSpace, to: myPeople, canonical: true)
+        // Don't add the parent event to the profile space, because we will share that one with others and we don't need them to know our private room id for the top-level space
+        // It's not a big deal but this is probably safer...  otherwise the user might somehow be tricked into accepting a knock for the top-level space
+        
+        logger.debug("- Adding tags to spaces")
+        onProgress?(7, total, "Tagging Spaces")
+        try await Task.sleep(for: .seconds(1))
+        try await matrix.addTag(roomId: topLevelSpace, tag: ROOM_TAG_CIRCLES_SPACE_ROOT)
+        try await matrix.addTag(roomId: myCircles, tag: ROOM_TAG_MY_CIRCLES)
+        try await matrix.addTag(roomId: myGroups, tag: ROOM_TAG_MY_GROUPS)
+        try await matrix.addTag(roomId: myGalleries, tag: ROOM_TAG_MY_PHOTOS)
+        try await matrix.addTag(roomId: myPeople, tag: ROOM_TAG_MY_PEOPLE)
+        try await matrix.addTag(roomId: myProfile, tag: ROOM_TAG_MY_PROFILE)
+        
+        logger.debug("- Uploading Circles config to account data")
+        onProgress?(8, total, "Saving configuration")
+        try await Task.sleep(for: .seconds(1))
+        let config = CirclesConfigContent(root: topLevelSpace, circles: myCircles, groups: myGroups, galleries: myGalleries, people: myPeople, profile: myProfile)
+        try await matrix.putAccountData(config, for: EVENT_TYPE_CIRCLES_CONFIG)
+        
+        var count = 9
+        for (name, avatar) in circles {
+            logger.debug("- Creating circle [\(name, privacy: .public)]")
+            //status = "Creating circle \"\(circle.name)\""
+            onProgress?(count, total, "Creating circle \"\(name)\"")
+            try await Task.sleep(for: .seconds(1))
+            let circleRoomId = try await matrix.createSpace(name: name)
+            let wallRoomId = try await matrix.createRoom(name: name, type: ROOM_TYPE_CIRCLE, joinRule: .knock)
+            if let image = avatar {
+                try await matrix.setAvatarImage(roomId: wallRoomId, image: image)
+            }
+            try await matrix.addSpaceChild(wallRoomId, to: circleRoomId)
+            try await matrix.addSpaceChild(circleRoomId, to: myCircles)
+            count += 1
+        }
+        
+        logger.debug("- Creating photo gallery [Photos]")
+        //status = "Creating photo gallery"
+        onProgress?(12, total, "Creating photo gallery")
+        try await Task.sleep(for: .seconds(1))
+        let photosGallery = try await matrix.createRoom(name: "Photos", type: ROOM_TYPE_PHOTOS, joinRule: .knock)
+        try await matrix.addSpaceChild(photosGallery, to: myGalleries)
+        
+        //status = "All done!"
+        onProgress?(total, total, "All done!")
+        
+        // Update: Don't do this, just set our state to "have space hierarchy"
+        // Now transition to the next state, which for us is online
+        await MainActor.run {
+            self.state = .haveSpaceHierarchy(matrix, config)
+        }
+    }
+    
+    // MARK: Add config
+    func addConfig(config: CirclesConfigContent) async throws {
+        guard case .needSpaceHierarchy(let matrix) = state else {
+            logger.error("Can't add circles config until we're ready")
+            throw CirclesError("Invalid state transition")
+        }
+
+        await MainActor.run {
+            self.state = .haveSpaceHierarchy(matrix, config)
+        }
+    }
+    
+    // MARK: Go online
+    func goOnline() async throws {
+        guard case .haveSpaceHierarchy(let matrix, let config) = state else {
+            logger.error("Can't go online without our space hierarchy")
+            throw CirclesError("Can't go online without our space hierarchy")
+        }
+
+        guard let appSession = try? await CirclesApplicationSession(store: self, matrix: matrix, config: config)
+        else {
+            logger.error("Failed to create Circles application session")
+            throw CirclesError("Failed to create Circles application session")
+        }
         
         await MainActor.run {
-            self.state = .online(session)
+            self.state = .online(appSession)
         }
-        logger.debug("Set state to .online")
     }
     
     // MARK: Login
@@ -422,7 +601,14 @@ public class CirclesStore: ObservableObject {
             
             // Save the full credentials including the userId, so we can automatically connect next time
             try self.saveCredentials(creds: creds)
-            try await self.connect(creds: creds)
+            
+            // Load the initial sync token, if there is one
+            let token = self.loadSyncToken(userId: creds.userId, deviceId: creds.deviceId)
+            
+            await MainActor.run {
+                self.state = .haveCreds(creds, nil, token)
+            }
+            
             return
         }
         
@@ -446,7 +632,7 @@ public class CirclesStore: ObservableObject {
                 else {
                     self.logger.error("Failed to decode credentials")
                     await MainActor.run {
-                        self.state = .nothing(CirclesError("Failed to decode credentials"))
+                        self.state = .error(CirclesError("Failed to decode credentials"))
                     }
                     return
                 }
@@ -464,10 +650,14 @@ public class CirclesStore: ObservableObject {
                     try await store.saveKey(key: s4Key.key, keyId: s4Key.keyId)
                     
                     self.logger.debug("Connecting with keyId [\(s4Key.keyId)]")
-                    try await self.connect(creds: creds, s4Key: s4Key)
+                    await MainActor.run {
+                        self.state = .haveCreds(creds, s4Key, nil)
+                    }
                 } else {
                     self.logger.warning("Could not find BS-SPEKE client")
-                    try await self.connect(creds: creds)
+                    await MainActor.run {
+                        self.state = .haveCreds(creds, nil, nil)
+                    }
                 }
             })
             await MainActor.run {
@@ -481,11 +671,13 @@ public class CirclesStore: ObservableObject {
                                                   refreshToken: true,
                                                   completion: { creds in
                                                         try self.saveCredentials(creds: creds)
-                                                        try await self.connect(creds: creds)
+                                                        await MainActor.run {
+                                                            self.state = .haveCreds(creds, nil, nil)
+                                                        }
                                                     },
                                                   cancellation: {
                                                         await MainActor.run {
-                                                            self.state = .nothing(nil)
+                                                            self.state = .needCreds
                                                         }
                                                     })
             
@@ -511,7 +703,7 @@ public class CirclesStore: ObservableObject {
             else {
                 self.logger.error("Failed to decode credentials")
                 await MainActor.run {
-                    self.state = .nothing(CirclesError("Failed to decode credentials"))
+                    self.state = .error(CirclesError("Failed to decode credentials"))
                 }
                 return
             }
@@ -529,21 +721,14 @@ public class CirclesStore: ObservableObject {
 
                 self.logger.debug("Configuring with keyId [\(s4Key.keyId)]")
                 
-                guard let matrix = try? await Matrix.Session(creds: creds,
-                                                             syncToken: nil,
-                                                             startSyncing: false,
-                                                             initialSyncFilter: self.filter,
-                                                             secretStorageKey: s4Key)
-                else {
-                    await MainActor.run {
-                        self.state = .nothing(CirclesError("Could not connect to the Matrix server"))
-                    }
-                    return
+                await MainActor.run {
+                    self.state = .haveCreds(creds, s4Key, nil)
                 }
-                
-                try await self.beginSetup(matrix: matrix)
             } else {
-                self.logger.warning("Could not find BS-SPEKE client")
+                self.logger.warning("Could not find BS-SPEKE client -- Unable to generate SSSS key from passphrase")
+                await MainActor.run {
+                    self.state = .haveCreds(creds, nil, nil)
+                }
             }
         })
         await MainActor.run {
@@ -551,12 +736,40 @@ public class CirclesStore: ObservableObject {
         }
     }
     
-    // MARK: Begin setup
-    
-    func beginSetup(matrix: Matrix.Session) async throws {
-        let session = SetupSession(matrix: matrix)
-        await MainActor.run {
-            self.state = .settingUp(session)
+    // MARK: Matrix session
+    var matrix: Matrix.Session? {
+        switch state {
+            
+        case .startingUp:
+            return nil
+        case .error(_):
+            return nil
+        case .needCreds:
+            return nil
+        case .signingUp(_):
+            return nil
+        case .loggingInUIA(_):
+            return nil
+        case .loggingInNonUIA(_):
+            return nil
+        case .haveCreds(_, _, _):
+            return nil
+        case .needSecretStorage(let matrix):
+            return matrix
+        case .needSecretStorageKey(let matrix, _, _):
+            return matrix
+        case .haveSecretStorageAndKey(let matrix):
+            return matrix
+        case .haveCrossSigning(let matrix):
+            return matrix
+        case .haveKeyBackup(let matrix):
+            return matrix
+        case .needSpaceHierarchy(let matrix):
+            return matrix
+        case .haveSpaceHierarchy(let matrix, _):
+            return matrix
+        case .online(let appSession):
+            return appSession.matrix
         }
     }
 
@@ -565,48 +778,58 @@ public class CirclesStore: ObservableObject {
     
     func logout() async throws {
         switch state {
-        case .online(let session):
-            let creds = session.matrix.creds
-            logger.info("Logging out active session for \(creds.userId)")
-            //try await disconnect()
-            try await session.matrix.logout()
-            removeCredentials(for: creds.userId)
+            
+        case .error(_):
             await MainActor.run {
-                self.state = .nothing(nil)
+                self.state = .needCreds
             }
             
-        case .haveCreds(let creds):
+        case .startingUp:
+            // WTF?!?  Way too early to actually do anything
+            return
+            
+        case .needCreds:
+            // Nothing to log out
+            return
+            
+        case .signingUp(let signupSession):
+            try await signupSession.cancel()
+            await MainActor.run {
+                self.state = .needCreds
+            }
+            
+        case .loggingInUIA(let loginSession):
+            try await loginSession.cancel()
+            await MainActor.run {
+                self.state = .needCreds
+            }
+            
+        case .loggingInNonUIA(let legacyLoginSession):
+            // There's really nothing to cancel
+            await MainActor.run {
+                self.state = .needCreds
+            }
+            
+        case .haveCreds(let creds, _, _):
             logger.info("Logging out offline session for \(creds.userId)")
             if let client = try? await Matrix.Client(creds: creds) {
                 try await client.logout()
             }
             removeCredentials(for: creds.userId)
             await MainActor.run {
-                self.state = .nothing(nil)
-            }
-            
-        case .needSSKey(let matrix, let keyId, let keyDescription):
-            logger.info("Logging out of session that was blocked waiting for keys")
-            let creds = matrix.creds
-            try await matrix.logout()
-            removeCredentials(for: creds.userId)
-            await MainActor.run {
-                self.state = .nothing(nil)
-            }
-            
-        case .settingUp(let session):
-            let client = session.client
-            let creds = session.client.creds
-            
-            try await client.logout()
-            removeCredentials(for: creds.userId)
-
-            await MainActor.run {
-                self.state = .nothing(nil)
+                self.state = .needCreds
             }
             
         default:
-            logger.warning("Can't log out because we are not online")
+            if let matrix = self.matrix {
+                let creds = matrix.creds
+                try await matrix.close()
+                try await matrix.logout()
+                removeCredentials(for: creds.userId)
+                await MainActor.run {
+                    self.state = .needCreds
+                }
+            }
         }
     }
     
@@ -619,7 +842,7 @@ public class CirclesStore: ObservableObject {
         }
         // Then set our state to .nothing
         await MainActor.run {
-            self.state = .nothing(nil)
+            self.state = .needCreds
         }
     }
     
