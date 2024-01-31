@@ -229,7 +229,11 @@ struct CirclesTabbedInterface: View {
     var body: some View {
         ZStack {
             #if DEBUG
-            debugTabView
+            if debugMode {
+                debugTabView
+            } else {
+                tabview
+            }
             #else
             tabview
             #endif
