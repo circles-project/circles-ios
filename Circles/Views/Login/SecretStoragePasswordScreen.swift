@@ -14,7 +14,7 @@ struct SecretStoragePasswordScreen: View {
     var store: CirclesStore
     @ObservedObject var matrix: Matrix.Session
     var keyId: String
-    var description: KeyDescriptionContent
+    var description: Matrix.KeyDescriptionContent
     
     @AppStorage("debugMode") var debugMode: Bool = false
     

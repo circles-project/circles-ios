@@ -1334,7 +1334,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://gitlab.futo.org/circles/matrix.swift.git";
 			requirement = {
-				branch = "cvwright/decryption-errors";
+				branch = main;
 				kind = branch;
 			};
 		};

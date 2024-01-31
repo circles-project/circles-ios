@@ -29,7 +29,7 @@ public class CirclesStore: ObservableObject {
         case loggingInNonUIA(LegacyLoginSession)    // For accounts without fancy swiclops authentication
         case haveCreds(Matrix.Credentials, Matrix.SecretStorageKey?, String?)
         case needSecretStorage(Matrix.Session)
-        case needSecretStorageKey(Matrix.Session, String, KeyDescriptionContent)
+        case needSecretStorageKey(Matrix.Session, String, Matrix.KeyDescriptionContent)
         case haveSecretStorageAndKey(Matrix.Session)
         case haveCrossSigning(Matrix.Session)
         case haveKeyBackup(Matrix.Session)
