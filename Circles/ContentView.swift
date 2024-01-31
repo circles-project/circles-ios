@@ -32,10 +32,31 @@ struct ContentView: View {
 
         switch(store.state) {
             
-        case .nothing:
+        case .startingUp:
+            ProgressView("Loading Circles...")
+                .onAppear {
+                    Task {
+                        try await store.lookForCreds()
+                    }
+                }
+            
+        case .needCreds:
             WelcomeScreen(store: store)
             
-        case .haveCreds(let creds):
+        case .signingUp(let signupSession):
+            SignupScreen(session: signupSession, store: store)
+                .environmentObject(store.appStore)
+        
+        //case .settingUp(let setupSession):
+        //    SetupScreen(session: setupSession, store: store)
+            
+        case .loggingInUIA(let uiaLoginSession):
+            UiaLoginScreen(session: uiaLoginSession, store: store)
+            
+        case .loggingInNonUIA(let legacyLoginSession):
+            LegacyLoginScreen(session: legacyLoginSession)
+            
+        case .haveCreds(let creds, let key, let token):
             VStack {
                 Spacer()
                 
@@ -44,7 +65,7 @@ struct ContentView: View {
                     .onAppear {
                         _ = Task {
                             do {
-                                try await store.connect(creds: creds)
+                                try await store.connect(creds: creds, s4Key: key, token: token)
                             } catch {
                                 print("connect() failed -- disconnecting instead")
                                 store.removeCredentials(for: creds.userId)
@@ -62,28 +83,58 @@ struct ContentView: View {
                 }
             }
             
-        case .signingUp(let signupSession):
-            SignupScreen(session: signupSession, store: store)
-                .environmentObject(store.appStore)
-        
-        case .settingUp(let setupSession):
-            SetupScreen(session: setupSession, store: store)
-            
-        case .loggingInUIA(let uiaLoginSession):
-            UiaLoginScreen(session: uiaLoginSession, store: store)
-            
-        case .loggingInNonUIA(let legacyLoginSession):
-            LegacyLoginScreen(session: legacyLoginSession)
-            
-        case .needSSKey(let matrix, let keyId, let keyDescription):
-            SecretStoragePasswordScreen(store: store, matrix: matrix, keyId: keyId, description: keyDescription)
 
+        case .needSecretStorage(let matrix):
+            SecretStorageCreationScreen(store: store, matrix: matrix)
+            
+        case .needSecretStorageKey(let matrix, let keyId, let keyDescription):
+            SecretStoragePasswordScreen(store: store, matrix: matrix, keyId: keyId, description: keyDescription)
+            
+        case .haveSecretStorageAndKey(let matrix):
+            //Text("Have secret storage and key")
+            ProgressView("Checking cross signing")
+                .onAppear {
+                    Task {
+                        try await store.ensureCrossSigning()
+                    }
+                }
+            
+        case .haveCrossSigning(let matrix):
+            //Text("Have cross signing")
+            ProgressView("Checking key backup")
+                .onAppear {
+                    Task {
+                        try await store.ensureKeyBackup()
+                    }
+                }
+            
+        case .haveKeyBackup(let matrix):
+            //Text("Have key backup")
+            ProgressView("Checking space hierarchy")
+                .onAppear {
+                    Task {
+                        try await store.checkForSpaceHierarchy()
+                    }
+                }
+            
+        case .needSpaceHierarchy(let matrix):
+            Text("Need space hierarchy")
+
+        case .haveSpaceHierarchy(let matrix, let config):
+            //Text("Have space hierarchy")
+            ProgressView("Loading Circles")
+                .onAppear {
+                    Task {
+                        try await store.goOnline()
+                    }
+                }
+            
         case .online(let circlesSession):
             CirclesTabbedInterface(store: store, session: circlesSession)
                 .environmentObject(circlesSession)
                 .environmentObject(store.appStore)
             
-        default:
+        case .error(_):
             errorView
         }
     }

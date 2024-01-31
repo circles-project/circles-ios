@@ -126,6 +126,8 @@
 		A54BA3A62851222200453D5E /* WelcomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3A52851222200453D5E /* WelcomeScreen.swift */; };
 		A54BA3A928529BE500453D5E /* SetupScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3A828529BE500453D5E /* SetupScreen.swift */; };
 		A54BA3AB28592D2000453D5E /* SetupSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3AA28592D2000453D5E /* SetupSession.swift */; };
+		A553303F2B65689700695436 /* RoomCryptoInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A553303E2B65689700695436 /* RoomCryptoInfoView.swift */; };
+		A55330412B6826C500695436 /* SecretStorageCreationScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55330402B6826C500695436 /* SecretStorageCreationScreen.swift */; };
 		A55B8F1E2A8D761A00BAA1FD /* SecretStoragePasswordScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55B8F1D2A8D761A00BAA1FD /* SecretStoragePasswordScreen.swift */; };
 		A55F367329EDB66300F46971 /* GalleryInviteCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55F367229EDB66300F46971 /* GalleryInviteCard.swift */; };
 		A55F367529EEE7EA00F46971 /* PhotoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55F367429EEE7EA00F46971 /* PhotoDetailView.swift */; };
@@ -314,6 +316,8 @@
 		A54BA3A52851222200453D5E /* WelcomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreen.swift; sourceTree = "<group>"; };
 		A54BA3A828529BE500453D5E /* SetupScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupScreen.swift; sourceTree = "<group>"; };
 		A54BA3AA28592D2000453D5E /* SetupSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupSession.swift; sourceTree = "<group>"; };
+		A553303E2B65689700695436 /* RoomCryptoInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomCryptoInfoView.swift; sourceTree = "<group>"; };
+		A55330402B6826C500695436 /* SecretStorageCreationScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecretStorageCreationScreen.swift; sourceTree = "<group>"; };
 		A55B8F1D2A8D761A00BAA1FD /* SecretStoragePasswordScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecretStoragePasswordScreen.swift; sourceTree = "<group>"; };
 		A55F367229EDB66300F46971 /* GalleryInviteCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryInviteCard.swift; sourceTree = "<group>"; };
 		A55F367429EEE7EA00F46971 /* PhotoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailView.swift; sourceTree = "<group>"; };
@@ -509,20 +513,20 @@
 		409F430C265DE0CE00690A61 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				A5EAAC1B2B30CEAF00476B94 /* Composer */,
-				A52DF68629E73299008860C3 /* Settings */,
-				A5A40B6429D6088A009A17EE /* UIA */,
+				A562C08D2AFE8EA800522FCB /* CirclesLogoView.swift */,
 				409F4328265DE13B00690A61 /* Circles */,
+				A5EAAC1B2B30CEAF00476B94 /* Composer */,
 				409F4329265DE14100690A61 /* Groups */,
 				409F430D265DE0D500690A61 /* Home */,
 				409F4357265DE1D800690A61 /* Login */,
 				409F4366265DE22F00690A61 /* People */,
 				409F432A265DE14700690A61 /* Photo Galleries */,
 				409F43A4265DE41000690A61 /* Rooms */,
+				A52DF68629E73299008860C3 /* Settings */,
 				A54BA3A728529BC900453D5E /* Setup */,
 				409F4358265DE1DE00690A61 /* Signup */,
 				409F435E265DE20B00690A61 /* Timeline */,
-				A562C08D2AFE8EA800522FCB /* CirclesLogoView.swift */,
+				A5A40B6429D6088A009A17EE /* UIA */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -604,6 +608,7 @@
 				A54BA3A52851222200453D5E /* WelcomeScreen.swift */,
 				A55B8F1D2A8D761A00BAA1FD /* SecretStoragePasswordScreen.swift */,
 				A56593622AF17EF90003C244 /* LegacyLoginScreen.swift */,
+				A55330402B6826C500695436 /* SecretStorageCreationScreen.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -677,6 +682,7 @@
 				A56BE17C2AD700E100B15F51 /* RoomShareSheet.swift */,
 				A56BE17A2AD6ED4000B15F51 /* ScanQrCodeAndKnockSheet.swift */,
 				A562C0912B0BEC2000522FCB /* UsersToInviteView.swift */,
+				A553303E2B65689700695436 /* RoomCryptoInfoView.swift */,
 			);
 			path = Rooms;
 			sourceTree = "<group>";
@@ -921,6 +927,7 @@
 				A5E101F82814FAFD000B2C42 /* bcrypt.c in Sources */,
 				403CEA9326E864160054DBF4 /* TermsOfServiceForm.swift in Sources */,
 				40878FCA2694DBC400A66EF0 /* PostComposerSheet.swift in Sources */,
+				A55330412B6826C500695436 /* SecretStorageCreationScreen.swift in Sources */,
 				A52ACB932A7969F6005D90C5 /* GalleryInvitationsView.swift in Sources */,
 				409F4326265DE12600690A61 /* CloudImagePicker.swift in Sources */,
 				A54A27882A843BB200858846 /* GroupInvitationsIndicator.swift in Sources */,
@@ -1024,6 +1031,7 @@
 				A52FEBFD2862521F00AE4E3A /* CirclesApplicationSession.swift in Sources */,
 				A53E91302A5C9DEE007B0196 /* IgnoredUsersView.swift in Sources */,
 				A52DF68C29E88940008860C3 /* PhotoCard.swift in Sources */,
+				A553303F2B65689700695436 /* RoomCryptoInfoView.swift in Sources */,
 				A53E91222A5623F9007B0196 /* ProfileSettingsView.swift in Sources */,
 				409F4315265DE0F400690A61 /* ImagePicker.swift in Sources */,
 				409F4338265DE15F00690A61 /* CircleConnectionsSheet.swift in Sources */,
@@ -1334,7 +1342,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://gitlab.futo.org/circles/matrix.swift.git";
 			requirement = {
-				branch = main;
+				branch = "cvwright/decryption-errors";
 				kind = branch;
 			};
 		};

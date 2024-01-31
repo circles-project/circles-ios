@@ -13,6 +13,7 @@ struct RoomMemberDetailView: View {
     @ObservedObject var room: Matrix.Room
     
     @EnvironmentObject var session: CirclesApplicationSession
+    @AppStorage("debugMode") var debugMode: Bool = false
     
     @State private var selectedPower: Int
     
@@ -263,6 +264,17 @@ struct RoomMemberDetailView: View {
         }
     }
 
+    @ViewBuilder
+    var securitySection: some View {
+        Section("Security") {
+            ForEach(user.devices) { device in
+                NavigationLink(destination: DeviceDetailsView(session: room.session, device: device)) {
+                    DeviceInfoView(session: room.session, device: device)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
     
     var body: some View {
         VStack {
@@ -301,6 +313,10 @@ struct RoomMemberDetailView: View {
                 
                 if !userIsMe {
                     invitationSection
+                }
+                
+                if debugMode {
+                    securitySection
                 }
             }
         }
