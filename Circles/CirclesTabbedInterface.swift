@@ -8,6 +8,7 @@
 import SwiftUI
 import Matrix
 
+#if DEBUG
 struct SyncDebugView: View {
     @ObservedObject var matrix: Matrix.Session
     
@@ -27,6 +28,7 @@ struct SyncDebugView: View {
         .padding(.horizontal)
     }
 }
+#endif
 
 struct CirclesTabbedInterface: View {
     @ObservedObject var store: CirclesStore
