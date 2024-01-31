@@ -56,13 +56,13 @@ let CIRCLES_DOMAINS = [
     "nl.circles-dev.net",
 ]
 
-//#if DEBUG
-//    let usDomain = "us.circles-dev.net"
-//    let euDomain = "nl.circles-dev.net"
-//#else
+#if DEBUG
+    let usDomain = "us.circles-dev.net"
+    let euDomain = "nl.circles-dev.net"
+#else
     let usDomain = "circles.futo.org"
     let euDomain = "eu.circles.futo.org"
-//#endif
+#endif
 
 let ORG_FUTO_BCRYPT_SHA2 = "org.futo.bcrypt-sha2"
 let ORG_FUTO_BSSPEKE_ECC = "org.futo.bsspeke-ecc"
