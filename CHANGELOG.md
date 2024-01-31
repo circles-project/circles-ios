@@ -1,3 +1,8 @@
+# 0.9.3
+* Internal updates for smoother and more reliable login/signup
+* Bugfix: Always sync with the server on re-open
+* Bugfix: Handle brand-new accounts on self-hosted servers
+
 # 0.9.2
 * Relax password strength requirements
 * Use shared web credentials and Keychain for passwords
