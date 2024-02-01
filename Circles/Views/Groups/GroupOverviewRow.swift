@@ -26,6 +26,7 @@ struct GroupOverviewRow: View {
                     Text(room.name ?? room.id)
                         .font(.title2)
                         .fontWeight(.bold)
+                        .foregroundColor(.primary)
                     Spacer()
                 }
 

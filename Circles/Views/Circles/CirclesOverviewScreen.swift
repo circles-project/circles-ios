@@ -107,6 +107,7 @@ struct CirclesOverviewScreen: View {
                     }
                 }
                 .listStyle(.plain)
+                .accentColor(.secondaryBackground)
             }
         }
         else {

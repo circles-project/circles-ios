@@ -649,15 +649,15 @@
 		409F4366265DE22F00690A61 /* People */ = {
 			isa = PBXGroup;
 			children = (
-				409F4368265DE23F00690A61 /* PeopleOverviewScreen.swift */,
 				409F436A265DE24000690A61 /* ConnectedPersonDetailView.swift */,
+				4C40ED272AA7D06800F58493 /* PeopleInvitationsIndicator.swift */,
+				A52ACB902A793B5A005D90C5 /* PeopleInvitationsView.swift */,
+				409F4368265DE23F00690A61 /* PeopleOverviewScreen.swift */,
 				409F436B265DE24000690A61 /* PersonHeaderRow.swift */,
 				409F4367265DE23E00690A61 /* PersonsCircleRow.swift */,
 				A52ACB8A2A78240C005D90C5 /* SelfDetailView.swift */,
-				A52ACB8E2A786974005D90C5 /* UnconnectedPersonDetailView.swift */,
-				A52ACB902A793B5A005D90C5 /* PeopleInvitationsView.swift */,
-				4C40ED272AA7D06800F58493 /* PeopleInvitationsIndicator.swift */,
 				A58ADD3D2AF974BB00F7CEDD /* SharedCirclesPicker.swift */,
+				A52ACB8E2A786974005D90C5 /* UnconnectedPersonDetailView.swift */,
 			);
 			path = People;
 			sourceTree = "<group>";

@@ -121,7 +121,7 @@ struct PhotosOverviewScreen: View {
                     
                 }
                 .listStyle(.plain)
-
+                .accentColor(.secondaryBackground)
             }
             //.padding()
 

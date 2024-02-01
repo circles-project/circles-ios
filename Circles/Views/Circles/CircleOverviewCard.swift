@@ -28,6 +28,7 @@ struct CircleOverviewCard: View {
                         Text(space.name ?? "(unnamed circle)")
                             .font(.title2)
                             .fontWeight(.bold)
+                            .foregroundColor(.primary)
                         Spacer()
                     }
                     
