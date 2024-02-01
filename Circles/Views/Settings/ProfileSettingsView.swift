@@ -50,10 +50,12 @@ struct ProfileSettingsView: View {
                 Text("User ID")
                     .badge(session.creds.userId.stringValue)
                 
+                /*
                 NavigationLink(destination: UpdateStatusMessageView(session: session)) {
                     Text("Status message")
                         .badge(session.statusMessage ?? "(none)")
                 }
+                */
             }
         }
         .navigationTitle("Public Profile")
