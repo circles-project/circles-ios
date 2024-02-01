@@ -1,3 +1,9 @@
+# 0.9.4
+* iPad: Disable portrait orientation
+* iPad: Make selected circle/group/gallery more legible
+* Bugfix: Remove unused sections in Settings
+* Add support for legacy Matrix password authentication
+
 # 0.9.3
 * Internal updates for smoother and more reliable login/signup
 * Bugfix: Always sync with the server on re-open
