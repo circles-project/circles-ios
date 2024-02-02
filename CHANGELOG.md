@@ -1,3 +1,7 @@
+# 0.9.5
+* Bugfix: More sync failures that lead to decryption errors
+* Show even more info in debug mode
+
 # 0.9.4
 * iPad: Disable portrait orientation
 * iPad: Make selected circle/group/gallery more legible
