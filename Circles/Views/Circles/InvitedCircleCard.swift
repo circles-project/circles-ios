@@ -13,6 +13,8 @@ struct InvitedCircleCard: View {
     @ObservedObject var user: Matrix.User
     @ObservedObject var container: ContainerRoom<CircleSpace>
     
+    @AppStorage("debugMode") var debugMode: Bool = false
+    
     @State var showAcceptSheet = false
     @State var selectedCircles: Set<CircleSpace> = []
     
@@ -37,6 +39,12 @@ struct InvitedCircleCard: View {
                 Text(room.name ?? "(unnamed circle)")
                     .font(.largeTitle)
                     .fontWeight(.bold)
+                
+                if debugMode {
+                    Text(room.roomId.stringValue)
+                        .font(.subheadline)
+                        .foregroundColor(.red)
+                }
 
                 Text("From:")
                 HStack(alignment: .top) {
@@ -108,6 +116,19 @@ struct InvitedCircleCard: View {
             
             if !commonRooms.isEmpty {
                 self.blur = 0
+            }
+            
+            // Check to see if this is maybe a stale/stuck invitation
+            print("INVITE Checking \(room.roomId) for stuck invitations")
+            let circles = container.rooms
+            if let existingCircle = circles.first(where: {$0.children.contains(room.roomId) || $0.rooms.first(where: {$0.roomId == room.roomId}) != nil}) {
+                // Somehow we've already joined this one
+                print("INVITE Room \(room.roomId) is already followed in circle \(existingCircle.name ?? existingCircle.roomId.stringValue)")
+                Task {
+                    try await container.session.deleteInvitedRoom(roomId: room.roomId)
+                }
+            } else {
+                print("INVITE Room \(room.roomId) is not already followed")
             }
         }
     }
