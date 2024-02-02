@@ -15,7 +15,8 @@ struct CircleFollowingRow: View {
     var space: CircleSpace
     @ObservedObject var room: Matrix.Room
     @ObservedObject var user: Matrix.User
-    
+
+    @AppStorage("debugMode") var debugMode: Bool = false
     
     var body: some View {
         NavigationLink(destination: FollowingTimelineDetailsView(room: room, user: user, circle: space)) {
@@ -28,6 +29,11 @@ struct CircleFollowingRow: View {
             
             VStack(alignment: .leading) {
                 Text("\(user.displayName ?? user.userId.username)")
+                if debugMode {
+                    Text(room.roomId.stringValue)
+                        .font(.subheadline)
+                        .foregroundColor(.red)
+                }
                 let followerCount = max(0, room.joinedMembers.count-1)
                 let unit = followerCount > 1 ? "followers" : "follower"
                 Text("\(room.name ?? "(???)") (\(followerCount) \(unit))")
