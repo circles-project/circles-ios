@@ -1338,7 +1338,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://gitlab.futo.org/circles/matrix.swift.git";
 			requirement = {
-				branch = "cvwright/sync-never-stop-never-stopping";
+				branch = main;
 				kind = branch;
 			};
 		};
