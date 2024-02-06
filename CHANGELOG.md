@@ -1,3 +1,7 @@
+# main
+* Add a debug details section to the room settings
+* Disable Apple Vision, since we have no way to test it
+
 # 0.9.5
 * Bugfix: More sync failures that lead to decryption errors
 * Show even more info in debug mode

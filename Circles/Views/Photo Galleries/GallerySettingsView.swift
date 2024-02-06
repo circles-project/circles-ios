@@ -147,6 +147,10 @@ struct GallerySettingsView: View {
                 }
             }
             
+            if debugMode {
+                RoomDebugDetailsSection(room: room)
+            }
+            
             Section("Danger Zone") {
                 Button(role: .destructive, action: {
                     self.showConfirmLeave = true

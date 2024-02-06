@@ -13,6 +13,8 @@ struct FollowingTimelineDetailsView: View {
     @ObservedObject var user: Matrix.User
     @ObservedObject var circle: CircleSpace
     
+    @AppStorage("debugMode") var debugMode: Bool = false
+    
     @State var showConfirmUnfollow = false
 
     
@@ -72,6 +74,10 @@ struct FollowingTimelineDetailsView: View {
                             MessageAuthorHeader(user: follower)
                         }
                     }
+                }
+                
+                if debugMode {
+                    RoomDebugDetailsSection(room: room)
                 }
                 
                 Section("Unfollow") {
