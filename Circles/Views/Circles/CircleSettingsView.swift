@@ -146,6 +146,12 @@ struct CircleSettingsView: View {
                 followingSection
                 
                 followersSection
+                
+                if let wall = space.wall,
+                   debugMode
+                {
+                    RoomDebugDetailsSection(room: wall)
+                }
             }
         }
         .navigationTitle("Settings for \(space.name ?? "this circle")")
