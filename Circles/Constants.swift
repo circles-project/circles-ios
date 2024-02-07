@@ -41,8 +41,6 @@ let RECOVERY_MIN_INTERVAL = 60.0
 let TIMELINE_FRAME_MAXWIDTH = 800.0
 let TIMELINE_BOTTOM_PADDING = 70.0
 
-let DEFAULT_DOMAIN = "circu.li"
-
 let MATRIX_SSSS_KEY_LABEL = "matrix_ssss"
 let MATRIX_SSSS_KEYID_LABEL = "matrix_ssss_key_id"
 
@@ -66,3 +64,5 @@ let CIRCLES_DOMAINS = [
 
 let ORG_FUTO_BCRYPT_SHA2 = "org.futo.bcrypt-sha2"
 let ORG_FUTO_BSSPEKE_ECC = "org.futo.bsspeke-ecc"
+
+let PRIVACY_POLICY_URL = "https://circles.futo.org/privacy/app/index.html"
