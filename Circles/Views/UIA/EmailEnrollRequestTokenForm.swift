@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import Combine
 import Matrix
+import MarkdownUI
 
 struct EmailEnrollRequestTokenForm: View {
     var session: any UIASession
@@ -68,7 +69,8 @@ struct EmailEnrollRequestTokenForm: View {
             
             // Extra call to .init() because SwiftUI actually uses different contructors based on whether you pass a string literal or a String
             // https://developer.apple.com/forums/thread/683632
-            Text(.init("We will never sell your information or use it for advertising.  See our [Privacy Policy](https://" + CIRCLES_PRIMARY_DOMAIN + "/privacy.html) for more information."))
+            let markdown = "We will never sell your information or use it for advertising.  See our [Privacy Policy](\(PRIVACY_POLICY_URL)) for more information."
+            Text(.init(markdown))
                 .lineLimit(3)
                 .padding()
             
