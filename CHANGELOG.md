@@ -1,4 +1,5 @@
-# main
+# v0.9.6
+* Fix decryption errors for messages posted while the user is invited
 * Add a debug details section to the room settings
 * Disable Apple Vision, since we have no way to test it
 
