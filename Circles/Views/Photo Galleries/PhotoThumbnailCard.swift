@@ -14,6 +14,8 @@ struct PhotoThumbnailCard: View {
     var height: CGFloat
     var width: CGFloat
     @State var showFullScreen: Bool = false
+    @State var sheetType: PhotoSheetType?
+    
     @AppStorage("debugMode") var debugMode: Bool = false
     @Environment(\.colorScheme) var colorScheme
 
@@ -33,6 +35,10 @@ struct PhotoThumbnailCard: View {
                         .fullScreenCover(isPresented: $showFullScreen) {
                             PhotoDetailView(message: message)
                         }
+                        .contextMenu {
+                            PhotoContextMenu(message: message, sheetType: $sheetType, showDetail: $showFullScreen)
+                        }
+
                 } else {
                     Color.gray
                         .onAppear {

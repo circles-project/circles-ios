@@ -1,4 +1,5 @@
 # main
+* Add the ability to share or delete individual photos
 * Clean up the circle/group/gallery creation dialogs to work better on iPad
 * Delete uploaded media when deleting the post that references them
 * Bugfix: Set displayname and profile photo on the server at setup time

@@ -77,6 +77,8 @@
 		A509B89A28189E950053E5BC /* BlindSaltSpeke in Frameworks */ = {isa = PBXBuildFile; productRef = A509B89928189E950053E5BC /* BlindSaltSpeke */; };
 		A509B89C2818A1F80053E5BC /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A509B89B2818A1F80053E5BC /* Array+Extension.swift */; };
 		A509B89E2819B6C90053E5BC /* CirclesError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A509B89D2819B6C90053E5BC /* CirclesError.swift */; };
+		A51503C42B75690700E1566E /* SaveImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51503C32B75690700E1566E /* SaveImage.swift */; };
+		A51503C62B756B7F00E1566E /* DeleteAndPurge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51503C52B756B7F00E1566E /* DeleteAndPurge.swift */; };
 		A51ABE6A2B2B7E2000039276 /* FollowingTimelineDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51ABE692B2B7E2000039276 /* FollowingTimelineDetailsView.swift */; };
 		A51ABE6C2B2B8B0900039276 /* GenericPersonDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51ABE6B2B2B8B0900039276 /* GenericPersonDetailView.swift */; };
 		A51ABE6E2B2B9BD500039276 /* RoomMemberDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51ABE6D2B2B9BD500039276 /* RoomMemberDetailView.swift */; };
@@ -269,6 +271,8 @@
 		A504DA7228120AF100EFF42E /* AsyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncButton.swift; sourceTree = "<group>"; };
 		A509B89B2818A1F80053E5BC /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
 		A509B89D2819B6C90053E5BC /* CirclesError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesError.swift; sourceTree = "<group>"; };
+		A51503C32B75690700E1566E /* SaveImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveImage.swift; sourceTree = "<group>"; };
+		A51503C52B756B7F00E1566E /* DeleteAndPurge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAndPurge.swift; sourceTree = "<group>"; };
 		A51ABE692B2B7E2000039276 /* FollowingTimelineDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowingTimelineDetailsView.swift; sourceTree = "<group>"; };
 		A51ABE6B2B2B8B0900039276 /* GenericPersonDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericPersonDetailView.swift; sourceTree = "<group>"; };
 		A51ABE6D2B2B9BD500039276 /* RoomMemberDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomMemberDetailView.swift; sourceTree = "<group>"; };
@@ -490,6 +494,8 @@
 				A5CC0ACA29D91F3D005935F0 /* zxcvbn */,
 				A565935E2AEAC4920003C244 /* QR.swift */,
 				A562C08F2AFE9A7200522FCB /* Array+RawRepresentable.swift */,
+				A51503C32B75690700E1566E /* SaveImage.swift */,
+				A51503C52B756B7F00E1566E /* DeleteAndPurge.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -925,6 +931,7 @@
 				A5FB06E52A6814A8002C5B88 /* InvitedCircleCard.swift in Sources */,
 				A53E912C2A57416B007B0196 /* DeactivateAccountView.swift in Sources */,
 				A5E101F82814FAFD000B2C42 /* bcrypt.c in Sources */,
+				A51503C42B75690700E1566E /* SaveImage.swift in Sources */,
 				403CEA9326E864160054DBF4 /* TermsOfServiceForm.swift in Sources */,
 				40878FCA2694DBC400A66EF0 /* PostComposerSheet.swift in Sources */,
 				A55330412B6826C500695436 /* SecretStorageCreationScreen.swift in Sources */,
@@ -1050,6 +1057,7 @@
 				A509B89C2818A1F80053E5BC /* Array+Extension.swift in Sources */,
 				409F439C265DE38200690A61 /* UserAvatarView.swift in Sources */,
 				A51ABE6E2B2B9BD500039276 /* RoomMemberDetailView.swift in Sources */,
+				A51503C62B756B7F00E1566E /* DeleteAndPurge.swift in Sources */,
 				409F4316265DE0F400690A61 /* ImageSaver.swift in Sources */,
 				A54A278A2A843C0300858846 /* GroupInvitationsView.swift in Sources */,
 				A53E912A2A573838007B0196 /* NotificationsSettingsView.swift in Sources */,

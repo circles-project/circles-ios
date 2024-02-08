@@ -19,6 +19,7 @@ enum PhotoSheetType: String, Identifiable {
     var id: String { rawValue }
 }
 
+/*
 struct PhotoCard: MessageView {
     
     let photoWidth: CGFloat = 800
@@ -185,3 +186,4 @@ struct PhotoCard: MessageView {
     }
     
 }
+*/
