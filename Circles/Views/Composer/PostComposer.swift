@@ -70,7 +70,6 @@ struct PostComposer: View {
     private let relatesTo: mRelatesTo?
     //@State private var newMessageType: String = M_TEXT
     @State private var newMessageText: String
-    @State private var newImage: UIImage? = nil
     //@State private var showPicker = false
     @State private var showNewPicker = false
     @State private var newPickerFilter: PHPickerFilter = .images
@@ -719,10 +718,14 @@ struct PostComposer: View {
         .sheet(item: $showPickerOfType, content: { type in
             switch type {
             case .camera:
-                ImagePicker(selectedImage: $newImage, sourceType: .camera)
-                    .onAppear {
-                        print("Showing picker of type = \(self.showPickerOfType?.rawValue ?? "nil") -- type = \(type)")
+                ImagePicker(sourceType: .camera) { maybeImage in
+                    if let image = maybeImage {
+                        self.messageState = .newImage(image)
                     }
+                }
+                .onAppear {
+                    print("Showing picker of type = \(self.showPickerOfType?.rawValue ?? "nil") -- type = \(type)")
+                }
             case .cloud:
                 CloudImagePicker(galleries: appSession.galleries, selected: self.$selectedImageContent) { content, image in
                     self.messageState = .cloudImage(content, image)
