@@ -1,4 +1,7 @@
 # main
+* Bugfix: Set displayname and profile photo on the server at setup time
+* Bugfix: Enable taking new photo for your profile
+* Bugfix: Enable posting new photo from the camera
 * Update privacy policy URL
 
 # v0.9.6

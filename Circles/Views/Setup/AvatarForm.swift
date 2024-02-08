@@ -68,12 +68,10 @@ struct AvatarForm: View {
                         }
                         
                         Button(action: {
+                            print("Showing camera")
                             self.showCamera = true
                         }) {
                             Label("Take a new photo", systemImage: "camera")
-                        }
-                        .sheet(isPresented: $showCamera) {
-                            ImagePicker(selectedImage: $avatarImage, sourceType: .camera)
                         }
                     }
                     label: {
@@ -84,6 +82,13 @@ struct AvatarForm: View {
                     }
                 }
                 .photosPicker(isPresented: $showPicker, selection: $selectedItem)
+                .sheet(isPresented: $showCamera) {
+                    ImagePicker(sourceType: .camera) { maybeImage in
+                        if let image = maybeImage {
+                            self.avatarImage = image
+                        }
+                    }
+                }
                 .onChange(of: selectedItem) { newItem in
                     Task {
                         if let data = try? await newItem?.loadTransferable(type: Data.self),
@@ -119,8 +124,14 @@ struct AvatarForm: View {
                 }
                 */
 
-            Button(action: {
+            AsyncButton(action: {
                 displayName = newName
+                if let name = displayName {
+                    try await matrix.setMyDisplayName(name)
+                }
+                if let image = avatarImage {
+                    try await matrix.setMyAvatarImage(image)
+                }
             }) {
                 Text("Next")
                     .padding()
