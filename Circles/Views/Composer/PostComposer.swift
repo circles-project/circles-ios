@@ -161,6 +161,68 @@ struct PostComposer: View {
         }
     }
     
+    private func downloadImageData(content: Matrix.mImageContent) async throws -> (Data, Data?) {
+        var mainData: Data
+        if let mainFile = content.file {
+            mainData = try await room.session.downloadAndDecryptData(mainFile)
+        } else if let mainUrl = content.url {
+            mainData = try await room.session.downloadData(mxc: mainUrl)
+        } else {
+            print("Couldn't download main image data")
+            throw CirclesError("Couldn't download main image data")
+        }
+        
+        var thumbnailData: Data?
+        if let thumbnailFile = content.thumbnail_file {
+            thumbnailData = try await room.session.downloadAndDecryptData(thumbnailFile)
+        } else if let thumbnailUrl = content.thumbnail_url {
+            thumbnailData = try await room.session.downloadData(mxc: thumbnailUrl)
+        }
+        
+        return (mainData, thumbnailData)
+    }
+    
+    private func repostImageContent(_ oldContent: Matrix.mImageContent, caption: String? = nil) async throws -> EventId {
+        let (mainData, thumbnailData) = try await downloadImageData(content: oldContent)
+        
+        if room.isEncrypted {
+            
+            let mainFile: Matrix.mEncryptedFile = try await room.session.encryptAndUploadData(plaintext: mainData, contentType: oldContent.info.mimetype)
+            print("COMPOSER\tRe-uploaded encrypted image to new URL \(mainFile.url)")
+            var thumbnailFile: Matrix.mEncryptedFile?
+            if let thumbData = thumbnailData,
+               let thumbInfo = oldContent.thumbnail_info
+            {
+                thumbnailFile = try await room.session.encryptAndUploadData(plaintext: thumbData, contentType: thumbInfo.mimetype)
+                print("COMPOSER\tRe-uploaded encrypted thumbnail to new URL \(thumbnailFile!.url)")
+            }
+            
+            let info = Matrix.mImageInfo(oldContent.info, thumbnail_url: nil, thumbnail_file: thumbnailFile, thumbnail_info: oldContent.thumbnail_info)
+            let newContent = Matrix.mImageContent(oldContent, file: mainFile, info: info, url: nil)
+            
+            let eventId = try await room.sendMessage(content: newContent)
+            return eventId
+            
+        } else { // Not encrypted
+            
+            let mainUrl = try await room.session.uploadData(data: mainData, contentType: oldContent.info.mimetype)
+            var thumbnailUrl: MXC?
+            if let thumbData = thumbnailData,
+               let thumbInfo = oldContent.thumbnail_info
+            {
+                thumbnailUrl = try await room.session.uploadData(data: thumbData, contentType: thumbInfo.mimetype)
+            }
+            
+            let info = Matrix.mImageInfo(oldContent.info, thumbnail_url: thumbnailUrl, thumbnail_file: nil, thumbnail_info: oldContent.thumbnail_info)
+            let newContent = Matrix.mImageContent(oldContent, file: nil, info: info, url: mainUrl)
+            
+            let eventId = try await room.sendMessage(content: newContent)
+            return eventId
+            
+        }
+    }
+    
+    
     private func send() async throws {
         // Post the message
         
@@ -224,8 +286,15 @@ struct PostComposer: View {
             
         case .cloudImage(let cloudImageContent, _):
             let caption: String? = !self.newMessageText.isEmpty ? self.newMessageText : nil
-            let newContent = Matrix.mImageContent(cloudImageContent, caption: caption, relatesTo: self.relatesTo)
-            let eventId = try await self.room.sendMessage(content: newContent)
+            
+            // We initially tried to be clever and simply re-post the old mxc:// URL from the photo gallery event
+            // But that makes deleting media unsafe -- If we want to delete an event, we never know if there are other events referencing that same media id or not :(
+            // Eventually MSC3911 or something similar will come along to spec a proper way to do this
+            // Until then, we must simply re-download and re-upload the same media content
+            // For maximum privacy, we can do like on Circles Android and re-encrypt the plaintext too
+            // But we do not need to re-encode a JPEG or any other lossy compression -- don't want to degrade quality by doing this over and over again
+            
+            let eventId = try await repostImageContent(cloudImageContent, caption: caption)
             print("COMPOSER\tSent cloud m.image with new eventId = \(eventId)")
             self.presentation.wrappedValue.dismiss()
             
