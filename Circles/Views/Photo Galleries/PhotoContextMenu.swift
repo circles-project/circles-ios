@@ -13,7 +13,6 @@ import Matrix
 
 struct PhotoContextMenu: View {
     var message: Matrix.Message
-    @Binding var sheetType: PhotoSheetType?
     @Binding var showDetail: Bool
     
     var body: some View {

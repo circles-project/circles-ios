@@ -97,7 +97,6 @@
 		A52DF68529E72CC1008860C3 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68429E72CC1008860C3 /* Keychain.swift */; };
 		A52DF68829E732AC008860C3 /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68729E732AC008860C3 /* SettingsScreen.swift */; };
 		A52DF68A29E8868C008860C3 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68929E8868C008860C3 /* MessageView.swift */; };
-		A52DF68C29E88940008860C3 /* PhotoCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68B29E88940008860C3 /* PhotoCard.swift */; };
 		A52DF69029E8AB52008860C3 /* Color+background.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68F29E8AB52008860C3 /* Color+background.swift */; };
 		A52FEBFD2862521F00AE4E3A /* CirclesApplicationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52FEBFC2862521F00AE4E3A /* CirclesApplicationSession.swift */; };
 		A534CC8D2B72EBEE008AFADA /* RoomDebugDetailsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A534CC8C2B72EBEE008AFADA /* RoomDebugDetailsSection.swift */; };
@@ -291,7 +290,6 @@
 		A52DF68429E72CC1008860C3 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		A52DF68729E732AC008860C3 /* SettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
 		A52DF68929E8868C008860C3 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
-		A52DF68B29E88940008860C3 /* PhotoCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCard.swift; sourceTree = "<group>"; };
 		A52DF68F29E8AB52008860C3 /* Color+background.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+background.swift"; sourceTree = "<group>"; };
 		A52FEBFC2862521F00AE4E3A /* CirclesApplicationSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesApplicationSession.swift; sourceTree = "<group>"; };
 		A534CC8C2B72EBEE008AFADA /* RoomDebugDetailsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomDebugDetailsSection.swift; sourceTree = "<group>"; };
@@ -593,7 +591,6 @@
 				A52ACB922A7969F6005D90C5 /* GalleryInvitationsView.swift */,
 				A55F367229EDB66300F46971 /* GalleryInviteCard.swift */,
 				A5EB046E2AFB30D400CC7A6C /* GallerySettingsView.swift */,
-				A52DF68B29E88940008860C3 /* PhotoCard.swift */,
 				A55F367629EEFB6900F46971 /* PhotoContextMenu.swift */,
 				A55F367429EEE7EA00F46971 /* PhotoDetailView.swift */,
 				409F4372265DE24F00690A61 /* PhotoGalleryCard.swift */,
@@ -1037,7 +1034,6 @@
 				409F43BA265DE51C00690A61 /* RoomInviteSheet.swift in Sources */,
 				A52FEBFD2862521F00AE4E3A /* CirclesApplicationSession.swift in Sources */,
 				A53E91302A5C9DEE007B0196 /* IgnoredUsersView.swift in Sources */,
-				A52DF68C29E88940008860C3 /* PhotoCard.swift in Sources */,
 				A553303F2B65689700695436 /* RoomCryptoInfoView.swift in Sources */,
 				A53E91222A5623F9007B0196 /* ProfileSettingsView.swift in Sources */,
 				409F4315265DE0F400690A61 /* ImagePicker.swift in Sources */,
