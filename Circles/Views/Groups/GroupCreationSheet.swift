@@ -141,18 +141,17 @@ struct GroupCreationSheet: View {
                 }
             }
             
-            Text("Group name:")
-                .fontWeight(.bold)
-            TextField("My awesome group", text: $groupName)
+            TextField("Group name", text: $groupName)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(.horizontal)
             
             Spacer()
             
+            /*
             Text("Users to invite:")
                 .fontWeight(.bold)
             UsersToInviteView(session: groups.session, users: $users)
-            
+            */
         }
         .padding()
     }

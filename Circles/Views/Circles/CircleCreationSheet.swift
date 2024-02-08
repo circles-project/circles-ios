@@ -71,7 +71,9 @@ struct CircleCreationSheet: View {
     
     var mockup: some View {
         HStack {
-            let cardSize: CGFloat = 90
+            let cardSize: CGFloat = 120
+            
+            Spacer()
             
             ZStack {
                 if let img = avatarImage {
@@ -134,6 +136,7 @@ struct CircleCreationSheet: View {
 
             Spacer()
             
+            /*
             VStack(alignment: .leading) {
                 Text("Invite Followers")
                     .fontWeight(.bold)
@@ -146,6 +149,7 @@ struct CircleCreationSheet: View {
                       message: Text(alertMessage),
                       dismissButton: .default(Text("OK")))
             }
+            */
 
         }
         .padding()
