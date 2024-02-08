@@ -13,27 +13,25 @@ import Matrix
 
 struct PhotoContextMenu: View {
     var message: Matrix.Message
-    @Binding var sheetType: PhotoSheetType?
     @Binding var showDetail: Bool
     
     var body: some View {
         let current = message.replacement ?? message
         
         if let content = current.content as? Matrix.MessageContent,
-            content.msgtype == M_IMAGE
+            content.msgtype == M_IMAGE,
+           let imageContent = content as? Matrix.mImageContent
         {
-            Button(action: {
-                // FIXME: TODO
+            AsyncButton(action: {
+                try await saveImage(content: imageContent, session: message.room.session)
             }) {
                 Label("Save image", systemImage: "square.and.arrow.down")
             }
 
-            if message.sender.userId == message.room.session.creds.userId {
-                Button(action: {
-                    // FIXME: TODO
-                }) {
-                    Label("Share", systemImage: "square.and.arrow.up")
-                }
+            if let thumbnail = current.thumbnail
+            {
+                let image = Image(uiImage: thumbnail)
+                ShareLink(item: image, preview: SharePreview(imageContent.caption ?? "", image: image))
             }
         }
         
@@ -47,6 +45,20 @@ struct PhotoContextMenu: View {
             self.showDetail = true
         }) {
             Label("Show detailed view", systemImage: "magnifyingglass")
+        }
+        
+        if message.iCanRedact {
+            Menu {
+                AsyncButton(action: {
+                    try await deleteAndPurge(message: message)
+                }) {
+                    Label("Delete", systemImage: "trash")
+                }
+                .foregroundColor(.red)
+                
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
         }
     }
 }
