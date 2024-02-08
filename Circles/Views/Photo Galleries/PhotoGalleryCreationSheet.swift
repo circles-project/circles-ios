@@ -47,7 +47,6 @@ struct PhotoGalleryCreationSheet: View {
     
     var body: some View {
         GeometryReader { geometry in
-            let size: CGFloat = geometry.size.width > 600 ? 500 : 300
             VStack {
                 buttonBar
                 
@@ -57,6 +56,8 @@ struct PhotoGalleryCreationSheet: View {
                 
                 Spacer()
                 
+                let frameWidth: CGFloat = 200
+                let frameHeight: CGFloat = 120
                     
                 PhotosPicker(selection: $selectedItem, matching: .images) {
                     if let img = avatarImage {
@@ -64,7 +65,7 @@ struct PhotoGalleryCreationSheet: View {
                             Image(uiImage: img)
                                 .resizable()
                                 .scaledToFill()
-                                .frame(width: size, height: size)
+                                .frame(width: frameWidth, height: frameHeight)
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
                                 .background(RoundedRectangle(cornerRadius: 10)
                                             //.stroke(Color.gray, lineWidth: 2)
@@ -84,7 +85,7 @@ struct PhotoGalleryCreationSheet: View {
                             .resizable()
                             .scaledToFit()
                             .padding()
-                            .frame(width: size, height: size)
+                            .frame(width: frameWidth, height: frameHeight)
                             .background(RoundedRectangle(cornerRadius: 10)
                                         //.stroke(Color.gray, lineWidth: 2)
                                 .stroke(Color.gray, style: StrokeStyle(lineWidth: 5, dash: [10, 10]))
@@ -105,9 +106,6 @@ struct PhotoGalleryCreationSheet: View {
                         }
                     }
                 }
-
-                
-
                 
                 TextField("Gallery name", text: $galleryName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
