@@ -29,6 +29,40 @@ struct GroupCreationSheet: View {
     @State private var alertMessage: String = ""
     @State private var showAlert = false
     
+    
+    func create() async throws {
+        guard let roomId = try? await groups.createChild(name: self.groupName,
+                                                         type: ROOM_TYPE_GROUP,
+                                                         encrypted: true,
+                                                         avatar: self.headerImage),
+              let room = try await groups.session.getRoom(roomId: roomId)
+        else {
+            // Set error message
+            return
+        }
+        
+        if !self.groupTopic.isEmpty {
+            do {
+                try await room.setTopic(newTopic: self.groupTopic)
+            } catch {
+                // set error message
+                return
+            }
+        }
+        
+        for user in self.users {
+            do {
+                try await room.invite(userId: user.userId)
+            } catch {
+                // set error message
+                return
+            }
+        }
+        
+        self.presentation.wrappedValue.dismiss()
+    }
+    
+    @ViewBuilder
     var buttonbar: some View {
         HStack {
             Button(action: {
@@ -39,45 +73,6 @@ struct GroupCreationSheet: View {
             }
             
             Spacer()
-            
-            AsyncButton(action: {
-                
-                guard let roomId = try? await groups.createChild(name: self.groupName,
-                                                                 type: ROOM_TYPE_GROUP,
-                                                                 encrypted: true,
-                                                                 avatar: self.headerImage),
-                      let room = try await groups.session.getRoom(roomId: roomId)
-                else {
-                    // Set error message
-                    return
-                }
-                
-                if !self.groupTopic.isEmpty {
-                    do {
-                        try await room.setTopic(newTopic: self.groupTopic)
-                    } catch {
-                        // set error message
-                        return
-                    }
-                }
-                
-                for user in self.users {
-                    do {
-                        try await room.invite(userId: user.userId)
-                    } catch {
-                        // set error message
-                        return
-                    }
-                }
-                
-                self.presentation.wrappedValue.dismiss()
-
-            })
-            {
-                Text("Create")
-                    .fontWeight(.bold)
-                    .disabled(groupName.isEmpty)
-            }
         }
     }
     
@@ -146,12 +141,22 @@ struct GroupCreationSheet: View {
                 .padding(.horizontal)
             
             Spacer()
+
+            AsyncButton(action: {
+                try await create()
+            })
+            {
+                Text("Create group")
+                    .padding()
+                    .frame(width: 300.0, height: 40.0)
+                    .foregroundColor(.white)
+                    .background(Color.accentColor)
+                    .cornerRadius(10)
+            }
+            .disabled(groupName.isEmpty)
             
-            /*
-            Text("Users to invite:")
-                .fontWeight(.bold)
-            UsersToInviteView(session: groups.session, users: $users)
-            */
+            Spacer()
+
         }
         .padding()
     }

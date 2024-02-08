@@ -27,6 +27,28 @@ struct CircleCreationSheet: View {
     @State private var alertMessage: String = ""
     @State private var showAlert = false
     
+    func create() async throws {
+        // First create the Space for the circle
+        let circleRoomId = try await container.createChild(name: circleName, type: M_SPACE, encrypted: false, avatar: avatarImage)
+        
+        guard let circleRoom = try await container.session.getRoom(roomId: circleRoomId, as: CircleSpace.self)
+        else {
+            print("Failed to get new circle Space room for roomId \(circleRoomId)")
+            return
+        }
+        
+        // Then create the "wall" timeline room
+        let wallRoomId = try await circleRoom.createChild(name: circleName, type: ROOM_TYPE_CIRCLE, encrypted: true, avatar: avatarImage)
+
+        // Invite our followers to join the room where we're going to post
+        for user in users {
+            try await container.session.inviteUser(roomId: wallRoomId, userId: user.userId)
+        }
+        
+        self.presentation.wrappedValue.dismiss()
+    }
+    
+    @ViewBuilder
     var buttonBar: some View {
         HStack {
             Button(action: {
@@ -37,34 +59,6 @@ struct CircleCreationSheet: View {
             }
             
             Spacer()
-            
-            AsyncButton(action: {
-                
-                // First create the Space for the circle
-                let circleRoomId = try await container.createChild(name: circleName, type: M_SPACE, encrypted: false, avatar: avatarImage)
-                
-                guard let circleRoom = try await container.session.getRoom(roomId: circleRoomId, as: CircleSpace.self)
-                else {
-                    print("Failed to get new circle Space room for roomId \(circleRoomId)")
-                    return
-                }
-                
-                // Then create the "wall" timeline room
-                let wallRoomId = try await circleRoom.createChild(name: circleName, type: ROOM_TYPE_CIRCLE, encrypted: true, avatar: avatarImage)
-
-                // Invite our followers to join the room where we're going to post
-                for user in users {
-                    try await container.session.inviteUser(roomId: wallRoomId, userId: user.userId)
-                }
-                
-                self.presentation.wrappedValue.dismiss()
-
-            }) {
-                Text("Create")
-                    .fontWeight(.bold)
-            }
-            .disabled(circleName.isEmpty)
-            //.padding()
         }
         .font(.subheadline)
     }
@@ -136,21 +130,19 @@ struct CircleCreationSheet: View {
 
             Spacer()
             
-            /*
-            VStack(alignment: .leading) {
-                Text("Invite Followers")
-                    .fontWeight(.bold)
- 
-                UsersToInviteView(session: container.session, users: $users)
-                
-            }
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text(alertTitle),
-                      message: Text(alertMessage),
-                      dismissButton: .default(Text("OK")))
-            }
-            */
-
+            AsyncButton(action: {
+                try await create()
+            }) {
+                Text("Create circle")
+                    .padding()
+                    .frame(width: 300.0, height: 40.0)
+                    .foregroundColor(.white)
+                    .background(Color.accentColor)
+                    .cornerRadius(10)            }
+            .disabled(circleName.isEmpty)
+            //.padding()
+            
+            Spacer()
         }
         .padding()
     }
