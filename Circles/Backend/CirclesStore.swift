@@ -460,42 +460,44 @@ public class CirclesStore: ObservableObject {
 
         let total: Int = 13
         
+        let sleepMS = 5
+        
         logger.debug("Creating Spaces hierarchy for Circles rooms")
         onProgress?(0, total, "Creating Matrix Spaces")
 
-        try await Task.sleep(for: .seconds(1))
+        try await Task.sleep(for: .milliseconds(sleepMS))
         let topLevelSpace = try await matrix.createSpace(name: "Circles")
         logger.debug("Created top-level Circles space \(topLevelSpace)")
         onProgress?(1, total, "Creating Matrix Spaces")
 
-        try await Task.sleep(for: .seconds(1))
+        try await Task.sleep(for: .milliseconds(sleepMS))
         let myCircles = try await matrix.createSpace(name: "My Circles")
         logger.debug("Created My Circles space \(myCircles)")
         onProgress?(2, total, "Creating Matrix Spaces")
 
-        try await Task.sleep(for: .seconds(1))
+        try await Task.sleep(for: .milliseconds(sleepMS))
         let myGroups = try await matrix.createSpace(name: "My Groups")
         logger.debug("Created My Groups space \(myGroups)")
         onProgress?(3, total, "Creating Matrix Spaces")
 
-        try await Task.sleep(for: .seconds(1))
+        try await Task.sleep(for: .milliseconds(sleepMS))
         let myGalleries = try await matrix.createSpace(name: "My Photo Galleries")
         logger.debug("Created My Galleries space \(myGalleries)")
         onProgress?(4, total, "Creating Matrix Spaces")
 
-        try await Task.sleep(for: .seconds(1))
+        try await Task.sleep(for: .milliseconds(sleepMS))
         let myPeople = try await matrix.createSpace(name: "My People")
         logger.debug("Created My People space \(myPeople)")
         onProgress?(5, total, "Creating Matrix Spaces")
 
-        try await Task.sleep(for: .seconds(1))
+        try await Task.sleep(for: .milliseconds(sleepMS))
         let myProfile = try await matrix.createSpace(name: displayName, joinRule: .knock)  // Profile room is m.knock because we might share it with other users
         logger.debug("Created My Profile space \(myProfile)")
         onProgress?(6, total, "Creating Matrix Spaces")
 
         logger.debug("- Adding Space child relationships")
         onProgress?(6, total, "Initializing Spaces")
-        try await Task.sleep(for: .seconds(1))
+        try await Task.sleep(for: .milliseconds(sleepMS))
         // Space child relations
         try await matrix.addSpaceChild(myCircles, to: topLevelSpace)
         try await matrix.addSpaceChild(myGroups, to: topLevelSpace)
@@ -512,7 +514,7 @@ public class CirclesStore: ObservableObject {
         
         logger.debug("- Adding tags to spaces")
         onProgress?(7, total, "Tagging Spaces")
-        try await Task.sleep(for: .seconds(1))
+        try await Task.sleep(for: .milliseconds(sleepMS))
         try await matrix.addTag(roomId: topLevelSpace, tag: ROOM_TAG_CIRCLES_SPACE_ROOT)
         try await matrix.addTag(roomId: myCircles, tag: ROOM_TAG_MY_CIRCLES)
         try await matrix.addTag(roomId: myGroups, tag: ROOM_TAG_MY_GROUPS)
@@ -522,7 +524,7 @@ public class CirclesStore: ObservableObject {
         
         logger.debug("- Uploading Circles config to account data")
         onProgress?(8, total, "Saving configuration")
-        try await Task.sleep(for: .seconds(1))
+        try await Task.sleep(for: .milliseconds(sleepMS))
         let config = CirclesConfigContent(root: topLevelSpace, circles: myCircles, groups: myGroups, galleries: myGalleries, people: myPeople, profile: myProfile)
         try await matrix.putAccountData(config, for: EVENT_TYPE_CIRCLES_CONFIG)
         
@@ -531,7 +533,7 @@ public class CirclesStore: ObservableObject {
             logger.debug("- Creating circle [\(name, privacy: .public)]")
             //status = "Creating circle \"\(circle.name)\""
             onProgress?(count, total, "Creating circle \"\(name)\"")
-            try await Task.sleep(for: .seconds(1))
+            try await Task.sleep(for: .milliseconds(sleepMS))
             let circleRoomId = try await matrix.createSpace(name: name)
             let wallRoomId = try await matrix.createRoom(name: name, type: ROOM_TYPE_CIRCLE, joinRule: .knock)
             if let image = avatar {
@@ -545,7 +547,7 @@ public class CirclesStore: ObservableObject {
         logger.debug("- Creating photo gallery [Photos]")
         //status = "Creating photo gallery"
         onProgress?(12, total, "Creating photo gallery")
-        try await Task.sleep(for: .seconds(1))
+        try await Task.sleep(for: .milliseconds(sleepMS))
         let photosGallery = try await matrix.createRoom(name: "Photos", type: ROOM_TYPE_PHOTOS, joinRule: .knock)
         try await matrix.addSpaceChild(photosGallery, to: myGalleries)
         
