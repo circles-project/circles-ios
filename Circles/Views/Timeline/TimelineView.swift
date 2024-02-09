@@ -27,7 +27,11 @@ struct TimelineView<V: MessageView>: View {
                 else if room.canPaginate {
                     AsyncButton(action: {
                         self.loading = true
-                        try await room.paginate()
+                        do {
+                            try await room.paginate()
+                        } catch {
+                            print("Paginate failed")
+                        }
                         self.loading = false
                     }) {
                         Text("Load More")
@@ -37,10 +41,17 @@ struct TimelineView<V: MessageView>: View {
                         // If it ever appears, we basically automatically click it for the user
                         self.loading = true
                         let _ = Task {
-                            try await room.paginate()
+                            do {
+                                try await room.paginate()
+                            } catch {
+                                print("Paginate failed")
+                            }
                             self.loading = false
                         }
                     }
+                } else if debugMode {
+                    Text("Not currently loading; Can't paginate")
+                        .foregroundColor(.red)
                 }
                 Spacer()
             }
