@@ -25,8 +25,7 @@ struct ProfileSettingsView: View {
                     Spacer()
                     
                     PhotosPicker(selection: $newAvatarImageItem, matching: .images) {
-                        let user = session.getUser(userId: session.creds.userId)
-                        UserAvatarView(user: user)
+                        UserAvatarView(user: session.me)
                             .clipShape(Circle())
                             .frame(width: 80, height: 80)
                     }
@@ -44,7 +43,7 @@ struct ProfileSettingsView: View {
                 
                 NavigationLink(destination: UpdateDisplaynameView(session: session)) {
                     Text("Your name")
-                        .badge(session.displayName ?? "(none)")
+                        .badge(session.me.displayName ?? "(none)")
                 }
                 
                 Text("User ID")

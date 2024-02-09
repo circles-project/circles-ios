@@ -20,7 +20,7 @@ struct UpdateStatusMessageView: View {
             
             Spacer()
             
-            TextField(session.statusMessage ?? "", text: $newStatus, prompt: Text("New status message"))
+            TextField(session.me.statusMessage ?? "", text: $newStatus, prompt: Text("New status message"))
                 .frame(width: 300, height: 40)
             
             AsyncButton(action: {

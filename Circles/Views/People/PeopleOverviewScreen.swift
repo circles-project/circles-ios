@@ -56,7 +56,7 @@ struct PeopleOverviewScreen: View {
                         .clipShape(RoundedRectangle(cornerRadius: 7))
                     
                     VStack(alignment: .leading) {
-                        Text(matrix.displayName ?? matrix.creds.userId.username)
+                        Text(matrix.me.displayName ?? matrix.creds.userId.username)
                             .font(.title)
                             .fontWeight(.bold)
                             .lineLimit(1)

@@ -26,13 +26,13 @@ struct SelfDetailView: View {
                 HStack {
                     Spacer()
                     VStack(alignment: .center) {
-                        Image(uiImage: matrix.avatar ?? UIImage(systemName: "person.circle")!)
+                        Image(uiImage: matrix.me.avatar ?? UIImage(systemName: "person.circle")!)
                             .resizable()
                             .scaledToFill()
                             .frame(width: 240, height: 240)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                         
-                        Text(matrix.displayName ?? matrix.creds.userId.username)
+                        Text(matrix.me.displayName ?? matrix.creds.userId.username)
                             .font(.title)
                             .fontWeight(.bold)
                         
