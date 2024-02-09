@@ -1,4 +1,6 @@
 # main
+* Get rid of the ugly password nag screen
+* Speed up creating the Circles space hierarchy
 * Add the ability to share or delete individual photos
 * Clean up the circle/group/gallery creation dialogs to work better on iPad
 * Delete uploaded media when deleting the post that references them
