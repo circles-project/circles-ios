@@ -16,7 +16,6 @@ struct BsspekeEnrollOprfForm: View {
     //@State var passwordStrength: Int = 0
     @State var score: Double = 0.0
     @State var color: Color = .red
-    @State var promise: Bool = false
     //@State var passwordStrengthColors: [Color] = []
     let checker = DBZxcvbn()
 
@@ -63,39 +62,6 @@ struct BsspekeEnrollOprfForm: View {
     }
     
     @ViewBuilder
-    var introView: some View {
-        VStack {
-            Spacer()
-            
-            Label("Circles is different!", systemImage: "exclamationmark.shield.fill")
-                .font(.title2)
-            
-            Text("On the next screen, we will ask you to set up a passphrase for your account.")
-                .padding()
-            
-            Text("Circles uses your passphrase to log in AND to protect your encryption keys.")
-                .padding()
-            
-            Text("If you forget your passphrase, you won't be able to recover posts or photos on a new device.")
-                .foregroundColor(.red)
-                .padding(.vertical)
-            
-            Spacer()
-            
-            Toggle(isOn: $promise) {
-                Text("I understand")
-            }
-            
-            Spacer()
-            
-            Label("Tip: It's OK to write your passphrase down and store it in a secure location", systemImage: "lightbulb.fill")
-            
-            Spacer()
-        }
-        .padding()
-    }
-    
-    @ViewBuilder
     var passwordView: some View {
         VStack {
             Spacer()
@@ -104,8 +70,9 @@ struct BsspekeEnrollOprfForm: View {
                 .font(.title2)
                 .fontWeight(.bold)
             
-            Label("Tip: Use more than one word!", systemImage: "lightbulb.fill")
-                .padding()
+            Label("WARNING: If you forget your passphrase, you won't be able to access your posts or photos on a new device.", systemImage: "exclamationmark.triangle")
+                .foregroundColor(.red)
+                .padding(.top)
             
             Spacer()
 
@@ -131,8 +98,8 @@ struct BsspekeEnrollOprfForm: View {
                 
                 ProgressView("Strength", value: 1.0 * self.score, total: 5.0)
                     .tint(self.color)
-                    .padding(.top)
             }
+            .frame(maxWidth: 550)
             .padding()
 
 
@@ -200,9 +167,7 @@ struct BsspekeEnrollOprfForm: View {
     
     var body: some View {
         VStack {
-            if promise == false {
-                introView
-            } else if passphrase.isEmpty || showRepeat == false {
+            if passphrase.isEmpty || showRepeat == false {
                 passwordView
             } else {
                 repeatPasswordView
