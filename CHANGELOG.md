@@ -1,4 +1,5 @@
 # main
+* Automatically load photos when scrolling through a gallery
 * Prevent reactions from getting squished
 * Update your profile picture everywhere when you choose a new one
 * Get rid of the ugly password nag screen
