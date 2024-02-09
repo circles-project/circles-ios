@@ -426,10 +426,10 @@ struct MessageCard: MessageView {
             let reactionCounts = showAllReactions ? allReactionCounts : Array(allReactionCounts.prefix(limit))
             
             let columns = [
-                GridItem(.adaptive(minimum: 55))
+                GridItem(.adaptive(minimum: 60))
             ]
             
-            LazyVGrid(columns: columns, spacing: 0) {
+            LazyVGrid(columns: columns, alignment: .center, spacing: 10) {
                 
                 ForEach(reactionCounts, id: \.key) { emoji, count in
                     let userId = message.room.session.creds.userId
@@ -471,7 +471,7 @@ struct MessageCard: MessageView {
 
         }
         .foregroundColor(.secondary)
-        .padding(2)
+        //.padding(2)
     }
     
     var footer: some View {
