@@ -23,7 +23,8 @@ extension GallerySheetType: Identifiable {
 }
 
 struct PhotoGalleryView: View {
-    @ObservedObject var room: Matrix.Room
+    @ObservedObject var room: GalleryRoom
+    var container: ContainerRoom<GalleryRoom>
     //@ObservedObject var gallery: PhotoGallery
     @State var selectedMessage: Matrix.Message?
     @State var selectedItems: [PhotosPickerItem] = []
@@ -40,7 +41,7 @@ struct PhotoGalleryView: View {
     
     var toolbarMenu: some View {
         Menu {
-            NavigationLink(destination: GallerySettingsView(room: room)) {
+            NavigationLink(destination: GallerySettingsView(room: room, container: container)) {
                 Label("Settings", systemImage: "gearshape")
             }
             

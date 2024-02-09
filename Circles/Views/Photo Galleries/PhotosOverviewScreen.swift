@@ -203,7 +203,7 @@ struct PhotosOverviewScreen: View {
             if let roomId = selected,
                let room = container.rooms.first(where: { $0.roomId == roomId })
             {
-                PhotoGalleryView(room: room)
+                PhotoGalleryView(room: room, container: container)
             } else {
                 Text("Create or select a photo gallery to view an album")
             }

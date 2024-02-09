@@ -11,6 +11,8 @@ import Matrix
 
 struct GallerySettingsView: View {
     @ObservedObject var room: GalleryRoom
+    var container: ContainerRoom<GalleryRoom>
+    @Environment(\.presentationMode) var presentation
     
     @AppStorage("debugMode") var debugMode: Bool = false
 
@@ -166,7 +168,8 @@ struct GallerySettingsView: View {
                         
                         // FIXME: Sanity check - Are we leaving the room unmoderated?  Don't do that.
                         
-                        try await room.leave()
+                        try await container.leaveChild(room.roomId)
+                        self.presentation.wrappedValue.dismiss()
                     }) {
                         Text("Leave \"\(room.name ?? "this gallery")\"")
                     }

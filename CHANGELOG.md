@@ -1,4 +1,5 @@
 # main
+* Remove photo gallery from our list when we leave
 * Automatically load photos when scrolling through a gallery
 * Prevent reactions from getting squished
 * Update your profile picture everywhere when you choose a new one
