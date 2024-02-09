@@ -140,6 +140,38 @@ struct GalleryGridView: View {
                         PhotoThumbnailCard(message: currentMessage, height: thumbnailSize, width: thumbnailSize)
                     }
                 }
+                
+                if self.loading {
+                    ProgressView()
+                } else if room.canPaginate {
+                    AsyncButton(action: {
+                        self.loading = true
+                        do {
+                            try await room.paginate()
+                        } catch {
+                            print("Paginate failed")
+                        }
+                        self.loading = false
+                    }) {
+                        Label("Load more", systemImage: "arrow.clockwise")
+                    }
+                    .onAppear {
+                        // It's a magic self-clicking button.
+                        // If it ever appears, we basically automatically click it for the user
+                        self.loading = true
+                        Task {
+                            do {
+                                try await room.paginate()
+                            } catch {
+                                print("Paginate failed")
+                            }
+                            self.loading = false
+                        }
+                    }
+                } else if debugMode {
+                    Text("Not currently loading; Can't paginate")
+                        .foregroundColor(.red)
+                }
             }
             .onAppear {
                 print("GalleryGridView: Found \(messages.count) image/video messages")
