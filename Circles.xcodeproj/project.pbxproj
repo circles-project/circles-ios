@@ -1348,7 +1348,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://gitlab.futo.org/circles/matrix.swift.git";
 			requirement = {
-				branch = main;
+				branch = "cvwright/use-presence-for-profile-updates";
 				kind = branch;
 			};
 		};
