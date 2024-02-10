@@ -62,8 +62,7 @@ struct InvitedCircleDetailView: View {
                     GridRow {
                         Text("Invited by:")
                         VStack(alignment: .leading) {
-                            Image(uiImage: user.avatar ?? UIImage(systemName: "person.circle") ?? UIImage())
-                                .resizable()
+                            UserAvatarView(user: user)
                                 .scaledToFit()
                                 .frame(width: 180, height: 180)
                                 .clipShape(RoundedRectangle(cornerRadius: 8))
