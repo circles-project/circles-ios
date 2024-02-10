@@ -27,6 +27,7 @@ struct CircleInvitationsView: View {
                     }
                 }
             }
+            .frame(maxWidth: 500)
         }
         .navigationTitle(Text("Circle Invitations"))
     }

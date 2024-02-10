@@ -27,6 +27,7 @@ struct GroupInvitationsView: View {
                     }
                 }
             }
+            .frame(maxWidth: 500)
         }
         .navigationTitle(Text("Group Invitations"))
     }

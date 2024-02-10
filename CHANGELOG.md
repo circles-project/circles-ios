@@ -1,4 +1,5 @@
 # main
+* Clean up invitation detail views
 * Make requests for invitations more visible in dark mode
 * Remove photo gallery from our list when we leave
 * Automatically load photos when scrolling through a gallery

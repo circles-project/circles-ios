@@ -11,6 +11,9 @@ import Matrix
 struct InvitedGroupDetailView: View {
     @ObservedObject var room: Matrix.InvitedRoom
     @ObservedObject var user: Matrix.User
+    
+    @AppStorage("debugMode") var debugMode: Bool = false
+    
     @State var showRoomIdPopover = false
 
     var body: some View {
@@ -20,11 +23,12 @@ struct InvitedGroupDetailView: View {
                 Text("You have been invited to:")
                     .padding()
   
+                // Don't show the big image if there's not really an image to show
                 RoomAvatar(room: room, avatarText: .roomInitials)
                     .clipShape(Circle())
                     .overlay(Circle().stroke(Color.primary, lineWidth: 2))
                     .scaledToFit()
-                    //.frame(width: 240, height: 240)
+                    .frame(width: 240, height: 240)
                     //.padding(-50)
                 
                 Text(room.name ?? "(unnamed group)")
@@ -32,20 +36,22 @@ struct InvitedGroupDetailView: View {
                     .fontWeight(.bold)
                 
                 Grid(alignment: .topLeading, horizontalSpacing: 10, verticalSpacing: 20) {
-                    GridRow {
-                        Text("Group ID:")
-                        
-                        Button(action: { self.showRoomIdPopover = true }) {
-                            Text(room.roomId.stringValue)
-                                .multilineTextAlignment(.leading)
-                                .truncationMode(.middle)
-                                .lineLimit(1)
+                    if debugMode {
+                        GridRow {
+                            Text("Group ID:")
                             
-                        }
-                        .buttonStyle(.plain)
-                        .popover(isPresented: $showRoomIdPopover) {
-                            Text(room.roomId.stringValue)
-                                .multilineTextAlignment(.leading)
+                            Button(action: { self.showRoomIdPopover = true }) {
+                                Text(room.roomId.stringValue)
+                                    .multilineTextAlignment(.leading)
+                                    .truncationMode(.middle)
+                                    .lineLimit(1)
+                                
+                            }
+                            .buttonStyle(.plain)
+                            .popover(isPresented: $showRoomIdPopover) {
+                                Text(room.roomId.stringValue)
+                                    .multilineTextAlignment(.leading)
+                            }
                         }
                     }
                     
@@ -60,7 +66,7 @@ struct InvitedGroupDetailView: View {
                             Image(uiImage: user.avatar ?? UIImage(systemName: "person.circle") ?? UIImage())
                                 .resizable()
                                 .scaledToFit()
-                                //.frame(width: 120, height: 120)
+                                .frame(width: 180, height: 180)
                                 .clipShape(RoundedRectangle(cornerRadius: 8))
 
                             

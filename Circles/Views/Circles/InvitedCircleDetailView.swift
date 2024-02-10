@@ -11,6 +11,9 @@ import Matrix
 struct InvitedCircleDetailView: View {
     @ObservedObject var room: Matrix.InvitedRoom
     @ObservedObject var user: Matrix.User
+    
+    @AppStorage("debugMode") var debugMode: Bool = false
+    
     @State var showRoomIdPopover = false
 
     var body: some View {
@@ -24,7 +27,7 @@ struct InvitedCircleDetailView: View {
                     .clipShape(Circle())
                     .overlay(Circle().stroke(Color.primary, lineWidth: 2))
                     .scaledToFit()
-                    //.frame(width: 240, height: 240)
+                    .frame(width: 240, height: 240)
                     //.padding(-50)
                 
                 Text(room.name ?? "(unnamed circle)")
@@ -32,20 +35,22 @@ struct InvitedCircleDetailView: View {
                     .fontWeight(.bold)
                 
                 Grid(alignment: .topLeading, horizontalSpacing: 10, verticalSpacing: 20) {
-                    GridRow {
-                        Text("Circle ID:")
-                        
-                        Button(action: { self.showRoomIdPopover = true }) {
-                            Text(room.roomId.stringValue)
-                                .multilineTextAlignment(.leading)
-                                .truncationMode(.middle)
-                                .lineLimit(1)
+                    if debugMode {
+                        GridRow {
+                            Text("Circle ID:")
                             
-                        }
-                        .buttonStyle(.plain)
-                        .popover(isPresented: $showRoomIdPopover) {
-                            Text(room.roomId.stringValue)
-                                .multilineTextAlignment(.leading)
+                            Button(action: { self.showRoomIdPopover = true }) {
+                                Text(room.roomId.stringValue)
+                                    .multilineTextAlignment(.leading)
+                                    .truncationMode(.middle)
+                                    .lineLimit(1)
+                                
+                            }
+                            .buttonStyle(.plain)
+                            .popover(isPresented: $showRoomIdPopover) {
+                                Text(room.roomId.stringValue)
+                                    .multilineTextAlignment(.leading)
+                            }
                         }
                     }
                     
@@ -60,7 +65,7 @@ struct InvitedCircleDetailView: View {
                             Image(uiImage: user.avatar ?? UIImage(systemName: "person.circle") ?? UIImage())
                                 .resizable()
                                 .scaledToFit()
-                                //.frame(width: 120, height: 120)
+                                .frame(width: 180, height: 180)
                                 .clipShape(RoundedRectangle(cornerRadius: 8))
 
                             

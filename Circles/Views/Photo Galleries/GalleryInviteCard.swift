@@ -53,9 +53,9 @@ struct GalleryInviteCard: View {
     var body: some View {
         VStack(alignment: .leading) {
                 
-            RoomAvatar(room: room, avatarText: .none)
+            RoomAvatar(room: room, avatarText: .roomName)
                 .scaledToFill()
-                //.frame(width: 300, height: 300)
+                .frame(maxWidth: 400, maxHeight: 400)
                 .blur(radius: roomAvatarBlur)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
                 .onTapGesture {
@@ -64,17 +64,13 @@ struct GalleryInviteCard: View {
                     }
                 }
             
-            Text("\(room.name ?? "(unknown)")")
-                .font(.title2)
-                .fontWeight(.bold)
-            
             HStack(alignment: .top) {
                 Text("From:")
 
                 UserAvatarView(user: user)
                     .frame(width: 40, height: 40)
                     .blur(radius: userAvatarBlur)
-                    .clipShape(Circle())
+                    //.clipShape(Circle())
                     .onTapGesture {
                         if userAvatarBlur >= 5 {
                             userAvatarBlur -= 5
@@ -91,6 +87,7 @@ struct GalleryInviteCard: View {
             
             buttonRow
         }
+        .frame(maxWidth: 400)
         .padding()
         .onAppear {
             // Check to see if we have any connection to the person who sent this invitation
