@@ -172,8 +172,10 @@ struct RoomInviteSheet: View {
 
             VStack(alignment: .leading, spacing: 5) {
                 HStack {
+                    Spacer()
                     searchField
                     addButton
+                    Spacer()
                 }
                 
                 if !self.suggestions.isEmpty {
