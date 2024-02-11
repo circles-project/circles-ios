@@ -1,4 +1,4 @@
-# main
+# v0.9.7
 * Clean up invitation detail views
 * Make requests for invitations more visible in dark mode
 * Remove photo gallery from our list when we leave
