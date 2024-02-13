@@ -28,27 +28,36 @@ struct SignupStartForm: View {
 
             Spacer()
 
-            let freeFlow = state.flows.first(where: { flow in
+            if let freeFlow = state.flows.first(where: { flow in
+                flow.stages.contains(AUTH_TYPE_FREE_SUBSCRIPTION) &&
                     !flow.stages.contains(AUTH_TYPE_GOOGLE_SUBSCRIPTION) &&
                     !flow.stages.contains(AUTH_TYPE_APPSTORE_SUBSCRIPTION)
-            })
-            if freeFlow == nil {
+            }) {
+                AsyncButton(action: {
+                    //selectedFlow = tokenFlow
+                    await session.selectFlow(flow: freeFlow)
+                }) {
+                    Text("Sign up for free")
+                        .padding()
+                        .frame(width: 300.0, height: 40.0)
+                        .foregroundColor(.white)
+                        .background(Color.accentColor)
+                        .cornerRadius(10)
+                }
+            } else {
                 Label("Subscriptionless signup is not available at this time.  Please try again later.", systemImage: "exclamationmark.triangle")
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 20)
+                Button(action: {}) {
+                    Text("Sign up for free")
+                        .padding()
+                        .frame(width: 300.0, height: 40.0)
+                        .foregroundColor(.white)
+                        .background(Color.accentColor)
+                        .cornerRadius(10)
+                }
+                .disabled(true)
             }
-            AsyncButton(action: {
-                //selectedFlow = tokenFlow
-                await session.selectFlow(flow: freeFlow!)
-            }) {
-                Text("Sign up for free")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
-            }
-            .disabled( nil == freeFlow )
 
 
             Spacer()
