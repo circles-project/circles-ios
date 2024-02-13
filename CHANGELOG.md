@@ -1,4 +1,5 @@
 # v0.9.8
+* Bugfix: Use the correct signup flow for free subscriptions
 * Request refreshable access token at signup
 
 # v0.9.7
