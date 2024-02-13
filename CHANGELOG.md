@@ -1,3 +1,6 @@
+# v0.9.8
+* Request refreshable access token at signup
+
 # v0.9.7
 * Clean up invitation detail views
 * Make requests for invitations more visible in dark mode

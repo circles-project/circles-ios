@@ -697,7 +697,10 @@ public class CirclesStore: ObservableObject {
         // Create a SignupSession and set our state to .signingUp
         
         let deviceModel = await UIDevice.current.model
-        let signupSession = try await SignupSession(domain: domain, initialDeviceDisplayName: "Circles (\(deviceModel))", completion: { session,data in
+        let signupSession = try await SignupSession(domain: domain,
+                                                    initialDeviceDisplayName: "Circles (\(deviceModel))",
+                                                    refreshToken: true,
+                                                    completion: { session,data in
             self.logger.debug("Signup was successful")
             
             let decoder = JSONDecoder()
