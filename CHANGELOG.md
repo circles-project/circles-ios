@@ -1,3 +1,7 @@
+# v0.9.9
+* Update copyright information
+* Link to the app's privacy policy and EULA from the Settings tab
+
 # v0.9.8
 * Bugfix: Use the correct signup flow for free subscriptions
 * Request refreshable access token at signup
