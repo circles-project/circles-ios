@@ -167,8 +167,7 @@ struct AcknowledgementsView: View {
             VStack(spacing: 10) {
 
                 VStack(alignment: .leading) {
-                    Text("Copyright 2020, 2021 Kombucha Digital Privacy Systems LLC")
-                    Text("Copyright 2022, 2023 FUTO Holdings Inc")
+                    Text("Copyright 2022-2024 FUTO Holdings Inc")
                 }
                 
                 Divider()
