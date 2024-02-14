@@ -73,6 +73,18 @@ struct SettingsScreen: View {
                     NavigationLink(destination: AcknowledgementsView()) {
                         Label("Acknowledgements", systemImage: "hands.clap.fill")
                     }
+                    
+                    Label {
+                        Link("Circles iOS Privacy Policy", destination: URL(string: "https://circles.futo.org/privacy/ios/")!)
+                    } icon: {
+                        Image(systemName: "scroll.fill")
+                    }
+                    
+                    Label {
+                        Link("License Agreement", destination: URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!)
+                    } icon: {
+                        Image(systemName: "scroll.fill")
+                    }
                 }
 
                 
