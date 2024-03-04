@@ -21,7 +21,7 @@ struct ScanQrCodeAndKnockSheet: View {
             
             if let roomId = roomId {
                 
-                Label("Scanned QR code", systemImage: "checkmark.circle.fill")
+                Label("Request invitation", systemImage: "checkmark.circle.fill")
                     .symbolRenderingMode(.multicolor)
                     .font(.title2)
                     .padding()
