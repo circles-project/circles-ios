@@ -80,16 +80,18 @@ struct PhotoGalleryView: View {
                         HStack {
                             Spacer()
 
-                            PhotosPicker(selection: $selectedItems, matching: .images) {
-                                Image(systemName: "plus.circle.fill")
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 50, height: 50)
-                                    .padding()
-                            }
-                            .onChange(of: selectedItems) { newItems in
-                                uploadItems.append(contentsOf: newItems)
-                                totalUploadItems += uploadItems.count
+                            if room.iCanSendEvent(type: M_ROOM_MESSAGE) {
+                                PhotosPicker(selection: $selectedItems, matching: .images) {
+                                    Image(systemName: "plus.circle.fill")
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 50, height: 50)
+                                        .padding()
+                                }
+                                .onChange(of: selectedItems) { newItems in
+                                    uploadItems.append(contentsOf: newItems)
+                                    totalUploadItems += uploadItems.count
+                                }
                             }
                         }
                     }

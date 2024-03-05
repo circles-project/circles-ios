@@ -12,7 +12,6 @@ import Matrix
 
 enum GroupScreenSheetType: String {
     case invite
-    case composer
     case share
 }
 extension GroupScreenSheetType: Identifiable {
@@ -25,8 +24,6 @@ struct GroupTimelineScreen: View {
     @Environment(\.presentationMode) var presentation
     @AppStorage("debugMode") var debugMode: Bool = false
     
-    @State var showComposer = false
-
     @State private var sheetType: GroupScreenSheetType? = nil
 
     @State private var newImageForHeader = UIImage()
@@ -103,9 +100,6 @@ struct GroupTimelineScreen: View {
                             case .invite:
                                 RoomInviteSheet(room: room, title: "Invite new members to \(room.name ?? "(unnamed group)")")
                                 
-                            case .composer:
-                                PostComposerSheet(room: room, parentMessage: nilParentMessage)
-                                
                             case .share:
                                 let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/group/\(room.roomId.stringValue)")
                                 RoomShareSheet(room: room, url: url)
@@ -117,14 +111,14 @@ struct GroupTimelineScreen: View {
                     Spacer()
                     HStack {
                         Spacer()
-                        Button(action: {
-                            self.sheetType = .composer
-                        }) {
-                            Image(systemName: "plus.bubble.fill")
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .padding()
+                        if room.iCanSendEvent(type: M_ROOM_MESSAGE) {
+                            NavigationLink(destination: PostComposer(room: room).navigationTitle("New Post")) {
+                                Image(systemName: "plus.bubble.fill")
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .padding()
+                            }
                         }
                     }
                 }
