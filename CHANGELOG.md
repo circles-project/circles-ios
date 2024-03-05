@@ -1,3 +1,7 @@
+# v1.0.0
+* Bugfix: Stop the composer blanking when the room updates
+* Only show the "+" button for a new post when we have power to post
+
 # v0.9.9
 * Update copyright information
 * Link to the app's privacy policy and EULA from the Settings tab
