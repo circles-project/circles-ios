@@ -12,7 +12,7 @@ import QuickLookThumbnailing
 import Matrix
 
 struct PostComposer: View {
-    @ObservedObject var room: Matrix.Room
+    var room: Matrix.Room
     @EnvironmentObject var appSession: CirclesApplicationSession
     //@Binding var isPresented: Bool
     @Environment(\.colorScheme) var colorScheme

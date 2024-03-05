@@ -15,7 +15,6 @@ enum CircleSheetType: String {
     //case following
     case invite
     //case photo
-    case composer
     case share
 }
 extension CircleSheetType: Identifiable {
@@ -41,10 +40,6 @@ struct CircleTimelineView: View {
             
             Button(action: {self.sheetType = .invite}) {
                 Label("Invite Followers", systemImage: "person.crop.circle.badge.plus")
-            }
-            
-            Button(action: {self.sheetType = .composer}) {
-                Label("Post a New Message", systemImage: "plus.bubble")
             }
             
             Button(action: {self.sheetType = .share}) {
@@ -96,9 +91,6 @@ struct CircleTimelineView: View {
 
                         case .invite:
                             RoomInviteSheet(room: space.wall!)
-
-                        case .composer:
-                            PostComposerSheet(room: space.wall!)
                             
                         case .share:
                             if let wall = space.wall,
@@ -117,9 +109,7 @@ struct CircleTimelineView: View {
                         Spacer()
                         HStack {
                             Spacer()
-                            Button(action: {
-                                self.sheetType = .composer
-                            }) {
+                            NavigationLink(destination: PostComposer(room: wall).navigationTitle("New Post")) {
                                 Image(systemName: "plus.bubble.fill")
                                     .resizable()
                                     .scaledToFill()

@@ -8,19 +8,34 @@
 import SwiftUI
 import Matrix
 
-struct PostComposerSheet: View {
+struct PostComposerScreen: View {
     var room: Matrix.Room
     var parentMessage: Matrix.Message?
     var editingMessage: Matrix.Message?
     @State var isPresented = true
+    @State var title: String
+    
+    init(room: Matrix.Room, parentMessage: Matrix.Message? = nil, editingMessage: Matrix.Message? = nil, isPresented: Bool = true) {
+        self.room = room
+        self.parentMessage = parentMessage
+        self.editingMessage = editingMessage
+        self.isPresented = isPresented
+        
+        switch (parentMessage,editingMessage) {
+        case (.none, .none):
+            self.title = "New Post"
+        case (.none, .some):
+            self.title = "Edit Post"
+        case (.some, .none):
+            self.title = "New Reply"
+        case (.some, .some):
+            self.title = "Edit Reply"
+        }
+    }
+    
 
     var body: some View {
         VStack {
-            Text("New Post")
-                .font(.title2)
-                .fontWeight(.bold)
-                .padding(5)
-            
             ScrollView {
                 if let parent = parentMessage {
                     MessageCard(message: parent)
@@ -32,6 +47,7 @@ struct PostComposerSheet: View {
                     .padding(.leading, 10)
             }
         }
+        .navigationTitle(self.title)
     }
 }
 

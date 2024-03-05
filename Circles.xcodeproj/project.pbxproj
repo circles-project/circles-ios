@@ -23,7 +23,7 @@
 		4069F79826729DD200FB6090 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4069F79726729DD200FB6090 /* StoreKit.framework */; };
 		4073E7C4267915AF001A80CF /* RepliesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4073E7C3267915AF001A80CF /* RepliesView.swift */; };
 		40878FC72694C00000A66EF0 /* MessageContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40878FC62694C00000A66EF0 /* MessageContextMenu.swift */; };
-		40878FCA2694DBC400A66EF0 /* PostComposerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40878FC92694DBC400A66EF0 /* PostComposerSheet.swift */; };
+		40878FCA2694DBC400A66EF0 /* PostComposerScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40878FC92694DBC400A66EF0 /* PostComposerScreen.swift */; };
 		409F42E3265DE00700690A61 /* Array+Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F42E2265DE00700690A61 /* Array+Sample.swift */; };
 		409F42E6265DE03B00690A61 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F42E5265DE03B00690A61 /* Utils.swift */; };
 		409F42E9265DE06C00690A61 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F42E8265DE06C00690A61 /* WebView.swift */; };
@@ -217,7 +217,7 @@
 		4069F79726729DD200FB6090 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		4073E7C3267915AF001A80CF /* RepliesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepliesView.swift; sourceTree = "<group>"; };
 		40878FC62694C00000A66EF0 /* MessageContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageContextMenu.swift; sourceTree = "<group>"; };
-		40878FC92694DBC400A66EF0 /* PostComposerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostComposerSheet.swift; sourceTree = "<group>"; };
+		40878FC92694DBC400A66EF0 /* PostComposerScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostComposerScreen.swift; sourceTree = "<group>"; };
 		409F42E2265DE00700690A61 /* Array+Sample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Sample.swift"; sourceTree = "<group>"; };
 		409F42E5265DE03B00690A61 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		409F42E8265DE06C00690A61 /* WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
@@ -807,7 +807,7 @@
 				409F4313265DE0F300690A61 /* ImagePicker.swift */,
 				40CD7F6E2667E16100DE315F /* VideoPicker.swift */,
 				409F4384265DE2A400690A61 /* PostComposer.swift */,
-				40878FC92694DBC400A66EF0 /* PostComposerSheet.swift */,
+				40878FC92694DBC400A66EF0 /* PostComposerScreen.swift */,
 			);
 			path = Composer;
 			sourceTree = "<group>";
@@ -930,7 +930,7 @@
 				A5E101F82814FAFD000B2C42 /* bcrypt.c in Sources */,
 				A51503C42B75690700E1566E /* SaveImage.swift in Sources */,
 				403CEA9326E864160054DBF4 /* TermsOfServiceForm.swift in Sources */,
-				40878FCA2694DBC400A66EF0 /* PostComposerSheet.swift in Sources */,
+				40878FCA2694DBC400A66EF0 /* PostComposerScreen.swift in Sources */,
 				A55330412B6826C500695436 /* SecretStorageCreationScreen.swift in Sources */,
 				A52ACB932A7969F6005D90C5 /* GalleryInvitationsView.swift in Sources */,
 				409F4326265DE12600690A61 /* CloudImagePicker.swift in Sources */,

@@ -12,7 +12,7 @@ import QuickLookThumbnailing
 import Matrix
 
 // Based on https://developer.apple.com/documentation/coretransferable/filerepresentation
-class Movie: Transferable {
+class Movie: Transferable, Codable {
     let url: URL
     let asset: AVAsset
     public private(set) var thumbnail: UIImage?
@@ -26,6 +26,27 @@ class Movie: Transferable {
         Task {
             try await self.loadThumbnail()
         }
+    }
+    
+    public enum CodingKeys: String, CodingKey {
+        case url
+    }
+    
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let url = try container.decode(URL.self, forKey: .url)
+        self.url = url
+        self.asset = AVAsset(url: url)
+        self.thumbnail = nil
+        
+        Task {
+            try await self.loadThumbnail()
+        }
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(self.url, forKey: .url)
     }
     
     var duration: Double {
