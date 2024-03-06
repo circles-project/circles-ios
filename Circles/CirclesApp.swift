@@ -12,6 +12,8 @@ import Matrix
 
 @main
 struct CirclesApp: App {
+    @UIApplicationDelegateAdaptor(CirclesAppDelegate.self) var appDelegate
+
     @StateObject private var store = CirclesStore()
     private var paymentQueue = SKPaymentQueue.default()
     private var countryCode = SKPaymentQueue.default().storefront?.countryCode

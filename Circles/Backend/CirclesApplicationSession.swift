@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UserNotifications
 import Matrix
 import os
 
@@ -34,27 +35,60 @@ class CirclesApplicationSession: ObservableObject {
 
     
     func setupPushNotifications() async throws {
-        // From https://github.com/matrix-org/sygnal/blob/main/docs/applications.md#ios-applications-beware
-        let payload = """
+        
+        let center = UNUserNotificationCenter.current()
+        
+        guard let allowed = try? await center.requestAuthorization(options: [.alert, .sound, .badge, .provisional]),
+              allowed == true
+        else {
+            logger.error("Notifications: Not allowed by user")
+            return
+        }
+
+        // Get the APN device token that our AppDelegate received from Apple
+        guard let token = apnDeviceToken
+        else {
+            logger.error("Notifications: No APN device token")
+            return
+        }
+        logger.debug("Notifications: Got APN device token \(token.hexString)")
+        
+        // Request body based on https://spec.matrix.org/v1.6/client-server-api/#post_matrixclientv3pushersset
+        // `data` from https://github.com/matrix-org/sygnal/blob/main/docs/applications.md#ios-applications-beware
+        
+        let deviceModel = await UIDevice.current.model
+        let version = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as? String ?? "???"
+        let pushGatewayHostname = "sygnal.\(CIRCLES_PRIMARY_DOMAIN)"
+        let languageCode = Locale.current.language.languageCode?.identifier ?? "en"
+        let body = """
         {
-          "url": "https://sygnal.\(CIRCLES_PRIMARY_DOMAIN)/_matrix/push/v1/notify",
-          "format": "event_id_only",
-          "default_payload": {
-            "aps": {
-              "mutable-content": 1,
-              "content-available": 1,
-              "alert": {"loc-key": "SINGLE_UNREAD", "loc-args": []}
-            }
-          }
+            "app_display_name": "Circles",
+            "app_id": "org.futo.circles.ios",
+            "data": {
+                "url": "https://\(pushGatewayHostname)/_matrix/push/v1/notify",
+                "format": "event_id_only",
+                "default_payload": {
+                    "aps": {
+                        "mutable-content": 1,
+                        "content-available": 1,
+                        "alert": {"loc-key": "SINGLE_UNREAD", "loc-args": []}
+                    }
+                }
+            },
+            "device_display_name": "Circles \(version) - \(deviceModel)",
+            "kind": "http",
+            "lang": "\(languageCode)",
+            "pushkey": "\(token)"
         }
         """
         
-        logger.debug("Setting up push notifications")
+        logger.debug("Notifications: Setting up APN on Matrix homeserver")
         
-        let path = "/_matrix/client/r0/pushers/set"
-        let (data, response) = try await self.matrix.call(method: "POST", path: path, bodyData: payload.data(using: .utf8))
+        let path = "/_matrix/client/v3/pushers/set"
+        let (data, response) = try await self.matrix.call(method: "POST", path: path, bodyData: body.data(using: .utf8))
         
-        logger.debug("Received \(data.count) bytes of response with status \(response.statusCode)")
+        logger.debug("Notifications: Sygnal APN call received \(data.count) bytes of response with status \(response.statusCode)")
+
     }
     
     init(store: CirclesStore, matrix: Matrix.Session, config: CirclesConfigContent) async throws {
@@ -190,6 +224,9 @@ class CirclesApplicationSession: ObservableObject {
         
         logger.debug("Starting Matrix background sync")
         try await matrix.startBackgroundSync()
+        
+        logger.debug("Setting up push notifications")
+        try await setupPushNotifications()
                 
         logger.debug("Finished setting up Circles application session")
     }

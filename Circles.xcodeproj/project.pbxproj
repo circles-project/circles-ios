@@ -174,6 +174,8 @@
 		A5D3C9C12A708F1300B41CC0 /* DBZxcvbn.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D3C9B92A708F1300B41CC0 /* DBZxcvbn.m */; };
 		A5D3C9C22A708F1300B41CC0 /* DBMatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D3C9BA2A708F1300B41CC0 /* DBMatcher.m */; };
 		A5D3C9C32A708F1300B41CC0 /* DBScorer.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D3C9BD2A708F1300B41CC0 /* DBScorer.m */; };
+		A5DDA6A32B98E49500BD8A1D /* CirclesAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5DDA6A22B98E49500BD8A1D /* CirclesAppDelegate.swift */; };
+		A5DDA6A52B98F8B900BD8A1D /* Data+hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5DDA6A42B98F8B900BD8A1D /* Data+hex.swift */; };
 		A5E101F82814FAFD000B2C42 /* bcrypt.c in Sources */ = {isa = PBXBuildFile; fileRef = A5E101F72814FAFD000B2C42 /* bcrypt.c */; };
 		A5E101FA2814FB60000B2C42 /* blf.c in Sources */ = {isa = PBXBuildFile; fileRef = A5E101F92814FB60000B2C42 /* blf.c */; };
 		A5E101FE2814FC9F000B2C42 /* PerfectBCrypt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E101FD2814FC9F000B2C42 /* PerfectBCrypt.swift */; };
@@ -367,6 +369,8 @@
 		A5D3C9BC2A708F1300B41CC0 /* Zxcvbn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Zxcvbn.h; sourceTree = "<group>"; };
 		A5D3C9BD2A708F1300B41CC0 /* DBScorer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBScorer.m; sourceTree = "<group>"; };
 		A5D67F232B236F9600729582 /* FUTO Circles.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = "FUTO Circles.storekit"; sourceTree = "<group>"; };
+		A5DDA6A22B98E49500BD8A1D /* CirclesAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesAppDelegate.swift; sourceTree = "<group>"; };
+		A5DDA6A42B98F8B900BD8A1D /* Data+hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+hex.swift"; sourceTree = "<group>"; };
 		A5E101F62814FAFD000B2C42 /* Circles-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Circles-Bridging-Header.h"; sourceTree = "<group>"; };
 		A5E101F72814FAFD000B2C42 /* bcrypt.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = bcrypt.c; sourceTree = "<group>"; };
 		A5E101F92814FB60000B2C42 /* blf.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = blf.c; sourceTree = "<group>"; };
@@ -494,6 +498,7 @@
 				A562C08F2AFE9A7200522FCB /* Array+RawRepresentable.swift */,
 				A51503C32B75690700E1566E /* SaveImage.swift */,
 				A51503C52B756B7F00E1566E /* DeleteAndPurge.swift */,
+				A5DDA6A42B98F8B900BD8A1D /* Data+hex.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -755,6 +760,7 @@
 				A54BA3A12850108300453D5E /* CirclesStore.swift */,
 				A52FEBFC2862521F00AE4E3A /* CirclesApplicationSession.swift */,
 				A562C0972B16981C00522FCB /* AppStoreInterface.swift */,
+				A5DDA6A22B98E49500BD8A1D /* CirclesAppDelegate.swift */,
 			);
 			path = Backend;
 			sourceTree = "<group>";
@@ -911,6 +917,7 @@
 				A52ACB8D2A7824D3005D90C5 /* ProfileSpace.swift in Sources */,
 				4047F3DE26B895B80010B2C3 /* SecureFieldWithEye.swift in Sources */,
 				A53EADA62A6F0EA600EF18B7 /* CirclesTabbedInterface.swift in Sources */,
+				A5DDA6A52B98F8B900BD8A1D /* Data+hex.swift in Sources */,
 				A52ACB8B2A78240C005D90C5 /* SelfDetailView.swift in Sources */,
 				409F4379265DE25000690A61 /* PhotoGalleryCreationSheet.swift in Sources */,
 				403CEA9D26E86B920054DBF4 /* AvatarForm.swift in Sources */,
@@ -1018,6 +1025,7 @@
 				4073E7C4267915AF001A80CF /* RepliesView.swift in Sources */,
 				A5487EC72ADC81E500FA16B5 /* UserNameView.swift in Sources */,
 				A562C0902AFE9A7200522FCB /* Array+RawRepresentable.swift in Sources */,
+				A5DDA6A32B98E49500BD8A1D /* CirclesAppDelegate.swift in Sources */,
 				A5921EB32AFAA83A00C2331D /* CircleSettingsView.swift in Sources */,
 				A56BE1742AD5CEFA00B15F51 /* RoomKnockDetailsView.swift in Sources */,
 				409F4343265DE17500690A61 /* GroupOverviewRow.swift in Sources */,
