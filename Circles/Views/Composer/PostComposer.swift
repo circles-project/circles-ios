@@ -111,18 +111,18 @@ struct PostComposer: View {
         // Source: https://forums.swift.org/t/assignment-to-state-var-in-init-doesnt-do-anything-but-the-compiler-gened-one-works/35235
         
         // If we're editing an existing message, then we need to pre-fill all of our stuff based on it
-        if let originalMessage = editing,
-           let originalContent = originalMessage.content as? Matrix.MessageContent
+        if let existingMessage = editing?.replacement ?? editing,                      // If we're editing an already-edited message, start with the most recent version
+           let existingContent = existingMessage.content as? Matrix.MessageContent
         {
-            self.relatesTo = mRelatesTo(relType: M_REPLACE, eventId: originalMessage.eventId)
+            self.relatesTo = mRelatesTo(relType: M_REPLACE, eventId: existingMessage.eventId)
             
             print("COMPOSER\tLoading original content")
-            switch originalContent.msgtype {
+            switch existingContent.msgtype {
             case M_IMAGE:
                 // Setup our initial state to be a simple copy of the old m.image
-                if let originalImageContent = originalContent as? Matrix.mImageContent {
-                    self._newMessageText = State(wrappedValue: originalImageContent.caption ?? "")
-                    self._messageState = State(wrappedValue: MessageState.oldImage(originalImageContent, nil))
+                if let existingImageContent = existingContent as? Matrix.mImageContent {
+                    self._newMessageText = State(wrappedValue: existingImageContent.caption ?? "")
+                    self._messageState = State(wrappedValue: MessageState.oldImage(existingImageContent, nil))
                 } else {
                     // Default to an m.text message
                     self._newMessageText = State(wrappedValue: "")
@@ -131,9 +131,9 @@ struct PostComposer: View {
 
             case M_VIDEO:
                 // Setup our initial state to be a simple copy of the old m.image
-                if let originalVideoContent = originalContent as? Matrix.mVideoContent {
-                    self._newMessageText = State(wrappedValue: originalVideoContent.caption ?? "")
-                    self._messageState = State(wrappedValue: MessageState.oldVideo(originalVideoContent, nil))
+                if let existingVideoContent = existingContent as? Matrix.mVideoContent {
+                    self._newMessageText = State(wrappedValue: existingVideoContent.caption ?? "")
+                    self._messageState = State(wrappedValue: MessageState.oldVideo(existingVideoContent, nil))
                 } else {
                     // Default to an m.text message
                     self._newMessageText = State(wrappedValue: "")
@@ -141,8 +141,8 @@ struct PostComposer: View {
                 }
 
             default:
-                print("COMPOSER\tSetting message to text: \(originalContent.body)")
-                self._newMessageText = State(wrappedValue: originalContent.body)
+                print("COMPOSER\tSetting message to text: \(existingContent.body)")
+                self._newMessageText = State(wrappedValue: existingContent.body)
                 self._messageState = State(wrappedValue: MessageState.text)
                 print("COMPOSER\tText is: \(self.newMessageText)")
             }
