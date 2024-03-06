@@ -391,9 +391,7 @@ struct MessageCard: MessageView {
     }
 
     var replyButton: some View {
-        Button(action: {
-            self.sheetType = .reply
-        }) {
+        NavigationLink(destination: PostComposerScreen(room: message.room, parentMessage: message)) {
             //Label("Reply", systemImage: "bubble.right")
             Image(systemName: "bubble.right")
         }
@@ -587,12 +585,6 @@ struct MessageCard: MessageView {
             }
             .sheet(item: $sheetType) { st in
                 switch(st) {
-
-                case .reply:
-                    PostComposerScreen(room: message.room, parentMessage: message)
-                    
-                case .edit:
-                    PostComposerScreen(room: message.room, editingMessage: message)
 
                 case .reactions:
                     EmojiPicker(message: message)

@@ -113,9 +113,7 @@ struct MessageContextMenu: View {
         }
         
         if message.sender.userId == message.room.session.creds.userId {
-            Button(action: {
-                self.sheetType = .edit
-            }) {
+            NavigationLink(destination: PostComposerScreen(room: message.room, editingMessage: message)) {
                 Label("Edit", systemImage: "pencil")
             }
         }
