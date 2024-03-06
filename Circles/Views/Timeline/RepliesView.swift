@@ -17,7 +17,10 @@ struct RepliesView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            let messages = parent.replies ?? []
+            let now = Date()
+            let cutoff = now.addingTimeInterval(300.0)
+            let allMessages = parent.replies ?? []
+            let messages = allMessages.filter { $0.timestamp < cutoff } // Filter out messages claiming to be from the future
             
             if messages.isEmpty {
                 if debugMode {

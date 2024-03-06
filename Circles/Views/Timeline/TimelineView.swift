@@ -81,8 +81,10 @@ struct TimelineView<V: MessageView>: View {
     @ViewBuilder
     var body: some View {
         // Get all the top-level messages (ie not the replies etc)
+        let now = Date()
+        let cutoff = now.addingTimeInterval(300.0)
         let messages = room.timeline.values.filter { (message) in
-            message.relatedEventId == nil && message.replyToEventId == nil
+            message.relatedEventId == nil && message.replyToEventId == nil && message.timestamp < cutoff
         }.sorted(by: {$0.timestamp > $1.timestamp})
 
         ScrollView {

@@ -98,6 +98,8 @@ struct GalleryGridView: View {
     @ViewBuilder
     var body: some View {
         // Get all the top-level messages (ie not the replies etc)
+        let now = Date()
+        let cutoff = now.addingTimeInterval(300.0)  // Don't show messages claiming to be from the future
         let messages = room.timeline.values.filter { (message) in
             //message.relatedEventId == nil && message.replyToEventId == nil
 
@@ -114,6 +116,12 @@ struct GalleryGridView: View {
             else {
                 return false
             }
+            
+            guard message.timestamp < cutoff
+            else {
+                return false
+            }
+            
             return true
 
         }.sorted(by: {$0.timestamp > $1.timestamp})

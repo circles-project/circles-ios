@@ -16,12 +16,19 @@ struct CircleTimeline: View {
     private var formatter: DateFormatter
     @State private var showDebug = false
     @State private var loading = false
+    private var cutoff: Date
 
     init(space: CircleSpace) {
         self.space = space
         self.formatter = DateFormatter()
         formatter.dateStyle = .long
         formatter.timeStyle = .long
+
+        // We want to filter out any messages claiming to be from the future
+        // Allow for clocks being up to 5 minutes (300 sec) out of sync
+        // But in general we will drop anything claiming to be from the future -- Otherwise a malicious user could effectively "sticky" their post at the top of everyone's timeline
+        let now = Date()
+        self.cutoff = now.addingTimeInterval(300.0)
     }
     
     var debugFooter: some View {
@@ -56,8 +63,38 @@ struct CircleTimeline: View {
         .font(.caption)
     }
     
+    private func filter(_ message: Matrix.Message) -> Bool {
+        if message.relatedEventId != nil {
+            return false
+        }
+        
+        // Filter out messages from the future
+        if message.timestamp > cutoff {
+            return false
+        }
+        
+        // This is the more advanced version, where we filter based on power levels
+        // This would allow having a circle for an organization, where multiple people can post
+        // But it's more complex, more fragile, and we don't have any UI for making these posts yet anyway
+        // So for now we do the simple thing and filter for the room creator's user id instead
+        /*
+        let sender = message.sender
+        let room = message.room
+        
+        guard let powerLevels = room.powerLevels,
+              let userPower = powerLevels.users?[sender.userId] ?? powerLevels.usersDefault
+        else {
+            return false
+        }
+
+        return userPower > 50
+        */
+        
+        return message.sender.userId == message.room.creator
+    }
+    
     var body: some View {
-        let messages: [Matrix.Message] = space.getCollatedTimeline(filter: { $0.relatedEventId == nil }).reversed()
+        let messages: [Matrix.Message] = space.getCollatedTimeline(filter: self.filter).reversed()
         
         VStack(alignment: .leading) {
             if let wall = space.wall,
