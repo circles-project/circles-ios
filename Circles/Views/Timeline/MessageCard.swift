@@ -207,11 +207,13 @@ struct MessageCard: MessageView {
     private let debug = false
     @State var sheetType: MessageSheetType? = nil
     @State var showAllReactions = false
+    var iCanReact: Bool
     
     init(message: Matrix.Message, isLocalEcho: Bool = false, isThreaded: Bool = false) {
         self.message = message
         self.isLocalEcho = isLocalEcho
         self.isThreaded = isThreaded
+        self.iCanReact = message.room.iCanSendEvent(type: M_REACTION)
     }
 
     func getCaption(body: String) -> String? {
@@ -388,6 +390,7 @@ struct MessageCard: MessageView {
             //Label("Like", systemImage: "heart")
             Image(systemName: "heart")
         }
+        .disabled(!iCanReact)
     }
 
     var replyButton: some View {
@@ -448,6 +451,7 @@ struct MessageCard: MessageView {
                         }) {
                             Text("\(emoji) \(count)")
                         }
+                        .disabled(!iCanReact)
                         .buttonStyle(.plain)
                     }
                 }
