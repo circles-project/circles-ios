@@ -38,7 +38,7 @@ class CirclesApplicationSession: ObservableObject {
         
         let center = UNUserNotificationCenter.current()
         
-        guard let allowed = try? await center.requestAuthorization(options: [.alert, .sound, .badge, .provisional]),
+        guard let allowed = try? await center.requestAuthorization(options: [.alert, .sound, .badge]),
               allowed == true
         else {
             logger.error("Notifications: Not allowed by user")
@@ -62,7 +62,7 @@ class CirclesApplicationSession: ObservableObject {
         let languageCode = Locale.current.language.languageCode?.identifier ?? "en"
         let body = """
         {
-            "app_display_name": "Circles",
+            "app_display_name": "Circles iOS \(version)",
             "app_id": "org.futo.circles.ios",
             "data": {
                 "url": "https://\(pushGatewayHostname)/_matrix/push/v1/notify",
@@ -75,7 +75,7 @@ class CirclesApplicationSession: ObservableObject {
                     }
                 }
             },
-            "device_display_name": "Circles \(version) - \(deviceModel)",
+            "device_display_name": "Circles on \(deviceModel)",
             "kind": "http",
             "lang": "\(languageCode)",
             "pushkey": "\(token)"
