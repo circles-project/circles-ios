@@ -112,7 +112,7 @@ extension CirclesAppDelegate: UNUserNotificationCenterDelegate {
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
         let title = response.notification.request.content.title
         let body = response.notification.request.content.body
-        print("DELEGATE\tGot notification!  Title = [\(title)]  Body = [\(body)]")
+        print("DELEGATE\tdidReceive user notification!  Title = [\(title)]  Body = [\(body)]")
         completionHandler()
     }
     
