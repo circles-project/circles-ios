@@ -78,7 +78,8 @@ class CirclesAppDelegate: NSObject, UIApplicationDelegate {
                      didReceiveRemoteNotification userInfo: [AnyHashable : Any]
     ) async -> UIBackgroundFetchResult {
         // FIXME
-        print("DELEGATE\tdidReceiveRemoteNotification!")
+        let keys = userInfo.keys.compactMap { $0 as? String }
+        print("DELEGATE\tdidReceiveRemoteNotification!  \(keys.count) keys: \(keys)")
         return .noData
     }
     
@@ -106,7 +107,8 @@ extension CirclesAppDelegate: UNUserNotificationCenterDelegate {
     */
     
     // Handle incoming notifications
-    // Somehow this doesn't get called when the above didReceiveRemoteNotification fires...
+    // This seems to be the one that fires when the app is not in the foreground, either the phone is locked or the user is doing something else
+    // If the screen is unlocked and the app is focused, we get application(didReceiveRemoteNotification:) above instead
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
