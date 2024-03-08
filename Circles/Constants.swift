@@ -62,6 +62,8 @@ let CIRCLES_DOMAINS = [
     let euDomain = "eu.circles.futo.org"
 #endif
 
+let PUSH_GATEWAY_HOSTNAME = "sygnal.\(usDomain)"
+
 let ORG_FUTO_BCRYPT_SHA2 = "org.futo.bcrypt-sha2"
 let ORG_FUTO_BSSPEKE_ECC = "org.futo.bsspeke-ecc"
 

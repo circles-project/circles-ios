@@ -33,6 +33,21 @@ class CirclesApplicationSession: ObservableObject {
     var profile: ContainerRoom<Matrix.Room>     // Our profile space contains the "wall" rooms for each circle that we "publish" to our connections
     
 
+    private func sendTestNotification() {
+        let content = UNMutableNotificationContent()
+        content.title = "Circles Test Notification"
+        content.subtitle = "This is only a test"
+        content.sound = UNNotificationSound.default
+
+        // show this notification five seconds from now
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+
+        // choose a random identifier
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+
+        // add our notification request
+        UNUserNotificationCenter.current().add(request)
+    }
     
     func setupPushNotifications() async throws {
         
@@ -58,14 +73,15 @@ class CirclesApplicationSession: ObservableObject {
         
         let deviceModel = await UIDevice.current.model
         let version = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as? String ?? "???"
-        let pushGatewayHostname = "sygnal.\(CIRCLES_PRIMARY_DOMAIN)"
         let languageCode = Locale.current.language.languageCode?.identifier ?? "en"
+        let base64Token = token.base64EncodedString()
+        logger.debug("Notifications: Delegate's base64 token is \(base64Token)")
         let body = """
         {
             "app_display_name": "Circles iOS \(version)",
             "app_id": "org.futo.circles.ios",
             "data": {
-                "url": "https://\(pushGatewayHostname)/_matrix/push/v1/notify",
+                "url": "https://\(PUSH_GATEWAY_HOSTNAME)/_matrix/push/v1/notify",
                 "format": "event_id_only",
                 "default_payload": {
                     "aps": {
@@ -75,12 +91,14 @@ class CirclesApplicationSession: ObservableObject {
                     }
                 }
             },
-            "device_display_name": "Circles on \(deviceModel)",
+            "device_display_name": "Circles (\(deviceModel))",
             "kind": "http",
             "lang": "\(languageCode)",
-            "pushkey": "\(token)"
+            "pushkey": "\(base64Token)"
         }
         """
+        
+        logger.debug("Notifications: Sending request with body: \(body)")
         
         logger.debug("Notifications: Setting up APN on Matrix homeserver")
         
@@ -88,6 +106,9 @@ class CirclesApplicationSession: ObservableObject {
         let (data, response) = try await self.matrix.call(method: "POST", path: path, bodyData: body.data(using: .utf8))
         
         logger.debug("Notifications: Sygnal APN call received \(data.count) bytes of response with status \(response.statusCode)")
+        
+        sendTestNotification()
+        logger.debug("Notifications: Scheduled test notification")
 
     }
     
