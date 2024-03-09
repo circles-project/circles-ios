@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Matrix
 
 var apnDeviceToken: Data?
 
@@ -74,6 +75,7 @@ class CirclesAppDelegate: NSObject, UIApplicationDelegate {
     // Tells the app that a remote notification arrived that indicates there is data to be fetched.
     // Called when the app is either in the foreground or background
     // https://developer.apple.com/documentation/uikit/uiapplicationdelegate/1623013-application
+    // > Asks the delegate to process the user’s response to a delivered notification.
     func application(_ application: UIApplication,
                      didReceiveRemoteNotification userInfo: [AnyHashable : Any]
     ) async -> UIBackgroundFetchResult {
@@ -94,21 +96,30 @@ class CirclesAppDelegate: NSObject {
 #endif
 
 // https://developer.apple.com/documentation/usernotifications/unusernotificationcenterdelegate
-// Following instructions from https://designcode.io/swiftui-advanced-handbook-push-notifications-part-2
+// > Use the methods of the UNUserNotificationCenterDelegate protocol to handle user-selected actions from notifications, and to process notifications that arrive when your app is running in the foreground. After implementing these methods in an object, assign that object to the delegate property of the shared UNUserNotificationCenter object. The user notification center object calls the methods of your delegate at appropriate times.
 extension CirclesAppDelegate: UNUserNotificationCenterDelegate {
     
-    /*
+    // https://developer.apple.com/documentation/usernotifications/unusernotificationcenterdelegate/usernotificationcenter(_:willpresent:withcompletionhandler:)
+    // > Asks the delegate how to handle a notification that arrived while the app was running in the foreground.
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
-        // FIXME: TODO: Actually implement this one
+        print("DELEGATE:\twillPresent user notification")
+        
+        let info = notification.request.content.userInfo
+        guard let eventId = info["event_id"] as? EventId,
+              let roomIdString = notification.request.content.userInfo["room_id"] as? String,
+              let roomId = RoomId(roomIdString)
+        else {
+            print("DELEGATE\tCouldn't find event_id and room_id in notification")
+            completionHandler([]) // Docs: "Specify UNNotificationPresentationOptionNone to silence the notification completely."  But in Swift, the equivalent is just `[]`.
+            return
+        }
     }
-    */
     
-    // Handle incoming notifications
-    // This seems to be the one that fires when the app is not in the foreground, either the phone is locked or the user is doing something else
-    // If the screen is unlocked and the app is focused, we get application(didReceiveRemoteNotification:) above instead
+    // https://developer.apple.com/documentation/usernotifications/unusernotificationcenterdelegate/usernotificationcenter(_:didreceive:withcompletionhandler:)
+    // > Asks the delegate to process the user’s response to a delivered notification.
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {

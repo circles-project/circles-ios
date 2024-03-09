@@ -179,6 +179,7 @@
 		A5DDA6AD2B9B60F400BD8A1D /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5DDA6AC2B9B60F400BD8A1D /* NotificationService.swift */; };
 		A5DDA6B12B9B60F400BD8A1D /* NSE.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A5DDA6AA2B9B60F400BD8A1D /* NSE.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A5DDA6B72B9B618A00BD8A1D /* Matrix in Frameworks */ = {isa = PBXBuildFile; productRef = A5DDA6B62B9B618A00BD8A1D /* Matrix */; };
+		A5DDA6BA2B9BB2BA00BD8A1D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5DDA6B92B9BB2BA00BD8A1D /* Constants.swift */; };
 		A5E101F82814FAFD000B2C42 /* bcrypt.c in Sources */ = {isa = PBXBuildFile; fileRef = A5E101F72814FAFD000B2C42 /* bcrypt.c */; };
 		A5E101FA2814FB60000B2C42 /* blf.c in Sources */ = {isa = PBXBuildFile; fileRef = A5E101F92814FB60000B2C42 /* blf.c */; };
 		A5E101FE2814FC9F000B2C42 /* PerfectBCrypt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E101FD2814FC9F000B2C42 /* PerfectBCrypt.swift */; };
@@ -401,6 +402,8 @@
 		A5DDA6AA2B9B60F400BD8A1D /* NSE.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NSE.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5DDA6AC2B9B60F400BD8A1D /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		A5DDA6AE2B9B60F400BD8A1D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A5DDA6B82B9BAEFC00BD8A1D /* NSE.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NSE.entitlements; sourceTree = "<group>"; };
+		A5DDA6B92B9BB2BA00BD8A1D /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		A5E101F62814FAFD000B2C42 /* Circles-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Circles-Bridging-Header.h"; sourceTree = "<group>"; };
 		A5E101F72814FAFD000B2C42 /* bcrypt.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = bcrypt.c; sourceTree = "<group>"; };
 		A5E101F92814FB60000B2C42 /* blf.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = blf.c; sourceTree = "<group>"; };
@@ -835,8 +838,10 @@
 		A5DDA6AB2B9B60F400BD8A1D /* NSE */ = {
 			isa = PBXGroup;
 			children = (
+				A5DDA6B82B9BAEFC00BD8A1D /* NSE.entitlements */,
 				A5DDA6AC2B9B60F400BD8A1D /* NotificationService.swift */,
 				A5DDA6AE2B9B60F400BD8A1D /* Info.plist */,
+				A5DDA6B92B9BB2BA00BD8A1D /* Constants.swift */,
 			);
 			path = NSE;
 			sourceTree = "<group>";
@@ -1175,6 +1180,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A5DDA6AD2B9B60F400BD8A1D /* NotificationService.swift in Sources */,
+				A5DDA6BA2B9BB2BA00BD8A1D /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1385,6 +1391,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = NSE/NSE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1418,6 +1425,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = NSE/NSE.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
