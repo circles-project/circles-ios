@@ -106,9 +106,6 @@ class CirclesApplicationSession: ObservableObject {
         let (data, response) = try await self.matrix.call(method: "POST", path: path, bodyData: body.data(using: .utf8))
         
         logger.debug("Notifications: Sygnal APN call received \(data.count) bytes of response with status \(response.statusCode)")
-        
-        sendTestNotification()
-        logger.debug("Notifications: Scheduled test notification")
 
     }
     
