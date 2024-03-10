@@ -59,6 +59,8 @@ class NotificationService: UNNotificationServiceExtension {
         }
     }
     
+    // FIXME: This doesn't work because Synapse doesn't return a valid event
+    /*
     private func getCreateEvent(roomId: RoomId, store: DataStore, client: Matrix.Client) async throws -> ClientEventWithoutRoomId {
         if let event = try? await store.loadState(for: roomId, type: M_ROOM_CREATE, stateKey: "")
         {
@@ -72,6 +74,7 @@ class NotificationService: UNNotificationServiceExtension {
         
         throw NotificationError("Failed to load room info")
     }
+    */
 
     override func didReceive(_ request: UNNotificationRequest, withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
         self.contentHandler = contentHandler
@@ -113,12 +116,10 @@ class NotificationService: UNNotificationServiceExtension {
             
             let event = try await client.getEvent(eventId, in: roomId)
             
-            let store = try await getDataStore(userId: creds.userId)
-            
-            let createEvent = try await getCreateEvent(roomId: roomId, store: store, client: client)
+            //let store = try await getDataStore(userId: creds.userId)
             
             let roomDisplayName = try await client.getRoomName(roomId: roomId)
-            let userDisplayName = try await client.getDisplayName(userId: event.sender)
+            let senderDisplayName = try await client.getDisplayName(userId: event.sender)
             
             // Did we just get an invitation?
             if event.type == M_ROOM_MEMBER,
@@ -126,17 +127,82 @@ class NotificationService: UNNotificationServiceExtension {
                event.sender != creds.userId,
                let content = event.content as? RoomMemberContent
             {
+                logger.debug("Event is a membership event")
                 // Well, someone else just modified our join state in the room.. we either got invited, or kicked, or banned :P
-                if content.membership == .join {
+                switch content.membership {
+                case .join:
                     bestAttemptContent.title = "New Invitation"
-                    bestAttemptContent.subtitle = "\(userDisplayName ?? event.sender.stringValue) is inviting you to "
+                    if let roomName = roomDisplayName {
+                        bestAttemptContent.subtitle = "\(senderDisplayName ?? event.sender.stringValue) is inviting you to \(roomName)"
+                    } else {
+                        bestAttemptContent.subtitle = "From \(senderDisplayName ?? event.sender.stringValue)"
+                    }
+                    contentHandler(bestAttemptContent)
+                    return bestAttemptContent
+                case .leave:
+                    bestAttemptContent.title = "Access Removed"
+                    if let roomName = roomDisplayName {
+                        bestAttemptContent.subtitle = "\(senderDisplayName ?? event.sender.stringValue) has removed you from \(roomName)"
+                    } else {
+                        bestAttemptContent.subtitle = "You have been removed by \(senderDisplayName ?? event.sender.stringValue)"
+                    }
+                    contentHandler(bestAttemptContent)
+                    return bestAttemptContent
+                case .ban:
+                    bestAttemptContent.title = "Access Removed"
+                    if let roomName = roomDisplayName {
+                        bestAttemptContent.subtitle = "\(senderDisplayName ?? event.sender.stringValue) has banned you from \(roomName)"
+                    } else {
+                        bestAttemptContent.subtitle = "You have been banned by \(senderDisplayName ?? event.sender.stringValue)"
+                    }
+                    contentHandler(bestAttemptContent)
+                    return bestAttemptContent
+                default:
+                    // Shouldn't be here but here we are...
+                    bestAttemptContent.title = "Access Changed"
+                    if let roomName = roomDisplayName {
+                        bestAttemptContent.subtitle = "Your access to \(roomName) has changed"
+                    } else {
+                        bestAttemptContent.subtitle = "Your access has been modified by \(senderDisplayName ?? event.sender.stringValue)"
+                    }
+                    contentHandler(bestAttemptContent)
+                    return bestAttemptContent
                 }
             }
             
-            return bestAttemptContent
-        }
-        
-        
+            logger.debug("Event does not look like a membership event")
+            
+            guard let createContent = try await client.getRoomState(roomId: roomId, eventType: M_ROOM_CREATE) as? RoomCreateContent,
+                  let roomType = createContent.type
+            else {
+                logger.warning("Could not get room type")
+                // Gotta make do the best we can with the info that we have available
+                bestAttemptContent.title = "New Post by \(senderDisplayName ?? event.sender.stringValue)"
+                contentHandler(bestAttemptContent)
+                return bestAttemptContent
+            }
+            logger.debug("Room type is \(roomType)")
+            
+            switch roomType {
+            case ROOM_TYPE_CIRCLE:
+                if let roomName = roomDisplayName {
+                    bestAttemptContent.title = "\(senderDisplayName ?? event.sender.stringValue) posted in \(roomName)"
+                } else {
+                    bestAttemptContent.title = "\(senderDisplayName ?? event.sender.stringValue) sent a new post"
+                }
+                contentHandler(bestAttemptContent)
+                return bestAttemptContent
+                
+            default:
+                bestAttemptContent.title = "New Post by \(senderDisplayName ?? event.sender.stringValue)"
+                contentHandler(bestAttemptContent)
+                return bestAttemptContent
+
+            }
+            
+            
+        } // End task
+
     }
     
     override func serviceExtensionTimeWillExpire() {
