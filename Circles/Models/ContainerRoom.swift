@@ -177,6 +177,7 @@ class ContainerRoom<T: Matrix.Room>: Matrix.SpaceRoom {
     ) async throws -> RoomId {
         let powerLevels = RoomPowerLevelsContent(invite: 50)
         let childRoomId = try await self.session.createRoom(name: name, type: type, encrypted: encrypted,
+                                                            historyVisibility: .invited,
                                                             joinRule: .knock,
                                                             powerLevelContentOverride: powerLevels)
         try await self.addChild(childRoomId)
