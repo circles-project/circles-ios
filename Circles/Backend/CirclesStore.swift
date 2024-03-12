@@ -68,13 +68,26 @@ public class CirclesStore: ObservableObject {
     
     // MARK: Credentials
     
+    private func dump(defaults: UserDefaults) {
+        let dictionary = defaults.dictionaryRepresentation()
+        for (key,value) in dictionary {
+            logger.debug("DEFAULTS Found key \(key)")
+        }
+    }
+    
     private func loadCredentials(_ user: String? = nil) throws -> Matrix.Credentials? {
 
         guard let uid = user ?? self.defaults.string(forKey: "user_id") ?? UserDefaults.standard.string(forKey: "user_id") // Fall back to looking in the standard defaults without suite name
         //guard let uid = user ?? UserDefaults.standard.string(forKey: "user_id") // Fall back to looking in the standard defaults without suite name
-
         else {
             logger.error("Failed to find current user_id")
+            
+            logger.debug("Circles group defaults:")
+            dump(defaults: self.defaults)
+            
+            logger.debug("Standard defaults:")
+            dump(defaults: UserDefaults.standard)
+            
             return nil
         }
         
