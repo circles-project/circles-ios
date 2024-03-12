@@ -75,10 +75,32 @@ public class CirclesStore: ObservableObject {
         }
     }
     
-    private func loadCredentials(_ user: String? = nil) throws -> Matrix.Credentials? {
-
-        guard let uid = user ?? self.defaults.string(forKey: "user_id") ?? UserDefaults.standard.string(forKey: "user_id") // Fall back to looking in the standard defaults without suite name
-        //guard let uid = user ?? UserDefaults.standard.string(forKey: "user_id") // Fall back to looking in the standard defaults without suite name
+    private func loadUserId() -> UserId? {
+        // First look in the "new" location, in the Circles app group
+        if let newString = self.defaults.string(forKey: "user_id"),
+           let userId = UserId(newString)
+        {
+            return userId
+        }
+        // Fall back to looking in the "old" location, the standard defaults without suite name
+        else if let oldString = UserDefaults.standard.string(forKey: "user_id"),
+                let userId = UserId(oldString)
+        {
+            // Because we had to look in the old location,
+            // we should save this in the new location for future re-use
+            self.defaults.set(userId.stringValue, forKey: "user_id")
+            
+            return userId
+        }
+        // Guess we didn't find anything in either location
+        else {
+            return nil
+        }
+    }
+    
+    private func loadCredentials(_ userId: UserId? = nil) throws -> Matrix.Credentials? {
+        
+        guard let userId = userId ?? loadUserId()
         else {
             logger.error("Failed to find current user_id")
             
@@ -89,12 +111,6 @@ public class CirclesStore: ObservableObject {
             dump(defaults: UserDefaults.standard)
             
             return nil
-        }
-        
-        guard let userId = UserId(uid)
-        else {
-            logger.error("Invalid UserId \(uid)")
-            throw CirclesError("Invalid UserId")
         }
         
         if let creds = try? Matrix.Credentials.load(for: userId, defaults: self.defaults) {
@@ -641,7 +657,7 @@ public class CirclesStore: ObservableObject {
         
         // First - Check to see if we already have a device_id and access_token for this user
         //         e.g. maybe they didn't log out, but only "switched"
-        if let creds = try? loadCredentials(userId.stringValue) {
+        if let creds = try? loadCredentials(userId) {
             logger.debug("Found saved credentials for \(userId)")
             
             // Save the full credentials including the userId, so we can automatically connect next time
