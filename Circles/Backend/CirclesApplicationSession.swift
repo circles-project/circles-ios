@@ -87,7 +87,7 @@ class CirclesApplicationSession: ObservableObject {
                     "aps": {
                         "mutable-content": 1,
                         "content-available": 1,
-                        "alert": {"loc-key": "SINGLE_UNREAD", "loc-args": []}
+                        "alert": {"title": "NEW NOTIFICATION"}
                     }
                 }
             },
