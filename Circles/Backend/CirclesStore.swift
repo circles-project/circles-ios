@@ -70,26 +70,37 @@ public class CirclesStore: ObservableObject {
     
     private func loadCredentials(_ user: String? = nil) throws -> Matrix.Credentials? {
 
-        guard let uid = user ?? self.defaults.string(forKey: "user_id") ?? UserDefaults.standard.string(forKey: "user_id"), // Fall back to looking in the standard defaults without suite name
-              let userId = UserId(uid)
+        guard let uid = user ?? self.defaults.string(forKey: "user_id") ?? UserDefaults.standard.string(forKey: "user_id") // Fall back to looking in the standard defaults without suite name
+        //guard let uid = user ?? UserDefaults.standard.string(forKey: "user_id") // Fall back to looking in the standard defaults without suite name
+
         else {
+            logger.error("Failed to find current user_id")
             return nil
         }
         
+        guard let userId = UserId(uid)
+        else {
+            logger.error("Invalid UserId \(uid)")
+            throw CirclesError("Invalid UserId")
+        }
+        
         if let creds = try? Matrix.Credentials.load(for: userId, defaults: self.defaults) {
+            logger.debug("Loaded creds from Circles group defaults")
             return creds
         } else if let oldCreds = try? Matrix.Credentials.load(for: userId, defaults: UserDefaults.standard) { // Fall back to trying without the suite name
-            logger.debug("Loading creds from standard UserDefaults")
+            logger.debug("Loaded creds from standard UserDefaults")
             // Make sure that these creds get stored in the new location too, so we can find them in the future
-            try saveCredentials(creds: oldCreds)
+            try self.saveCredentials(creds: oldCreds)
             return oldCreds
         } else {
             // No luck :(
+            logger.error("No creds for \(userId)")
             return nil
         }
     }
     
     private func saveCredentials(creds: Matrix.Credentials) throws {
+        logger.debug("Saving credentials for \(creds.userId)")
         defaults.set("\(creds.userId)", forKey: "user_id")
         
         try creds.save(defaults: defaults)
