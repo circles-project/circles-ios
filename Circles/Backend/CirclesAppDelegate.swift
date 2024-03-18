@@ -116,6 +116,14 @@ extension CirclesAppDelegate: UNUserNotificationCenterDelegate {
             completionHandler([]) // Docs: "Specify UNNotificationPresentationOptionNone to silence the notification completely."  But in Swift, the equivalent is just `[]`.
             return
         }
+        
+        // TODO: Check that the room is one of ours
+        //       The user may be logged in simultaneously to Circles and to a chat app like Element
+        //       We don't want to display notifications for chat rooms in Circles, if we can help it.
+        
+        // FIXME: For now, just don't show anything
+        completionHandler([])
+        return
     }
     
     // https://developer.apple.com/documentation/usernotifications/unusernotificationcenterdelegate/usernotificationcenter(_:didreceive:withcompletionhandler:)
@@ -126,6 +134,9 @@ extension CirclesAppDelegate: UNUserNotificationCenterDelegate {
         let title = response.notification.request.content.title
         let body = response.notification.request.content.body
         print("DELEGATE\tdidReceive user notification!  Title = [\(title)]  Body = [\(body)]")
+        
+        // FIXME: If the room is one of ours, then we should programmatically navigate to it
+        
         completionHandler()
     }
     
