@@ -41,11 +41,14 @@ public class CirclesStore: ObservableObject {
     var appStore: AppStoreInterface
     
     var logger: os.Logger
+    var defaults: UserDefaults
     
     // MARK: init
     
     init() {
         self.logger = Logger(subsystem: "Circles", category: "Store")
+        
+        self.defaults = UserDefaults(suiteName: CIRCLES_APP_GROUP_NAME)!
         
         self.appStore = AppStoreInterface()
         
@@ -56,44 +59,99 @@ public class CirclesStore: ObservableObject {
     // MARK: Sync tokens
     
     private func loadSyncToken(userId: UserId, deviceId: String) -> String? {
-        UserDefaults.standard.string(forKey: "sync_token[\(userId)::\(deviceId)]")
+        self.defaults.string(forKey: "sync_token[\(userId)::\(deviceId)]")
     }
     
     private func saveSyncToken(token: String, userId: UserId, deviceId: String) {
-        UserDefaults.standard.set(token, forKey: "sync_token[\(userId)::\(deviceId)]")
+        self.defaults.set(token, forKey: "sync_token[\(userId)::\(deviceId)]")
     }
     
     // MARK: Credentials
     
-    private func loadCredentials(_ user: String? = nil) throws -> Matrix.Credentials? {
-        
-        guard let uid = user ?? UserDefaults.standard.string(forKey: "user_id"),
-              let userId = UserId(uid)
+    private func dump(defaults: UserDefaults) {
+        let dictionary = defaults.dictionaryRepresentation()
+        for (key,value) in dictionary {
+            logger.debug("DEFAULTS Found key \(key)")
+        }
+    }
+    
+    private func loadUserId() -> UserId? {
+        // First look in the "new" location, in the Circles app group
+        if let newString = self.defaults.string(forKey: "user_id"),
+           let userId = UserId(newString)
+        {
+            return userId
+        }
+        // Fall back to looking in the "old" location, the standard defaults without suite name
+        else if let oldString = UserDefaults.standard.string(forKey: "user_id"),
+                let userId = UserId(oldString)
+        {
+            // Because we had to look in the old location,
+            // we should save this in the new location for future re-use
+            self.defaults.set(userId.stringValue, forKey: "user_id")
+            
+            return userId
+        }
+        // Guess we didn't find anything in either location
         else {
             return nil
         }
+    }
+    
+    private func loadCredentials(_ userId: UserId? = nil) throws -> Matrix.Credentials? {
         
-        return try Matrix.Credentials.load(for: userId)
+        guard let userId = userId ?? loadUserId()
+        else {
+            logger.error("Failed to find current user_id")
+            
+            logger.debug("Circles group defaults:")
+            dump(defaults: self.defaults)
+            
+            logger.debug("Standard defaults:")
+            dump(defaults: UserDefaults.standard)
+            
+            return nil
+        }
+        
+        if let creds = try? Matrix.Credentials.load(for: userId, defaults: self.defaults) {
+            logger.debug("Loaded creds from Circles group defaults")
+            return creds
+        } else if let oldCreds = try? Matrix.Credentials.load(for: userId, defaults: UserDefaults.standard) { // Fall back to trying without the suite name
+            logger.debug("Loaded creds from standard UserDefaults")
+            // Make sure that these creds get stored in the new location too, so we can find them in the future
+            try self.saveCredentials(creds: oldCreds)
+            return oldCreds
+        } else {
+            // No luck :(
+            logger.error("No creds for \(userId)")
+            return nil
+        }
     }
     
     private func saveCredentials(creds: Matrix.Credentials) throws {
-        UserDefaults.standard.set("\(creds.userId)", forKey: "user_id")
+        logger.debug("Saving credentials for \(creds.userId)")
+        defaults.set("\(creds.userId)", forKey: "user_id")
         
-        try creds.save()
+        try creds.save(defaults: defaults)
     }
-        
+
     public func removeCredentials(for userId: UserId) {
-        UserDefaults.standard.removeObject(forKey: "user_id")
-        UserDefaults.standard.removeObject(forKey: "credentials[\(userId)]")
-        UserDefaults.standard.removeObject(forKey: "device_id[\(userId)]")
-        UserDefaults.standard.removeObject(forKey: "access_token[\(userId)]")
-        UserDefaults.standard.removeObject(forKey: "expiration[\(userId)]")
-        UserDefaults.standard.removeObject(forKey: "refresh_token[\(userId)]")
+        removeCredentials(for: userId, defaults: self.defaults)
+        removeCredentials(for: userId, defaults: UserDefaults.standard)
+    }
+    
+    public func removeCredentials(for userId: UserId, defaults: UserDefaults) {
+        defaults.removeObject(forKey: "user_id")
+        defaults.removeObject(forKey: "credentials[\(userId)]")
+        defaults.removeObject(forKey: "device_id[\(userId)]")
+        defaults.removeObject(forKey: "access_token[\(userId)]")
+        defaults.removeObject(forKey: "expiration[\(userId)]")
+        defaults.removeObject(forKey: "refresh_token[\(userId)]")
     }
     
     private func saveS4Key(key: Data, keyId: String, for userId: UserId) async throws {
         // Save the keyId -- but NOT the key itself -- in user defaults, so we know which key to use in the future
-        UserDefaults.standard.set(keyId, forKey: "bsspeke_ssss_keyid[\(userId)]")
+        self.defaults.set(keyId, forKey: "bsspeke_ssss_keyid[\(userId)]")
         
         // Save the actual key in the Keychain
         let keyStore = Matrix.LocalKeyStore(userId: userId)
@@ -248,6 +306,7 @@ public class CirclesStore: ObservableObject {
         }
         
         guard let matrix = try? await Matrix.Session(creds: creds,
+                                                     defaults: self.defaults,
                                                      syncToken: token,
                                                      startSyncing: true,
                                                      initialSyncFilter: self.filter,
@@ -598,7 +657,7 @@ public class CirclesStore: ObservableObject {
         
         // First - Check to see if we already have a device_id and access_token for this user
         //         e.g. maybe they didn't log out, but only "switched"
-        if let creds = try? loadCredentials(userId.stringValue) {
+        if let creds = try? loadCredentials(userId) {
             logger.debug("Found saved credentials for \(userId)")
             
             // Save the full credentials including the userId, so we can automatically connect next time

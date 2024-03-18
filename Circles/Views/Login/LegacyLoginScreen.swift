@@ -11,7 +11,9 @@ import KeychainAccess
 
 struct LegacyLoginScreen: View {
     @ObservedObject var session: LegacyLoginSession
-    
+    var store: CirclesStore
+
+    @AppStorage("debugMode") var debugMode: Bool = false
     @AppStorage("previousUserIds") var previousUserIds: [UserId] = []
     
     @State var password: String = ""
@@ -19,6 +21,10 @@ struct LegacyLoginScreen: View {
     
     var body: some View {
         VStack {
+            if debugMode {
+                Text("m.login.password")
+                    .foregroundColor(.red)
+            }
             Spacer()
             
             Text("Enter password for \(session.userId.stringValue)")
@@ -61,7 +67,9 @@ struct LegacyLoginScreen: View {
             
             Spacer()
 
-            Button(role: .destructive, action: {}) {
+            AsyncButton(role: .destructive, action: {
+                try await store.disconnect()
+            }) {
                 Text("Cancel")
             }
         }

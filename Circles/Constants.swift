@@ -62,7 +62,11 @@ let CIRCLES_DOMAINS = [
     let euDomain = "eu.circles.futo.org"
 #endif
 
+let PUSH_GATEWAY_HOSTNAME = "sygnal.\(usDomain)"
+
 let ORG_FUTO_BCRYPT_SHA2 = "org.futo.bcrypt-sha2"
 let ORG_FUTO_BSSPEKE_ECC = "org.futo.bsspeke-ecc"
 
 let PRIVACY_POLICY_URL = "https://circles.futo.org/privacy/app/index.html"
+
+let CIRCLES_APP_GROUP_NAME = "group.2W7AC6T8T5.org.futo.circles"

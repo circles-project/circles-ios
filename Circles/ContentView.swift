@@ -54,7 +54,7 @@ struct ContentView: View {
             UiaLoginScreen(session: uiaLoginSession, store: store)
             
         case .loggingInNonUIA(let legacyLoginSession):
-            LegacyLoginScreen(session: legacyLoginSession)
+            LegacyLoginScreen(session: legacyLoginSession, store: store)
             
         case .haveCreds(let creds, let key, let token):
             VStack {

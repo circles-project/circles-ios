@@ -174,6 +174,12 @@
 		A5D3C9C12A708F1300B41CC0 /* DBZxcvbn.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D3C9B92A708F1300B41CC0 /* DBZxcvbn.m */; };
 		A5D3C9C22A708F1300B41CC0 /* DBMatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D3C9BA2A708F1300B41CC0 /* DBMatcher.m */; };
 		A5D3C9C32A708F1300B41CC0 /* DBScorer.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D3C9BD2A708F1300B41CC0 /* DBScorer.m */; };
+		A5DDA6A32B98E49500BD8A1D /* CirclesAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5DDA6A22B98E49500BD8A1D /* CirclesAppDelegate.swift */; };
+		A5DDA6A52B98F8B900BD8A1D /* Data+hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5DDA6A42B98F8B900BD8A1D /* Data+hex.swift */; };
+		A5DDA6AD2B9B60F400BD8A1D /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5DDA6AC2B9B60F400BD8A1D /* NotificationService.swift */; };
+		A5DDA6B12B9B60F400BD8A1D /* NSE.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A5DDA6AA2B9B60F400BD8A1D /* NSE.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A5DDA6B72B9B618A00BD8A1D /* Matrix in Frameworks */ = {isa = PBXBuildFile; productRef = A5DDA6B62B9B618A00BD8A1D /* Matrix */; };
+		A5DDA6BA2B9BB2BA00BD8A1D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5DDA6B92B9BB2BA00BD8A1D /* Constants.swift */; };
 		A5E101F82814FAFD000B2C42 /* bcrypt.c in Sources */ = {isa = PBXBuildFile; fileRef = A5E101F72814FAFD000B2C42 /* bcrypt.c */; };
 		A5E101FA2814FB60000B2C42 /* blf.c in Sources */ = {isa = PBXBuildFile; fileRef = A5E101F92814FB60000B2C42 /* blf.c */; };
 		A5E101FE2814FC9F000B2C42 /* PerfectBCrypt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E101FD2814FC9F000B2C42 /* PerfectBCrypt.swift */; };
@@ -195,6 +201,30 @@
 		A5FCF64129CC9B30008278B0 /* GroupRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FCF64029CC9B30008278B0 /* GroupRoom.swift */; };
 		A5FCF64329CC9B4F008278B0 /* GalleryRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FCF64229CC9B4F008278B0 /* GalleryRoom.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A5DDA6AF2B9B60F400BD8A1D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 404C72C5265DDF35000473DF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A5DDA6A92B9B60F400BD8A1D;
+			remoteInfo = NSE;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A5DDA6B22B9B60F400BD8A1D /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A5DDA6B12B9B60F400BD8A1D /* NSE.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		4012C54826A752C400BB15E6 /* EmojiPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiPicker.swift; sourceTree = "<group>"; };
@@ -367,6 +397,13 @@
 		A5D3C9BC2A708F1300B41CC0 /* Zxcvbn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Zxcvbn.h; sourceTree = "<group>"; };
 		A5D3C9BD2A708F1300B41CC0 /* DBScorer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBScorer.m; sourceTree = "<group>"; };
 		A5D67F232B236F9600729582 /* FUTO Circles.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = "FUTO Circles.storekit"; sourceTree = "<group>"; };
+		A5DDA6A22B98E49500BD8A1D /* CirclesAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesAppDelegate.swift; sourceTree = "<group>"; };
+		A5DDA6A42B98F8B900BD8A1D /* Data+hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+hex.swift"; sourceTree = "<group>"; };
+		A5DDA6AA2B9B60F400BD8A1D /* NSE.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NSE.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A5DDA6AC2B9B60F400BD8A1D /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		A5DDA6AE2B9B60F400BD8A1D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A5DDA6B82B9BAEFC00BD8A1D /* NSE.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NSE.entitlements; sourceTree = "<group>"; };
+		A5DDA6B92B9BB2BA00BD8A1D /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		A5E101F62814FAFD000B2C42 /* Circles-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Circles-Bridging-Header.h"; sourceTree = "<group>"; };
 		A5E101F72814FAFD000B2C42 /* bcrypt.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = bcrypt.c; sourceTree = "<group>"; };
 		A5E101F92814FB60000B2C42 /* blf.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = blf.c; sourceTree = "<group>"; };
@@ -409,6 +446,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A5DDA6A72B9B60F400BD8A1D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A5DDA6B72B9B618A00BD8A1D /* Matrix in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -426,6 +471,7 @@
 				A5D67F232B236F9600729582 /* FUTO Circles.storekit */,
 				405BF7862683C5FA006E8756 /* Products.storekit */,
 				404C72CF265DDF35000473DF /* Circles */,
+				A5DDA6AB2B9B60F400BD8A1D /* NSE */,
 				404C72CE265DDF35000473DF /* Products */,
 				8F950EBDD063263CCF586FCD /* Pods */,
 				164181A9A7F811C050752AC6 /* Frameworks */,
@@ -436,6 +482,7 @@
 			isa = PBXGroup;
 			children = (
 				404C72CD265DDF35000473DF /* Circles.app */,
+				A5DDA6AA2B9B60F400BD8A1D /* NSE.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -494,6 +541,7 @@
 				A562C08F2AFE9A7200522FCB /* Array+RawRepresentable.swift */,
 				A51503C32B75690700E1566E /* SaveImage.swift */,
 				A51503C52B756B7F00E1566E /* DeleteAndPurge.swift */,
+				A5DDA6A42B98F8B900BD8A1D /* Data+hex.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -755,6 +803,7 @@
 				A54BA3A12850108300453D5E /* CirclesStore.swift */,
 				A52FEBFC2862521F00AE4E3A /* CirclesApplicationSession.swift */,
 				A562C0972B16981C00522FCB /* AppStoreInterface.swift */,
+				A5DDA6A22B98E49500BD8A1D /* CirclesAppDelegate.swift */,
 			);
 			path = Backend;
 			sourceTree = "<group>";
@@ -784,6 +833,17 @@
 				A5D3C9B52A708F1300B41CC0 /* frequency_lists.json */,
 			);
 			path = generated;
+			sourceTree = "<group>";
+		};
+		A5DDA6AB2B9B60F400BD8A1D /* NSE */ = {
+			isa = PBXGroup;
+			children = (
+				A5DDA6B82B9BAEFC00BD8A1D /* NSE.entitlements */,
+				A5DDA6AC2B9B60F400BD8A1D /* NotificationService.swift */,
+				A5DDA6AE2B9B60F400BD8A1D /* Info.plist */,
+				A5DDA6B92B9BB2BA00BD8A1D /* Constants.swift */,
+			);
+			path = NSE;
 			sourceTree = "<group>";
 		};
 		A5E101F52814FABC000B2C42 /* BCrypt */ = {
@@ -822,10 +882,12 @@
 				404C72C9265DDF35000473DF /* Sources */,
 				404C72CA265DDF35000473DF /* Frameworks */,
 				404C72CB265DDF35000473DF /* Resources */,
+				A5DDA6B22B9B60F400BD8A1D /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				A5DDA6B02B9B60F400BD8A1D /* PBXTargetDependency */,
 			);
 			name = Circles;
 			packageProductDependencies = (
@@ -841,18 +903,41 @@
 			productReference = 404C72CD265DDF35000473DF /* Circles.app */;
 			productType = "com.apple.product-type.application";
 		};
+		A5DDA6A92B9B60F400BD8A1D /* NSE */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A5DDA6B52B9B60F400BD8A1D /* Build configuration list for PBXNativeTarget "NSE" */;
+			buildPhases = (
+				A5DDA6A62B9B60F400BD8A1D /* Sources */,
+				A5DDA6A72B9B60F400BD8A1D /* Frameworks */,
+				A5DDA6A82B9B60F400BD8A1D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NSE;
+			packageProductDependencies = (
+				A5DDA6B62B9B618A00BD8A1D /* Matrix */,
+			);
+			productName = NSE;
+			productReference = A5DDA6AA2B9B60F400BD8A1D /* NSE.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		404C72C5265DDF35000473DF /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1240;
+				LastSwiftUpdateCheck = 1520;
 				LastUpgradeCheck = 1240;
 				TargetAttributes = {
 					404C72CC265DDF35000473DF = {
 						CreatedOnToolsVersion = 12.4;
 						LastSwiftMigration = 1330;
+					};
+					A5DDA6A92B9B60F400BD8A1D = {
+						CreatedOnToolsVersion = 15.2;
 					};
 				};
 			};
@@ -879,6 +964,7 @@
 			projectRoot = "";
 			targets = (
 				404C72CC265DDF35000473DF /* Circles */,
+				A5DDA6A92B9B60F400BD8A1D /* NSE */,
 			);
 		};
 /* End PBXProject section */
@@ -892,6 +978,13 @@
 				404C72D8265DDF35000473DF /* Preview Assets.xcassets in Resources */,
 				A5D3C9BE2A708F1300B41CC0 /* adjacency_graphs.json in Resources */,
 				404C72D5265DDF35000473DF /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A5DDA6A82B9B60F400BD8A1D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -911,6 +1004,7 @@
 				A52ACB8D2A7824D3005D90C5 /* ProfileSpace.swift in Sources */,
 				4047F3DE26B895B80010B2C3 /* SecureFieldWithEye.swift in Sources */,
 				A53EADA62A6F0EA600EF18B7 /* CirclesTabbedInterface.swift in Sources */,
+				A5DDA6A52B98F8B900BD8A1D /* Data+hex.swift in Sources */,
 				A52ACB8B2A78240C005D90C5 /* SelfDetailView.swift in Sources */,
 				409F4379265DE25000690A61 /* PhotoGalleryCreationSheet.swift in Sources */,
 				403CEA9D26E86B920054DBF4 /* AvatarForm.swift in Sources */,
@@ -1018,6 +1112,7 @@
 				4073E7C4267915AF001A80CF /* RepliesView.swift in Sources */,
 				A5487EC72ADC81E500FA16B5 /* UserNameView.swift in Sources */,
 				A562C0902AFE9A7200522FCB /* Array+RawRepresentable.swift in Sources */,
+				A5DDA6A32B98E49500BD8A1D /* CirclesAppDelegate.swift in Sources */,
 				A5921EB32AFAA83A00C2331D /* CircleSettingsView.swift in Sources */,
 				A56BE1742AD5CEFA00B15F51 /* RoomKnockDetailsView.swift in Sources */,
 				409F4343265DE17500690A61 /* GroupOverviewRow.swift in Sources */,
@@ -1080,7 +1175,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A5DDA6A62B9B60F400BD8A1D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A5DDA6AD2B9B60F400BD8A1D /* NotificationService.swift in Sources */,
+				A5DDA6BA2B9BB2BA00BD8A1D /* Constants.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A5DDA6B02B9B60F400BD8A1D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A5DDA6A92B9B60F400BD8A1D /* NSE */;
+			targetProxy = A5DDA6AF2B9B60F400BD8A1D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		404C72DA265DDF35000473DF /* Debug */ = {
@@ -1204,6 +1316,7 @@
 		404C72DD265DDF35000473DF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
@@ -1240,6 +1353,7 @@
 		404C72DE265DDF35000473DF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
@@ -1272,6 +1386,73 @@
 			};
 			name = Release;
 		};
+		A5DDA6B32B9B60F400BD8A1D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = NSE/NSE.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2W7AC6T8T5;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NSE/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = NSE;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = org.futo.circles.NSE;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A5DDA6B42B9B60F400BD8A1D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = NSE/NSE.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2W7AC6T8T5;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NSE/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = NSE;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = org.futo.circles.NSE;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1289,6 +1470,15 @@
 			buildConfigurations = (
 				404C72DD265DDF35000473DF /* Debug */,
 				404C72DE265DDF35000473DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A5DDA6B52B9B60F400BD8A1D /* Build configuration list for PBXNativeTarget "NSE" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A5DDA6B32B9B60F400BD8A1D /* Debug */,
+				A5DDA6B42B9B60F400BD8A1D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1386,6 +1576,11 @@
 			productName = KeyboardKit;
 		};
 		A5D2A3EB29BA643C00428C45 /* Matrix */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A5D2A3EA29BA643C00428C45 /* XCRemoteSwiftPackageReference "matrix.swift" */;
+			productName = Matrix;
+		};
+		A5DDA6B62B9B618A00BD8A1D /* Matrix */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = A5D2A3EA29BA643C00428C45 /* XCRemoteSwiftPackageReference "matrix.swift" */;
 			productName = Matrix;
