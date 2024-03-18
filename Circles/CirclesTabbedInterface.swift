@@ -45,7 +45,6 @@ struct CirclesTabbedInterface: View {
     */
     
     enum Tab: String {
-        case home
         case circles
         case people
         case groups
@@ -53,7 +52,7 @@ struct CirclesTabbedInterface: View {
         case settings
     }
     
-    @State private var selection: Tab = .home
+    @State private var selection: Tab = .circles
     @State var knockRoomId: RoomId?
     
     @State var selectedGroupId: RoomId?
