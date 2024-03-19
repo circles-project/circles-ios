@@ -32,6 +32,115 @@ class CirclesApplicationSession: ObservableObject {
     var people: ContainerRoom<PersonRoom>       // People space contains the space rooms for each of our contacts
     var profile: ContainerRoom<Matrix.Room>     // Our profile space contains the "wall" rooms for each circle that we "publish" to our connections
     
+    
+    @Published var viewState = ViewState()      // The ViewState encapsulates all the top-level UI state for the app when we're logged in with this active application session
+    public class ViewState: ObservableObject {
+        enum Tab: String {
+            case circles
+            case people
+            case groups
+            case photos
+            case settings
+        }
+        @Published var tab: Tab = .circles
+        @Published var knockRoomId: RoomId?
+        
+        @Published var selectedGroupId: RoomId?
+        @Published var selectedCircleId: RoomId?
+        @Published var selectedGalleryId: RoomId?
+    }
+        
+    public func onOpenURL(url: URL) {
+        guard let host = url.host()
+        else {
+            print("DEEPLINK Not processing URL \(url) -- No host")
+            return
+        }
+        let components = url.pathComponents
+        
+        print("DEEPLINK URL: Host = \(host)")
+        print("DEEPLINK URL: Path = \(components)")
+        
+        guard url.pathComponents.count >= 3,
+              url.pathComponents[0] == "/",
+              let roomId = RoomId(url.pathComponents[2])
+        else {
+            print("DEEPLINK Not processing URL \(url) -- No first path component")
+            return
+        }
+        
+        guard let room = self.matrix.rooms[roomId]
+        else {
+            print("DEEPLINK Not in room \(roomId) -- Knocking on it")
+            self.viewState.knockRoomId = roomId
+            return
+        }
+        
+        let prefix = url.pathComponents[1]
+        switch prefix {
+        
+        case "timeline":
+            print("DEEPLINK Setting tab to Circles")
+            self.viewState.tab = .circles
+            
+            // Do we have a Circle space that contains the given room?
+            if let matchingSpace = self.circles.rooms.first(where: { space in
+                // Does this Circle space contain the given room?
+                let matchingRoom = space.rooms.first(where: {room in
+                    // Is this room the given room?
+                    room.roomId == roomId
+                })
+                return matchingRoom != nil
+            }) {
+                print("DEEPLINKS CIRCLES Setting selected circle to \(matchingSpace.name ?? matchingSpace.roomId.stringValue)")
+                self.viewState.selectedCircleId = matchingSpace.roomId
+            } else {
+                print("DEEPLINKS CIRCLES Room \(roomId) is not one of ours")
+            }
+        
+        case "profile":
+            print("DEEPLINK Setting tab to People")
+            self.viewState.tab = .people
+        
+        case "group":
+            print("DEEPLINK Setting tab to Groups")
+            self.viewState.tab = .groups
+            self.viewState.selectedGroupId = roomId
+        
+        case "gallery":
+            print("DEEPLINK Setting tab to Photos")
+            self.viewState.tab = .photos
+            self.viewState.selectedGalleryId = roomId
+        
+        case "room":
+            
+            // Let's see what type of room it is, and use that to set the selected tab.
+            switch room.type {
+                
+            case ROOM_TYPE_CIRCLE:
+                self.viewState.tab = .circles
+                self.viewState.selectedCircleId = roomId
+                
+            case "m.space":
+                self.viewState.tab = .people
+                
+            case ROOM_TYPE_GROUP:
+                self.viewState.tab = .groups
+                self.viewState.selectedGroupId = roomId
+                
+            case ROOM_TYPE_PHOTOS:
+                self.viewState.tab = .photos
+                self.viewState.selectedGalleryId = roomId
+                
+            default:
+                print("DEEPLINK Room type doesn't match any of our tabs - doing nothing")
+            }
+
+        default:
+            print("DEEPLINK Unknown URL prefix [\(prefix)]")
+        }
+    }
+    
 
     private func sendTestNotification() {
         let content = UNMutableNotificationContent()
