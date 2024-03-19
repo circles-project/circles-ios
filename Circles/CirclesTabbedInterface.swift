@@ -33,31 +33,11 @@ struct SyncDebugView: View {
 struct CirclesTabbedInterface: View {
     @ObservedObject var store: CirclesStore
     @ObservedObject var session: CirclesApplicationSession
+    @ObservedObject var viewState: CirclesApplicationSession.ViewState
     
     @AppStorage("debugMode") var debugMode: Bool = false
-
     
-    /*
-    init(store: CirclesStore, session: CirclesApplicationSession) {
-        self.store = store
-        self.session = session
-    }
-    */
-    
-    enum Tab: String {
-        case circles
-        case people
-        case groups
-        case photos
-        case settings
-    }
-    
-    @State private var selection: Tab = .circles
-    @State var knockRoomId: RoomId?
-    
-    @State var selectedGroupId: RoomId?
-    @State var selectedCircleId: RoomId?
-    @State var selectedGalleryId: RoomId?
+    typealias Tab = CirclesApplicationSession.ViewState.Tab
 
     #if DEBUG
     @ViewBuilder
@@ -72,10 +52,10 @@ struct CirclesTabbedInterface: View {
     
     @ViewBuilder
     var tabview: some View {
-        TabView(selection: $selection) {
+        TabView(selection: $session.viewState.tab) {
             
             CirclesOverviewScreen(container: self.session.circles,
-                                  selected: $selectedCircleId)
+                                  selected: $session.viewState.selectedCircleId)
                 .environmentObject(session)
                 .tabItem {
                     Image(systemName: "circles.hexagonpath")
@@ -95,7 +75,7 @@ struct CirclesTabbedInterface: View {
                 .tag(Tab.people)
             
             GroupsOverviewScreen(container: self.session.groups,
-                                 selected: $selectedGroupId)
+                                 selected: $session.viewState.selectedGroupId)
                 .environmentObject(session)
                 .tabItem {
                     Image(systemName: "person.2.square.stack")
@@ -104,7 +84,7 @@ struct CirclesTabbedInterface: View {
                 .tag(Tab.groups)
             
             PhotosOverviewScreen(container: self.session.galleries,
-                                 selected: $selectedGalleryId)
+                                 selected: $session.viewState.selectedGalleryId)
                 .environmentObject(session)
                 .tabItem {
                     Image(systemName: "photo.fill.on.rectangle.fill")
@@ -131,97 +111,9 @@ struct CirclesTabbedInterface: View {
             */
         }
         .onOpenURL{ url in
-            guard let host = url.host()
-            else {
-                print("DEEPLINK Not processing URL \(url) -- No host")
-                return
-            }
-            let components = url.pathComponents
-            
-            print("DEEPLINK URL: Host = \(host)")
-            print("DEEPLINK URL: Path = \(components)")
-            
-            guard url.pathComponents.count >= 3,
-                  url.pathComponents[0] == "/",
-                  let roomId = RoomId(url.pathComponents[2])
-            else {
-                print("DEEPLINK Not processing URL \(url) -- No first path component")
-                return
-            }
-            
-            guard let room = self.session.matrix.rooms[roomId]
-            else {
-                print("DEEPLINK Not in room \(roomId) -- Knocking on it")
-                knockRoomId = roomId
-                return
-            }
-            
-            let prefix = url.pathComponents[1]
-            switch prefix {
-            
-            case "timeline":
-                print("DEEPLINK Setting tab to Circles")
-                selection = .circles
-                
-                // Do we have a Circle space that contains the given room?
-                if let matchingSpace = session.circles.rooms.first(where: { space in
-                    // Does this Circle space contain the given room?
-                    let matchingRoom = space.rooms.first(where: {room in
-                        // Is this room the given room?
-                        room.roomId == roomId
-                    })
-                    return matchingRoom != nil
-                }) {
-                    print("DEEPLINKS CIRCLES Setting selected circle to \(matchingSpace.name ?? matchingSpace.roomId.stringValue)")
-                    selectedCircleId = matchingSpace.roomId
-                } else {
-                    print("DEEPLINKS CIRCLES Room \(roomId) is not one of ours")
-                }
-            
-            case "profile":
-                print("DEEPLINK Setting tab to People")
-                selection = .people
-            
-            case "group":
-                print("DEEPLINK Setting tab to Groups")
-                selection = .groups
-                selectedGroupId = roomId
-            
-            case "gallery":
-                print("DEEPLINK Setting tab to Photos")
-                selection = .photos
-                selectedGalleryId = roomId
-            
-            case "room":
-                
-                // Let's see what type of room it is, and use that to set the selected tab.
-                switch room.type {
-                    
-                case ROOM_TYPE_CIRCLE:
-                    selection = .circles
-                    selectedCircleId = roomId
-                    
-                case "m.space":
-                    selection = .people
-                    
-                case ROOM_TYPE_GROUP:
-                    selection = .groups
-                    selectedGroupId = roomId
-                    
-                case ROOM_TYPE_PHOTOS:
-                    selection = .photos
-                    selectedGalleryId = roomId
-                    
-                default:
-                    print("DEEPLINK Room type doesn't match any of our tabs - doing nothing")
-                }
-
-            default:
-                print("DEEPLINK Unknown URL prefix [\(prefix)]")
-            }
-            
+            session.onOpenURL(url: url)
         }
-        .sheet(item: $knockRoomId) { roomId in
+        .sheet(item: $session.viewState.knockRoomId) { roomId in
             ScanQrCodeAndKnockSheet(session: self.session.matrix, roomId: roomId)
         }
 

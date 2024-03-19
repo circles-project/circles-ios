@@ -117,13 +117,26 @@ extension CirclesAppDelegate: UNUserNotificationCenterDelegate {
             return
         }
         
-        // TODO: Check that the room is one of ours
-        //       The user may be logged in simultaneously to Circles and to a chat app like Element
-        //       We don't want to display notifications for chat rooms in Circles, if we can help it.
-        
-        // FIXME: For now, just don't show anything
-        completionHandler([])
-        return
+        // Check that the room is one of ours
+        // The user may be logged in simultaneously to Circles and to a chat app like Element
+        // We don't want to display notifications for chat rooms in Circles, if we can help it.
+        if let session = CirclesApplicationSession.current,
+           session.roomIsKnown(roomId: roomId)
+        {
+            if session.roomIsInvited(roomId: roomId) {
+                // If it's an invitation, then we should include the notification in NotificationCenter so the user might be more likely to notice it later
+                completionHandler([.banner, .list])
+            } else {
+                // If it's just a regular message, then pop up the banner and that's good enough
+                completionHandler([.banner])
+            }
+            return
+        } else {
+            // Looks like this is not one of our rooms
+            // Don't show anything
+            completionHandler([])
+            return
+        }
     }
     
     // https://developer.apple.com/documentation/usernotifications/unusernotificationcenterdelegate/usernotificationcenter(_:didreceive:withcompletionhandler:)
@@ -133,11 +146,32 @@ extension CirclesAppDelegate: UNUserNotificationCenterDelegate {
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
         let title = response.notification.request.content.title
         let body = response.notification.request.content.body
-        print("DELEGATE\tdidReceive user notification!  Title = [\(title)]  Body = [\(body)]")
+        print("DELEGATE didReceive user notification!  Title = [\(title)]  Body = [\(body)]")
         
         // FIXME: If the room is one of ours, then we should programmatically navigate to it
+        let info = response.notification.request.content.userInfo
+        guard let eventId = info["event_id"] as? EventId,
+              let roomIdString = info["room_id"] as? String,
+              let roomId = RoomId(roomIdString)
+        else {
+            print("DELEGATE Failed to get eventId and roomId")
+            completionHandler()
+            return
+        }
         
-        completionHandler()
+        guard let session = CirclesApplicationSession.current
+        else {
+            print("DELEGATE Failed to get current circles application session")
+            completionHandler()
+            return
+        }
+        
+        Task {
+            print("DELEGATE Navigating to room \(roomId) from notification")
+            try? await session.navigate(to: roomId)
+            completionHandler()
+        }
+
     }
     
 }

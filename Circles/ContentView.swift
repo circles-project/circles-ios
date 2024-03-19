@@ -131,7 +131,7 @@ struct ContentView: View {
                 }
             
         case .online(let circlesSession):
-            CirclesTabbedInterface(store: store, session: circlesSession)
+            CirclesTabbedInterface(store: store, session: circlesSession, viewState: circlesSession.viewState)
                 .environmentObject(circlesSession)
                 .environmentObject(store.appStore)
             
