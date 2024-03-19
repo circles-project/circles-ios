@@ -1,3 +1,6 @@
+# v1.0.1
+* Add support for push notifications
+
 # v1.0.0
 * Bugfix: Stop the composer blanking when the room updates
 * Only show the "+" button for a new post when we have power to post
