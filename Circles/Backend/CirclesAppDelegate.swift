@@ -123,7 +123,13 @@ extension CirclesAppDelegate: UNUserNotificationCenterDelegate {
         if let session = CirclesApplicationSession.current,
            session.roomIsKnown(roomId: roomId)
         {
-            completionHandler([.banner])
+            if session.roomIsInvited(roomId: roomId) {
+                // If it's an invitation, then we should include the notification in NotificationCenter so the user might be more likely to notice it later
+                completionHandler([.banner, .list])
+            } else {
+                // If it's just a regular message, then pop up the banner and that's good enough
+                completionHandler([.banner])
+            }
             return
         } else {
             // Looks like this is not one of our rooms

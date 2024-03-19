@@ -109,6 +109,10 @@ class CirclesApplicationSession: ObservableObject {
         // Otherwise I guess we don't know about this one
         return false
     }
+    
+    public func roomIsInvited(roomId: RoomId) -> Bool {
+        self.matrix.invitations[roomId] != nil
+    }
         
     public func onOpenURL(url: URL) {
         guard let host = url.host()
