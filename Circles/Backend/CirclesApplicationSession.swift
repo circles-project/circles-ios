@@ -101,6 +101,11 @@ class CirclesApplicationSession: ObservableObject {
             return true
         }
         
+        // Maybe it's a room that we've been invited to, but we are not yet a member?
+        if let invitedRoom = self.matrix.invitations[roomId] {
+            return true
+        }
+        
         // Otherwise I guess we don't know about this one
         return false
     }
