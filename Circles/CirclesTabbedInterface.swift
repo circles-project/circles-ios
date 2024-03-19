@@ -33,6 +33,7 @@ struct SyncDebugView: View {
 struct CirclesTabbedInterface: View {
     @ObservedObject var store: CirclesStore
     @ObservedObject var session: CirclesApplicationSession
+    @ObservedObject var viewState: CirclesApplicationSession.ViewState
     
     @AppStorage("debugMode") var debugMode: Bool = false
     

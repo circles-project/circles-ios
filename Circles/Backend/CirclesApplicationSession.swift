@@ -18,6 +18,9 @@ import UIKit
 
 
 class CirclesApplicationSession: ObservableObject {
+    
+    private(set) public static var current: CirclesApplicationSession?
+    
     var logger: os.Logger
     
     var store: CirclesStore
@@ -48,6 +51,58 @@ class CirclesApplicationSession: ObservableObject {
         @Published var selectedGroupId: RoomId?
         @Published var selectedCircleId: RoomId?
         @Published var selectedGalleryId: RoomId?
+        
+        @MainActor
+        func navigate(tab: Tab, selected: RoomId?) {
+            print("VIEWSTATE Navigating to tab \(tab) and room \(selected?.stringValue ?? "(none)")")
+            switch tab {
+            case .circles:
+                self.tab = .circles
+                self.selectedCircleId = selected
+            case .people:
+                self.tab = .people
+                // FIXME: Set a selected profile roomId
+            case .groups:
+                self.tab = .groups
+                self.selectedGroupId = selected
+            case .photos:
+                self.tab = .photos
+                self.selectedGalleryId = selected
+            case .settings:
+                self.tab = .settings
+            }
+        }
+        
+        @MainActor
+        func knock(roomId: RoomId) {
+            self.knockRoomId = roomId
+        }
+    }
+    
+    public func roomIsKnown(roomId: RoomId) -> Bool {
+        // Is the given room one of our various content rooms?
+        if self.groups.rooms.contains(where: {$0.roomId == roomId}) {
+            return true
+        }
+        if self.galleries.rooms.contains(where: {$0.roomId == roomId}) {
+            return true
+        }
+        if self.people.rooms.contains(where: {$0.roomId == roomId}) {
+            return true
+        }
+        if self.circles.rooms.contains(where: {space in
+            space.roomId == roomId || space.rooms.contains(where: {$0.roomId == roomId})
+        }) {
+            return true
+        }
+        
+        // Not a content room. Maybe it's a space in our hierarchy?
+        if self.groups.roomId == roomId || self.galleries.roomId == roomId || self.people.roomId == roomId || self.circles.roomId == roomId || self.config.root == roomId {
+            return true
+        }
+        
+        // Otherwise I guess we don't know about this one
+        return false
     }
         
     public func onOpenURL(url: URL) {
@@ -80,8 +135,7 @@ class CirclesApplicationSession: ObservableObject {
         switch prefix {
         
         case "timeline":
-            print("DEEPLINK Setting tab to Circles")
-            self.viewState.tab = .circles
+            print("DEEPLINK Url is for a circle timeline")
             
             // Do we have a Circle space that contains the given room?
             if let matchingSpace = self.circles.rooms.first(where: { space in
@@ -93,7 +147,10 @@ class CirclesApplicationSession: ObservableObject {
                 return matchingRoom != nil
             }) {
                 print("DEEPLINKS CIRCLES Setting selected circle to \(matchingSpace.name ?? matchingSpace.roomId.stringValue)")
+                print("DEEPLINK Setting tab to Circles")
+                self.viewState.tab = .circles
                 self.viewState.selectedCircleId = matchingSpace.roomId
+                return
             } else {
                 print("DEEPLINKS CIRCLES Room \(roomId) is not one of ours")
             }
@@ -101,45 +158,152 @@ class CirclesApplicationSession: ObservableObject {
         case "profile":
             print("DEEPLINK Setting tab to People")
             self.viewState.tab = .people
+            // FIXME: Set the selected profile to view the friend's info
+            return
         
         case "group":
-            print("DEEPLINK Setting tab to Groups")
-            self.viewState.tab = .groups
-            self.viewState.selectedGroupId = roomId
-        
-        case "gallery":
-            print("DEEPLINK Setting tab to Photos")
-            self.viewState.tab = .photos
-            self.viewState.selectedGalleryId = roomId
-        
-        case "room":
-            
-            // Let's see what type of room it is, and use that to set the selected tab.
-            switch room.type {
-                
-            case ROOM_TYPE_CIRCLE:
-                self.viewState.tab = .circles
-                self.viewState.selectedCircleId = roomId
-                
-            case "m.space":
-                self.viewState.tab = .people
-                
-            case ROOM_TYPE_GROUP:
+            print("DEEPLINK Url is for a group")
+            if let matchingGroup = self.groups.rooms.first(where: { $0.roomId == roomId }) {
+                print("DEEPLINK Setting tab to Groups")
                 self.viewState.tab = .groups
                 self.viewState.selectedGroupId = roomId
-                
-            case ROOM_TYPE_PHOTOS:
+                return
+            } else {
+                print("DEEPLINK Group room is not one of ours")
+            }
+        
+        case "gallery":
+            print("DEEPLINK Url is for a photo gallery")
+            if let matchingGallery = self.galleries.rooms.first(where: { $0.roomId == roomId }) {
+                print("DEEPLINK Setting tab to Photos")
                 self.viewState.tab = .photos
                 self.viewState.selectedGalleryId = roomId
-                
-            default:
-                print("DEEPLINK Room type doesn't match any of our tabs - doing nothing")
+                return
+            } else {
+                print("DEEPLINK Gallery room is not one of ours")
             }
+        
+        case "room":
+            Task {
+                try await navigate(to: roomId)
+            }
+            return
 
         default:
             print("DEEPLINK Unknown URL prefix [\(prefix)]")
         }
     }
+    
+    public func navigate(to roomId: RoomId) async throws {
+        // Is this a room that we already know?
+        if let room = try? await self.matrix.getRoom(roomId: roomId) {
+            // Let's see what type of room it is, and use that to set the selected tab.
+            print("NAVIGATE Found room \(room.roomId) with type \(room.type ?? "(none)")")
+            
+            switch room.type {
+            
+            case ROOM_TYPE_CIRCLE:
+                print("NAVIGATE Room looks like a circle timeline")
+                if let circle = self.circles.rooms.first(where: { space in
+                    space.rooms.contains(where: {$0.roomId == roomId})
+                }) {
+                    print("NAVIGATE Navigating to circle \(circle.name ?? circle.roomId.stringValue)")
+                    await self.viewState.navigate(tab: .circles, selected: circle.roomId)
+                    return
+                } else {
+                    print("NAVIGATE Circle timeline room is not part of our hierarchy")
+                }
+                
+            case "m.space":
+                if let profile = self.people.rooms.first(where: {$0.roomId == roomId}) {
+                    await self.viewState.navigate(tab: .people, selected: roomId)
+                    return
+                } else {
+                    print("NAVIGATE (Profile?) Space room is not part of our hierarchy")
+                }
+                
+            case ROOM_TYPE_GROUP:
+                print("NAVIGATE Room looks like a group")
+                if let group = self.groups.rooms.first(where: {$0.roomId == roomId}) {
+                    print("NAVIGATE Navigating to group \(group.name ?? group.roomId.stringValue)")
+                    await self.viewState.navigate(tab: .groups, selected: roomId)
+                    return
+                } else {
+                    print("NAVIGATE Group room is not part of our hierarchy")
+                }
+                
+            case ROOM_TYPE_PHOTOS:
+                if let gallery = self.galleries.rooms.first(where: {$0.roomId == roomId}) {
+                    await self.viewState.navigate(tab: .photos, selected: roomId)
+                    return
+                } else {
+                    print("NAVIGATE Gallery room is not part of our hierarchy")
+                }
+                
+            default:
+                print("NAVIGATE Room type \(room.type ?? "(none)") doesn't match any of our tabs - doing nothing")
+            }
+        }
+        // The room id is not known to us
+        // Do we have an existing invitation to this room?
+        else if let invitation = try? await self.matrix.getInvitedRoom(roomId: roomId) {
+            switch invitation.type {
+            case ROOM_TYPE_CIRCLE:
+                await self.viewState.navigate(tab: .circles, selected: nil)
+                return
+            case ROOM_TYPE_PROFILE:
+                await self.viewState.navigate(tab: .people, selected: nil)
+                return
+            case ROOM_TYPE_GROUP:
+                await self.viewState.navigate(tab: .groups, selected: nil)
+                return
+            case ROOM_TYPE_PHOTOS:
+                await self.viewState.navigate(tab: .photos, selected: nil)
+            default:
+                print("NAVIGATE Can't handle invitation to unknown room type \(invitation.type ?? "(none)")")
+            }
+        }
+        // Maybe we can get its summary?
+        else if let summary = try? await self.matrix.getRoomSummary(roomId: roomId) {
+            print("NAVIGATE Got room summary")
+            // Is this an invitation that we don't have in our session yet?
+            if summary.membership == .invite {
+                print("NAVIGATE Summary says we're invited")
+                switch summary.roomType {
+                case ROOM_TYPE_CIRCLE:
+                    await self.viewState.navigate(tab: .circles, selected: nil)
+                    return
+                case ROOM_TYPE_PROFILE:
+                    await self.viewState.navigate(tab: .people, selected: nil)
+                    return
+                case ROOM_TYPE_GROUP:
+                    await self.viewState.navigate(tab: .groups, selected: nil)
+                    return
+                case ROOM_TYPE_PHOTOS:
+                    await self.viewState.navigate(tab: .photos, selected: nil)
+                default:
+                    print("NAVIGATE Can't handle invitation to unknown room type \(summary.roomType ?? "(none)")")
+                }
+            } else if summary.membership == .leave {
+                print("NAVIGATE Summary says we're not in the room")
+                // Only thing we can do is knock to request access
+                await self.viewState.knock(roomId: roomId)
+                return
+            } else {
+                print("NAVIGATE Summary says we're in state \(summary.membership?.rawValue ?? "(none)") -- Not sure what to do")
+            }
+            
+        }
+        // The room is not known to us, and we can't get its summary
+        // Not much we can do here
+        else {
+            print("NAVIGATE Room is unknown and we can't get a summary.  All we can do is knock.")
+            await self.viewState.knock(roomId: roomId)
+            return
+        }
+    }
+    
+
     
 
     private func sendTestNotification() {
@@ -289,6 +453,9 @@ class CirclesApplicationSession: ObservableObject {
         self.circles = circles
         self.people = people
         self.profile = profile
+        
+        // Register ourself as the current singleton object
+        Self.current = self
         
         let endTS = Date()
         
