@@ -35,8 +35,10 @@ struct ContentView: View {
         case .startingUp:
             ProgressView("Loading Circles...")
                 .onAppear {
+                    print("ContentView: Starting up")
                     Task {
                         try await store.lookForCreds()
+                        print("ContentView: Back from lookForCreds()")
                     }
                 }
             

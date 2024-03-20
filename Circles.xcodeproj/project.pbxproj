@@ -43,7 +43,6 @@
 		409F4342265DE17500690A61 /* GroupHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F433C265DE17400690A61 /* GroupHeader.swift */; };
 		409F4343265DE17500690A61 /* GroupOverviewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F433D265DE17400690A61 /* GroupOverviewRow.swift */; };
 		409F4345265DE17500690A61 /* GroupsOverviewScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F433F265DE17500690A61 /* GroupsOverviewScreen.swift */; };
-		409F435B265DE1EE00690A61 /* LoggedOutScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4359265DE1EE00690A61 /* LoggedOutScreen.swift */; };
 		409F435C265DE1EE00690A61 /* UiaLoginScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F435A265DE1EE00690A61 /* UiaLoginScreen.swift */; };
 		409F4362265DE21A00690A61 /* MessageCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F435F265DE21900690A61 /* MessageCard.swift */; };
 		409F4363265DE21A00690A61 /* MessageAuthorHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4360265DE21A00690A61 /* MessageAuthorHeader.swift */; };
@@ -267,7 +266,6 @@
 		409F433C265DE17400690A61 /* GroupHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupHeader.swift; sourceTree = "<group>"; };
 		409F433D265DE17400690A61 /* GroupOverviewRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupOverviewRow.swift; sourceTree = "<group>"; };
 		409F433F265DE17500690A61 /* GroupsOverviewScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupsOverviewScreen.swift; sourceTree = "<group>"; };
-		409F4359265DE1EE00690A61 /* LoggedOutScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggedOutScreen.swift; sourceTree = "<group>"; };
 		409F435A265DE1EE00690A61 /* UiaLoginScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiaLoginScreen.swift; sourceTree = "<group>"; };
 		409F435F265DE21900690A61 /* MessageCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageCard.swift; sourceTree = "<group>"; };
 		409F4360265DE21A00690A61 /* MessageAuthorHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageAuthorHeader.swift; sourceTree = "<group>"; };
@@ -335,6 +333,7 @@
 		A53E91312A5F152D007B0196 /* AcknowledgementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcknowledgementsView.swift; sourceTree = "<group>"; };
 		A53EAC562A6F037D00EF18B7 /* LegacySecretStoreKeygen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacySecretStoreKeygen.swift; sourceTree = "<group>"; };
 		A53EADA52A6F0EA600EF18B7 /* CirclesTabbedInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesTabbedInterface.swift; sourceTree = "<group>"; };
+		A540001D2BAB4D25008193E1 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		A54346C22A3B785A0025D147 /* GalleryGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryGridView.swift; sourceTree = "<group>"; };
 		A54346C62A3BA7110025D147 /* PhotosUploadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosUploadView.swift; sourceTree = "<group>"; };
 		A54346C82A3BB5BB0025D147 /* PhotoThumbnailCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoThumbnailCard.swift; sourceTree = "<group>"; };
@@ -468,6 +467,7 @@
 		404C72C4265DDF35000473DF = {
 			isa = PBXGroup;
 			children = (
+				A540001D2BAB4D25008193E1 /* PrivacyInfo.xcprivacy */,
 				A5D67F232B236F9600729582 /* FUTO Circles.storekit */,
 				405BF7862683C5FA006E8756 /* Products.storekit */,
 				404C72CF265DDF35000473DF /* Circles */,
@@ -654,7 +654,6 @@
 		409F4357265DE1D800690A61 /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				409F4359265DE1EE00690A61 /* LoggedOutScreen.swift */,
 				409F435A265DE1EE00690A61 /* UiaLoginScreen.swift */,
 				A54BA3A52851222200453D5E /* WelcomeScreen.swift */,
 				A55B8F1D2A8D761A00BAA1FD /* SecretStoragePasswordScreen.swift */,
@@ -1096,7 +1095,6 @@
 				409F4370265DE24000690A61 /* PersonHeaderRow.swift in Sources */,
 				409F4332265DE15F00690A61 /* CircleCreationSheet.swift in Sources */,
 				40CD7F6F2667E16100DE315F /* VideoPicker.swift in Sources */,
-				409F435B265DE1EE00690A61 /* LoggedOutScreen.swift in Sources */,
 				A53E91322A5F152D007B0196 /* AcknowledgementsView.swift in Sources */,
 				A53E912E2A5C95DC007B0196 /* UiaOverlayView.swift in Sources */,
 				A54BA3A22850108300453D5E /* CirclesStore.swift in Sources */,

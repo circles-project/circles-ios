@@ -59,10 +59,12 @@ public class CirclesStore: ObservableObject {
     // MARK: Sync tokens
     
     private func loadSyncToken(userId: UserId, deviceId: String) -> String? {
-        self.defaults.string(forKey: "sync_token[\(userId)::\(deviceId)]")
+        logger.debug("Loading sync token")
+        return self.defaults.string(forKey: "sync_token[\(userId)::\(deviceId)]")
     }
     
     private func saveSyncToken(token: String, userId: UserId, deviceId: String) {
+        logger.debug("Saving sync token")
         self.defaults.set(token, forKey: "sync_token[\(userId)::\(deviceId)]")
     }
     
@@ -104,11 +106,13 @@ public class CirclesStore: ObservableObject {
         else {
             logger.error("Failed to find current user_id")
             
+            /*
             logger.debug("Circles group defaults:")
             dump(defaults: self.defaults)
             
             logger.debug("Standard defaults:")
             dump(defaults: UserDefaults.standard)
+            */
             
             return nil
         }
@@ -271,12 +275,17 @@ public class CirclesStore: ObservableObject {
     }
     
     func lookForCreds() async throws {
+        logger.debug("Looking for creds")
         if let creds = try? loadCredentials() {
+            logger.debug("Found creds for \(creds.userId.stringValue)")
             let token = loadSyncToken(userId: creds.userId, deviceId: creds.deviceId)
+            logger.debug("Setting state to .haveCreds")
             await MainActor.run {
                 self.state = .haveCreds(creds, nil, token)
             }
         } else {
+            logger.debug("No creds")
+            logger.debug("Setting state to .needCreds")
             await MainActor.run {
                 self.state = .needCreds
             }
@@ -887,9 +896,13 @@ public class CirclesStore: ObservableObject {
         default:
             if let matrix = self.matrix {
                 let creds = matrix.creds
+                logger.debug("Closing Matrix session")
                 try await matrix.close()
+                logger.debug("Logging out Matrix session")
                 try await matrix.logout()
+                logger.debug("Removing credentials")
                 removeCredentials(for: creds.userId)
+                logger.debug("Setting state back to 'need creds'")
                 await MainActor.run {
                     self.state = .needCreds
                 }
