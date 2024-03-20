@@ -21,12 +21,17 @@ struct CirclesApp: App {
     init() {
         // We need to register all of our custom types with the Matrix library, so it can decode them for us
         Matrix.registerAccountDataType(EVENT_TYPE_CIRCLES_CONFIG, CirclesConfigContent.self)
+        
+        print("CirclesApp: Done with init()")
     }
 
     var body: some Scene {
         WindowGroup {
             ContentView(store: store)
                 .environmentObject(store)
+                .onAppear {
+                    print("CirclesApp: onAppear")
+                }
         }
     }
 }

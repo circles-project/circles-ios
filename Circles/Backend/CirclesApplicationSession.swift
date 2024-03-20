@@ -398,8 +398,6 @@ class CirclesApplicationSession: ObservableObject {
         self.matrix = matrix
         self.config = config
         
-        let startTS = Date()
-
         logger.debug("Loading Matrix spaces")
         
         logger.debug("Loading Groups space")
@@ -465,11 +463,6 @@ class CirclesApplicationSession: ObservableObject {
         
         // Register ourself as the current singleton object
         Self.current = self
-        
-        let endTS = Date()
-        
-        let totalTime = endTS.timeIntervalSince(startTS)
-        logger.debug("\(totalTime, privacy: .public) sec to initialize Circles Session")
         
         Task {
             logger.debug("Verifying Matrix Space relations")
