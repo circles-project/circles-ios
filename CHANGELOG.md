@@ -1,6 +1,7 @@
 # v1.0.1
 * Add support for push notifications
 * Add API declarations for the App Store
+* Add cross-signing on the user's 2nd/3rd/etc devices
 
 # v1.0.0
 * Bugfix: Stop the composer blanking when the room updates
