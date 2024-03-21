@@ -1,5 +1,6 @@
 # v1.0.1
 * Add support for push notifications
+* Add API declarations for the App Store
 
 # v1.0.0
 * Bugfix: Stop the composer blanking when the room updates
