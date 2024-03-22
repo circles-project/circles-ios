@@ -681,6 +681,7 @@ public class CirclesStore: ObservableObject {
             
             return
         }
+        logger.debug("No existing credentials for \(userId.stringValue)")
         
         // Second - Check wether the server supports UIA on /login
         guard let wellKnown = try? await Matrix.fetchWellKnown(for: userId.domain),
@@ -689,10 +690,12 @@ public class CirclesStore: ObservableObject {
             logger.error("Failed to look up a valid homeserver URL for domain \(userId.domain)")
             throw CirclesError("Failed to look up well known")
         }
+        logger.debug("Got well-known for \(userId.domain)")
         
         let doUIA = try await Matrix.checkForUiaLogin(homeserver: serverURL)
         
         if doUIA {
+            logger.debug("Starting UIA login for \(userId.stringValue)")
             // Start the User-Interactive Auth with a LoginSession
             let loginSession = try await UiaLoginSession(userId: userId, refreshToken: true, completion: { session, data in
                 self.logger.debug("Login was successful")
