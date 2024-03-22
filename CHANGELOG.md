@@ -2,6 +2,8 @@
 * Add support for push notifications
 * Add API declarations for the App Store
 * Add cross-signing on the user's 2nd/3rd/etc devices
+* Add a Settings screen for configuring notifications
+* Bugfix: Re-enable cryptographic/UIA login
 
 # v1.0.0
 * Bugfix: Stop the composer blanking when the room updates
