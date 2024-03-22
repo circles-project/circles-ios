@@ -84,7 +84,7 @@ struct NotificationsSettingsView: View {
                     Group {
                         Label("Notifications are disabled", systemImage: "bell.slash.fill")
                         Text("To enable notifications in Circles, open the System Settings app on your device and go to Circles > Notifications")
-                        if let url = URL(string: UIApplicationOpenNotificationSettingsURLString),
+                        if let url = URL(string: UIApplication.openNotificationSettingsURLString),
                            UIApplication.shared.canOpenURL(url)
                         {
                             Button(action: {
