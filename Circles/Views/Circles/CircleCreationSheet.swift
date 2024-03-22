@@ -27,6 +27,8 @@ struct CircleCreationSheet: View {
     @State private var alertMessage: String = ""
     @State private var showAlert = false
     
+    @FocusState var inputFocused
+    
     func create() async throws {
         // First create the Space for the circle
         let circleRoomId = try await container.createChild(name: circleName, type: M_SPACE, encrypted: false, avatar: avatarImage)
@@ -127,6 +129,10 @@ struct CircleCreationSheet: View {
             
             TextField("Circle name", text: $circleName)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
+                .focused($inputFocused)
+                .onAppear {
+                    self.inputFocused = true
+                }
 
             Spacer()
             

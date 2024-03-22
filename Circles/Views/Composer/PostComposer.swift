@@ -22,6 +22,11 @@ struct PostComposer: View {
     var parent: Matrix.Message?
     var editing: Matrix.Message?
     
+    enum FocusField {
+        case editor
+    }
+    @FocusState var focus: FocusField?
+    
     enum MessageState {
         case text                // For m.text it doesn't matter if the content is old or new, since there's no complicated media to juggle
         case newImage(UIImage)
@@ -686,8 +691,13 @@ struct PostComposer: View {
                     //.frame(height: 90)
                     //.foregroundColor(.gray)
                         .multilineTextAlignment(.leading)
+                        .textInputAutocapitalization(.sentences)
                         .lineLimit(10)
+                        .focused($focus, equals: .editor)
                         .frame(minHeight: 120)
+                        .onAppear {
+                            self.focus = .editor
+                        }
                 }
 
                 if inProgress {

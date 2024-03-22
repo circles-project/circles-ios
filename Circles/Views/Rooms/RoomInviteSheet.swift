@@ -286,6 +286,9 @@ struct RoomInviteSheet: View {
     var body: some View {
         ZStack {
             inputForm
+                .onAppear {
+                    self.searchFocused = true
+                }
 
             if pending {
                 Color.gray

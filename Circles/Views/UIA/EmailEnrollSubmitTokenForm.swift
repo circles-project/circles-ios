@@ -15,6 +15,11 @@ struct EmailEnrollSubmitTokenForm: View {
 
     @State var token = ""
     
+    enum FocusField {
+        case token
+    }
+    @FocusState var focus: FocusField?
+    
     var tokenIsValid: Bool {
         token.count == 6 && Int(token) != nil
     }
@@ -29,10 +34,14 @@ struct EmailEnrollSubmitTokenForm: View {
             VStack {
                 TextField("123456", text: $token, prompt: Text("6-Digit Code"))
                     .textContentType(.oneTimeCode)
+                    .focused($focus, equals: .token)
                     .keyboardType(.numberPad)
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
                     .frame(width: 300.0, height: 40.0)
+                    .onAppear {
+                        self.focus = .token
+                    }
                 AsyncButton(action: {
                     try await session.doEmailEnrollSubmitTokenStage(token: token, secret: secret)
                 }) {
