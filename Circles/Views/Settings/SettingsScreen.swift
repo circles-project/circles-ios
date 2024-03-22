@@ -50,11 +50,9 @@ struct SettingsScreen: View {
                         }
                     }
                     
-                    /*
-                    NavigationLink(destination: NotificationsSettingsView(store: store)) {
+                    NavigationLink(destination: NotificationsSettingsView(store: store, matrix: session.matrix)) {
                         Label("Notifications", systemImage: "bell.fill")
                     }
-                    */
                     
                     NavigationLink(destination: IgnoredUsersView(session: session.matrix)) {
                         Label("Ignored Users", systemImage: "person.2.slash.fill")
