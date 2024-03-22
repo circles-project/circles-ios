@@ -17,6 +17,11 @@ struct UsernameEnrollForm: View {
     @State var alertTitle = ""
     @State var alertMessage = ""
     
+    enum FocusField {
+        case username
+    }
+    @FocusState var focus: FocusField?
+    
     var body: some View {
         VStack(alignment: .center, spacing: 40) {
             Spacer()
@@ -26,9 +31,13 @@ struct UsernameEnrollForm: View {
 
             TextField("Username", text: $username, prompt: Text("username"))
                 .textContentType(.username)
+                .focused($focus, equals: .username)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .frame(width: 300.0, height: 40.0)
+                .onAppear {
+                    self.focus = .username
+                }
             
             AsyncButton(action: {
                 

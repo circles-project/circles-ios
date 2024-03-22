@@ -27,6 +27,12 @@ struct BsspekeEnrollOprfForm: View {
     
     @State var showRepeat = false
     
+    enum FocusField {
+        case inputPassphrase
+        case repeatPassphrase
+    }
+    @FocusState var focus: FocusField?
+    
     private func getUserId() -> UserId? {
         if let userId = session.creds?.userId {
             return userId
@@ -79,6 +85,7 @@ struct BsspekeEnrollOprfForm: View {
             VStack(alignment: .leading) {
                 SecureField("correct horse battery staple", text: $passphrase, prompt: Text("New passphrase"))
                     .textContentType(.newPassword)
+                    .focused($focus, equals: .inputPassphrase)
                     .onChange(of: passphrase) { newPassword in
                         if newPassword.isEmpty {
                             score = 0.0
@@ -139,6 +146,7 @@ struct BsspekeEnrollOprfForm: View {
 
             SecureField("same passphrase as before", text: $repeatPassphrase, prompt: Text("Repeat passphrase"))
                 .textContentType(.newPassword)
+                .focused($focus, equals: .repeatPassphrase)
                 .frame(width: 300.0, height: 40.0)
                 
 
@@ -169,8 +177,14 @@ struct BsspekeEnrollOprfForm: View {
         VStack {
             if passphrase.isEmpty || showRepeat == false {
                 passwordView
+                    .onAppear {
+                        self.focus = .inputPassphrase
+                    }
             } else {
                 repeatPasswordView
+                    .onAppear {
+                        self.focus = .repeatPassphrase
+                    }
             }
             
         }

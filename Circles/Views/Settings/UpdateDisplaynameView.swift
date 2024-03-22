@@ -14,6 +14,11 @@ struct UpdateDisplaynameView: View {
     //@ObservedObject var user: Matrix.User
     @State var newDisplayname = ""
     
+    enum FocusField {
+        case displayname
+    }
+    @FocusState var focus: FocusField?
+    
     var body: some View {
         VStack(alignment: .center, spacing: 100) {
             //Text("Update displayname for user \(user.userId.stringValue)")
@@ -22,7 +27,11 @@ struct UpdateDisplaynameView: View {
             
             TextField(session.me.displayName ?? "", text: $newDisplayname, prompt: Text("Your name"))
                 .textContentType(.name)
+                .focused($focus, equals: .displayname)
                 .frame(width: 300, height: 40)
+                .onAppear {
+                    self.focus = .displayname
+                }
 
             AsyncButton(action: {
                 try await session.setMyDisplayName(newDisplayname)

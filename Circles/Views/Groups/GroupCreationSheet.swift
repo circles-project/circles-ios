@@ -29,6 +29,7 @@ struct GroupCreationSheet: View {
     @State private var alertMessage: String = ""
     @State private var showAlert = false
     
+    @FocusState var inputFocused
     
     func create() async throws {
         guard let roomId = try? await groups.createChild(name: self.groupName,
@@ -138,7 +139,11 @@ struct GroupCreationSheet: View {
             
             TextField("Group name", text: $groupName)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
+                .focused($inputFocused)
                 .padding(.horizontal)
+                .onAppear {
+                    self.inputFocused = true
+                }
             
             Spacer()
 

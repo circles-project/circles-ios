@@ -14,6 +14,11 @@ struct LegacyPasswordUiaForm: View {
 
     @State var passphrase: String = ""
     @State var failed = false
+    
+    enum FocusField {
+        case passphrase
+    }
+    @FocusState var focus: FocusField?
 
     var body: some View {
         VStack {
@@ -28,8 +33,12 @@ struct LegacyPasswordUiaForm: View {
             VStack {
                 SecureField("Passphrase", text: $passphrase, prompt: Text("Passphrase"))
                     .textContentType(.password)
+                    .focused($focus, equals: .passphrase)
                     .frame(width: 300.0, height: 40.0)
                     .onAppear {
+                        // Automatically focus the input field
+                        self.focus = .passphrase
+                        
                         if let userId = session.userId {
                             // Attempt to load the saved password that Matrix.swift should have saved in our Keychain
                             let keychain = Keychain(server: "https://\(userId.domain)", protocolType: .https)

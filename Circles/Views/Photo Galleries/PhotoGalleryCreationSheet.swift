@@ -21,6 +21,8 @@ struct PhotoGalleryCreationSheet: View {
 
     @State var selectedItem: PhotosPickerItem?
     
+    @FocusState var inputFocused
+    
     func create() async throws {
         let roomId = try await self.container.createChild(name: self.galleryName,
                                                           type: ROOM_TYPE_PHOTOS,
@@ -109,7 +111,11 @@ struct PhotoGalleryCreationSheet: View {
                 
                 TextField("Gallery name", text: $galleryName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .focused($inputFocused)
                     .frame(width: 300)
+                    .onAppear {
+                        self.inputFocused = true
+                    }
                 
                 Spacer()
                 
