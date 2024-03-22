@@ -8,6 +8,7 @@
 
 import SwiftUI
 import StoreKit
+import os
 import Matrix
 
 @main
@@ -17,6 +18,8 @@ struct CirclesApp: App {
     @StateObject private var store = CirclesStore()
     private var paymentQueue = SKPaymentQueue.default()
     private var countryCode = SKPaymentQueue.default().storefront?.countryCode
+    
+    public static var logger = os.Logger(subsystem: "Circles", category: "Circles")
     
     init() {
         // We need to register all of our custom types with the Matrix library, so it can decode them for us
