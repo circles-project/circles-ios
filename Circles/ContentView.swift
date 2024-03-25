@@ -52,8 +52,8 @@ struct ContentView: View {
         //case .settingUp(let setupSession):
         //    SetupScreen(session: setupSession, store: store)
             
-        case .loggingInUIA(let uiaLoginSession):
-            UiaLoginScreen(session: uiaLoginSession, store: store)
+        case .loggingInUIA(let uiaLoginSession, let filter):
+            UiaLoginScreen(session: uiaLoginSession, store: store, filter: filter)
             
         case .loggingInNonUIA(let legacyLoginSession):
             LegacyLoginScreen(session: legacyLoginSession, store: store)

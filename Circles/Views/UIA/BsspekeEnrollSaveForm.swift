@@ -16,7 +16,7 @@ struct BsspekeEnrollSaveForm: View {
         VStack {
             Spacer()
             ProgressView {
-                Text("Completing passphrase registration")
+                Text("Completing passphrase enrollment")
             }
             Spacer()
         }
