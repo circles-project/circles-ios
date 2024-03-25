@@ -14,7 +14,8 @@ struct UiaInProgressView: View {
     var state: UIAA.SessionState
     var stages: [String]
         
-    @State var emailSecret = ""
+    @State var emailEnrollSecret = ""
+    @State var emailLoginSecret = ""
     
     var body: some View {
 
@@ -43,10 +44,19 @@ struct UiaInProgressView: View {
                 BsspekeLoginForm(session: session, stage: stage)
             }
             else if stage == AUTH_TYPE_ENROLL_EMAIL_REQUEST_TOKEN {
-                EmailEnrollRequestTokenForm(session: session, secret: $emailSecret)
+                EmailEnrollRequestTokenForm(session: session, secret: $emailEnrollSecret)
             }
             else if stage == AUTH_TYPE_ENROLL_EMAIL_SUBMIT_TOKEN {
-                EmailEnrollSubmitTokenForm(session: session, secret: emailSecret)
+                EmailEnrollSubmitTokenForm(session: session, secret: emailEnrollSecret)
+            }
+            else if stage == AUTH_TYPE_LOGIN_EMAIL_REQUEST_TOKEN,
+                    let stageId = UIAA.StageId(AUTH_TYPE_LOGIN_EMAIL_REQUEST_TOKEN),
+                    let params = state.params?[stageId] as? EmailLoginParams
+            {
+                EmailLoginRequestTokenForm(session: session, addresses: params.addresses, secret: $emailLoginSecret)
+            }
+            else if stage == AUTH_TYPE_LOGIN_EMAIL_SUBMIT_TOKEN {
+                EmailLoginSubmitTokenForm(session: session, secret: emailLoginSecret)
             }
             else if stage == AUTH_TYPE_APPSTORE_SUBSCRIPTION {
                 SubscriptionUIaForm(session: session)
