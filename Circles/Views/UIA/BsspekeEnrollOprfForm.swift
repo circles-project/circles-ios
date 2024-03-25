@@ -38,6 +38,10 @@ struct BsspekeEnrollOprfForm: View {
             return userId
         }
         
+        if let userId = session.storage["userId"] as? UserId {
+            return userId
+        }
+        
         if let username = session.storage["username"] as? String,
               let domain = session.storage["domain"] as? String,
               let userId = UserId("@\(username):\(domain)")

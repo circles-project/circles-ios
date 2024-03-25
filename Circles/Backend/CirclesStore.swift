@@ -25,7 +25,7 @@ public class CirclesStore: ObservableObject {
         case error(CirclesError)
         case needCreds
         case signingUp(SignupSession)
-        case loggingInUIA(UiaLoginSession)          // Because /login can now take more than a simple username/password
+        case loggingInUIA(UiaLoginSession, Matrix.AuthFlowFilter)          // Because /login can now take more than a simple username/password
         case loggingInNonUIA(LegacyLoginSession)    // For accounts without fancy swiclops authentication
         case haveCreds(Matrix.Credentials, Matrix.SecretStorageKey?, String?)
         case needSecretStorage(Matrix.Session)
@@ -661,7 +661,7 @@ public class CirclesStore: ObservableObject {
     
     // MARK: Login
     
-    func login(userId: UserId) async throws {
+    func login(userId: UserId, filter: @escaping Matrix.AuthFlowFilter) async throws {
         logger.debug("Logging in as \(userId)")
         
         // First - Check to see if we already have a device_id and access_token for this user
@@ -734,7 +734,7 @@ public class CirclesStore: ObservableObject {
                 }
             })
             await MainActor.run {
-                self.state = .loggingInUIA(loginSession)
+                self.state = .loggingInUIA(loginSession, filter)
             }
             
         } else {
@@ -874,7 +874,7 @@ public class CirclesStore: ObservableObject {
                 self.state = .needCreds
             }
             
-        case .loggingInUIA(let loginSession):
+        case .loggingInUIA(let loginSession, let filter):
             try await loginSession.cancel()
             await MainActor.run {
                 self.state = .needCreds

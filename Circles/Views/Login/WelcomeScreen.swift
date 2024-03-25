@@ -10,6 +10,19 @@ import Combine
 import StoreKit
 import Matrix
 
+func loginFilter(flow: AuthFlow) -> Bool {
+    // If it's a UIA flow, we want BS-SPEKE login
+    if let uiaFlow = flow as? UIAA.Flow {
+        return uiaFlow.stages.contains(AUTH_TYPE_LOGIN_BSSPEKE_OPRF) && uiaFlow.stages.contains(AUTH_TYPE_LOGIN_BSSPEKE_VERIFY)
+    }
+    // If it's a legacy (standard) Matrix login, we want m.login.password
+    if let legacyFlow = flow as? Matrix.StandardLoginFlow {
+        return legacyFlow.type == M_LOGIN_PASSWORD
+    }
+    // Otherwise we don't know what the hell this thing is
+    return false
+}
+
 struct WelcomeScreen: View {
     var store: CirclesStore
     
@@ -25,7 +38,7 @@ struct WelcomeScreen: View {
     @State var suggestedUserId: UserId? = nil
     
     @State var showUsernameError = false
-        
+            
     // Inspired by https://www.vadimbulavin.com/how-to-move-swiftui-view-when-keyboard-covers-text-field/
     private var keyboardPublisher: AnyPublisher<CGFloat,Never> {
         Publishers.Merge(
@@ -40,7 +53,10 @@ struct WelcomeScreen: View {
         .eraseToAnyPublisher()
     }
     
-    var body: some View {
+
+    
+    @ViewBuilder
+    var welcomeView: some View {
         VStack(alignment: .center) {
                     
             CirclesLogoView()
@@ -71,7 +87,7 @@ struct WelcomeScreen: View {
             AsyncButton(action: {
                 if !username.isEmpty {
                     if let userId = UserId(username) {
-                        try await store.login(userId: userId)
+                        try await store.login(userId: userId, filter: loginFilter)
                     } else {
                         if let suggestion = UserId.autoCorrect(username, domain: store.defaultDomain) {
                             self.suggestedUserId = suggestion
@@ -95,7 +111,7 @@ struct WelcomeScreen: View {
                                 presenting: suggestedUserId,
                                 actions: { userId in
                                     AsyncButton(action: {
-                                        try await store.login(userId: userId)
+                                        try await store.login(userId: userId, filter: loginFilter)
                                         await MainActor.run {
                                             self.suggestedUserId = nil
                                         }
@@ -125,6 +141,12 @@ struct WelcomeScreen: View {
                 }
             } else {
                 
+                NavigationLink(destination: ForgotPasswordView(store: store)) {
+                    Text("Forgot password?")
+                        .font(.subheadline)
+                }
+                .padding(5)
+                
                 if !previousUserIds.isEmpty {
 
                     List {
@@ -132,7 +154,7 @@ struct WelcomeScreen: View {
                             ForEach(previousUserIds) { userId in
                                 
                                 AsyncButton(action: {
-                                    try await store.login(userId: userId)
+                                    try await store.login(userId: userId, filter: loginFilter)
                                     await MainActor.run {
                                         self.suggestedUserId = nil
                                     }
@@ -216,6 +238,12 @@ struct WelcomeScreen: View {
 
     }
 
+    var body: some View {
+        NavigationStack {
+            welcomeView
+        }
+    }
+    
 }
 
 

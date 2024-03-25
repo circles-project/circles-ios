@@ -13,10 +13,13 @@ import Matrix
 struct UiaLoginScreen: View {
     @ObservedObject var session: UiaLoginSession
     var store: CirclesStore
+    var filter: Matrix.AuthFlowFilter
     
     @AppStorage("previousUserIds") var previousUserIds: [UserId] = []
     
     @State var password = ""
+    
+    @State var flowErrorMessage: String?
     
     
     @ViewBuilder
@@ -48,22 +51,23 @@ struct UiaLoginScreen: View {
             
         case .connected(let uiaaState):
             VStack {
-                ProgressView()
-            }
-            .onAppear {
-                if uiaaState.flows.count == 1,
-                   let flow = uiaaState.flows.first
-                {
-                    Task {
-                        await session.selectFlow(flow: flow)
-                    }
+                if let msg = self.flowErrorMessage {
+                    Label("Error!", systemImage: "exclamationmark.triangle")
+                        .font(.title)
+                        .fontWeight(.bold)
+                    Text("\(msg)")
                 } else {
-                    if let flow = uiaaState.flows.first(where: {
-                        $0.stages.contains(AUTH_TYPE_LOGIN_BSSPEKE_OPRF) && $0.stages.contains(AUTH_TYPE_LOGIN_BSSPEKE_VERIFY)
-                    }) {
-                        Task {
-                            await session.selectFlow(flow: flow)
-                        }
+                    ProgressView()
+                    Text("Loading...")
+                }
+            }
+            .task {
+                
+                if let flow = uiaaState.flows.first(where: self.filter) {
+                    await session.selectFlow(flow: flow)
+                } else {
+                    await MainActor.run {
+                        self.flowErrorMessage = "No compatible login flows"
                     }
                 }
             }
