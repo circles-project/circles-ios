@@ -98,8 +98,10 @@ struct SecretStoragePasswordScreen: View {
                         }
                         return
                     }
+                    CirclesApp.logger.debug("Created SSSS key \(keyId)")
                     
-                    
+                    try await store.addMissingKey(key: key)
+                    CirclesApp.logger.debug("Added SSSS key \(keyId)")
                 }) {
                     Text("Submit")
                         .padding()
