@@ -165,53 +165,6 @@ struct SecretStoragePasswordScreen: View {
         .padding()
     }
     
-    func generateBcryptKey() throws -> Data? {
-        let algorithm = description.passphrase?.algorithm ?? ORG_FUTO_BCRYPT_SHA2
-        let iterations = description.passphrase?.iterations ?? 14
-        let bitLength = description.passphrase?.bits ?? 256
-
-        guard let salt = description.passphrase?.salt
-        else {
-            Matrix.logger.error("Can't generate secret storage key without algorithm and iterations")
-            return nil
-        }
-        print("BCRYPT\tRaw salt = \(salt)  (length = \(salt.count))")
-        
-        let username = matrix.creds.userId.username.dropFirst()
-        print("BCRYPT\tUsername = \(username)")
-        let rounds = iterations
-        print("BCRYPT\tIterations = \(iterations)")
-        
-        print("BCRYPT\tPassword = \(password)")
-        
-        let bcryptSalt = "$2a$\(rounds)$\(salt)"
-        print("BCRYPT\tSalt = [\(bcryptSalt)]")
-        
-        guard let bcrypt = try? BCrypt.Hash(password, salt: bcryptSalt)
-        else {
-            Matrix.logger.error("Failed to compute BCrypt hash")
-            throw Matrix.Error("Failed to compute BCrypt hash")
-        }
-        print("BCRYPT\tGot bcrypt hash = \(bcrypt)")
-        
-        let root = String(bcrypt.suffix(31))
-        print("BCRYPT\tGot bcrypt root = \(root)")
-        /*
-        let keyData = SHA256.hash(data: "S4Key|\(root)".data(using: .utf8)!)
-            .withUnsafeBytes {
-                Data(Array($0))
-            }
-        */
-        guard let keyBytes = Digest(algorithm: .sha256).update(string: "S4Key|\(root)")?.final()
-        else {
-            Matrix.logger.error("Failed to hash the bcrypt root")
-            throw Matrix.Error("Failed to hash the bcrypt root")
-        }
-        let keyData = Data(keyBytes)
-        print("BCRYPT\tKey = \(Matrix.Base64.padded(keyData))")
-        
-        return keyData
-    }
 }
 
 /*
