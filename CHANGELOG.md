@@ -1,3 +1,7 @@
+# v1.0.2
+* Add support for recovering account via email auth and resetting password
+* Add support for importing recovery key from Element or other clients
+
 # v1.0.1
 * Add support for push notifications
 * Add API declarations for the App Store
