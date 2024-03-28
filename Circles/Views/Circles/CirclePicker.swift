@@ -16,7 +16,8 @@ struct CirclePicker: View {
     var body: some View {
         VStack {
             //List {
-                ForEach(container.rooms) { circle in
+            let rooms = container.rooms.values.sorted { $0.timestamp < $1.timestamp }
+                ForEach(rooms) { circle in
                     //Text(circle.roomId.stringValue)
                     Button(action: {
                         if selected.contains(circle) {

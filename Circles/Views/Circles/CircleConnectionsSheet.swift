@@ -48,7 +48,7 @@ struct CircleConnectionsSheet: View {
                 .fontWeight(.bold)
             
             List {
-                let rooms = space.rooms.filter { $0.roomId != space.wall?.roomId }
+                let rooms = space.rooms.values.filter { $0.roomId != space.wall?.roomId }
                 ForEach(rooms) { room in
                     let user = space.session.getUser(userId: room.creator)
                     //PersonsCircleRow(room: room)

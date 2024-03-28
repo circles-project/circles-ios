@@ -12,7 +12,7 @@ import Matrix
 class CircleSpace: ContainerRoom<Matrix.Room> {
     
     var wall: Matrix.Room? {
-        self.rooms.first(where: {$0.creator == self.session.creds.userId})
+        self.rooms.values.first(where: {$0.creator == self.session.creds.userId})
     }
     
     var followers: [UserId] {
@@ -22,7 +22,7 @@ class CircleSpace: ContainerRoom<Matrix.Room> {
     }
     
     var following: [UserId] {
-        self.rooms.compactMap {
+        self.rooms.values.compactMap {
             $0.creator
         }.filter {
             $0 != self.session.creds.userId
@@ -30,7 +30,7 @@ class CircleSpace: ContainerRoom<Matrix.Room> {
     }
     
     override var timestamp: Date {
-        if let childRoomTimestamp = self.rooms.compactMap({ $0.timestamp }).max() {
+        if let childRoomTimestamp = self.rooms.values.compactMap({ $0.timestamp }).max() {
             return childRoomTimestamp
         } else {
             return super.timestamp
@@ -38,14 +38,14 @@ class CircleSpace: ContainerRoom<Matrix.Room> {
     }
     
     override var unread: Int {
-        self.rooms.reduce(self.notificationCount) { prevCount, room in
+        self.rooms.values.reduce(self.notificationCount) { prevCount, room in
             room.notificationCount + prevCount
         }
     }
     
     var canPaginateRooms: Bool {
         // We can paginate the circle if it contains even a single room that can be paginated
-        for room in rooms {
+        for room in rooms.values {
             if room.canPaginate {
                 return true
             }
@@ -71,7 +71,7 @@ class CircleSpace: ContainerRoom<Matrix.Room> {
         }
         
         // Not every room can necessarily paginate.  We're only concerned with the ones that can.
-        let candidateRooms = self.rooms.filter({$0.canPaginate})
+        let candidateRooms = self.rooms.values.filter({$0.canPaginate})
         
         // Find the room whose earliest message has the latest timestamp
         // ie, the room that needs to be paginated next so that we can scroll backwards through the collated timeline
@@ -90,7 +90,7 @@ class CircleSpace: ContainerRoom<Matrix.Room> {
     }
     
     func paginateEmptyTimelines(limit: UInt? = nil) async throws {
-        for room in rooms {
+        for room in rooms.values {
             let timelineMessages = room.timeline.values.filter({ [M_ROOM_MESSAGE, M_ROOM_ENCRYPTED].contains($0.type) })
             if timelineMessages.isEmpty {
                 self.logger.debug("Paginating room \(room.name ?? "??") (\(room.roomId.stringValue))")
@@ -102,7 +102,7 @@ class CircleSpace: ContainerRoom<Matrix.Room> {
     func getCollatedTimeline(since: Date = .init(timeIntervalSince1970: 0.0), filter: (Matrix.Message) -> Bool) -> [Matrix.Message] {
         let logger = os.Logger(subsystem: "circles", category: "timeline")
         logger.debug("Getting collated timeline for circle \(self.name ?? "??") (\(self.roomId.stringValue))")
-        let unsorted: [Matrix.Message] = self.rooms.reduce([], { (curr,room) in
+        let unsorted: [Matrix.Message] = self.rooms.values.reduce([], { (curr,room) in
             curr + room.messages.filter(filter).filter {
                 $0.timestamp >= since
             }

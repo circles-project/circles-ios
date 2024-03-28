@@ -111,10 +111,10 @@ struct CircleAvatar: View {
     }
     
     var body: some View {
-        let mainRoom: Matrix.Room? = space.rooms.first {
+        let mainRoom: Matrix.Room? = space.rooms.values.first {
             $0.creator == space.session.creds.userId
         }
-        let otherRooms = space.rooms.filter {
+        let otherRooms = space.rooms.values.filter {
             $0.creator != space.session.creds.userId
         }
         let N_MAX = 9

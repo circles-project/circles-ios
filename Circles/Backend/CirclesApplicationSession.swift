@@ -81,17 +81,17 @@ class CirclesApplicationSession: ObservableObject {
     
     public func roomIsKnown(roomId: RoomId) -> Bool {
         // Is the given room one of our various content rooms?
-        if self.groups.rooms.contains(where: {$0.roomId == roomId}) {
+        if self.groups.rooms[roomId] != nil {
             return true
         }
-        if self.galleries.rooms.contains(where: {$0.roomId == roomId}) {
+        if self.galleries.rooms[roomId] != nil {
             return true
         }
-        if self.people.rooms.contains(where: {$0.roomId == roomId}) {
+        if self.people.rooms[roomId] != nil {
             return true
         }
-        if self.circles.rooms.contains(where: {space in
-            space.roomId == roomId || space.rooms.contains(where: {$0.roomId == roomId})
+        if self.circles.rooms.values.contains(where: { space in
+            space.roomId == roomId || space.rooms[roomId] != nil
         }) {
             return true
         }
@@ -147,14 +147,7 @@ class CirclesApplicationSession: ObservableObject {
             print("DEEPLINK Url is for a circle timeline")
             
             // Do we have a Circle space that contains the given room?
-            if let matchingSpace = self.circles.rooms.first(where: { space in
-                // Does this Circle space contain the given room?
-                let matchingRoom = space.rooms.first(where: {room in
-                    // Is this room the given room?
-                    room.roomId == roomId
-                })
-                return matchingRoom != nil
-            }) {
+            if let matchingSpace = self.circles.rooms[roomId] {
                 print("DEEPLINKS CIRCLES Setting selected circle to \(matchingSpace.name ?? matchingSpace.roomId.stringValue)")
                 print("DEEPLINK Setting tab to Circles")
                 self.viewState.tab = .circles
@@ -172,7 +165,7 @@ class CirclesApplicationSession: ObservableObject {
         
         case "group":
             print("DEEPLINK Url is for a group")
-            if let matchingGroup = self.groups.rooms.first(where: { $0.roomId == roomId }) {
+            if let matchingGroup = self.groups.rooms[roomId] {
                 print("DEEPLINK Setting tab to Groups")
                 self.viewState.tab = .groups
                 self.viewState.selectedGroupId = roomId
@@ -183,7 +176,7 @@ class CirclesApplicationSession: ObservableObject {
         
         case "gallery":
             print("DEEPLINK Url is for a photo gallery")
-            if let matchingGallery = self.galleries.rooms.first(where: { $0.roomId == roomId }) {
+            if let matchingGallery = self.galleries.rooms[roomId] {
                 print("DEEPLINK Setting tab to Photos")
                 self.viewState.tab = .photos
                 self.viewState.selectedGalleryId = roomId
@@ -213,9 +206,7 @@ class CirclesApplicationSession: ObservableObject {
             
             case ROOM_TYPE_CIRCLE:
                 print("NAVIGATE Room looks like a circle timeline")
-                if let circle = self.circles.rooms.first(where: { space in
-                    space.rooms.contains(where: {$0.roomId == roomId})
-                }) {
+                if let circle = self.circles.rooms[roomId] {
                     print("NAVIGATE Navigating to circle \(circle.name ?? circle.roomId.stringValue)")
                     await self.viewState.navigate(tab: .circles, selected: circle.roomId)
                     return
@@ -224,7 +215,7 @@ class CirclesApplicationSession: ObservableObject {
                 }
                 
             case "m.space":
-                if let profile = self.people.rooms.first(where: {$0.roomId == roomId}) {
+                if let profile = self.people.rooms[roomId] {
                     await self.viewState.navigate(tab: .people, selected: roomId)
                     return
                 } else {
@@ -233,7 +224,7 @@ class CirclesApplicationSession: ObservableObject {
                 
             case ROOM_TYPE_GROUP:
                 print("NAVIGATE Room looks like a group")
-                if let group = self.groups.rooms.first(where: {$0.roomId == roomId}) {
+                if let group = self.groups.rooms[roomId] {
                     print("NAVIGATE Navigating to group \(group.name ?? group.roomId.stringValue)")
                     await self.viewState.navigate(tab: .groups, selected: roomId)
                     return
@@ -242,7 +233,7 @@ class CirclesApplicationSession: ObservableObject {
                 }
                 
             case ROOM_TYPE_PHOTOS:
-                if let gallery = self.galleries.rooms.first(where: {$0.roomId == roomId}) {
+                if let gallery = self.galleries.rooms[roomId] {
                     await self.viewState.navigate(tab: .photos, selected: roomId)
                     return
                 } else {

@@ -120,8 +120,8 @@ struct InvitedCircleCard: View {
             
             // Check to see if this is maybe a stale/stuck invitation
             print("INVITE Checking \(room.roomId) for stuck invitations")
-            let circles = container.rooms
-            if let existingCircle = circles.first(where: {$0.children.contains(room.roomId) || $0.rooms.first(where: {$0.roomId == room.roomId}) != nil}) {
+            let circles = container.rooms.values
+            if let existingCircle = circles.first(where: {$0.children.contains(room.roomId) || $0.rooms[room.roomId] != nil}) {
                 // Somehow we've already joined this one
                 print("INVITE Room \(room.roomId) is already followed in circle \(existingCircle.name ?? existingCircle.roomId.stringValue)")
                 Task {

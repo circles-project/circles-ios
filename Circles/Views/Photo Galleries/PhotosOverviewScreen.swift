@@ -57,7 +57,7 @@ struct PhotosOverviewScreen: View {
                 
                 List(selection: $selected) {
                     
-                    let myGalleries = container.rooms
+                    let myGalleries = container.rooms.values
                         .filter { $0.creator == container.session.creds.userId }
                         .sorted(by: {$0.timestamp > $1.timestamp }) // Reverse chronological ordering
                     /*
@@ -89,7 +89,7 @@ struct PhotosOverviewScreen: View {
                     }
 
                     
-                    let sharedGalleries = container.rooms
+                    let sharedGalleries = container.rooms.values
                         .filter { $0.creator != container.session.creds.userId }
                         .sorted(by: {$0.timestamp > $1.timestamp }) // Reverse chronological ordering
                     /*
@@ -201,7 +201,7 @@ struct PhotosOverviewScreen: View {
             master
         } detail: {
             if let roomId = selected,
-               let room = container.rooms.first(where: { $0.roomId == roomId })
+               let room = container.rooms[roomId]
             {
                 PhotoGalleryView(room: room, container: container)
             } else {
