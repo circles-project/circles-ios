@@ -26,17 +26,17 @@ struct KnockingUserCard: View {
     }
     
     var commonGroups: Set<Matrix.Room> {
-        let rooms = appSession.groups.rooms.filter {
+        let rooms = appSession.groups.rooms.values.filter {
             $0.creator != $0.session.creds.userId && $0.joinedMembers.contains(user.userId)
         }
         return Set(rooms)
     }
     
     var commonTimelines: Set<Matrix.Room> {
-        let circles = appSession.circles.rooms
+        let circles = appSession.circles.rooms.values
         var common = Set<Matrix.Room>()
         for circle in circles {
-            let matches = circle.rooms.filter {
+            let matches = circle.rooms.values.filter {
                 $0.creator != $0.session.creds.userId && $0.joinedMembers.contains(user.userId)
             }
             common.formUnion(matches)
@@ -45,7 +45,7 @@ struct KnockingUserCard: View {
     }
     
     var commonContacts: Set<Matrix.Room> {
-        let spaces = appSession.people.rooms.filter {
+        let spaces = appSession.people.rooms.values.filter {
             $0.creator != $0.session.creds.userId && $0.joinedMembers.contains(user.userId)
         }
         return Set(spaces)

@@ -62,14 +62,13 @@ struct CirclesOverviewScreen: View {
     
     private func deleteCircle(circle: CircleSpace) async throws {
         print("Removing circle \(circle.name ?? "??") (\(circle.roomId))")
-        try await container.removeChild(circle.roomId)
         print("Leaving \(circle.rooms.count) rooms that were in the circle")
-        for room in circle.rooms {
+        for room in circle.rooms.values {
             print("Leaving timeline room \(room.name ?? "??") (\(room.roomId))")
             try await room.leave()
         }
         print("Leaving circle space \(circle.roomId)")
-        try await circle.leave(reason: "Deleting circle Space room")
+        try await container.leaveChild(circle.roomId, reason: "Deleting circle")
     }
     
     @ViewBuilder
@@ -84,7 +83,7 @@ struct CirclesOverviewScreen: View {
                 }
                 
                 // Sort intro _reverse_ chronological order
-                let circles = container.rooms.sorted(by: { $0.timestamp > $1.timestamp })
+                let circles = container.rooms.values.sorted(by: { $0.timestamp > $1.timestamp })
                                 
                 List(selection: $selected) {
                     ForEach(circles) { circle in
@@ -218,7 +217,7 @@ struct CirclesOverviewScreen: View {
                 }
         } detail: {
             if let roomId = selected,
-               let space = container.rooms.first(where: { $0.roomId == roomId })
+               let space = container.rooms[roomId]
             {
                 CircleTimelineView(space: space)
             } else {

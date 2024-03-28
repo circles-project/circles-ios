@@ -79,7 +79,8 @@ struct SelfDetailView: View {
                     Text("No circles are visible to my connections.")
                         .padding()
                 } else {
-                    ForEach(profile.rooms) { room in
+                    let rooms = Array(profile.rooms.values)
+                    ForEach(rooms) { room in
                         HStack {
                             RoomAvatar(room: room, avatarText: .roomInitials)
                                 .frame(width: 60, height: 60)

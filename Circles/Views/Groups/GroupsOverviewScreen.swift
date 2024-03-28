@@ -53,7 +53,7 @@ struct GroupsOverviewScreen: View {
                 GroupInvitationsIndicator(session: container.session, container: container)
                 
                 // Sort into _reverse_ chronological order
-                let rooms = container.rooms.sorted(by: { $0.timestamp > $1.timestamp })
+                let rooms = container.rooms.values.sorted(by: { $0.timestamp > $1.timestamp })
                 
                 List(selection: $selected) {
                     ForEach(rooms) { room in
@@ -202,7 +202,7 @@ struct GroupsOverviewScreen: View {
             master
         } detail: {
             if let roomId = selected,
-               let room = container.rooms.first(where: { $0.roomId == roomId })
+               let room = container.rooms[roomId]
             {
                 GroupTimelineScreen(room: room)
             } else {

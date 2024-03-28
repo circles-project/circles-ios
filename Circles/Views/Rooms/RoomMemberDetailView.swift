@@ -184,7 +184,8 @@ struct RoomMemberDetailView: View {
     @ViewBuilder
     var circlesMenu: some View {
         Menu {
-            ForEach(session.circles.rooms) { space in
+            let rooms = Array(session.circles.rooms.values) //.sorted { $0.timestamp < $1.timestamp }
+            ForEach(rooms) { space in
                 if let wall = space.wall,
                    let name = space.name
                 {
@@ -205,7 +206,8 @@ struct RoomMemberDetailView: View {
     @ViewBuilder
     var groupsMenu: some View {
         Menu {
-            ForEach(session.groups.rooms) { group in
+            let rooms = Array(session.groups.rooms.values)
+            ForEach(rooms) { group in
                 if group.iCanInvite,
                    let name = group.name
                 {
@@ -225,7 +227,8 @@ struct RoomMemberDetailView: View {
     @ViewBuilder
     var photosMenu: some View {
         Menu {
-            ForEach(session.galleries.rooms) { gallery in
+            let rooms = Array(session.galleries.rooms.values)
+            ForEach(rooms) { gallery in
                 if gallery.iCanInvite,
                    let name = gallery.name
                 {

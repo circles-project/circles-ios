@@ -102,8 +102,9 @@ struct PeopleOverviewScreen: View {
             if profile.knockingMembers.count > 0 {
                 RoomKnockIndicator(room: profile)
             }
-                
-            ForEach(people.rooms) { room in
+            
+            let rooms = people.rooms.values.sorted { $0.creator < $1.creator }
+            ForEach(rooms) { room in
                 let user = people.session.getUser(userId: room.creator)
                 
                 VStack(alignment: .leading) {
@@ -159,7 +160,7 @@ struct PeopleOverviewScreen: View {
         }
         .padding()
         .onAppear {
-            let followingUserIds: [UserId] = circles.rooms.reduce([], {(curr,room) in
+            let followingUserIds: [UserId] = circles.rooms.values.reduce([], {(curr,room) in
                 curr + room.following
             })
             let sortedUserIds: [UserId] = Set(followingUserIds).sorted {
@@ -193,7 +194,7 @@ struct PeopleOverviewScreen: View {
         }
         .padding()
         .onAppear {
-            let followersUserIds = circles.rooms.reduce([], {(curr,room) in
+            let followersUserIds = circles.rooms.values.reduce([], {(curr,room) in
                 curr + room.followers
             })
             let sortedUserIds: [UserId] = Set(followersUserIds).sorted {
@@ -208,7 +209,7 @@ struct PeopleOverviewScreen: View {
     func loadFriendsOfFriends() async {
         let myUserId = profile.session.creds.userId
         // First find all of the timeline rooms that I'm following
-        let timelines: Set<Matrix.Room> = circles.rooms.reduce([]) { (curr,room) in
+        let timelines: Set<Matrix.Room> = circles.rooms.values.reduce([]) { (curr,room) in
             // Don't include my own timelines in the list
             if room.creator == myUserId {
                 return curr

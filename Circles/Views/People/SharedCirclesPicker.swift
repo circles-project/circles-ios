@@ -24,9 +24,11 @@ struct SharedCirclesPicker: View {
 
                 LazyVStack(alignment: .leading) {
                     
-                    let advertisedRoomIds = profile.rooms.compactMap({$0.roomId})
+                    let advertisedRoomIds: [RoomId] = Array(profile.rooms.keys)
                     
-                    ForEach(circles.rooms) { space in
+                    let rooms = circles.rooms.values.sorted { $0.timestamp < $1.timestamp }
+                    
+                    ForEach(rooms) { space in
                         if let wall = space.wall,
                            !advertisedRoomIds.contains(wall.roomId)
                         {

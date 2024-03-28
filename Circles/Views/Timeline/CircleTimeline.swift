@@ -37,7 +37,8 @@ struct CircleTimeline: View {
                 Label("Hide debug info", systemImage: "eye.slash")
             }
             Text("\(space.rooms.count) rooms in the Stream")
-            ForEach(space.rooms) { room in
+            let rooms: [Matrix.Room] = space.rooms.values.sorted { $0.timestamp < $1.timestamp }
+            ForEach(rooms) { room in
                 let owner = room.creator
                 let messages = room.messages
                     
@@ -156,7 +157,7 @@ struct CircleTimeline: View {
                     wall.updateAvatarImage()
                 }
                 
-                async let results = space.rooms.map { room in
+                async let results = space.rooms.values.map { room in
                     print("REFRESH\tLoading latest messages from \(room.name ?? room.roomId.stringValue)")
 
                     return try? await room.getMessages(forward: false)

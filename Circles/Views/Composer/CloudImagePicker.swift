@@ -217,7 +217,8 @@ struct CloudImagePicker: View {
                 GridItem(.adaptive(minimum: 150, maximum: 300)),
             ]
             LazyVGrid(columns: columns, alignment: .center) {
-                ForEach(galleries.rooms) { room in
+                let rooms = galleries.rooms.values.sorted { $0.timestamp < $1.timestamp }
+                ForEach(rooms) { room in
                     Button(action: {
                         self.selectedRoom = room
                     }) {

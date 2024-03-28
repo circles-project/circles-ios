@@ -11,7 +11,7 @@ import os
 import Matrix
 
 class ContainerRoom<T: Matrix.Room>: Matrix.SpaceRoom {
-    @Published private(set) public var rooms: [T]
+    @Published private(set) public var rooms: [RoomId:T]
     var logger: os.Logger
     var sinks: [RoomId: Cancellable]
 
@@ -22,7 +22,7 @@ class ContainerRoom<T: Matrix.Room>: Matrix.SpaceRoom {
                          initialAccountData: [Matrix.AccountDataEvent] = [],
                          initialReadReceipt: EventId? = nil
     ) throws {
-        self.rooms = []
+        self.rooms = [:]
         self.logger = Logger(subsystem: "container", category: roomId.description)
         self.sinks = [:]
         
@@ -37,7 +37,7 @@ class ContainerRoom<T: Matrix.Room>: Matrix.SpaceRoom {
         
         if let dict = self.state[M_SPACE_CHILD] {
             let _ = Task {
-                var tmpRooms = [T]()
+                var tmpRooms = [RoomId:T]()
                 for (stateKey, event) in dict {
                     guard let childRoomId = RoomId(stateKey),
                           let content = event.content as? SpaceChildContent,
@@ -55,7 +55,7 @@ class ContainerRoom<T: Matrix.Room>: Matrix.SpaceRoom {
                         logger.error("Failed to create child room \(childRoomId)")
                         continue
                     }
-                    tmpRooms.append(room)
+                    tmpRooms[childRoomId] = room
                     
                     // Also re-publish changes from this child room
                     self.sinks[room.roomId] = room.objectWillChange.sink { _ in
@@ -98,7 +98,7 @@ class ContainerRoom<T: Matrix.Room>: Matrix.SpaceRoom {
             // We're removing an old child room from the space
             
             await MainActor.run {
-                self.rooms.removeAll(where: { $0.roomId == childRoomId })
+                self.rooms.removeValue(forKey: childRoomId)
             }
             
             // And stop publishing changes from the child room
@@ -112,7 +112,7 @@ class ContainerRoom<T: Matrix.Room>: Matrix.SpaceRoom {
         } else {
             // We're adding a new child room to the space
             
-            if let existingChild = self.rooms.first(where: {$0.roomId == childRoomId}) {
+            if let existingChild = self.rooms[childRoomId] {
                 logger.debug("Child room \(existingChild.roomId) is already in the space")
                 return
             }
@@ -123,7 +123,7 @@ class ContainerRoom<T: Matrix.Room>: Matrix.SpaceRoom {
                 return
             }
             await MainActor.run {
-                self.rooms.append(room)
+                self.rooms[childRoomId] = room
             }
             
             // Re-publish changes from the child room
@@ -147,9 +147,9 @@ class ContainerRoom<T: Matrix.Room>: Matrix.SpaceRoom {
         }
     }
     
-    public func leaveChild(_ childRoomId: RoomId) async throws {
+    public func leaveChild(_ childRoomId: RoomId, reason: String? = nil) async throws {
         try await self.session.removeSpaceChild(childRoomId, from: self.roomId)
-        try await self.session.leave(roomId: childRoomId)
+        try await self.session.leave(roomId: childRoomId, reason: reason)
     }
     
     /*

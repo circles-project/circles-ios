@@ -93,7 +93,7 @@ struct CircleSettingsView: View {
     @ViewBuilder
     var followingSection: some View {
         let myUserId = space.session.creds.userId
-        let timelines = space.rooms.filter { $0.creator != myUserId }
+        let timelines = space.rooms.values.filter { $0.creator != myUserId }
         Section("Timelines I'm Following (\(timelines.count))") {
             ForEach(timelines) { room in
                 let user = space.session.getUser(userId: room.creator)
