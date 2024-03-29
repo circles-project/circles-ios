@@ -25,8 +25,13 @@ struct FollowingTimelineDetailsView: View {
         VStack {
             Form {
                 Section("General") {
-                    Label("Name", systemImage: "circles.hexagonpath.fill")
+                    Text("Timeline")
                         .badge(room.name ?? "(unknown)")
+                    
+                    NavigationLink(destination: RoomMemberDetailView(user: user, room: room)) {
+                        Text("Creator")
+                            .badge(user.displayName ?? user.userId.stringValue)
+                    }
                     
                     HStack {
                         Text("Cover image")
@@ -49,14 +54,6 @@ struct FollowingTimelineDetailsView: View {
                                 .scaledToFit()
                                 .frame(width: 80, height: 80)
                         }
-                    }
-                }
-                
-                Section("Creator") {
-                    // NavigationLink(destination: GenericPersonDetailView(user: user)) {
-                    NavigationLink(destination: RoomMemberDetailView(user: user, room: room)) {
-
-                        MessageAuthorHeader(user: user)
                     }
                 }
                 
