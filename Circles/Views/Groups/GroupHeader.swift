@@ -31,9 +31,7 @@ struct GroupHeader<Content: View>: View {
     }
     
     var avatar: some View {
-        Image(uiImage: room.avatar ?? UIImage())
-            .resizable()
-            .scaledToFill()
+        RoomAvatar(room: room, avatarText: .none)
             .frame(maxWidth: 150, minHeight: 120, maxHeight: 120)
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .shadow(radius: 3)

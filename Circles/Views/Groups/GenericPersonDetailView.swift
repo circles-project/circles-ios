@@ -11,17 +11,9 @@ import Matrix
 struct GenericPersonDetailView: View {
     @ObservedObject var user: Matrix.User
     
-    var avatar: Image {
-        return (user.avatar != nil)
-            ? Image(uiImage: user.avatar!)
-            : Image(systemName: "person.crop.square")
-    }
-    
     var header: some View {
         HStack {
-            avatar
-                .resizable()
-                .scaledToFill()
+            UserAvatarView(user: user)
                 .frame(width: 160, height: 160, alignment: .center)
                 .clipShape(RoundedRectangle(cornerRadius: 40))
                 //.padding(.leading)
