@@ -37,7 +37,6 @@
 		409F4335265DE15F00690A61 /* CirclePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F432E265DE15E00690A61 /* CirclePicker.swift */; };
 		409F4336265DE15F00690A61 /* CircleTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F432F265DE15E00690A61 /* CircleTimelineView.swift */; };
 		409F4337265DE15F00690A61 /* CirclesOverviewScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4330265DE15F00690A61 /* CirclesOverviewScreen.swift */; };
-		409F4338265DE15F00690A61 /* CircleConnectionsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4331265DE15F00690A61 /* CircleConnectionsSheet.swift */; };
 		409F4340265DE17500690A61 /* GroupCreationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F433A265DE17300690A61 /* GroupCreationSheet.swift */; };
 		409F4341265DE17500690A61 /* GroupTimelineScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F433B265DE17300690A61 /* GroupTimelineScreen.swift */; };
 		409F4342265DE17500690A61 /* GroupHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F433C265DE17400690A61 /* GroupHeader.swift */; };
@@ -263,7 +262,6 @@
 		409F432E265DE15E00690A61 /* CirclePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CirclePicker.swift; sourceTree = "<group>"; };
 		409F432F265DE15E00690A61 /* CircleTimelineView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleTimelineView.swift; sourceTree = "<group>"; };
 		409F4330265DE15F00690A61 /* CirclesOverviewScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CirclesOverviewScreen.swift; sourceTree = "<group>"; };
-		409F4331265DE15F00690A61 /* CircleConnectionsSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleConnectionsSheet.swift; sourceTree = "<group>"; };
 		409F433A265DE17300690A61 /* GroupCreationSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupCreationSheet.swift; sourceTree = "<group>"; };
 		409F433B265DE17300690A61 /* GroupTimelineScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupTimelineScreen.swift; sourceTree = "<group>"; };
 		409F433C265DE17400690A61 /* GroupHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupHeader.swift; sourceTree = "<group>"; };
@@ -601,7 +599,6 @@
 			isa = PBXGroup;
 			children = (
 				409F432C265DE15D00690A61 /* CircleAvatar.swift */,
-				409F4331265DE15F00690A61 /* CircleConnectionsSheet.swift */,
 				409F432B265DE15C00690A61 /* CircleCreationSheet.swift */,
 				A5921EB62AFAD5E400C2331D /* CircleFollowingRow.swift */,
 				A521C3F62A68D9390051ED88 /* CircleInvitationsIndicator.swift */,
@@ -1141,7 +1138,6 @@
 				A553303F2B65689700695436 /* RoomCryptoInfoView.swift in Sources */,
 				A53E91222A5623F9007B0196 /* ProfileSettingsView.swift in Sources */,
 				409F4315265DE0F400690A61 /* ImagePicker.swift in Sources */,
-				409F4338265DE15F00690A61 /* CircleConnectionsSheet.swift in Sources */,
 				A565935F2AEAC4920003C244 /* QR.swift in Sources */,
 				A52DF68129E59A81008860C3 /* RoomAvatar.swift in Sources */,
 				A52DF68A29E8868C008860C3 /* MessageView.swift in Sources */,
