@@ -23,9 +23,6 @@ struct CircleFollowingRow: View {
             RoomAvatar(room: room, avatarText: .none)
                 .frame(width: 40, height: 40)
                 .clipShape(RoundedRectangle(cornerRadius: 4))
-                .onAppear {
-                    room.updateAvatarImage()
-                }
             
             VStack(alignment: .leading) {
                 Text("\(user.displayName ?? user.userId.username)")

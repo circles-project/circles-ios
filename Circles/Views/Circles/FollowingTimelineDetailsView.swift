@@ -28,17 +28,13 @@ struct FollowingTimelineDetailsView: View {
                     Label("Name", systemImage: "circles.hexagonpath.fill")
                         .badge(room.name ?? "(unknown)")
                     
-                    if let avatar = room.avatar {
-                        HStack {
-                            Text("Cover image")
-                            Spacer()
-                            Image(uiImage: avatar)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 120, height: 120)
-                                .clipShape(RoundedRectangle(cornerRadius: 4))
+                    HStack {
+                        Text("Cover image")
+                        Spacer()
+                        RoomAvatar(room: room, avatarText: .none)
+                            .frame(width: 120, height: 120)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
 
-                        }
                     }
                     
                     if room.joinRule == .knock,
