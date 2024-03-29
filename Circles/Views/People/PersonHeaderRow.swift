@@ -17,14 +17,6 @@ struct PersonHeaderRow: View {
     @State private var alertMessage: String = ""
     @State private var showAlert = false
     
-    var image: Image {
-        guard let img = user.avatar ?? user.jdenticon else {
-            return Image(systemName: "person.crop.square")
-        }
-        
-        return Image(uiImage: img)
-    }
-    
     var displayName: String {
         user.displayName ?? user.userId.username
     }
@@ -38,9 +30,7 @@ struct PersonHeaderRow: View {
     
     var body: some View {
         HStack(alignment: .center) {
-            image
-                .resizable()
-                .scaledToFill()
+            UserAvatarView(user: user)
                 .frame(width: 70, height:70)
                 //.clipped()
                 //.clipShape(Circle())

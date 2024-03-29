@@ -26,9 +26,7 @@ struct SelfDetailView: View {
                 HStack {
                     Spacer()
                     VStack(alignment: .center) {
-                        Image(uiImage: matrix.me.avatar ?? UIImage(systemName: "person.circle")!)
-                            .resizable()
-                            .scaledToFill()
+                        UserAvatarView(user: matrix.me)
                             .frame(width: 240, height: 240)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                         
