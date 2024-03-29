@@ -69,7 +69,7 @@ struct CircleCreationSheet: View {
         HStack {
             let cardSize: CGFloat = 120
             
-            Spacer()
+            //Spacer()
             
             ZStack {
                 if let img = avatarImage {
@@ -112,6 +112,7 @@ struct CircleCreationSheet: View {
                     .fontWeight(.bold)
                 
                 Text(circleName)
+                    .lineLimit(3)
                     .font(.title2)
                     .fontWeight(.bold)
             }

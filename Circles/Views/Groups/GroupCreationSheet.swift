@@ -80,8 +80,8 @@ struct GroupCreationSheet: View {
     var body: some View {
         VStack {
             buttonbar
-            let frameWidth = 200.0
-            let frameHeight = 120.0
+            let frameWidth = 300.0
+            let frameHeight = 150.0
       
             ZStack {
                 if let img = self.headerImage {
@@ -96,7 +96,7 @@ struct GroupCreationSheet: View {
 
                 VStack {
                     Text(self.groupName)
-                        .font(.title)
+                        .font(.title2)
                         .fontWeight(.bold)
                         .multilineTextAlignment(.center)
                         .foregroundColor(Color.white)

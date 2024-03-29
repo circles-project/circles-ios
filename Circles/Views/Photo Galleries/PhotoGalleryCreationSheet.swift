@@ -58,8 +58,8 @@ struct PhotoGalleryCreationSheet: View {
                 
                 Spacer()
                 
-                let frameWidth: CGFloat = 200
-                let frameHeight: CGFloat = 120
+                let frameWidth: CGFloat = 300
+                let frameHeight: CGFloat = 150
                     
                 PhotosPicker(selection: $selectedItem, matching: .images) {
                     if let img = avatarImage {
@@ -67,7 +67,6 @@ struct PhotoGalleryCreationSheet: View {
                             Image(uiImage: img)
                                 .resizable()
                                 .scaledToFill()
-                                .frame(width: frameWidth, height: frameHeight)
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
                                 .background(RoundedRectangle(cornerRadius: 10)
                                             //.stroke(Color.gray, lineWidth: 2)
@@ -77,11 +76,14 @@ struct PhotoGalleryCreationSheet: View {
                                 .padding()
                             
                             Text(galleryName)
-                                .font(.title)
+                                .lineLimit(2)
+                                .font(.title2)
                                 .fontWeight(.bold)
                                 .foregroundColor(.white)
                                 .shadow(color: .black, radius: 10)
                         }
+                        .frame(width: frameWidth, height: frameHeight)
+
                     } else {
                         Image(systemName: "camera.on.rectangle")
                             .resizable()
