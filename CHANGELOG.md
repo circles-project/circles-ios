@@ -1,6 +1,10 @@
 # v1.0.2
 * Add support for recovering account via email auth and resetting password
 * Add support for importing recovery key from Element or other clients
+* Bugfix: Duplication of replies and circles in the UI
+* Bugfix: Missing or wrongly sized avatars
+* Bugfix: Very long names overflow the "New photo gallery" UI
+
 
 # v1.0.1
 * Add support for push notifications
