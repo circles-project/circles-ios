@@ -207,22 +207,24 @@ struct PeopleOverviewScreen: View {
     }
     
     func loadFriendsOfFriends() async {
+        CirclesApp.logger.debug("Loading friends of friends")
         let myUserId = profile.session.creds.userId
         // First find all of the timeline rooms that I'm following
-        let timelines: Set<Matrix.Room> = circles.rooms.values.reduce([]) { (curr,room) in
+        let timelines: Set<Matrix.Room> = circles.rooms.values.reduce([]) { (curr,circle) in
+            CirclesApp.logger.debug("Looking for followed timelines in circle \(circle.name ?? circle.roomId.stringValue)")
             // Don't include my own timelines in the list
-            if room.creator == myUserId {
-                return curr
-            } else {
-                return curr.union([room])
-            }
+            let followedRooms = circle.rooms.values.filter { $0.creator != myUserId }
+            return curr.union(followedRooms)
         }
+        CirclesApp.logger.debug("Found \(timelines.count) timelines we are following")
         
         let userIds: Set<UserId> = timelines.reduce([]) { (curr,room) in
             let creator = room.creator
             let followers = room.joinedMembers.filter { $0 != creator && $0 != room.session.creds.userId }
+            CirclesApp.logger.debug("Found \(followers.count) friends of a friend in room \(room.name ?? room.roomId.stringValue)")
             return curr.union(followers)
         }
+        CirclesApp.logger.debug("Found a total of \(userIds.count) user ids following friends' timelines")
         
         let sorted = userIds.sorted {
             $0.stringValue < $1.stringValue
@@ -245,20 +247,38 @@ struct PeopleOverviewScreen: View {
                 ForEach(userIds, id: \.self) { userId in
                     if userId != profile.session.creds.userId {
                         let user = profile.session.getUser(userId: userId)
-                        HStack {
-                            UserAvatarView(user: user)
-                            UserNameView(user: user)
+                        if let friendsSpace = people.rooms.values.first(where: { $0.creator == userId }) {
+                            NavigationLink(destination: ConnectedPersonDetailView(space: friendsSpace),
+                                           tag: user.userId,
+                                           selection: $selectedUserId
+                            ) {
+                                PersonHeaderRow(user: user, profile: profile)
+                                    .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                        } else {
+                            NavigationLink(destination: UnconnectedPersonDetailView(user: user, myProfileRoom: profile),
+                                           tag: user.userId,
+                                           selection: $selectedUserId
+                            ) {
+                                PersonHeaderRow(user: user, profile: profile)
+                                    .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
                         }
+                        
+                        Divider()
                     }
                 }
             } else {
                 ProgressView("Loading...")
-                    .task {
-                        await loadFriendsOfFriends()
-                    }
             }
         }
         .padding()
+        .task {
+            await loadFriendsOfFriends()
+        }
+
     }
     
     var body: some View {
