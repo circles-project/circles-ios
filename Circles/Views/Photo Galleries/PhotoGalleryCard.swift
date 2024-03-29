@@ -14,20 +14,6 @@ struct PhotoGalleryCard: View {
     @ObservedObject var room: Matrix.Room
     @AppStorage("debugMode") var debugMode: Bool = false
     
-    var avatar: Image {
-        
-        if let avatar = room.avatar {
-            return Image(uiImage: avatar)
-        } else {
-            return Image(systemName: "photo")
-        }
-        /*
-        room.avatar != nil
-            ? Image(uiImage: room.avatar!)
-            : Image(systemName: "photo")
-        */
-    }
-    
     var timestamp: some View {
         let date = Date()
         let formatter = DateFormatter()
@@ -39,7 +25,7 @@ struct PhotoGalleryCard: View {
     var body: some View {
         ZStack {
             
-            RoomAvatar(room: room, avatarText: .none)
+            RoomAvatarView(room: room, avatarText: .none)
                 .scaledToFill()
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 /*

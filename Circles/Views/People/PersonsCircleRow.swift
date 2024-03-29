@@ -18,11 +18,6 @@ struct PersonsCircleRow: View {
         self.user = room.session.getUser(userId: room.creator)
     }
     
-    var image: Image {
-        let img = room.avatar ?? UIImage()
-        return Image(uiImage: img)
-    }
-    
     var roomName: String {
         room.name ?? ""
     }
@@ -35,9 +30,7 @@ struct PersonsCircleRow: View {
         HStack(alignment: .center) {
             let frameSize: CGFloat = 40
             
-            image
-                .resizable()
-                .scaledToFill()
+            RoomAvatarView(room: room, avatarText: .none)
                 .clipShape(Circle())
                 .frame(width: frameSize, height: frameSize)
                 .clipped()

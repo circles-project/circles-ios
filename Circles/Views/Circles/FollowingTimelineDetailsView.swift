@@ -25,20 +25,21 @@ struct FollowingTimelineDetailsView: View {
         VStack {
             Form {
                 Section("General") {
-                    Label("Name", systemImage: "circles.hexagonpath.fill")
+                    Text("Timeline")
                         .badge(room.name ?? "(unknown)")
                     
-                    if let avatar = room.avatar {
-                        HStack {
-                            Text("Cover image")
-                            Spacer()
-                            Image(uiImage: avatar)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 120, height: 120)
-                                .clipShape(RoundedRectangle(cornerRadius: 4))
+                    NavigationLink(destination: RoomMemberDetailView(user: user, room: room)) {
+                        Text("Creator")
+                            .badge(user.displayName ?? user.userId.stringValue)
+                    }
+                    
+                    HStack {
+                        Text("Cover image")
+                        Spacer()
+                        RoomAvatarView(room: room, avatarText: .none)
+                            .frame(width: 120, height: 120)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
 
-                        }
                     }
                     
                     if room.joinRule == .knock,
@@ -53,14 +54,6 @@ struct FollowingTimelineDetailsView: View {
                                 .scaledToFit()
                                 .frame(width: 80, height: 80)
                         }
-                    }
-                }
-                
-                Section("Creator") {
-                    // NavigationLink(destination: GenericPersonDetailView(user: user)) {
-                    NavigationLink(destination: RoomMemberDetailView(user: user, room: room)) {
-
-                        MessageAuthorHeader(user: user)
                     }
                 }
                 

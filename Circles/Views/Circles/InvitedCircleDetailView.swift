@@ -23,7 +23,7 @@ struct InvitedCircleDetailView: View {
                 Text("You have been invited to:")
                     .padding()
                 
-                RoomAvatar(room: room, avatarText: .roomName)
+                RoomAvatarView(room: room, avatarText: .roomName)
                     .clipShape(Circle())
                     .overlay(Circle().stroke(Color.primary, lineWidth: 2))
                     .scaledToFit()

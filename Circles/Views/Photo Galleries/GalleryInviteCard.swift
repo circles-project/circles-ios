@@ -53,7 +53,7 @@ struct GalleryInviteCard: View {
     var body: some View {
         VStack(alignment: .leading) {
                 
-            RoomAvatar(room: room, avatarText: .roomName)
+            RoomAvatarView(room: room, avatarText: .roomName)
                 .scaledToFill()
                 .frame(maxWidth: 400, maxHeight: 400)
                 .blur(radius: roomAvatarBlur)

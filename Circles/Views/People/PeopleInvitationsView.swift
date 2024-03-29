@@ -20,9 +20,7 @@ struct PeopleInvitationsView: View {
                     let user = session.getUser(userId: invite.sender)
 
                     HStack(alignment: .top) {
-                        Image(uiImage: invite.avatar ?? user.avatar ?? user.jdenticon ?? UIImage(systemName: "person.circle")!)
-                            .resizable()
-                            .scaledToFill()
+                        UserAvatarView(user: user)
                             .frame(width: 120, height: 120)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                         

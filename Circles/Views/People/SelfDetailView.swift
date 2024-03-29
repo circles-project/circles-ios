@@ -26,9 +26,7 @@ struct SelfDetailView: View {
                 HStack {
                     Spacer()
                     VStack(alignment: .center) {
-                        Image(uiImage: matrix.me.avatar ?? UIImage(systemName: "person.circle")!)
-                            .resizable()
-                            .scaledToFill()
+                        UserAvatarView(user: matrix.me)
                             .frame(width: 240, height: 240)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                         
@@ -82,7 +80,7 @@ struct SelfDetailView: View {
                     let rooms = Array(profile.rooms.values)
                     ForEach(rooms) { room in
                         HStack {
-                            RoomAvatar(room: room, avatarText: .roomInitials)
+                            RoomAvatarView(room: room, avatarText: .roomInitials)
                                 .frame(width: 60, height: 60)
                                 .clipShape(Circle())
 
