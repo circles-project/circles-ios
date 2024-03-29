@@ -80,9 +80,7 @@ struct UnconnectedPersonDetailView: View {
                 } else {
                     ForEach(friends) { friend in
                         HStack {
-                            Image(uiImage: friend.avatar ?? UIImage(systemName: "person.crop.square")!)
-                                .resizable()
-                                .scaledToFill()
+                            UserAvatarView(user: friend)
                                 .frame(width: 80, height: 80)
                             
                             VStack(alignment: .leading) {
