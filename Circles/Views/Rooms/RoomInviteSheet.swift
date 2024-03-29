@@ -18,7 +18,7 @@ struct RoomInviteSheet: View {
     @FocusState var searchFocused
     @State var showingKeyboard = false
         
-    @State var newUsers: [Matrix.User] = []
+    @State var newUsers: Set<Matrix.User> = []
     @State var newestUserIdString: String = ""
     @State var pending = false
     @State var suggestions = [UserId]()
@@ -75,7 +75,7 @@ struct RoomInviteSheet: View {
                 return
             }
             if room.joinedMembers.contains(userId) {
-                self.alertTitle = "\(userId) is already a member of this room"
+                self.alertTitle = "\(userId) is already a member"
                 self.alertMessage = ""
                 self.showAlert = true
                 print("RoomInviteSheet - ERROR:\t \(self.alertMessage)")
@@ -99,10 +99,8 @@ struct RoomInviteSheet: View {
             }
 
             let user = room.session.getUser(userId: userId)
-            if !self.newUsers.contains(user) {
-                print("RoomInviteSheet - INFO:\t Adding \(userId) to invite list")
-                self.newUsers.append(user)
-            }
+            print("RoomInviteSheet - INFO:\t Adding \(userId) to invite set")
+            self.newUsers.insert(user)
             self.newestUserIdString = ""
             self.searchFocused = false
             
@@ -123,7 +121,7 @@ struct RoomInviteSheet: View {
                 if let userId = self.suggestedUserId {
                     Button(action: {
                         let user = room.session.getUser(userId: userId)
-                        self.newUsers.append(user)
+                        self.newUsers.insert(user)
                         self.newestUserIdString = ""
                         self.suggestedUserId = nil
                         self.searchFocused = false
@@ -162,6 +160,29 @@ struct RoomInviteSheet: View {
         .eraseToAnyPublisher()
     }
     
+    @ViewBuilder
+    var searchSuggestionsView: some View {
+        ScrollView {
+            ForEach(suggestions) { userId in
+                let user = room.session.getUser(userId: userId)
+                //Text("User \(userId.description)")
+                Button(action: {
+                    self.newestUserIdString = ""
+                    self.suggestions = []
+                    self.newUsers.insert(user)
+                    self.searchFocused = false
+                }) {
+                    MessageAuthorHeader(user: user)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .frame(maxHeight: 300)
+        .padding(.bottom)
+        .padding(.leading)
+    }
+    
+    @ViewBuilder
     var inputForm: some View {
         VStack(alignment: .center) {
             
@@ -179,29 +200,7 @@ struct RoomInviteSheet: View {
                 }
                 
                 if !self.suggestions.isEmpty {
-                    ScrollView {
-                        /*
-                        Text("SEARCH SUGGESTIONS")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-                        */
-                        ForEach(suggestions) { userId in
-                            let user = room.session.getUser(userId: userId)
-                            //Text("User \(userId.description)")
-                            Button(action: {
-                                self.newestUserIdString = ""
-                                self.suggestions = []
-                                self.newUsers.append(user)
-                                self.searchFocused = false
-                            }) {
-                                MessageAuthorHeader(user: user)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                    .frame(maxHeight: 300)
-                    .padding(.bottom)
-                    .padding(.leading)
+                    searchSuggestionsView
                     Divider()
                 }
                 
@@ -221,10 +220,10 @@ struct RoomInviteSheet: View {
                 
                 LazyVGrid(columns: columns) {
                     
-                    ForEach(newUsers) { user in
+                    let array = Array(newUsers)
+                    ForEach(array) { user in
                         Button(action: {
-                            let userId = user.userId
-                            self.newUsers.removeAll(where: {$0.userId == userId})
+                            self.newUsers.remove(user)
                         }) {
                             Label(user.userId.stringValue, systemImage: "xmark")
                                 .lineLimit(1)
