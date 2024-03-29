@@ -74,33 +74,3 @@ struct MessageAuthorHeader: View {
         }
     }
 }
-
-struct DummyMessageAuthorHeader: View {
-    var userId: String? = nil
-    
-    var body: some View {
-        HStack(alignment: .top) {
-            
-            //profileImage
-            Image(systemName: "person.crop.square")
-                .resizable()
-                .frame(width: 40, height: 40)
-                .scaledToFit()
-                //.clipShape(RoundedRectangle(cornerRadius: 10))
-                .foregroundColor(.gray)
-
-            
-            VStack(alignment: .leading) {
-                VStack(alignment: .leading) {
-                    Text(userId ?? "(Unknown user)")
-                        .font(.headline)
-                        .fontWeight(.semibold)
-                    Text(userId ?? "???")
-                        .font(.subheadline)
-                        .foregroundColor(Color.gray)
-                }
-            }
-        }
-        .padding(.leading, 2)
-    }
-}
