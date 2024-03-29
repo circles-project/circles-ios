@@ -35,7 +35,7 @@ struct CircleSettingsView: View {
                 Spacer()
                 
                 PhotosPicker(selection: $newAvatarImageItem, matching: .images) {
-                    SimpleCircleAvatar(space: space)
+                    RoomAvatar(room: space.wall ?? space, avatarText: .none)
                         .clipShape(Circle())
                         .frame(width: 80, height: 80)
                 }
