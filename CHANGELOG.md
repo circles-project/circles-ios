@@ -5,6 +5,7 @@
 * Bugfix: Missing or wrongly sized avatars
 * Bugfix: Very long names overflow the "New photo gallery" UI
 * Bugfix: Prevent duplicates when selecting users to invite
+* Request GDPR delete / erasure of content when deactivating account
 
 # v1.0.1
 * Add support for push notifications

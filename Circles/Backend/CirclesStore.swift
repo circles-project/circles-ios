@@ -947,7 +947,7 @@ public class CirclesStore: ObservableObject {
         }
         
         let creds = session.matrix.creds
-        try await session.matrix.deactivateAccount() { (uia, data) in
+        try await session.matrix.deactivateAccount(erase: true) { (uia, data) in
             try await self.disconnect()
             self.removeCredentials(for: creds.userId)
         }
