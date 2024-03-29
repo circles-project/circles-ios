@@ -22,7 +22,7 @@ struct InvitedCircleCard: View {
     
     var body: some View {
         HStack(spacing: 1) {
-            RoomAvatar(room: room, avatarText: .none)
+            RoomAvatarView(room: room, avatarText: .none)
                 //.overlay(Circle().stroke(Color.primary, lineWidth: 2))
                 .frame(width: 180, height: 180)
                 .scaledToFit()

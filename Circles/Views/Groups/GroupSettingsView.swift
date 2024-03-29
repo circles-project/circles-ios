@@ -31,7 +31,7 @@ struct GroupSettingsView: View {
                 
                 if room.iCanChangeState(type: M_ROOM_AVATAR) {
                     PhotosPicker(selection: $newAvatarImageItem, matching: .images) {
-                        RoomAvatar(room: room, avatarText: .none)
+                        RoomAvatarView(room: room, avatarText: .none)
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                             .frame(width: 80, height: 80)
                     }
@@ -47,7 +47,7 @@ struct GroupSettingsView: View {
                         }
                     }
                 } else {
-                    RoomAvatar(room: room, avatarText: .none)
+                    RoomAvatarView(room: room, avatarText: .none)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                         .frame(width: 80, height: 80)
                 }

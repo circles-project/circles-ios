@@ -17,7 +17,7 @@ struct InvitedGroupCard: View {
     
     var body: some View {
         HStack(spacing: 1) {
-            RoomAvatar(room: room, avatarText: .roomInitials)
+            RoomAvatarView(room: room, avatarText: .roomInitials)
                 //.overlay(Circle().stroke(Color.primary, lineWidth: 2))
                 .scaledToFill()
                 .frame(width: 120, height: 120)

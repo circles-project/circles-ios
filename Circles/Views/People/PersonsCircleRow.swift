@@ -30,7 +30,7 @@ struct PersonsCircleRow: View {
         HStack(alignment: .center) {
             let frameSize: CGFloat = 40
             
-            RoomAvatar(room: room, avatarText: .none)
+            RoomAvatarView(room: room, avatarText: .none)
                 .clipShape(Circle())
                 .frame(width: frameSize, height: frameSize)
                 .clipped()

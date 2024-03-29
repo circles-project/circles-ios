@@ -39,7 +39,7 @@ struct SharedCirclesPicker: View {
                                 self.presentation.wrappedValue.dismiss()
                             }) {
                                 HStack {
-                                    RoomAvatar(room: wall, avatarText: .roomInitials)
+                                    RoomAvatarView(room: wall, avatarText: .roomInitials)
                                         .frame(width: 100, height: 100)
                                         .clipShape(Circle())
 

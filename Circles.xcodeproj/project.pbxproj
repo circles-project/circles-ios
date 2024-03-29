@@ -90,7 +90,7 @@
 		A52ACB932A7969F6005D90C5 /* GalleryInvitationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52ACB922A7969F6005D90C5 /* GalleryInvitationsView.swift */; };
 		A52ACB952A797FD3005D90C5 /* SignupFinishedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52ACB942A797FD3005D90C5 /* SignupFinishedView.swift */; };
 		A52C77542A89CCB8005D2C0B /* MessageThumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52C77532A89CCB8005D2C0B /* MessageThumbnail.swift */; };
-		A52DF68129E59A81008860C3 /* RoomAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68029E59A81008860C3 /* RoomAvatar.swift */; };
+		A52DF68129E59A81008860C3 /* RoomAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68029E59A81008860C3 /* RoomAvatarView.swift */; };
 		A52DF68329E59C32008860C3 /* StateEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68229E59C32008860C3 /* StateEventView.swift */; };
 		A52DF68529E72CC1008860C3 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68429E72CC1008860C3 /* Keychain.swift */; };
 		A52DF68829E732AC008860C3 /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68729E732AC008860C3 /* SettingsScreen.swift */; };
@@ -314,7 +314,7 @@
 		A52ACB922A7969F6005D90C5 /* GalleryInvitationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryInvitationsView.swift; sourceTree = "<group>"; };
 		A52ACB942A797FD3005D90C5 /* SignupFinishedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupFinishedView.swift; sourceTree = "<group>"; };
 		A52C77532A89CCB8005D2C0B /* MessageThumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageThumbnail.swift; sourceTree = "<group>"; };
-		A52DF68029E59A81008860C3 /* RoomAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomAvatar.swift; sourceTree = "<group>"; };
+		A52DF68029E59A81008860C3 /* RoomAvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomAvatarView.swift; sourceTree = "<group>"; };
 		A52DF68229E59C32008860C3 /* StateEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateEventView.swift; sourceTree = "<group>"; };
 		A52DF68429E72CC1008860C3 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		A52DF68729E732AC008860C3 /* SettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
@@ -722,7 +722,7 @@
 			isa = PBXGroup;
 			children = (
 				A56BE1752AD5D0E900B15F51 /* KnockingUserCard.swift */,
-				A52DF68029E59A81008860C3 /* RoomAvatar.swift */,
+				A52DF68029E59A81008860C3 /* RoomAvatarView.swift */,
 				A553303E2B65689700695436 /* RoomCryptoInfoView.swift */,
 				A5921EB82AFAD7F000C2331D /* RoomInvitedMemberRow.swift */,
 				A5A6A5862B2D0E7C00849B38 /* RoomInviteOneUserSheet.swift */,
@@ -1139,7 +1139,7 @@
 				A53E91222A5623F9007B0196 /* ProfileSettingsView.swift in Sources */,
 				409F4315265DE0F400690A61 /* ImagePicker.swift in Sources */,
 				A565935F2AEAC4920003C244 /* QR.swift in Sources */,
-				A52DF68129E59A81008860C3 /* RoomAvatar.swift in Sources */,
+				A52DF68129E59A81008860C3 /* RoomAvatarView.swift in Sources */,
 				A52DF68A29E8868C008860C3 /* MessageView.swift in Sources */,
 				409F4385265DE2A400690A61 /* PostComposer.swift in Sources */,
 				A53E91262A5710C5007B0196 /* UpdateDisplaynameView.swift in Sources */,

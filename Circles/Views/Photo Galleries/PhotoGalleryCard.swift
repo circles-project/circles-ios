@@ -25,7 +25,7 @@ struct PhotoGalleryCard: View {
     var body: some View {
         ZStack {
             
-            RoomAvatar(room: room, avatarText: .none)
+            RoomAvatarView(room: room, avatarText: .none)
                 .scaledToFill()
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 /*

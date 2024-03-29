@@ -36,7 +36,7 @@ struct FollowingTimelineDetailsView: View {
                     HStack {
                         Text("Cover image")
                         Spacer()
-                        RoomAvatar(room: room, avatarText: .none)
+                        RoomAvatarView(room: room, avatarText: .none)
                             .frame(width: 120, height: 120)
                             .clipShape(RoundedRectangle(cornerRadius: 4))
 
