@@ -1,3 +1,6 @@
+# v1.0.3
+* Bugfix: Ignore invalid config object in account data
+
 # v1.0.2
 * Add support for recovering account via email auth and resetting password
 * Add support for importing recovery key from Element or other clients
