@@ -483,7 +483,7 @@ public class CirclesStore: ObservableObject {
             throw CirclesError("Don't check for space hierarchy before key backup")
         }
 
-        if let config = try await matrix.getAccountData(for: EVENT_TYPE_CIRCLES_CONFIG, of: CirclesConfigContent.self) {
+        if let config = try? await matrix.getAccountData(for: EVENT_TYPE_CIRCLES_CONFIG, of: CirclesConfigContent.self) {
             logger.debug("Found space hierarchy with root at \(config.root.stringValue)")
             await MainActor.run {
                 self.state = .haveSpaceHierarchy(matrix, config)
