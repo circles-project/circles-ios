@@ -204,7 +204,7 @@ struct GroupsOverviewScreen: View {
             if let roomId = selected,
                let room = container.rooms[roomId]
             {
-                GroupTimelineScreen(room: room)
+                GroupTimelineScreen(room: room, container: container)
             } else {
                 Text("Select a group to see the most recent posts, or create a new group")
             }

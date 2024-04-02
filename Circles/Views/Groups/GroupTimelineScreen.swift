@@ -19,7 +19,8 @@ extension GroupScreenSheetType: Identifiable {
 }
 
 struct GroupTimelineScreen: View {
-    @ObservedObject var room: Matrix.Room
+    @ObservedObject var room: GroupRoom
+    var container: ContainerRoom<GroupRoom>
     //@ObservedObject var group: SocialGroup
     @Environment(\.presentationMode) var presentation
     @AppStorage("debugMode") var debugMode: Bool = false
@@ -45,7 +46,7 @@ struct GroupTimelineScreen: View {
     var toolbarMenu: some View {
         Menu {
             
-            NavigationLink(destination: GroupSettingsView(room: room)) {
+            NavigationLink(destination: GroupSettingsView(room: room, container: container)) {
                 Label("Settings", systemImage: "gearshape")
             }
             
