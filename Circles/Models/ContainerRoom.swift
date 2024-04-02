@@ -20,7 +20,8 @@ class ContainerRoom<T: Matrix.Room>: Matrix.SpaceRoom {
                          initialState: [ClientEventWithoutRoomId],
                          initialTimeline: [ClientEventWithoutRoomId] = [],
                          initialAccountData: [Matrix.AccountDataEvent] = [],
-                         initialReadReceipt: EventId? = nil
+                         initialReadReceipt: EventId? = nil,
+                         onLeave: (() async throws -> Void)? = nil
     ) throws {
         self.rooms = [:]
         self.logger = Logger(subsystem: "container", category: roomId.description)
@@ -30,7 +31,8 @@ class ContainerRoom<T: Matrix.Room>: Matrix.SpaceRoom {
                        initialState: initialState,
                        initialTimeline: initialTimeline,
                        initialAccountData: initialAccountData,
-                       initialReadReceipt: initialReadReceipt)
+                       initialReadReceipt: initialReadReceipt,
+                       onLeave: onLeave)
         // Swift Phase 1 init is complete.  Now we can use `self`.
         
         // Now let's look to see what (if any) child rooms we have
@@ -50,7 +52,9 @@ class ContainerRoom<T: Matrix.Room>: Matrix.SpaceRoom {
                     let stateEvents = try await self.session.getRoomStateEvents(roomId: roomId)
                     let room = try T(roomId: childRoomId, session: session, initialState: stateEvents, initialTimeline: [])
                     */
-                    guard let room = try await session.getRoom(roomId: childRoomId, as: T.self)
+                    guard let room = try await session.getRoom(roomId: childRoomId,
+                                                               as: T.self,
+                                                               onLeave: { try await self.onLeaveChild(childRoomId) })
                     else {
                         logger.error("Failed to create child room \(childRoomId)")
                         continue
@@ -69,6 +73,13 @@ class ContainerRoom<T: Matrix.Room>: Matrix.SpaceRoom {
                 }
             }
         }
+    }
+    
+    private func onLeaveChild(_ childRoomId: RoomId) async throws {
+        await MainActor.run {
+            self.rooms.removeValue(forKey: childRoomId)
+        }
+        try await self.session.removeSpaceChild(childRoomId, from: self.roomId)
     }
     
     public override func updateTimeline(from events: [ClientEventWithoutRoomId]) async throws {

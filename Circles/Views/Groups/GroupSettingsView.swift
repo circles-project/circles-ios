@@ -11,7 +11,9 @@ import Matrix
 
 struct GroupSettingsView: View {
     @ObservedObject var room: GroupRoom
+    var container: ContainerRoom<GroupRoom>
     
+    @Environment(\.presentationMode) var presentation
     @AppStorage("debugMode") var debugMode: Bool = false
 
     @State var newAvatarImageItem: PhotosPickerItem?
@@ -171,7 +173,8 @@ struct GroupSettingsView: View {
                         
                         // FIXME: Sanity check - Are we leaving the room unmoderated?  Don't do that.
                         
-                        try await room.leave()
+                        try await container.leaveChild(room.roomId)
+                        self.presentation.wrappedValue.dismiss()
                     }) {
                         Text("Leave \"\(room.name ?? "this group")\"")
                     }
