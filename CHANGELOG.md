@@ -1,5 +1,7 @@
 # v1.0.3
 * Bugfix: Ignore invalid config object in account data
+* Handle redacted email addresses in email authentication
+* Bugfix: Remove groups from the UI when you leave them
 
 # v1.0.2
 * Add support for recovering account via email auth and resetting password
