@@ -471,7 +471,6 @@
 		404C72C4265DDF35000473DF = {
 			isa = PBXGroup;
 			children = (
-				A540001D2BAB4D25008193E1 /* PrivacyInfo.xcprivacy */,
 				A5D67F232B236F9600729582 /* FUTO Circles.storekit */,
 				405BF7862683C5FA006E8756 /* Products.storekit */,
 				404C72CF265DDF35000473DF /* Circles */,
@@ -494,6 +493,7 @@
 		404C72CF265DDF35000473DF /* Circles */ = {
 			isa = PBXGroup;
 			children = (
+				A540001D2BAB4D25008193E1 /* PrivacyInfo.xcprivacy */,
 				405F8E682698E8620057E970 /* Circles.entitlements */,
 				404C72D9265DDF35000473DF /* Info.plist */,
 				404C72D0265DDF35000473DF /* CirclesApp.swift */,
