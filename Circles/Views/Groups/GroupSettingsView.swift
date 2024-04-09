@@ -137,9 +137,11 @@ struct GroupSettingsView: View {
                                    room: room)
             }
             
-            RoomMembersSection(title: "Regular Members",
-                               users: members,
-                               room: room)
+            if !members.isEmpty {
+                RoomMembersSection(title: "Regular Members",
+                                   users: members,
+                                   room: room)
+            }
             
             let invited = room.invitedMembers
             if !invited.isEmpty {
@@ -164,6 +166,12 @@ struct GroupSettingsView: View {
             
             if debugMode {
                 RoomDebugDetailsSection(room: room)
+            }
+            
+            if room.iCanChangeState(type: M_ROOM_POWER_LEVELS) {
+                Section("User Permissions") {
+                    RoomDefaultPowerLevelPicker(room: room)
+                }
             }
             
             Section("Danger Zone") {
