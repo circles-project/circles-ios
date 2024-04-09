@@ -20,6 +20,7 @@ struct CircleSettingsView: View {
     @State var roomToUnfollow: Matrix.Room?
 
     @State var showInviteSheet = false
+    @State var showShareSheet = false
     
     @State var showConfirmResend = false
     @State var showConfirmCancelInvite = false
@@ -80,10 +81,17 @@ struct CircleSettingsView: View {
                     HStack {
                         Text("QR code")
                         Spacer()
-                        Image(uiImage: qr)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 80, height: 80)
+                        Button(action: {
+                            showShareSheet = true
+                        }) {
+                            Image(uiImage: qr)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 80, height: 80)
+                        }
+                        .sheet(isPresented: $showShareSheet) {
+                            RoomShareSheet(room: wall, url: url)
+                        }
                     }
                 }
             }

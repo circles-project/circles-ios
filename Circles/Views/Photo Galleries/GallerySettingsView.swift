@@ -20,6 +20,7 @@ struct GallerySettingsView: View {
     
     @State var showConfirmLeave = false
     @State var showInviteSheet = false
+    @State var showShareSheet = false
     
     @ViewBuilder
     var generalSection: some View {
@@ -82,10 +83,17 @@ struct GallerySettingsView: View {
                      HStack {
                          Text("QR code")
                          Spacer()
-                         Image(uiImage: qr)
-                             .resizable()
-                             .scaledToFill()
-                             .frame(width: 80, height: 80)
+                         Button(action: {
+                             showShareSheet = true
+                         }) {
+                             Image(uiImage: qr)
+                                 .resizable()
+                                 .scaledToFill()
+                                 .frame(width: 80, height: 80)
+                         }
+                         .sheet(isPresented: $showShareSheet) {
+                             RoomShareSheet(room: room, url: url)
+                         }
                      }
                  }
             }
