@@ -1,3 +1,6 @@
+# v1.0.4
+* Show the "Share" sheet when user taps the QR code for a circle/group/gallery
+
 # v1.0.3
 * Bugfix: Ignore invalid config object in account data
 * Handle redacted email addresses in email authentication
