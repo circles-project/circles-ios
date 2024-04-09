@@ -160,6 +160,7 @@
 		A5A40B6A29D62FC6009A17EE /* BsspekeEnrollOprfForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A40B6929D62FC6009A17EE /* BsspekeEnrollOprfForm.swift */; };
 		A5A6A5872B2D0E7C00849B38 /* RoomInviteOneUserSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A6A5862B2D0E7C00849B38 /* RoomInviteOneUserSheet.swift */; };
 		A5A7E228282B06FD001A528D /* ApplicationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A7E227282B06FD001A528D /* ApplicationState.swift */; };
+		A5B74F3C2BC592EF00299D90 /* RoomDefaultPowerLevelPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B74F3B2BC592EF00299D90 /* RoomDefaultPowerLevelPicker.swift */; };
 		A5BECC38280F7A2400B1FCC6 /* KeyboardKit in Frameworks */ = {isa = PBXBuildFile; productRef = A5BECC37280F7A2400B1FCC6 /* KeyboardKit */; };
 		A5CC0ACC29D91F7C005935F0 /* Zxcvbn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CC0ACB29D91F7C005935F0 /* Zxcvbn.swift */; };
 		A5CC0AD029DB7001005935F0 /* BsspekeLoginVerifyForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CC0ACF29DB7001005935F0 /* BsspekeLoginVerifyForm.swift */; };
@@ -381,6 +382,7 @@
 		A5A40B6929D62FC6009A17EE /* BsspekeEnrollOprfForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BsspekeEnrollOprfForm.swift; sourceTree = "<group>"; };
 		A5A6A5862B2D0E7C00849B38 /* RoomInviteOneUserSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomInviteOneUserSheet.swift; sourceTree = "<group>"; };
 		A5A7E227282B06FD001A528D /* ApplicationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationState.swift; sourceTree = "<group>"; };
+		A5B74F3B2BC592EF00299D90 /* RoomDefaultPowerLevelPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomDefaultPowerLevelPicker.swift; sourceTree = "<group>"; };
 		A5CC0ACB29D91F7C005935F0 /* Zxcvbn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zxcvbn.swift; sourceTree = "<group>"; };
 		A5CC0ACF29DB7001005935F0 /* BsspekeLoginVerifyForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BsspekeLoginVerifyForm.swift; sourceTree = "<group>"; };
 		A5CF39D42A73299500134969 /* ThreadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadView.swift; sourceTree = "<group>"; };
@@ -738,6 +740,7 @@
 				A56BE17A2AD6ED4000B15F51 /* ScanQrCodeAndKnockSheet.swift */,
 				A562C0912B0BEC2000522FCB /* UsersToInviteView.swift */,
 				A534CC8C2B72EBEE008AFADA /* RoomDebugDetailsSection.swift */,
+				A5B74F3B2BC592EF00299D90 /* RoomDefaultPowerLevelPicker.swift */,
 			);
 			path = Rooms;
 			sourceTree = "<group>";
@@ -1016,6 +1019,7 @@
 				A52ACB912A793B5A005D90C5 /* PeopleInvitationsView.swift in Sources */,
 				A5CC0ACC29D91F7C005935F0 /* Zxcvbn.swift in Sources */,
 				A53E91282A572E8D007B0196 /* UpdateStatusMessageView.swift in Sources */,
+				A5B74F3C2BC592EF00299D90 /* RoomDefaultPowerLevelPicker.swift in Sources */,
 				404C72D3265DDF35000473DF /* ContentView.swift in Sources */,
 				403CEA9F26E86C7F0054DBF4 /* CirclesForm.swift in Sources */,
 				A5E101FA2814FB60000B2C42 /* blf.c in Sources */,

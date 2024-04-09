@@ -160,6 +160,14 @@ struct CircleSettingsView: View {
                 {
                     RoomDebugDetailsSection(room: wall)
                 }
+                
+                if let wall = space.wall,
+                   wall.iCanChangeState(type: M_ROOM_POWER_LEVELS)
+                {
+                    Section("Follower Permissions") {
+                        RoomDefaultPowerLevelPicker(room: wall)
+                    }
+                }
             }
         }
         .navigationTitle("Settings for \(space.name ?? "this circle")")
