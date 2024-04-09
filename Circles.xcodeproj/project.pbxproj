@@ -162,6 +162,8 @@
 		A5A7E228282B06FD001A528D /* ApplicationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A7E227282B06FD001A528D /* ApplicationState.swift */; };
 		A5B74F3C2BC592EF00299D90 /* RoomDefaultPowerLevelPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B74F3B2BC592EF00299D90 /* RoomDefaultPowerLevelPicker.swift */; };
 		A5B74F3E2BC5B9C800299D90 /* PowerLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B74F3D2BC5B9C800299D90 /* PowerLevel.swift */; };
+		A5B74F402BC5F8E300299D90 /* ScanQrCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B74F3F2BC5F8E300299D90 /* ScanQrCodeView.swift */; };
+		A5B74F422BC5F92900299D90 /* KnockOnRoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B74F412BC5F92900299D90 /* KnockOnRoomView.swift */; };
 		A5BECC38280F7A2400B1FCC6 /* KeyboardKit in Frameworks */ = {isa = PBXBuildFile; productRef = A5BECC37280F7A2400B1FCC6 /* KeyboardKit */; };
 		A5CC0ACC29D91F7C005935F0 /* Zxcvbn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CC0ACB29D91F7C005935F0 /* Zxcvbn.swift */; };
 		A5CC0AD029DB7001005935F0 /* BsspekeLoginVerifyForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CC0ACF29DB7001005935F0 /* BsspekeLoginVerifyForm.swift */; };
@@ -385,6 +387,8 @@
 		A5A7E227282B06FD001A528D /* ApplicationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationState.swift; sourceTree = "<group>"; };
 		A5B74F3B2BC592EF00299D90 /* RoomDefaultPowerLevelPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomDefaultPowerLevelPicker.swift; sourceTree = "<group>"; };
 		A5B74F3D2BC5B9C800299D90 /* PowerLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerLevel.swift; sourceTree = "<group>"; };
+		A5B74F3F2BC5F8E300299D90 /* ScanQrCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanQrCodeView.swift; sourceTree = "<group>"; };
+		A5B74F412BC5F92900299D90 /* KnockOnRoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnockOnRoomView.swift; sourceTree = "<group>"; };
 		A5CC0ACB29D91F7C005935F0 /* Zxcvbn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zxcvbn.swift; sourceTree = "<group>"; };
 		A5CC0ACF29DB7001005935F0 /* BsspekeLoginVerifyForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BsspekeLoginVerifyForm.swift; sourceTree = "<group>"; };
 		A5CF39D42A73299500134969 /* ThreadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadView.swift; sourceTree = "<group>"; };
@@ -744,6 +748,8 @@
 				A562C0912B0BEC2000522FCB /* UsersToInviteView.swift */,
 				A534CC8C2B72EBEE008AFADA /* RoomDebugDetailsSection.swift */,
 				A5B74F3B2BC592EF00299D90 /* RoomDefaultPowerLevelPicker.swift */,
+				A5B74F3F2BC5F8E300299D90 /* ScanQrCodeView.swift */,
+				A5B74F412BC5F92900299D90 /* KnockOnRoomView.swift */,
 			);
 			path = Rooms;
 			sourceTree = "<group>";
@@ -1119,6 +1125,7 @@
 				A520B6792A9410BE002D88C8 /* Movie.swift in Sources */,
 				A5921EB72AFAD5E400C2331D /* CircleFollowingRow.swift in Sources */,
 				A56BE17B2AD6ED4000B15F51 /* ScanQrCodeAndKnockSheet.swift in Sources */,
+				A5B74F422BC5F92900299D90 /* KnockOnRoomView.swift in Sources */,
 				A54A278C2A843C5F00858846 /* InvitedGroupCard.swift in Sources */,
 				A562C0962B165E5C00522FCB /* SubscriptionSettingsView.swift in Sources */,
 				40E4D88A268A76CF0055968A /* SignupScreen.swift in Sources */,
@@ -1153,6 +1160,7 @@
 				A53E91262A5710C5007B0196 /* UpdateDisplaynameView.swift in Sources */,
 				A5D3C9C02A708F1300B41CC0 /* DBPasswordStrengthMeterView.m in Sources */,
 				4C40ED282AA7D06800F58493 /* PeopleInvitationsIndicator.swift in Sources */,
+				A5B74F402BC5F8E300299D90 /* ScanQrCodeView.swift in Sources */,
 				A54346C72A3BA7110025D147 /* PhotosUploadView.swift in Sources */,
 				A5FCF63F29CC9AF8008278B0 /* CircleSpace.swift in Sources */,
 				A51ABE6C2B2B8B0900039276 /* GenericPersonDetailView.swift in Sources */,

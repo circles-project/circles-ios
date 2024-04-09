@@ -1,6 +1,7 @@
 # v1.0.4
 * Show the "Share" sheet when user taps the QR code for a circle/group/gallery
 * Add ability to set default user permissions for your timeline/group/gallery
+* Handle scanning QR code when you already have an invitation
 
 # v1.0.3
 * Bugfix: Ignore invalid config object in account data

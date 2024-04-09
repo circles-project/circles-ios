@@ -20,10 +20,10 @@ struct InvitedGroupCard: View {
             RoomAvatarView(room: room, avatarText: .roomInitials)
                 //.overlay(Circle().stroke(Color.primary, lineWidth: 2))
                 .scaledToFill()
-                .frame(width: 120, height: 120)
+                .frame(width: 110, height: 110)
                 .blur(radius: blur)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
-                .padding()
+                .padding(.trailing, 5)
                 .onTapGesture {
                     if blur >= 5 {
                         blur -= 5
@@ -32,7 +32,7 @@ struct InvitedGroupCard: View {
             
             VStack(alignment: .leading) {
                 Text(room.name ?? "(unnamed group)")
-                    .font(.largeTitle)
+                    .font(.title2)
                     .fontWeight(.bold)
 
                 Text("From:")

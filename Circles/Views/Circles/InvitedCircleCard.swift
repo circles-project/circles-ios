@@ -24,7 +24,7 @@ struct InvitedCircleCard: View {
         HStack(spacing: 1) {
             RoomAvatarView(room: room, avatarText: .none)
                 //.overlay(Circle().stroke(Color.primary, lineWidth: 2))
-                .frame(width: 180, height: 180)
+                .frame(width: 120, height: 120)
                 .scaledToFit()
                 .padding(-15)
                 .blur(radius: blur)
@@ -37,7 +37,7 @@ struct InvitedCircleCard: View {
             
             VStack(alignment: .leading) {
                 Text(room.name ?? "(unnamed circle)")
-                    .font(.largeTitle)
+                    .font(.title2)
                     .fontWeight(.bold)
                 
                 if debugMode {
@@ -106,7 +106,7 @@ struct InvitedCircleCard: View {
                     }
                 }
                 .padding(.top, 5)
-                .padding(.trailing, 10)
+                .padding(.horizontal, 10)
             }
         }
         .onAppear {
