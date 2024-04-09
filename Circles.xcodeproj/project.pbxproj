@@ -161,6 +161,7 @@
 		A5A6A5872B2D0E7C00849B38 /* RoomInviteOneUserSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A6A5862B2D0E7C00849B38 /* RoomInviteOneUserSheet.swift */; };
 		A5A7E228282B06FD001A528D /* ApplicationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A7E227282B06FD001A528D /* ApplicationState.swift */; };
 		A5B74F3C2BC592EF00299D90 /* RoomDefaultPowerLevelPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B74F3B2BC592EF00299D90 /* RoomDefaultPowerLevelPicker.swift */; };
+		A5B74F3E2BC5B9C800299D90 /* PowerLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B74F3D2BC5B9C800299D90 /* PowerLevel.swift */; };
 		A5BECC38280F7A2400B1FCC6 /* KeyboardKit in Frameworks */ = {isa = PBXBuildFile; productRef = A5BECC37280F7A2400B1FCC6 /* KeyboardKit */; };
 		A5CC0ACC29D91F7C005935F0 /* Zxcvbn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CC0ACB29D91F7C005935F0 /* Zxcvbn.swift */; };
 		A5CC0AD029DB7001005935F0 /* BsspekeLoginVerifyForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CC0ACF29DB7001005935F0 /* BsspekeLoginVerifyForm.swift */; };
@@ -383,6 +384,7 @@
 		A5A6A5862B2D0E7C00849B38 /* RoomInviteOneUserSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomInviteOneUserSheet.swift; sourceTree = "<group>"; };
 		A5A7E227282B06FD001A528D /* ApplicationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationState.swift; sourceTree = "<group>"; };
 		A5B74F3B2BC592EF00299D90 /* RoomDefaultPowerLevelPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomDefaultPowerLevelPicker.swift; sourceTree = "<group>"; };
+		A5B74F3D2BC5B9C800299D90 /* PowerLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerLevel.swift; sourceTree = "<group>"; };
 		A5CC0ACB29D91F7C005935F0 /* Zxcvbn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zxcvbn.swift; sourceTree = "<group>"; };
 		A5CC0ACF29DB7001005935F0 /* BsspekeLoginVerifyForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BsspekeLoginVerifyForm.swift; sourceTree = "<group>"; };
 		A5CF39D42A73299500134969 /* ThreadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadView.swift; sourceTree = "<group>"; };
@@ -564,6 +566,7 @@
 				A5A40B6729D60EF3009A17EE /* CirclesConfig.swift */,
 				A52ACB8C2A7824D3005D90C5 /* ProfileSpace.swift */,
 				A56593602AEBE5D30003C244 /* Room+URL.swift */,
+				A5B74F3D2BC5B9C800299D90 /* PowerLevel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1047,6 +1050,7 @@
 				A56593632AF17EF90003C244 /* LegacyLoginScreen.swift in Sources */,
 				40F906BB269DF96100287B27 /* MessageSheetType.swift in Sources */,
 				A54346C32A3B785A0025D147 /* GalleryGridView.swift in Sources */,
+				A5B74F3E2BC5B9C800299D90 /* PowerLevel.swift in Sources */,
 				409F43A7265DE43B00690A61 /* RoomMembersSheet.swift in Sources */,
 				A5F0148229D72371000D57B3 /* EmailEnrollRequestTokenForm.swift in Sources */,
 				A54BA3A928529BE500453D5E /* SetupScreen.swift in Sources */,

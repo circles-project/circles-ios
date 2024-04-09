@@ -25,6 +25,8 @@ struct GroupCreationSheet: View {
     @State var showPicker = false
     @State var selectedItem: PhotosPickerItem?
     
+    @State var defaultPowerLevel = PowerLevel(power: 0)
+    
     @State private var alertTitle: String = ""
     @State private var alertMessage: String = ""
     @State private var showAlert = false
@@ -35,7 +37,8 @@ struct GroupCreationSheet: View {
         guard let roomId = try? await groups.createChild(name: self.groupName,
                                                          type: ROOM_TYPE_GROUP,
                                                          encrypted: true,
-                                                         avatar: self.headerImage),
+                                                         avatar: self.headerImage,
+                                                         userDefaultPower: defaultPowerLevel.power),
               let room = try await groups.session.getRoom(roomId: roomId)
         else {
             // Set error message
@@ -144,6 +147,18 @@ struct GroupCreationSheet: View {
                 .onAppear {
                     self.inputFocused = true
                 }
+            
+            HStack {
+                Text("Default user role")
+                Spacer()
+                Picker("User permissions", selection: $defaultPowerLevel) {
+                    ForEach(CIRCLES_POWER_LEVELS) { level in
+                        Text(level.description)
+                            .tag(level)
+                    }
+                }
+            }
+            .padding(.horizontal)
             
             Spacer()
 

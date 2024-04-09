@@ -90,3 +90,7 @@ let M_RULE_ENCRYPTED_ROOM_ONE_TO_ONE = ".m.rule.encrypted_room_one_to_one"
 let M_RULE_ROOM_ONE_TO_ONE = ".m.rule.room_one_to_one"
 let M_RULE_MESSAGE = ".m.rule.message"
 let M_RULE_ENCRYPTED = ".m.rule.encrypted"
+
+// Power levels
+let CIRCLES_POWER_LEVELS: [PowerLevel] = [-10, 0, 50, 100].map { PowerLevel(power: $0) }
+
