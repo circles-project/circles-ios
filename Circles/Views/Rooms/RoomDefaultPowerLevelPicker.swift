@@ -10,33 +10,7 @@ import Matrix
 
 struct RoomDefaultPowerLevelPicker: View {
     @ObservedObject var room: Matrix.Room
-
-    struct PowerLevel: Identifiable, Equatable, Hashable {
-        var power: Int
         
-        var id: Int {
-            power
-        }
-        
-        var description: String {
-            if power < 0 {
-                return "Can View"
-            } else if power < 50 {
-                return "Can Post"
-            } else if power < 100 {
-                return "Moderator"
-            } else {
-                return "Admin"
-            }
-        }
-        
-        static func ==(lhs: PowerLevel, rhs: PowerLevel) -> Bool {
-            lhs.power == rhs.power
-        }
-    }
-    
-    let levels: [PowerLevel] = [-10, 0, 50, 100].map { PowerLevel(power: $0) }
-    
     @State var selected: PowerLevel
     
     init(room: Matrix.Room) {
@@ -47,7 +21,7 @@ struct RoomDefaultPowerLevelPicker: View {
     
     var body: some View {
         Picker("Default", selection: $selected) {
-            ForEach(levels) { level in
+            ForEach(CIRCLES_POWER_LEVELS) { level in
                 Text(level.description)
                     .tag(level)
             }

@@ -18,6 +18,8 @@ struct PhotoGalleryCreationSheet: View {
     
     @State private var galleryName: String = ""
     @State private var avatarImage: UIImage? = nil
+    
+    @State var defaultPowerLevel = PowerLevel(power: 0)
 
     @State var selectedItem: PhotosPickerItem?
     
@@ -119,6 +121,18 @@ struct PhotoGalleryCreationSheet: View {
                         self.inputFocused = true
                     }
                 
+                HStack {
+                    Text("Default user role")
+                    Spacer()
+                    Picker("User permissions", selection: $defaultPowerLevel) {
+                        ForEach(CIRCLES_POWER_LEVELS) { level in
+                            Text(level.description)
+                                .tag(level)
+                        }
+                    }
+                }
+                .frame(width: 300)
+
                 Spacer()
                 
                 AsyncButton(action: {
