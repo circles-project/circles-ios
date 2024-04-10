@@ -415,8 +415,11 @@ struct MessageCard: MessageView {
         VStack {
             //Spacer()
             let allReactionCounts = self.message.reactions
-                .mapValues {
-                    $0.count
+                .mapValues { userIds in
+                    userIds.filter {
+                        !self.message.room.session.ignoredUserIds.contains($0)
+                    }
+                    .count
                 }
                 .filter { (key,value) in
                     value > 0

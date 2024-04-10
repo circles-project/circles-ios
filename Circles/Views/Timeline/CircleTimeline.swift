@@ -91,7 +91,16 @@ struct CircleTimeline: View {
         return userPower > 50
         */
         
-        return message.sender.userId == message.room.creator
+        if message.sender.userId != message.room.creator {
+            return false
+        }
+        
+        // Omit ignored senders
+        if message.room.session.ignoredUserIds.contains(message.sender.userId) {
+            return false
+        }
+        
+        return true
     }
     
     var body: some View {

@@ -84,7 +84,10 @@ struct TimelineView<V: MessageView>: View {
         let now = Date()
         let cutoff = now.addingTimeInterval(300.0)
         let messages = room.timeline.values.filter { (message) in
-            message.relatedEventId == nil && message.replyToEventId == nil && message.timestamp < cutoff
+            message.relatedEventId == nil &&
+            message.replyToEventId == nil &&
+            message.timestamp < cutoff &&
+            !message.room.session.ignoredUserIds.contains(message.sender.userId)
         }.sorted(by: {$0.timestamp > $1.timestamp})
 
         ScrollView {
