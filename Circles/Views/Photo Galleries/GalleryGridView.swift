@@ -102,23 +102,23 @@ struct GalleryGridView: View {
         let cutoff = now.addingTimeInterval(300.0)  // Don't show messages claiming to be from the future
         let messages = room.timeline.values.filter { (message) in
             //message.relatedEventId == nil && message.replyToEventId == nil
-
-            // Allow events that fail decryption to be displayed to the user
-            if message.type == M_ROOM_ENCRYPTED {
-                return true
-            }
             
             guard message.relatedEventId == nil,
                   message.replyToEventId == nil,
                   message.type == M_ROOM_MESSAGE,
                   let content = message.content as? Matrix.MessageContent,
-                  supportedMessageTypes.contains(content.msgtype)
+                  supportedMessageTypes.contains(content.msgtype) || message.type == M_ROOM_ENCRYPTED
             else {
                 return false
             }
             
             guard message.timestamp < cutoff
             else {
+                return false
+            }
+            
+            // Omit messages from ignored users
+            if message.room.session.ignoredUserIds.contains(message.sender.userId) {
                 return false
             }
             

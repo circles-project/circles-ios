@@ -20,8 +20,14 @@ struct RepliesView: View {
             let now = Date()
             let cutoff = now.addingTimeInterval(300.0)
             let allMessages = parent.replies.values
-            let messages = allMessages.filter { $0.timestamp < cutoff } // Filter out messages claiming to be from the future
-                                      .sorted { $0.timestamp < $1.timestamp }
+            let messages = allMessages.filter {
+                $0.timestamp < cutoff  &&                                     // Filter out messages claiming to be from the future
+                !$0.room.session.ignoredUserIds.contains($0.sender.userId)    // Filter out messages from ignored users
+            }
+            .sorted {
+                $0.timestamp < $1.timestamp
+            }
+            
             if messages.isEmpty {
                 if debugMode {
                     HStack {
