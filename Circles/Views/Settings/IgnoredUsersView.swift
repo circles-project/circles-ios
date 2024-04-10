@@ -9,11 +9,11 @@ import SwiftUI
 import Matrix
 
 struct IgnoredUsersView: View {
-    var session: Matrix.Session
+    @ObservedObject var session: Matrix.Session
     
     var body: some View {
-        VStack {
-            ScrollView {
+        Form {
+            Section("Ignored Users") {
                 let ignored = session.ignoredUserIds
                 if ignored.isEmpty {
                     Text("Not ignoring any users")
@@ -21,14 +21,25 @@ struct IgnoredUsersView: View {
                 } else {
                     ForEach(ignored) { userId in
                         let user = session.getUser(userId: userId)
-                        MessageAuthorHeader(user: user)
-                            .contextMenu {
-                                AsyncButton(action: {
-                                    try await user.session.unignoreUser(userId: user.userId)
-                                }) {
-                                    Label("Un-ignore user", systemImage: "person.wave.2.fill")
-                                }
+                        
+                        HStack {
+                            UserAvatarView(user: user)
+                                .clipShape(RoundedRectangle(cornerRadius: 6))
+                                .frame(width: 60, height: 60)
+                            VStack(alignment: .leading) {
+                                UserNameView(user: user)
+                                Text(user.userId.stringValue)
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray)
                             }
+                            Spacer()
+                            AsyncButton(action: {
+                                try await user.session.unignoreUser(userId: user.userId)
+                            }) {
+                                Image(systemName: "trash")
+                                    .foregroundColor(.red)
+                            }
+                        }
                     }
                 }
             }
