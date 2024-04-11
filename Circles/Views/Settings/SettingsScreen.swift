@@ -50,6 +50,10 @@ struct SettingsScreen: View {
                         }
                     }
                     
+                    NavigationLink(destination: StorageSettingsView(session: session.matrix)) {
+                        Label("Storage", systemImage: "folder.fill")
+                    }
+                    
                     NavigationLink(destination: NotificationsSettingsView(store: store, matrix: session.matrix)) {
                         Label("Notifications", systemImage: "bell.fill")
                     }
