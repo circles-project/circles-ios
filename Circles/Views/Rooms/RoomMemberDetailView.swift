@@ -52,11 +52,12 @@ struct RoomMemberDetailView: View {
         Section("Power level") {
         
             Picker("Role", selection: $selectedPower) {
-                let availableRoles = roles.filter { key,value in
-                    key <= myPowerLevel
+                let availableLevels = CIRCLES_POWER_LEVELS.filter { level in
+                    level.power <= myPowerLevel
                 }
-                ForEach(availableRoles, id: \.key) { key,value in
-                    Text(value)
+                ForEach(availableLevels) { level in
+                    Text(level.description)
+                        .tag(level)
                 }
             }
             .onChange(of: selectedPower) { newPower in
@@ -309,7 +310,9 @@ struct RoomMemberDetailView: View {
                 let myPowerLevel = room.myPowerLevel
                 
                 if power <= myPowerLevel {
-                    powerLevelSection
+                    if room.iCanChangeState(type: M_ROOM_POWER_LEVELS) {
+                        powerLevelSection
+                    }
                     
                     moderationSection
                 }
