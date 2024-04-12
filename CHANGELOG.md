@@ -3,6 +3,7 @@
 * Add ability to set default user permissions for your timeline/group/gallery
 * Handle scanning QR code when you already have an invitation
 * Always hide posts, photos, and reactions from ignored users
+* Add the ability to see posts from a single timeline that you're following
 
 # v1.0.3
 * Bugfix: Ignore invalid config object in account data
