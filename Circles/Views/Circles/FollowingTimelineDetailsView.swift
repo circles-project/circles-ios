@@ -39,7 +39,7 @@ struct FollowingTimelineDetailsView: View {
                         RoomAvatarView(room: room, avatarText: .none)
                             .frame(width: 120, height: 120)
                             .clipShape(RoundedRectangle(cornerRadius: 4))
-
+                        
                     }
                     
                     if room.joinRule == .knock,
@@ -55,7 +55,16 @@ struct FollowingTimelineDetailsView: View {
                                 .frame(width: 80, height: 80)
                         }
                     }
+                    
                 }
+                
+                Section("Timeline") {
+                    NavigationLink(destination: SingleTimelineView(room: room)) {
+                        Text("See posts from this timeline")
+                    }
+                }
+                
+
                 
                 Section("Followers") {
                     let followerIds = room.joinedMembers.filter { $0 != user.userId }

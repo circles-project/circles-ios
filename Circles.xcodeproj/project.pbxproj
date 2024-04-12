@@ -201,6 +201,7 @@
 		A5F2E95C2A4497E30097DBF8 /* UiaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F2E95B2A4497E30097DBF8 /* UiaView.swift */; };
 		A5FB06E32A681079002C5B88 /* CircleInvitationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FB06E22A681079002C5B88 /* CircleInvitationsView.swift */; };
 		A5FB06E52A6814A8002C5B88 /* InvitedCircleCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FB06E42A6814A8002C5B88 /* InvitedCircleCard.swift */; };
+		A5FB4B162BC9C71C00253A22 /* SingleTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FB4B152BC9C71C00253A22 /* SingleTimelineView.swift */; };
 		A5FCF63B29CB8C95008278B0 /* ContainerRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FCF63A29CB8C95008278B0 /* ContainerRoom.swift */; };
 		A5FCF63D29CC9ABE008278B0 /* PersonRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FCF63C29CC9ABE008278B0 /* PersonRoom.swift */; };
 		A5FCF63F29CC9AF8008278B0 /* CircleSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FCF63E29CC9AF8008278B0 /* CircleSpace.swift */; };
@@ -436,6 +437,7 @@
 		A5F2E95B2A4497E30097DBF8 /* UiaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiaView.swift; sourceTree = "<group>"; };
 		A5FB06E22A681079002C5B88 /* CircleInvitationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleInvitationsView.swift; sourceTree = "<group>"; };
 		A5FB06E42A6814A8002C5B88 /* InvitedCircleCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitedCircleCard.swift; sourceTree = "<group>"; };
+		A5FB4B152BC9C71C00253A22 /* SingleTimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleTimelineView.swift; sourceTree = "<group>"; };
 		A5FCF63A29CB8C95008278B0 /* ContainerRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerRoom.swift; sourceTree = "<group>"; };
 		A5FCF63C29CC9ABE008278B0 /* PersonRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonRoom.swift; sourceTree = "<group>"; };
 		A5FCF63E29CC9AF8008278B0 /* CircleSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleSpace.swift; sourceTree = "<group>"; };
@@ -623,6 +625,7 @@
 				A521C3F42A6889C00051ED88 /* InvitedCircleDetailView.swift */,
 				A5921EB42AFAAE8200C2331D /* SimpleCircleAvatar.swift */,
 				A51ABE692B2B7E2000039276 /* FollowingTimelineDetailsView.swift */,
+				A5FB4B152BC9C71C00253A22 /* SingleTimelineView.swift */,
 			);
 			path = Circles;
 			sourceTree = "<group>";
@@ -1150,6 +1153,7 @@
 				409F4341265DE17500690A61 /* GroupTimelineScreen.swift in Sources */,
 				A55F367529EEE7EA00F46971 /* PhotoDetailView.swift in Sources */,
 				A5FCF64329CC9B4F008278B0 /* GalleryRoom.swift in Sources */,
+				A5FB4B162BC9C71C00253A22 /* SingleTimelineView.swift in Sources */,
 				A5F0148629D75899000D57B3 /* UsernameEnrollForm.swift in Sources */,
 				409F43BA265DE51C00690A61 /* RoomInviteSheet.swift in Sources */,
 				A52FEBFD2862521F00AE4E3A /* CirclesApplicationSession.swift in Sources */,
