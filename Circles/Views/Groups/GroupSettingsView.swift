@@ -62,8 +62,10 @@ struct GroupSettingsView: View {
             Text("Created by")
                 .badge(creator.displayName ?? creator.userId.stringValue)
             
-            Text("Topic")
-                .badge(room.topic ?? "(none)")
+            NavigationLink(destination: RoomTopicEditorView(room: room)) {
+                Text("Topic")
+                    .badge(room.topic ?? "(none)")
+            }
             
             if debugMode {
                 Text("Matrix roomId")
