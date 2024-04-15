@@ -152,29 +152,40 @@ struct DeviceDetailsView: View {
             keysSection
             
             if device.userId == session.creds.userId.stringValue {
-                Section("Delete") {
-                    Button(role: .destructive, action: {
-                        isConfirmingDelete = true
-                    }) {
-                        Text("Delete Session")
-                    }
-                    .confirmationDialog(
-                        "Are you sure you want to delete this session?",
-                        isPresented: $isConfirmingDelete,
-                        presenting: device.displayName ?? device.deviceId,
-                        actions: { deviceName in
-                            AsyncButton(role: .destructive, action: {
-                                try await session.deleteDevice(deviceId: device.deviceId) { (_,_) in
-                                    self.presentation.wrappedValue.dismiss()
-                                }
-                            }) {
-                                Text("Delete session \(deviceName)")
-                            }
-                        },
-                        message: { deviceName in
-                            
-                        })
+                
+                if device.deviceId == session.creds.deviceId {
+                    // This is our current device.  To delete it is to log out
+                } else {
                     
+                    Section("Delete") {
+                        Button(role: .destructive, action: {
+                            isConfirmingDelete = true
+                        }) {
+                            Text("Delete Session")
+                        }
+                        .confirmationDialog(
+                            "Are you sure you want to delete this session?",
+                            isPresented: $isConfirmingDelete,
+                            presenting: device.displayName ?? device.deviceId,
+                            actions: { deviceName in
+                                AsyncButton(role: .destructive, action: {
+                                    do {
+                                        try await session.deleteDevice(deviceId: device.deviceId) { (_,_) in
+                                            print("Successfully deleted device \(device.deviceId)")
+                                            self.presentation.wrappedValue.dismiss()
+                                        }
+                                    } catch {
+                                        print("Failed to delete device \(device.deviceId)")
+                                    }
+                                }) {
+                                    Text("Delete session \(deviceName)")
+                                }
+                            },
+                            message: { deviceName in
+                                
+                            })
+                        
+                    }
                 }
             }
         }
