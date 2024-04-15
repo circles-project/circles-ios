@@ -55,7 +55,8 @@ struct RoomCircleAvatar: View {
 
                         return acc + Int(asciiValue)
                     })
-                    let colors = [Color.blue, Color.purple, Color.orange, Color.yellow, Color.red, Color.pink, Color.green]
+                    //let colors = [Color.blue, Color.purple, Color.orange, Color.yellow, Color.red, Color.pink, Color.green]
+                    let colors = CIRCLES_COLORS
                     let color = colors[colorChoice % colors.count]
                     
                     let userId = room.creator

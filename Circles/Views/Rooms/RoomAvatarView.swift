@@ -54,7 +54,8 @@ struct RoomAvatarView<Room>: View where Room: BasicRoomProtocol {
 
                         return acc + Int(asciiValue)
                     })
-                    let colors = [Color.blue, Color.purple, Color.orange, Color.yellow, Color.red, Color.pink, Color.green]
+                    //let colors = [Color.blue, Color.purple, Color.orange, Color.yellow, Color.red, Color.pink, Color.green]
+                    let colors = CIRCLES_COLORS
                     let color = colors[colorChoice % colors.count]
 
                     RoundedRectangle(cornerSize: CGSize())

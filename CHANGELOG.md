@@ -11,6 +11,7 @@
 * Reduce size of the circle avatar, so "Community" fits on one line on iPad
 * Add ability to rename circles, groups, and galleries
 * Add ability to change group topic
+* Change default avatar colors, for greater contrast with UI controls
 
 # v1.0.3
 * Bugfix: Ignore invalid config object in account data

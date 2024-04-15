@@ -9,6 +9,7 @@
 // swiftlint:disable identifier_name
 
 import Foundation
+import SwiftUI
 
 let APP_PREFIX = "org.futo"
 
@@ -94,3 +95,15 @@ let M_RULE_ENCRYPTED = ".m.rule.encrypted"
 // Power levels
 let CIRCLES_POWER_LEVELS: [PowerLevel] = [-10, 0, 50, 100].map { PowerLevel(power: $0) }
 
+// Colors for the UI
+let CIRCLES_COLORS = [
+    // From circles-logo-dark.svg
+    Color(rgba: 0xffff00ff), // Yellow
+    Color(rgba: 0xda70d6ff), // Purple / Fuchsia
+    Color(rgba: 0x7afb7aff), // Green (made darker to look better in the app)
+    Color(rgba: 0xfa8072ff), // Red / Salmon
+    Color(rgba: 0x87ceebff), // Blue
+    // Additional colors to provide more variety
+    Color(rgba: 0xfaaf72ff), // Orange
+    Color(rgba: 0xfa72a4ff), // Pink
+]
