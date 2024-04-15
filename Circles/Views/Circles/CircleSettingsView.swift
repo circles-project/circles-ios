@@ -28,8 +28,14 @@ struct CircleSettingsView: View {
     @ViewBuilder
     var generalSection: some View {
         Section("General") {
-            Text("Circle name")
-                .badge(space.name ?? "(none)")
+            HStack {
+                Text("Circle name")
+                Spacer()
+                Text(space.name ?? "(none)")
+                    .lineLimit(4)
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: 200)
+            }
             
             HStack {
                 Text("Cover image")

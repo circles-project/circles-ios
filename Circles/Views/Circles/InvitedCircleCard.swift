@@ -37,6 +37,8 @@ struct InvitedCircleCard: View {
             
             VStack(alignment: .leading) {
                 Text(room.name ?? "(unnamed circle)")
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
                     .font(.title2)
                     .fontWeight(.bold)
                 

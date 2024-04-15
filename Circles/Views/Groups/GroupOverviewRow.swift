@@ -26,6 +26,8 @@ struct GroupOverviewRow: View {
             VStack(alignment: .leading) {
                 HStack(alignment: .center, spacing: 3) {
                     Text(room.name ?? room.id)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(.primary)

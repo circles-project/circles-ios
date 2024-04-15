@@ -25,8 +25,14 @@ struct GroupSettingsView: View {
     @ViewBuilder
     var generalSection: some View {
         Section("General") {
-            Text("Group name")
-                .badge(room.name ?? "(none)")
+            HStack {
+                Text("Group name")
+                Spacer()
+                Text(room.name ?? "(none)")
+                    .lineLimit(4)
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: 200)
+            }
             
             HStack {
                 Text("Cover image")

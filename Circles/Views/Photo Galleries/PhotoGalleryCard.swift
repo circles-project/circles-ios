@@ -61,6 +61,8 @@ struct PhotoGalleryCard: View {
                 }
                 
                 Text(room.name ?? "")
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
                     .font(.title)
                     .fontWeight(.bold)
 

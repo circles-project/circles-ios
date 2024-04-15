@@ -83,6 +83,8 @@ struct RoomAvatarView<Room>: View where Room: BasicRoomProtocol {
                         }
                         else {
                             Text(name)
+                                .lineLimit(3)
+                                .multilineTextAlignment(.leading)
                                 .font(.title)
                                 .fontWeight(.bold)
                                 .foregroundColor(.white)

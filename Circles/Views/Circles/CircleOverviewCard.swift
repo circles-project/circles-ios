@@ -26,6 +26,8 @@ struct CircleOverviewCard: View {
                 VStack(alignment: .leading) {
                     HStack {
                         Text(space.name ?? "(unnamed circle)")
+                            .lineLimit(2)
+                            .multilineTextAlignment(.leading)
                             .font(.title2)
                             .fontWeight(.bold)
                             .foregroundColor(.primary)

@@ -32,6 +32,8 @@ struct InvitedGroupCard: View {
             
             VStack(alignment: .leading) {
                 Text(room.name ?? "(unnamed group)")
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
                     .font(.title2)
                     .fontWeight(.bold)
 
