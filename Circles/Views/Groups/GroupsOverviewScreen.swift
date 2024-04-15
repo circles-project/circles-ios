@@ -23,10 +23,7 @@ struct GroupsOverviewScreen: View {
     @ObservedObject var container: ContainerRoom<GroupRoom>
     @State var sheetType: GroupsSheetType?
     @AppStorage("showGroupsHelpText") var showHelpText = true
-    
-    @State var showConfirmLeave = false
-    @State var roomToLeave: GroupRoom?
-    
+        
     @State var invitations: [Matrix.InvitedRoom] = []
     
     //@State var selectedRoom: Matrix.Room?
@@ -62,14 +59,6 @@ struct GroupsOverviewScreen: View {
                                 .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
-                        .contextMenu {
-                            Button(role: .destructive, action: {
-                                self.showConfirmLeave = true
-                                self.roomToLeave = room
-                            }) {
-                                Label("Leave group", systemImage: "xmark.bin")
-                            }
-                        }
                     }
                 }
                 .listStyle(.plain)
@@ -158,17 +147,7 @@ struct GroupsOverviewScreen: View {
                 }
             }
         }
-        .confirmationDialog(Text("Confirm Leaving Group"),
-                            isPresented: $showConfirmLeave,
-                            actions: { //rm in
-                                if let room = self.roomToLeave {
-                                    AsyncButton(role: .destructive, action: {
-                                        try await container.leaveChild(room.roomId)
-                                    }) {
-                                        Text("Leave \(room.name ?? "this group")")
-                                    }
-                                }
-                            })
+
         .sheet(item: $sheetType) { st in
             // Figure out what kind of sheet we need
             switch(st) {
