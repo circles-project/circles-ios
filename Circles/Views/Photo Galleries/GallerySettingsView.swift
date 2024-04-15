@@ -165,6 +165,16 @@ struct GallerySettingsView: View {
                 }
             }
             
+            let banned = room.bannedMembers
+            if !banned.isEmpty {
+                Section("Banned Members") {
+                    ForEach(banned) { userId in
+                        let user = room.session.getUser(userId: userId)
+                        BannedRoomMemberRow(user: user, room: room)
+                    }
+                }
+            }
+            
             if debugMode {
                 RoomDebugDetailsSection(room: room)
             }

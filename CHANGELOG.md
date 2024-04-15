@@ -7,6 +7,7 @@
 * Bugfix: Enable deleting other login sessions, but not the current one
 * Bugfix: Display the "Leave Group?" confirmation next to the group to leave
 * Bugfix: Prevent circle/group/gallery names overflowing their visual space
+* Add the ability to un-ban users from circles, groups, and galleries
 
 # v1.0.3
 * Bugfix: Ignore invalid config object in account data

@@ -148,6 +148,17 @@ struct CircleSettingsView: View {
                     }
                 }
             }
+            
+            let banned = wall.bannedMembers
+            if !banned.isEmpty {
+                Section("Banned Followers") {
+                    ForEach(banned) { userId in
+                        let user = wall.session.getUser(userId: userId)
+                        BannedRoomMemberRow(user: user, room: wall)
+                    }
+                }
+            }
+            
         }
     }
     
