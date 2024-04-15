@@ -8,6 +8,7 @@
 * Bugfix: Display the "Leave Group?" confirmation next to the group to leave
 * Bugfix: Prevent circle/group/gallery names overflowing their visual space
 * Add the ability to un-ban users from circles, groups, and galleries
+* Reduce size of the circle avatar, so "Community" fits on one line on iPad
 
 # v1.0.3
 * Bugfix: Ignore invalid config object in account data

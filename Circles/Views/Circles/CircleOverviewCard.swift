@@ -21,7 +21,7 @@ struct CircleOverviewCard: View {
             HStack(alignment: .center) {
                 
                 avatar
-                    .frame(width: 120, height: 120)
+                    .frame(width: 100, height: 100)
                 
                 VStack(alignment: .leading) {
                     HStack {
