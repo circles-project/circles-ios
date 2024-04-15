@@ -43,3 +43,16 @@ func b64decode(_ str: String) -> [UInt8]? {
     let array = [UInt8](data)
     return array
 }
+
+func abbreviate(_ input: String?) -> String {
+    guard let string = input
+    else {
+        return "(none)"
+    }
+    
+    if string.count < 23 {
+        return string
+    } else {
+        return String("\(string.prefix(20))...")
+    }
+}

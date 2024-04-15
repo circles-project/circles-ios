@@ -25,13 +25,9 @@ struct GallerySettingsView: View {
     @ViewBuilder
     var generalSection: some View {
         Section("General") {
-            HStack {
+            NavigationLink(destination: RoomRenameView(room: room)) {
                 Text("Gallery name")
-                Spacer()
-                Text(room.name ?? "(none)")
-                    .lineLimit(4)
-                    .multilineTextAlignment(.leading)
-                    .frame(maxWidth: 200)
+                    .badge(abbreviate(room.name))
             }
             
             HStack {

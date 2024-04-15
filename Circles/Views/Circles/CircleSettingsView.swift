@@ -28,13 +28,9 @@ struct CircleSettingsView: View {
     @ViewBuilder
     var generalSection: some View {
         Section("General") {
-            HStack {
+            NavigationLink(destination: CircleRenameView(space: space)) {
                 Text("Circle name")
-                Spacer()
-                Text(space.name ?? "(none)")
-                    .lineLimit(4)
-                    .multilineTextAlignment(.leading)
-                    .frame(maxWidth: 200)
+                    .badge(abbreviate(space.name))
             }
             
             HStack {
