@@ -744,9 +744,13 @@
 		409F43A4265DE41000690A61 /* Rooms */ = {
 			isa = PBXGroup;
 			children = (
+				A51928B22BCDAE38005DCFF4 /* BannedRoomMemberRow.swift */,
 				A56BE1752AD5D0E900B15F51 /* KnockingUserCard.swift */,
+				A5B74F412BC5F92900299D90 /* KnockOnRoomView.swift */,
 				A52DF68029E59A81008860C3 /* RoomAvatarView.swift */,
 				A553303E2B65689700695436 /* RoomCryptoInfoView.swift */,
+				A534CC8C2B72EBEE008AFADA /* RoomDebugDetailsSection.swift */,
+				A5B74F3B2BC592EF00299D90 /* RoomDefaultPowerLevelPicker.swift */,
 				A5921EB82AFAD7F000C2331D /* RoomInvitedMemberRow.swift */,
 				A5A6A5862B2D0E7C00849B38 /* RoomInviteOneUserSheet.swift */,
 				409F43B9265DE51C00690A61 /* RoomInviteSheet.swift */,
@@ -756,17 +760,13 @@
 				A53E2E712A74616400B75CDD /* RoomMemberRow.swift */,
 				A5EB046C2AFB306B00CC7A6C /* RoomMembersSection.swift */,
 				409F43A5265DE43B00690A61 /* RoomMembersSheet.swift */,
+				A51928B42BCDB56D005DCFF4 /* RoomRenameView.swift */,
 				409F43A6265DE43B00690A61 /* RoomSecurityInfoSheet.swift */,
 				A56BE17C2AD700E100B15F51 /* RoomShareSheet.swift */,
-				A56BE17A2AD6ED4000B15F51 /* ScanQrCodeAndKnockSheet.swift */,
-				A562C0912B0BEC2000522FCB /* UsersToInviteView.swift */,
-				A534CC8C2B72EBEE008AFADA /* RoomDebugDetailsSection.swift */,
-				A5B74F3B2BC592EF00299D90 /* RoomDefaultPowerLevelPicker.swift */,
-				A5B74F3F2BC5F8E300299D90 /* ScanQrCodeView.swift */,
-				A5B74F412BC5F92900299D90 /* KnockOnRoomView.swift */,
-				A51928B22BCDAE38005DCFF4 /* BannedRoomMemberRow.swift */,
-				A51928B42BCDB56D005DCFF4 /* RoomRenameView.swift */,
 				A51928B82BCDCA6B005DCFF4 /* RoomTopicEditorView.swift */,
+				A56BE17A2AD6ED4000B15F51 /* ScanQrCodeAndKnockSheet.swift */,
+				A5B74F3F2BC5F8E300299D90 /* ScanQrCodeView.swift */,
+				A562C0912B0BEC2000522FCB /* UsersToInviteView.swift */,
 			);
 			path = Rooms;
 			sourceTree = "<group>";

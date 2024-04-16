@@ -20,7 +20,10 @@ struct ScanQrCodeAndKnockSheet: View {
             if let roomId = roomId {
                 if let room = session.invitations[roomId] {
                     
-                    Text("You have an invitation already!")
+                    Spacer()
+                    
+                    Text("You already have an invitation!")
+                        .font(.title2)
                     
                     Spacer()
                     
@@ -28,12 +31,15 @@ struct ScanQrCodeAndKnockSheet: View {
                     switch room.type {
                     case ROOM_TYPE_CIRCLE:
                         InvitedCircleCard(room: room, user: user, container: app.circles)
+                            .frame(maxWidth: 400)
                     case ROOM_TYPE_GROUP:
                         InvitedGroupCard(room: room, user: user, container: app.groups)
+                            .frame(maxWidth: 400)
                     case ROOM_TYPE_PHOTOS:
                         GalleryInviteCard(room: room, user: user, container: app.galleries)
+                            .frame(maxWidth: 400)
                     default:
-                        EmptyView()
+                        Label("This invitation does not look like it is for use with Circles", systemImage: "exclamationmark.triangle.fill")
                     }
                     
                     Spacer()
