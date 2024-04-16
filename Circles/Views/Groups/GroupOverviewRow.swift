@@ -47,8 +47,8 @@ struct GroupOverviewRow: View {
                     
                     let knockCount = room.knockingMembers.count
                     if room.iCanInvite && room.iCanKick && knockCount > 0 {
-                        let color = Color(light: .accentColor, dark: .white)
-                        Label("\(knockCount) requests for invitations", systemImage: "star.fill")
+                        let color = Color(light: .blue, dark: .white)
+                        Label("\(knockCount) request(s) for invitation", systemImage: "star.fill")
                             .foregroundColor(color)
                     }
                     
