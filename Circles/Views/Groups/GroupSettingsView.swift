@@ -22,6 +22,28 @@ struct GroupSettingsView: View {
     @State var showInviteSheet = false
     @State var showShareSheet = false
     
+    let users: [UserId]
+    let admins: [UserId]
+    let mods: [UserId]
+    let members: [UserId]
+    
+    init(room: GroupRoom, container: ContainerRoom<GroupRoom>) {
+        self.room = room
+        self.container = container
+        
+        self.users = room.joinedMembers
+        self.admins = users.filter { userId in
+            room.getPowerLevel(userId: userId) >= 100
+        }
+        self.mods = users.filter { userId in
+            let power = room.getPowerLevel(userId: userId)
+            return power < 100 && power >= 50
+        }
+        self.members = users.filter { userId in
+            room.getPowerLevel(userId: userId) < 50
+        }
+    }
+    
     @ViewBuilder
     var generalSection: some View {
         Section("General") {
@@ -117,18 +139,6 @@ struct GroupSettingsView: View {
             
             sharingSection
             
-            let users = room.joinedMembers
-            let admins = users.filter { userId in
-                room.getPowerLevel(userId: userId) >= 100
-            }
-            let mods = users.filter { userId in
-                let power = room.getPowerLevel(userId: userId)
-                return power < 100 && power >= 50
-            }
-            let members = users.filter { userId in
-                room.getPowerLevel(userId: userId) < 50
-            }
-            
             if !admins.isEmpty {
                 RoomMembersSection(title: "Administrators",
                                    users: admins,
@@ -189,6 +199,12 @@ struct GroupSettingsView: View {
             }
             
             Section("Danger Zone") {
+                
+                let powerUsers = admins + mods
+                // Are we the only user with mod powers?
+                let iAmTheOnlyMod: Bool = powerUsers.contains(room.session.creds.userId) && powerUsers.count == 1
+
+                
                 Button(role: .destructive, action: {
                     self.showConfirmLeave = true
                 }) {
@@ -197,18 +213,46 @@ struct GroupSettingsView: View {
                 }
                 .confirmationDialog(
                     "Confirm leaving group",
-                    isPresented: $showConfirmLeave
-                ) {
-                    AsyncButton(role: .destructive, action: {
-                        
-                        // FIXME: Sanity check - Are we leaving the room unmoderated?  Don't do that.
-                        
-                        try await container.leaveChild(room.roomId)
-                        self.presentation.wrappedValue.dismiss()
-                    }) {
-                        Text("Leave \"\(room.name ?? "this group")\"")
+                    isPresented: $showConfirmLeave,
+                    actions: {
+                        if iAmTheOnlyMod {
+                            // If so then we can't just up and leave, or the room will become unmoderated
+                            
+                            AsyncButton(role: .destructive, action: {
+                                try await room.close(kickEveryone: false)
+                            }) {
+                                Label("Archive the group and preserve old posts", systemImage: "archivebox")
+                            }
+                            
+                            AsyncButton(role: .destructive, action: {
+                                try await room.close(kickEveryone: true)
+                            }) {
+                                Label("Remove all members and delete the group", systemImage: "trash")
+                            }
+                            
+                        } else {
+                            // Otherwise no worries we can leave whenever without a problem
+                            
+                            AsyncButton(role: .destructive, action: {
+                                
+                                // FIXME: Sanity check - Are we leaving the room unmoderated?  Don't do that.
+                                
+                                try await container.leaveChild(room.roomId)
+                                self.presentation.wrappedValue.dismiss()
+                            }) {
+                                Text("Leave \"\(room.name ?? "this group")\"")
+                            }
+                        }
+                    },
+                    message: {
+                        if iAmTheOnlyMod {
+                            Text("You are the only user with moderator power. If you leave, the group will be closed to new posts.")
+                        } else {
+                            Text("Really leave \(room.name ?? "this group")?")
+                        }
                     }
-                }
+                )
+                
             }
         }
         .navigationTitle("Group Settings")
