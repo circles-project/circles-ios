@@ -16,6 +16,7 @@
 * Prevent demoting yourself when you are the only moderator
 * Enable uploading and playing videos in photo galleries
 * Show an alert when uploading media to gallery fails
+* Add "x" to remove previous user ids from the login screen
 
 # v1.0.3
 * Bugfix: Ignore invalid config object in account data

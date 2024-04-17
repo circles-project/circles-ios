@@ -149,10 +149,17 @@ struct WelcomeScreen: View {
                 
                 if !previousUserIds.isEmpty {
 
-                    List {
-                        Section("Log in again") {
-                            ForEach(previousUserIds) { userId in
-                                
+                    VStack {
+                        HStack {
+                            Text("Log in again")
+                                .font(.body.smallCaps())
+                                .foregroundColor(.gray)
+                                .padding(.leading)
+                            Spacer()
+                        }
+                        ForEach(previousUserIds) { userId in
+                            
+                            HStack {
                                 AsyncButton(action: {
                                     try await store.login(userId: userId, filter: loginFilter)
                                     await MainActor.run {
@@ -160,32 +167,30 @@ struct WelcomeScreen: View {
                                     }
                                 }) {
                                     Text(userId.stringValue)
+                                        .lineLimit(1)
                                 }
                                 //.buttonStyle(.bordered)
-
+                                
+                                Spacer()
+                                
+                                Button(action: {
+                                    let otherUserIds = previousUserIds.filter { $0 != userId }
+                                    self.previousUserIds = otherUserIds
+                                }) {
+                                    Image(systemName: "xmark")
+                                }
                             }
-                            .onDelete { offsets in
-                                //print("Deleting entries at offsets: \(offsets)")
-                                var tmp = previousUserIds
-                                //print("Original tmp = \(tmp)")
-                                tmp.remove(atOffsets: offsets)
-                                //print("Modified tmp = \(tmp)")
-                                self.previousUserIds = tmp
-                            }
-                            .listRowBackground(
+                            .padding()
+                            .background {
                                 Capsule()
-                                    .fill(Color.tertiaryBackground.opacity(0.50))
-                                    .padding(1)
-                            )
-                            .listRowSeparator(.hidden)
-
+                                    .fill(Color.accentColor.opacity(0.30))
+                                    //.padding(1)
+                            }
+                            .font(.caption)
                         }
-                        
                     }
-                    .listStyle(.insetGrouped)
-                    .scrollContentBackground(.hidden)
-                    .frame(maxWidth: 350)
-                    .padding(.top)
+                    .frame(maxWidth: 300)
+
 
                 }
                 
