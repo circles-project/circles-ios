@@ -172,6 +172,7 @@
 		A5BB4EEF2BD02C2A001FD0D8 /* VideoThumbnailCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB4EEE2BD02C2A001FD0D8 /* VideoThumbnailCard.swift */; };
 		A5BB4EF12BD02D26001FD0D8 /* VideoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB4EF02BD02D26001FD0D8 /* VideoDetailView.swift */; };
 		A5BB4EF32BD02FD7001FD0D8 /* VideoContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB4EF22BD02FD7001FD0D8 /* VideoContentView.swift */; };
+		A5BB4EF92BD04D63001FD0D8 /* MutualFriendsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB4EF82BD04D63001FD0D8 /* MutualFriendsSection.swift */; };
 		A5BECC38280F7A2400B1FCC6 /* KeyboardKit in Frameworks */ = {isa = PBXBuildFile; productRef = A5BECC37280F7A2400B1FCC6 /* KeyboardKit */; };
 		A5CC0ACC29D91F7C005935F0 /* Zxcvbn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CC0ACB29D91F7C005935F0 /* Zxcvbn.swift */; };
 		A5CC0AD029DB7001005935F0 /* BsspekeLoginVerifyForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CC0ACF29DB7001005935F0 /* BsspekeLoginVerifyForm.swift */; };
@@ -406,6 +407,7 @@
 		A5BB4EEE2BD02C2A001FD0D8 /* VideoThumbnailCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoThumbnailCard.swift; sourceTree = "<group>"; };
 		A5BB4EF02BD02D26001FD0D8 /* VideoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoDetailView.swift; sourceTree = "<group>"; };
 		A5BB4EF22BD02FD7001FD0D8 /* VideoContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoContentView.swift; sourceTree = "<group>"; };
+		A5BB4EF82BD04D63001FD0D8 /* MutualFriendsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutualFriendsSection.swift; sourceTree = "<group>"; };
 		A5CC0ACB29D91F7C005935F0 /* Zxcvbn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zxcvbn.swift; sourceTree = "<group>"; };
 		A5CC0ACF29DB7001005935F0 /* BsspekeLoginVerifyForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BsspekeLoginVerifyForm.swift; sourceTree = "<group>"; };
 		A5CF39D42A73299500134969 /* ThreadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadView.swift; sourceTree = "<group>"; };
@@ -746,6 +748,7 @@
 				A52ACB8A2A78240C005D90C5 /* SelfDetailView.swift */,
 				A58ADD3D2AF974BB00F7CEDD /* SharedCirclesPicker.swift */,
 				A52ACB8E2A786974005D90C5 /* UnconnectedPersonDetailView.swift */,
+				A5BB4EF82BD04D63001FD0D8 /* MutualFriendsSection.swift */,
 			);
 			path = People;
 			sourceTree = "<group>";
@@ -1180,6 +1183,7 @@
 				A55F367529EEE7EA00F46971 /* PhotoDetailView.swift in Sources */,
 				A5FCF64329CC9B4F008278B0 /* GalleryRoom.swift in Sources */,
 				A5FB4B162BC9C71C00253A22 /* SingleTimelineView.swift in Sources */,
+				A5BB4EF92BD04D63001FD0D8 /* MutualFriendsSection.swift in Sources */,
 				A5F0148629D75899000D57B3 /* UsernameEnrollForm.swift in Sources */,
 				409F43BA265DE51C00690A61 /* RoomInviteSheet.swift in Sources */,
 				A52FEBFD2862521F00AE4E3A /* CirclesApplicationSession.swift in Sources */,

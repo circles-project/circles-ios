@@ -17,6 +17,19 @@ struct PersonHeaderRow: View {
     @State private var alertMessage: String = ""
     @State private var showAlert = false
     
+    @State private var blurRadius: CGFloat
+    
+    init(user: Matrix.User, profile: ProfileSpace) {
+        self.user = user
+        self.profile = profile
+        
+        if profile.session.ignoredUserIds.contains(user.userId) {
+            self._blurRadius = State(wrappedValue: 5.0)
+        } else {
+            self._blurRadius = State(wrappedValue: 0.0)
+        }
+    }
+    
     var displayName: String {
         user.displayName ?? user.userId.username
     }
@@ -60,6 +73,7 @@ struct PersonHeaderRow: View {
                 .padding(.trailing, 2)
                 .foregroundColor(.gray)
         }
+        .blur(radius: blurRadius)
         //.padding([.leading, .top], 5)
         .contextMenu {
             if profile.joinedMembers.contains(user.userId) {
@@ -91,6 +105,13 @@ struct PersonHeaderRow: View {
                     try await user.session.unignoreUser(userId: user.userId)
                 }) {
                     Label("Un-ignore this user", systemImage: "person.wave.2.fill")
+                }
+                if blurRadius > 0 {
+                    Button(action: {
+                        blurRadius = 0.0
+                    }) {
+                        Text("Remove blur")
+                    }
                 }
             } else {
                 AsyncButton(action: {

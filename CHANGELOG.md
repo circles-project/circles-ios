@@ -17,6 +17,7 @@
 * Enable uploading and playing videos in photo galleries
 * Show an alert when uploading media to gallery fails
 * Add "x" to remove previous user ids from the login screen
+* Blur ignored users on the People tab
 
 # v1.0.3
 * Bugfix: Ignore invalid config object in account data

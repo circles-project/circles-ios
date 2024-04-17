@@ -12,11 +12,13 @@ import Matrix
 struct ConnectedPersonDetailView: View {
     @ObservedObject var space: PersonRoom
     @ObservedObject var user: Matrix.User
+    @ObservedObject var profile: ProfileSpace
     @State var rooms: [Matrix.SpaceChildRoom] = []
     
-    init(space: PersonRoom) {
+    init(space: PersonRoom, profile: ProfileSpace) {
         self.space = space
         self.user = space.session.getUser(userId: space.creator)
+        self.profile = profile
     }
     
     var status: some View {
@@ -29,42 +31,6 @@ struct ConnectedPersonDetailView: View {
     }
     
     var circles: some View {
-        VStack {
-            Text("\(user.displayName ?? "This user")'s Circles")
-                .font(.headline)
-                .fontWeight(.bold)
-            VStack(alignment: .leading) {
-                ForEach(rooms) { room in
-                    PersonsCircleRow(room: room)
-                }
-            }
-            .padding(.leading, 20)
-        }
-    }
-
-    /*
-    var composer: some View {
-        HStack {
-            if let room = self.selectedRoom {
-                if self.showComposer {
-                    RoomMessageComposer(room: room, isPresented: $showComposer)
-                }
-                else {
-                    Button(action: {self.showComposer = true}) {
-                        Label("Post a new message to \(user.displayName ?? "this user")'s circle \"\(room.displayName ?? "(untitled)")\"", systemImage: "rectangle.badge.plus")
-                    }
-                    .padding()
-                    .background(RoundedRectangle(cornerRadius: 10)
-                                    .stroke(lineWidth: 2)
-                                    .foregroundColor(.accentColor))
-                }
-            }
-        }
-        .padding(.leading, 10)
-    }
-    */
-    
-    var timeline: some View {
         VStack {
             
             if !rooms.isEmpty {
@@ -113,7 +79,12 @@ struct ConnectedPersonDetailView: View {
             
             Divider()
             
-            timeline
+            circles
+            
+            Divider()
+            
+            MutualFriendsSection(user: user, profile: profile)
+            
             
         } }
         .padding()
