@@ -14,6 +14,7 @@
 * Change default avatar colors, for greater contrast with UI controls
 * Warn when the only moderator leaves a group, offer to archive or delete
 * Prevent demoting yourself when you are the only moderator
+* Enable uploading and playing videos in photo galleries
 
 # v1.0.3
 * Bugfix: Ignore invalid config object in account data
