@@ -38,6 +38,7 @@ struct PhotoGalleryView: View {
     
     @State var uploadItems: [PhotosPickerItem] = []
     @State var totalUploadItems: Int = 0
+    @State var showErrorAlert = false
     
     var toolbarMenu: some View {
         Menu {
@@ -124,8 +125,11 @@ struct PhotoGalleryView: View {
                     }
                 }
                 .photosPicker(isPresented: $showCoverImagePicker, selection: $avatarItem, matching: .images)
+                .alert(isPresented: $showErrorAlert) {
+                    Alert(title: Text("Some items failed to upload"))
+                }
             } else {
-                PhotosUploadView(room: room, items: $uploadItems, total: $totalUploadItems)
+                PhotosUploadView(room: room, items: $uploadItems, total: $totalUploadItems, showAlert: $showErrorAlert)
                     .navigationBarTitle("Uploading...")
             }
         }

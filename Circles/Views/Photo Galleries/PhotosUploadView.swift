@@ -17,6 +17,9 @@ struct PhotosUploadView: View {
     @State var task: UploadTask?
     @Binding var items: [PhotosPickerItem]
     @Binding var total: Int
+    
+    @Binding var showAlert: Bool
+    
     @State var currentItem: PhotosPickerItem?
     @State var currentImage: UIImage?
     @State var canceled = false
@@ -67,6 +70,7 @@ struct PhotosUploadView: View {
                 
                 CirclesApp.logger.debug("Uploading \(items.count) items")
 
+                var failures = 0
                 while !items.isEmpty {
                     currentItem = items.removeFirst()
                     
@@ -87,11 +91,16 @@ struct PhotosUploadView: View {
                                     self.currentImage = thumbnail
                                 }
                                 let url = movie.url
-                                try await room.sendVideo(url: url, thumbnail: thumbnail)
+                                do {
+                                    try await room.sendVideo(url: url, thumbnail: thumbnail)
+                                } catch {
+                                    failures += 1
+                                }
                             }
                         } else {
                             // FIXME: Set error message
                             CirclesApp.logger.error("Failed to load movie")
+                            failures += 1
                         }
                     }
                     else if item.supportedContentTypes.contains(where: {
@@ -105,15 +114,21 @@ struct PhotosUploadView: View {
                         await MainActor.run {
                             self.currentImage = img
                         }
-                        try await room.sendImage(image: img, withBlurhash: false)
+                        do {
+                            try await room.sendImage(image: img, withBlurhash: false)
+                        } catch {
+                            failures += 1
+                        }
                     }
                     else {
                         CirclesApp.logger.debug("Unknown content types: \(item.supportedContentTypes)")
+                        failures += 1
                     }
                 }
                 currentItem = nil
                 task = nil
                 total = 0
+                showAlert = failures > 0
             }
         }
     }

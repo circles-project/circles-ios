@@ -15,6 +15,7 @@
 * Warn when the only moderator leaves a group, offer to archive or delete
 * Prevent demoting yourself when you are the only moderator
 * Enable uploading and playing videos in photo galleries
+* Show an alert when uploading media to gallery fails
 
 # v1.0.3
 * Bugfix: Ignore invalid config object in account data
