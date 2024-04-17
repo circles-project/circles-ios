@@ -58,7 +58,10 @@ struct GalleryGridView: View {
             if debugMode {
                 VStack(alignment: .leading) {
                     if self.debug {
-                        Text("Room has \(room.timeline.count) total messages")
+                        let messages = room.timeline.values.filter {
+                            $0.type == M_ROOM_MESSAGE || $0.type == M_ROOM_ENCRYPTED
+                        }
+                        Text("Room has \(messages.count) total messages")
                             .font(.caption)
                         Button(action: {self.debug = false}) {
                             Label("Hide debug info", systemImage: "eye.slash")
@@ -145,10 +148,17 @@ struct GalleryGridView: View {
                         // * If there's a replacement, use that one
                         // * Otherwise use the original one
                         let currentMessage = message.replacement ?? message
-                        PhotoThumbnailCard(message: currentMessage, height: thumbnailSize, width: thumbnailSize)
+                        if let content = currentMessage.content as? Matrix.MessageContent {
+                            if content.msgtype == M_IMAGE {
+                                PhotoThumbnailCard(message: currentMessage, height: thumbnailSize, width: thumbnailSize)
+                            } else if content.msgtype == M_VIDEO {
+                                VideoThumbnailCard(message: currentMessage, height: thumbnailSize, width: thumbnailSize)
+                            }
+                        }
                     }
                 }
                 
+                /*
                 if self.loading {
                     ProgressView()
                 } else if room.canPaginate {
@@ -180,6 +190,9 @@ struct GalleryGridView: View {
                     Text("Not currently loading; Can't paginate")
                         .foregroundColor(.red)
                 }
+                */
+                
+                footer
             }
             .onAppear {
                 print("GalleryGridView: Found \(messages.count) image/video messages")

@@ -81,7 +81,7 @@ struct PhotoGalleryView: View {
                             Spacer()
 
                             if room.iCanSendEvent(type: M_ROOM_MESSAGE) {
-                                PhotosPicker(selection: $selectedItems, matching: .images) {
+                                PhotosPicker(selection: $selectedItems) {
                                     Image(systemName: "plus.circle.fill")
                                         .resizable()
                                         .scaledToFill()
@@ -89,6 +89,7 @@ struct PhotoGalleryView: View {
                                         .padding()
                                 }
                                 .onChange(of: selectedItems) { newItems in
+                                    CirclesApp.logger.debug("User picked \(newItems.count) new items")
                                     uploadItems.append(contentsOf: newItems)
                                     totalUploadItems += uploadItems.count
                                 }
