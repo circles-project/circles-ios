@@ -50,6 +50,13 @@ struct RoomMemberDetailView: View {
         let myPowerLevel = room.myPowerLevel
         
         Section("Power level") {
+            
+            // We need to prevent the user "accidentally" demoting themself if there's no one else to take over
+            // See the .disabled() view modifier below
+            let mods = room.joinedMembers.filter {
+                room.getPowerLevel(userId: $0) >= 50
+            }
+            let iAmAMod = mods.contains(room.session.creds.userId)
         
             Picker("Role", selection: $selectedPower) {
                 let availableLevels = CIRCLES_POWER_LEVELS.filter { level in
@@ -60,6 +67,7 @@ struct RoomMemberDetailView: View {
                         .tag(level)
                 }
             }
+            .disabled( iAmAMod && mods.count == 1 )
             .onChange(of: selectedPower) { newPower in
                 print("Selected role changed: \(newPower)")
                 if userIsMe {

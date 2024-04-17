@@ -13,6 +13,7 @@
 * Add ability to change group topic
 * Change default avatar colors, for greater contrast with UI controls
 * Warn when the only moderator leaves a group, offer to archive or delete
+* Prevent demoting yourself when you are the only moderator
 
 # v1.0.3
 * Bugfix: Ignore invalid config object in account data
