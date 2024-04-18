@@ -17,12 +17,14 @@ struct PeopleOverviewScreen: View {
     
     @State var selectedUserId: UserId?
     
+    @State var connections: [Matrix.User] = []
     @State var following: [Matrix.User] = []
     @State var followers: [Matrix.User] = []
     //@State var invitations: [Matrix.InvitedRoom]? = nil
     
     @State var friendsOfFriends: [UserId]? = nil
     
+    /*
     @State var showInviteSheet = false
     
     @State var sheetType: SheetType?
@@ -36,6 +38,7 @@ struct PeopleOverviewScreen: View {
         }
     }
 
+    
     @ViewBuilder
     var meSection: some View {
         VStack(alignment: .leading) {
@@ -103,26 +106,7 @@ struct PeopleOverviewScreen: View {
                 RoomKnockIndicator(room: profile)
             }
             
-            let rooms = people.rooms.values.sorted { $0.creator < $1.creator }
-            ForEach(rooms) { room in
-                let user = people.session.getUser(userId: room.creator)
-                
-                VStack(alignment: .leading) {
-                    NavigationLink(destination: ConnectedPersonDetailView(space: room, profile: profile),
-                                   tag: user.userId,
-                                   selection: $selectedUserId
-                    ) {
-                        //Text("\(user.displayName ?? user.id)")
-                        PersonHeaderRow(user: user, profile: profile)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    
-                }
-                .contentShape(Rectangle())
-                //.padding(.leading)
-                //}
-                Divider()
-            }
+
         }
         .padding()
         .sheet(item: $sheetType) { type in
@@ -159,52 +143,9 @@ struct PeopleOverviewScreen: View {
             }
         }
         .padding()
-        .onAppear {
-            let followingUserIds: [UserId] = circles.rooms.values.reduce([], {(curr,room) in
-                curr + room.following
-            })
-            let sortedUserIds: [UserId] = Set(followingUserIds).sorted {
-                $0.stringValue < $1.stringValue
-            }
-            following = sortedUserIds.compactMap { userId -> Matrix.User in
-                circles.session.getUser(userId: userId)
-            }
-        }
-    }
-    
-    @ViewBuilder
-    var followersSection: some View {
-        LazyVStack(alignment: .leading, spacing: 10) {
-            Text("MY FOLLOWERS")
-                .font(.subheadline)
-                .foregroundColor(.gray)
-            Divider()
 
-            ForEach(followers) { user in
-                NavigationLink(destination: UnconnectedPersonDetailView(user: user, myProfileRoom: profile),
-                               tag: user.userId,
-                               selection: $selectedUserId
-                ) {
-                    PersonHeaderRow(user: user, profile: profile)
-                        .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                Divider()
-            }
-        }
-        .padding()
-        .onAppear {
-            let followersUserIds = circles.rooms.values.reduce([], {(curr,room) in
-                curr + room.followers
-            })
-            let sortedUserIds: [UserId] = Set(followersUserIds).sorted {
-                $0.stringValue < $1.stringValue
-            }
-            followers = sortedUserIds.compactMap { userId -> Matrix.User in
-                circles.session.getUser(userId: userId)
-            }
-        }
     }
+    */
     
     func loadFriendsOfFriends() async {
         CirclesApp.logger.debug("Loading friends of friends")
@@ -234,82 +175,151 @@ struct PeopleOverviewScreen: View {
             self.friendsOfFriends = sorted
         }
     }
-    
-    @ViewBuilder
-    var friendsOfFriendsSection: some View {
-        LazyVStack(alignment: .leading, spacing: 10) {
-            Text("FRIENDS OF FRIENDS")
-                .font(.subheadline)
-                .foregroundColor(.gray)
-            Divider()
-            
-            if let userIds = friendsOfFriends {
-                ForEach(userIds, id: \.self) { userId in
-                    if userId != profile.session.creds.userId {
-                        let user = profile.session.getUser(userId: userId)
-                        if let friendsSpace = people.rooms.values.first(where: { $0.creator == userId }) {
-                            NavigationLink(destination: ConnectedPersonDetailView(space: friendsSpace, profile: profile),
-                                           tag: user.userId,
-                                           selection: $selectedUserId
-                            ) {
-                                PersonHeaderRow(user: user, profile: profile)
-                                    .contentShape(Rectangle())
-                            }
-                            .buttonStyle(.plain)
-                        } else {
-                            NavigationLink(destination: UnconnectedPersonDetailView(user: user, myProfileRoom: profile),
-                                           tag: user.userId,
-                                           selection: $selectedUserId
-                            ) {
-                                PersonHeaderRow(user: user, profile: profile)
-                                    .contentShape(Rectangle())
-                            }
-                            .buttonStyle(.plain)
-                        }
-                        
-                        Divider()
-                    }
-                }
-            } else {
-                ProgressView("Loading...")
-            }
-        }
-        .padding()
-        .task {
-            await loadFriendsOfFriends()
-        }
 
+    
+    enum PeopleTabSection: String, Hashable, Identifiable {
+        var id: String { rawValue }
+        
+        case me = "Me"
+        case connections = "My Connections"
+        case following = "People I'm Following"
+        case followers = "My Followers"
+        case friendsOfFriends = "Friends of Friends"
     }
+
+    @State var selected: PeopleTabSection?
     
     var body: some View {
-        NavigationView {
-            ScrollView {
-                LazyVStack(alignment: .leading) {
+        NavigationSplitView {
+            VStack {
+                                
+                List(selection: $selected) {
+                    Section("Me") {
+                        NavigationLink(value: PeopleTabSection.me) {
+                            let me = profile.session.me
+                            PersonHeaderRow(user: me, profile: profile)
+                        }
+                        .buttonStyle(.plain)
+                    }
                     
-                    //Text("\(container.rooms.count) People")
+                    Section("My Connections") {
+                        let count = connections.count
+                        if count > 0 {
+                            let units = count > 1 ? "Connections" : "Connection"
+                            NavigationLink(value: PeopleTabSection.connections) {
+                                Text("See \(count) \(units)")
+                            }
+                        } else {
+                            Text("No connections")
+                        }
+                    }
+                    .onAppear {
+                        let userIds = people.rooms.values.compactMap { $0.creator }
+                        let sorted = Set(userIds).sorted { $0 < $1 }
+                        connections = sorted.compactMap {
+                            profile.session.getUser(userId: $0)
+                        }
+                    }
                     
-                    meSection
+                    Section("People I'm Following") {
+                        let count = following.count
+                        if count > 0 {
+                            let units = count > 1 ? "People" : "Person"
+                            NavigationLink(value: PeopleTabSection.following) {
+                                Text("See \(count) \(units) I'm Following")
+                            }
+                        } else {
+                            Text("Not following anyone")
+                        }
+                    }
+                    .onAppear {
+                        let followingUserIds: [UserId] = circles.rooms.values.reduce([], {(curr,room) in
+                            curr + room.following
+                        })
+                        let sortedUserIds: [UserId] = Set(followingUserIds).sorted {
+                            $0.stringValue < $1.stringValue
+                        }
+                        following = sortedUserIds.compactMap { userId -> Matrix.User in
+                            circles.session.getUser(userId: userId)
+                        }
+                    }
                     
-                    PeopleInvitationsIndicator(session: people.session, container: people)
+                    Section("My Followers") {
+                        let count = followers.count
+                        if count > 0 {
+                            let units = count > 1 ? "Followers" : "Follower"
+                            NavigationLink(value: PeopleTabSection.followers) {
+                                Text("See \(count) \(units)")
+                            }
+                        } else {
+                            Text("No followers")
+                        }
+                    }
+                    .onAppear {
+                        let followersUserIds = circles.rooms.values.reduce([], {(curr,room) in
+                            curr + room.followers
+                        })
+                        let sortedUserIds: [UserId] = Set(followersUserIds).sorted {
+                            $0.stringValue < $1.stringValue
+                        }
+                        followers = sortedUserIds.compactMap { userId -> Matrix.User in
+                            circles.session.getUser(userId: userId)
+                        }
+                    }
                     
-                    contactsSection
-                    
-                    followingSection
-                    
-                    followersSection
-                    
-                    friendsOfFriendsSection
-                    
-                    Spacer()
-                        .frame(minHeight: TIMELINE_BOTTOM_PADDING)
+                    Section("Friends of Friends") {
+                        if let count = friendsOfFriends?.count {
+                            if count > 0 {
+                                let units = count > 1 ? "Friends of friends" : "Friend of a Friend"
+                                NavigationLink(value: PeopleTabSection.friendsOfFriends) {
+                                    Text("See \(count) \(units)")
+                                }
+                            }
+                            else {
+                                Text("No friends of friends")
+                            }
+                        } else {
+                            ProgressView("Loading friends of friends")
+                        }
+                    }
+                    .task {
+                        await loadFriendsOfFriends()
+                    }
+                }
+                .listStyle(.plain)
+                .accentColor(.secondaryBackground)
+                
+                /*
+                List(selection: $selection) {
+                    ForEach(subsections) { subsection in
+                        Text(subsection.rawValue)
+                    }
+                    /*
+
+                     */
+                }
+                */
+            }
+            .navigationTitle("People")
+            .navigationBarTitleDisplayMode(.inline)
+        } detail: {
+            NavigationStack {
+                switch selected {
+                case .me:
+                    SelfDetailView(profile: profile, circles: circles)
+                case .connections:
+                    MyConnectionsView(profile: profile, people: people)
+                case .following:
+                    FollowingView(profile: profile, following: $following)
+                case .followers:
+                    FollowersView(profile: profile, followers: $followers)
+                case .friendsOfFriends:
+                    FriendsOfFriendsView(profile: profile, people: people, friendsOfFriends: $friendsOfFriends)
+                default:
+                    Text("default")
                 }
             }
-            .navigationBarTitle("People", displayMode: .inline)
-            
-            Text("Select a profile to view additional information")
         }
-        //.navigationViewStyle(StackNavigationViewStyle())
-
     }
 }
 
