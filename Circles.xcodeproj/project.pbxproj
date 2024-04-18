@@ -151,6 +151,9 @@
 		A56BE1792AD6DE0800B15F51 /* CodeScanner in Frameworks */ = {isa = PBXBuildFile; productRef = A56BE1782AD6DE0800B15F51 /* CodeScanner */; };
 		A56BE17B2AD6ED4000B15F51 /* ScanQrCodeAndKnockSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56BE17A2AD6ED4000B15F51 /* ScanQrCodeAndKnockSheet.swift */; };
 		A56BE17D2AD700E100B15F51 /* RoomShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56BE17C2AD700E100B15F51 /* RoomShareSheet.swift */; };
+		A57BD8442BD1996800EC07E9 /* FollowersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A57BD8432BD1996800EC07E9 /* FollowersView.swift */; };
+		A57BD8462BD19C1000EC07E9 /* FriendsOfFriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A57BD8452BD19C1000EC07E9 /* FriendsOfFriendsView.swift */; };
+		A57BD8482BD1A6A300EC07E9 /* FollowingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A57BD8472BD1A6A300EC07E9 /* FollowingView.swift */; };
 		A58ADD3E2AF974BB00F7CEDD /* SharedCirclesPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A58ADD3D2AF974BB00F7CEDD /* SharedCirclesPicker.swift */; };
 		A5921EB32AFAA83A00C2331D /* CircleSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5921EB22AFAA83A00C2331D /* CircleSettingsView.swift */; };
 		A5921EB52AFAAE8200C2331D /* SimpleCircleAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5921EB42AFAAE8200C2331D /* SimpleCircleAvatar.swift */; };
@@ -173,6 +176,7 @@
 		A5BB4EF12BD02D26001FD0D8 /* VideoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB4EF02BD02D26001FD0D8 /* VideoDetailView.swift */; };
 		A5BB4EF32BD02FD7001FD0D8 /* VideoContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB4EF22BD02FD7001FD0D8 /* VideoContentView.swift */; };
 		A5BB4EF92BD04D63001FD0D8 /* MutualFriendsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB4EF82BD04D63001FD0D8 /* MutualFriendsSection.swift */; };
+		A5BB4EFB2BD0559D001FD0D8 /* MyConnectionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB4EFA2BD0559D001FD0D8 /* MyConnectionsView.swift */; };
 		A5BECC38280F7A2400B1FCC6 /* KeyboardKit in Frameworks */ = {isa = PBXBuildFile; productRef = A5BECC37280F7A2400B1FCC6 /* KeyboardKit */; };
 		A5CC0ACC29D91F7C005935F0 /* Zxcvbn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CC0ACB29D91F7C005935F0 /* Zxcvbn.swift */; };
 		A5CC0AD029DB7001005935F0 /* BsspekeLoginVerifyForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CC0ACF29DB7001005935F0 /* BsspekeLoginVerifyForm.swift */; };
@@ -387,6 +391,9 @@
 		A56BE1752AD5D0E900B15F51 /* KnockingUserCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnockingUserCard.swift; sourceTree = "<group>"; };
 		A56BE17A2AD6ED4000B15F51 /* ScanQrCodeAndKnockSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanQrCodeAndKnockSheet.swift; sourceTree = "<group>"; };
 		A56BE17C2AD700E100B15F51 /* RoomShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomShareSheet.swift; sourceTree = "<group>"; };
+		A57BD8432BD1996800EC07E9 /* FollowersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowersView.swift; sourceTree = "<group>"; };
+		A57BD8452BD19C1000EC07E9 /* FriendsOfFriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsOfFriendsView.swift; sourceTree = "<group>"; };
+		A57BD8472BD1A6A300EC07E9 /* FollowingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowingView.swift; sourceTree = "<group>"; };
 		A58ADD3D2AF974BB00F7CEDD /* SharedCirclesPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedCirclesPicker.swift; sourceTree = "<group>"; };
 		A5921EB22AFAA83A00C2331D /* CircleSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleSettingsView.swift; sourceTree = "<group>"; };
 		A5921EB42AFAAE8200C2331D /* SimpleCircleAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleCircleAvatar.swift; sourceTree = "<group>"; };
@@ -408,6 +415,7 @@
 		A5BB4EF02BD02D26001FD0D8 /* VideoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoDetailView.swift; sourceTree = "<group>"; };
 		A5BB4EF22BD02FD7001FD0D8 /* VideoContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoContentView.swift; sourceTree = "<group>"; };
 		A5BB4EF82BD04D63001FD0D8 /* MutualFriendsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutualFriendsSection.swift; sourceTree = "<group>"; };
+		A5BB4EFA2BD0559D001FD0D8 /* MyConnectionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyConnectionsView.swift; sourceTree = "<group>"; };
 		A5CC0ACB29D91F7C005935F0 /* Zxcvbn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zxcvbn.swift; sourceTree = "<group>"; };
 		A5CC0ACF29DB7001005935F0 /* BsspekeLoginVerifyForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BsspekeLoginVerifyForm.swift; sourceTree = "<group>"; };
 		A5CF39D42A73299500134969 /* ThreadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadView.swift; sourceTree = "<group>"; };
@@ -749,6 +757,10 @@
 				A58ADD3D2AF974BB00F7CEDD /* SharedCirclesPicker.swift */,
 				A52ACB8E2A786974005D90C5 /* UnconnectedPersonDetailView.swift */,
 				A5BB4EF82BD04D63001FD0D8 /* MutualFriendsSection.swift */,
+				A5BB4EFA2BD0559D001FD0D8 /* MyConnectionsView.swift */,
+				A57BD8432BD1996800EC07E9 /* FollowersView.swift */,
+				A57BD8452BD19C1000EC07E9 /* FriendsOfFriendsView.swift */,
+				A57BD8472BD1A6A300EC07E9 /* FollowingView.swift */,
 			);
 			path = People;
 			sourceTree = "<group>";
@@ -1047,6 +1059,7 @@
 				A5A40B6829D60EF3009A17EE /* CirclesConfig.swift in Sources */,
 				A5CC0AD029DB7001005935F0 /* BsspekeLoginVerifyForm.swift in Sources */,
 				A52DF68529E72CC1008860C3 /* Keychain.swift in Sources */,
+				A57BD8462BD19C1000EC07E9 /* FriendsOfFriendsView.swift in Sources */,
 				409F4345265DE17500690A61 /* GroupsOverviewScreen.swift in Sources */,
 				A52ACB8D2A7824D3005D90C5 /* ProfileSpace.swift in Sources */,
 				4047F3DE26B895B80010B2C3 /* SecureFieldWithEye.swift in Sources */,
@@ -1095,6 +1108,7 @@
 				A5F0148229D72371000D57B3 /* EmailEnrollRequestTokenForm.swift in Sources */,
 				A54BA3A928529BE500453D5E /* SetupScreen.swift in Sources */,
 				A53EAC572A6F037D00EF18B7 /* LegacySecretStoreKeygen.swift in Sources */,
+				A57BD8482BD1A6A300EC07E9 /* FollowingView.swift in Sources */,
 				A56BE1722AD5CBD200B15F51 /* RoomKnockIndicator.swift in Sources */,
 				A56BE17D2AD700E100B15F51 /* RoomShareSheet.swift in Sources */,
 				A521C3F52A6889C00051ED88 /* InvitedCircleDetailView.swift in Sources */,
@@ -1104,6 +1118,7 @@
 				A5D3C9C32A708F1300B41CC0 /* DBScorer.m in Sources */,
 				A55F367329EDB66300F46971 /* GalleryInviteCard.swift in Sources */,
 				409F4323265DE11900690A61 /* Constants.swift in Sources */,
+				A5BB4EFB2BD0559D001FD0D8 /* MyConnectionsView.swift in Sources */,
 				A52C77542A89CCB8005D2C0B /* MessageThumbnail.swift in Sources */,
 				A5EE59C52A5F21C2007C24C7 /* DeviceInfoView.swift in Sources */,
 				A562C08E2AFE8EA800522FCB /* CirclesLogoView.swift in Sources */,
@@ -1159,6 +1174,7 @@
 				40AEA6742678E24200C9CBD1 /* BlurHashDecode.swift in Sources */,
 				A520B6792A9410BE002D88C8 /* Movie.swift in Sources */,
 				A5921EB72AFAD5E400C2331D /* CircleFollowingRow.swift in Sources */,
+				A57BD8442BD1996800EC07E9 /* FollowersView.swift in Sources */,
 				A56BE17B2AD6ED4000B15F51 /* ScanQrCodeAndKnockSheet.swift in Sources */,
 				A5B74F422BC5F92900299D90 /* KnockOnRoomView.swift in Sources */,
 				A54A278C2A843C5F00858846 /* InvitedGroupCard.swift in Sources */,

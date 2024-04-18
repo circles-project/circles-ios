@@ -12,7 +12,6 @@ import CoreImage.CIFilterBuiltins
 import Matrix
 
 struct SelfDetailView: View {
-    @ObservedObject var matrix: Matrix.Session
     @ObservedObject var profile: ContainerRoom<Matrix.Room>
     @ObservedObject var circles: ContainerRoom<CircleSpace>
     
@@ -26,15 +25,16 @@ struct SelfDetailView: View {
                 HStack {
                     Spacer()
                     VStack(alignment: .center) {
-                        UserAvatarView(user: matrix.me)
+                        let me = profile.session.me
+                        UserAvatarView(user: me)
                             .frame(width: 240, height: 240)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                         
-                        Text(matrix.me.displayName ?? matrix.creds.userId.username)
+                        Text(me.displayName ?? me.userId.username)
                             .font(.title)
                             .fontWeight(.bold)
                         
-                        Text(matrix.creds.userId.stringValue)
+                        Text(me.userId.stringValue)
                             .font(.subheadline)
                             .foregroundColor(.gray)
                         

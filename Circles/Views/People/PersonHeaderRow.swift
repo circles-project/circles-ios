@@ -69,9 +69,11 @@ struct PersonHeaderRow: View {
             
             Spacer()
             
+            /*
             Image(systemName: "chevron.right")
                 .padding(.trailing, 2)
                 .foregroundColor(.gray)
+            */
         }
         .blur(radius: blurRadius)
         //.padding([.leading, .top], 5)
