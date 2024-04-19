@@ -20,6 +20,10 @@ struct EmailEnrollSubmitTokenForm: View {
     }
     @FocusState var focus: FocusField?
     
+    @State var showAlert = false
+    let alertTitle = "Invalid code"
+    let alertMessage = "Please double-check the code and enter it again, or request a new code."
+    
     var tokenIsValid: Bool {
         token.count == 6 && Int(token) != nil
     }
@@ -43,7 +47,12 @@ struct EmailEnrollSubmitTokenForm: View {
                         self.focus = .token
                     }
                 AsyncButton(action: {
-                    try await session.doEmailEnrollSubmitTokenStage(token: token, secret: secret)
+                    do {
+                        try await session.doEmailEnrollSubmitTokenStage(token: token, secret: secret)
+                    } catch {
+                        print("Email submit token stage failed")
+                        self.showAlert = true
+                    }
                 }) {
                     Text("Submit")
                         .padding()
@@ -53,6 +62,19 @@ struct EmailEnrollSubmitTokenForm: View {
                         .cornerRadius(10)
                 }
                 .disabled(!tokenIsValid)
+                .alert(isPresented: $showAlert) {
+                    Alert(title: Text(self.alertTitle),
+                          message: Text(self.alertMessage),
+                          dismissButton: .default(Text("OK"), action: { self.token = "" })
+                    )
+                }
+                
+                AsyncButton(action: {
+                    try await session.redoEmailEnrollRequestTokenStage()
+                }) {
+                    Text("Send a new code")
+                        .padding()
+                }
             }
             Spacer()
         }

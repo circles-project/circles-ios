@@ -18,6 +18,8 @@
 * Show an alert when uploading media to gallery fails
 * Add "x" to remove previous user ids from the login screen
 * Blur ignored users on the People tab
+* Re-structure the People tab
+* Improvements to email 6-digit code authentication
 
 # v1.0.3
 * Bugfix: Ignore invalid config object in account data
