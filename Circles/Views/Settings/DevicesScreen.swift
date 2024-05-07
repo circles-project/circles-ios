@@ -31,14 +31,7 @@ struct DevicesScreen: View {
     var body: some View {
         Form {
             ForEach(session.devices, id: \.deviceId) { device in
-                // Unfortunately the crypto crate does not expose the 'dehydrated'
-                // flag, so will have to compare via displayName.
-                if let ownDevice = session.device,
-                   let displayName = device.displayName,
-                   displayName == "\(ownDevice.deviceId) (dehydrated)" {
-                    // Hide dehydrated device from login sessions
-                }
-                else {
+                if !device.dehydrated {
                     NavigationLink(destination: DeviceDetailsView(session: session, device: device)) {
                         DeviceInfoView(session: session, device: device)
                     }
