@@ -10,11 +10,13 @@ import SwiftUI
 import Matrix
 
 struct CirclePicker: View {
-    @ObservedObject var container: ContainerRoom<CircleSpace>
+    //@ObservedObject var container: ContainerRoom<CircleSpace>
+    @EnvironmentObject var appSession: CirclesApplicationSession
     @Binding var selected: Set<CircleSpace>
     
     var body: some View {
         VStack {
+            let container = appSession.circles
             //List {
             let rooms = container.rooms.values.sorted { $0.timestamp < $1.timestamp }
                 ForEach(rooms) { circle in

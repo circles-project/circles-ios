@@ -1,3 +1,7 @@
+# v1.0.5
+* Add new "Invite to follow me" on the People tab
+* When following a new friend in a circle, offer to invite the friend to follow you back
+
 # v1.0.4
 * Show the "Share" sheet when user taps the QR code for a circle/group/gallery
 * Add ability to set default user permissions for your timeline/group/gallery

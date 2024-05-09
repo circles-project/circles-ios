@@ -16,7 +16,6 @@ struct InvitedCircleCard: View {
     @AppStorage("debugMode") var debugMode: Bool = false
     
     @State var showAcceptSheet = false
-    @State var selectedCircles: Set<CircleSpace> = []
     
     @State var blur = 20.0
     
@@ -77,26 +76,7 @@ struct InvitedCircleCard: View {
                         Label("Accept", systemImage: "hand.thumbsup.fill")
                     }
                     .sheet(isPresented: $showAcceptSheet) {
-                        ScrollView {
-                            VStack {
-                                Text("Where would you like to follow updates from \(room.name ?? "this friend's timeline")?")
-                                
-                                Text("You can choose one or more of your circles")
-                                
-                                CirclePicker(container: container, selected: $selectedCircles)
-                                
-                                AsyncButton(action: {
-                                    try await room.accept()
-                                    for circle in selectedCircles {
-                                        try await circle.addChild(room.roomId)
-                                    }
-                                }) {
-                                    Label("Accept invite and follow", systemImage: "thumbsup")
-                                }
-                                .disabled(selectedCircles.isEmpty)
-                            }
-                            .padding()
-                        }
+                        CircleAcceptInviteView(room: room, user: user, container: container)
                     }
                     
                     Spacer()
@@ -109,6 +89,15 @@ struct InvitedCircleCard: View {
                 }
                 .padding(.top, 5)
                 .padding(.horizontal, 10)
+
+                if debugMode {
+                    let joinedRoomIds = room.session.rooms.values.compactMap { $0.roomId }
+                    if joinedRoomIds.contains(room.roomId) {
+                        Text("Room is already joined")
+                    } else {
+                        Text("New room")
+                    }
+                }
             }
         }
         .onAppear {
