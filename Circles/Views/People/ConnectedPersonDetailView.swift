@@ -74,6 +74,10 @@ struct ConnectedPersonDetailView: View {
         VStack { ScrollView {
 
             header
+            
+            NavigationLink(destination: InviteToFollowMeView(user: user)) {
+                Text("Invite to follow me")
+            }
 
             //status
             
