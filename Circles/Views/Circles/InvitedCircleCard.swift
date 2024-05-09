@@ -47,7 +47,6 @@ struct InvitedCircleCard: View {
                         .foregroundColor(.red)
                 }
 
-                Text("From:")
                 HStack(alignment: .top) {
                     VStack(alignment: .leading) {
                         if let name = user.displayName {
