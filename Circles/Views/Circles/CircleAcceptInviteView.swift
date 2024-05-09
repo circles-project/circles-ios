@@ -28,11 +28,24 @@ struct CircleAcceptInviteView: View {
                 
                 CirclePicker(selected: $selectedCircles)
                 
-                Toggle(isOn: $inviteToFollowMe) {
-                    Text("Invite this user to follow me")
+                let selectedButNotFollowedCircles = selectedCircles.filter({ space in
+                    guard let wall = space.wall
+                    else { return false }
+                    
+                    if wall.joinedMembers.contains(user.userId) {
+                        return false
+                    } else {
+                        return true
+                    }
+                })
+                
+                if !selectedButNotFollowedCircles.isEmpty {
+                    Toggle(isOn: $inviteToFollowMe) {
+                        Text("Invite this user to follow me")
+                    }
+                    .frame(maxWidth: 300)
+                    .padding()
                 }
-                .frame(maxWidth: 300)
-                .padding()
                 
                 AsyncButton(action: {
                     // It's possible that we are already in this room
