@@ -27,7 +27,19 @@ struct InviteToFollowMeView: View {
                 CirclePicker(selected: $selected)
                     .padding()
                 
-                AsyncButton(action: {}) {
+                AsyncButton(action: {
+                    for space in selected {
+                        if let wall = space.wall {
+                            if wall.invitedMembers.contains(user.userId) {
+                                print("User \(user.userId) is already following us in circle \(space.name ?? wall.name ?? space.roomId.stringValue)")
+                            } else {
+                                try await wall.invite(userId: user.userId)
+                            }
+                        } else {
+                            print("No 'wall' timeline room for circle \(space.name ?? space.roomId.stringValue)")
+                        }
+                    }
+                }) {
                     Text("Send \(selected.count) invitation(s)")
                 }
                 .disabled(selected.isEmpty)
