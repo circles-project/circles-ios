@@ -11,16 +11,20 @@ import SwiftUI
 
 struct CircleOverviewCard: View {
     @ObservedObject var space: CircleSpace
+
+    var formatter: RelativeDateTimeFormatter
     
-    var avatar: some View {
-        CircleAvatar(space: space)
+    init(space: CircleSpace) {
+        self.space = space
+        self.formatter = RelativeDateTimeFormatter()
+        self.formatter.dateTimeStyle = .named
     }
     
     var body: some View {
         VStack(alignment: .leading) {
             HStack(alignment: .center) {
                 
-                avatar
+                CircleAvatar(space: space)
                     .frame(width: 100, height: 100)
                 
                 VStack(alignment: .leading) {
@@ -44,7 +48,7 @@ struct CircleOverviewCard: View {
                             Text("\(space.unread) unread posts")
                                 .fontWeight(.bold)
                         } else {
-                            Text("Last updated \(space.timestamp, formatter: RelativeDateTimeFormatter())")
+                            Text("Last updated \(space.timestamp, formatter: formatter)")
                         }
                         
                         if let wall = space.wall {
@@ -56,7 +60,7 @@ struct CircleOverviewCard: View {
                             }
                         }
                     }
-                    .font(.headline)
+                    .font(.body)
                     .foregroundColor(.gray)
                 }
                 .padding(.leading)
