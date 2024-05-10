@@ -60,7 +60,7 @@ struct GroupOverviewRow: View {
                     }
 
                 }
-                .font(.title3)
+                .font(.body)
                 .foregroundColor(.gray)
                 .padding(.leading, 8)
             }
