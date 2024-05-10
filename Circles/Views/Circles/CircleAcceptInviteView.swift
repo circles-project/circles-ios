@@ -13,20 +13,45 @@ struct CircleAcceptInviteView: View {
     @ObservedObject var user: Matrix.User
     @ObservedObject var container: ContainerRoom<CircleSpace>
 
+    @Environment(\.presentationMode) var presentation
     
     @State var selectedCircles: Set<CircleSpace> = []
     @State var inviteToFollowMe = true
-
     
     var body: some View {
         ScrollView {
             VStack {
-                Text("Where would you like to see posts from \(user.displayName ?? user.userId.username)'s \(room.name ?? "") timeline?")
-                
-                Text("Choose one or more of your circles")
+                Text("Where would you like to see posts from")
+                    .font(.headline)
                     .padding()
                 
-                CirclePicker(selected: $selectedCircles)
+                HStack(alignment: .center) {
+                    RoomAvatarView(room: room, avatarText: .none)
+                        .clipShape(Circle())
+                        .frame(width: 65, height: 65)
+                    VStack(alignment: .leading) {
+                        Text(room.name ?? "")
+                            .fontWeight(.bold)
+                        UserNameView(user: user)
+                        Text(user.userId.stringValue)
+                            .font(.footnote)
+                            .foregroundColor(.gray)
+                    }
+                }
+                
+                HStack {
+                    Spacer()
+                    
+                    VStack(alignment: .leading) {
+                        Text("Choose one or more of your circles to continue")
+                            .padding(.top)
+                        
+                        CirclePicker(selected: $selectedCircles)
+                    }
+                    .frame(maxWidth: 350)
+                    
+                    Spacer()
+                }
                 
                 let selectedButNotFollowedCircles = selectedCircles.filter({ space in
                     guard let wall = space.wall
@@ -41,7 +66,14 @@ struct CircleAcceptInviteView: View {
                 
                 if !selectedButNotFollowedCircles.isEmpty {
                     Toggle(isOn: $inviteToFollowMe) {
-                        Text("Invite this user to follow me")
+                        let count = selectedButNotFollowedCircles.count
+                        if count > 1 {
+                            Text("Invite this user to follow my timelines for these circles")
+                        } else if count > 0 {
+                            Text("Invite this user to follow my timeline for this circle")
+                        } else {
+                            Text("Invite this user to follow me")
+                        }
                     }
                     .frame(maxWidth: 300)
                     .padding()
@@ -73,6 +105,13 @@ struct CircleAcceptInviteView: View {
                     Label("Accept invite and follow", systemImage: "thumbsup")
                 }
                 .disabled(selectedCircles.isEmpty)
+                .padding()
+                
+                Button(role: .destructive, action: {
+                    self.presentation.wrappedValue.dismiss()
+                }) {
+                    Text("Cancel")
+                }
                 .padding()
             }
             .padding()
