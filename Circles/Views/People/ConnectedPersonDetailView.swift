@@ -76,7 +76,7 @@ struct ConnectedPersonDetailView: View {
             header
             
             NavigationLink(destination: InviteToFollowMeView(user: user)) {
-                Text("Invite to follow me")
+                Label("Invite to follow me", systemImage: "circle.hexagonpath")
             }
 
             //status
