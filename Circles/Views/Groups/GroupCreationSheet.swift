@@ -84,7 +84,7 @@ struct GroupCreationSheet: View {
         VStack {
             buttonbar
             let frameWidth = 300.0
-            let frameHeight = 150.0
+            let frameHeight = 200.0
       
             ZStack {
                 if let img = self.headerImage {
@@ -95,6 +95,7 @@ struct GroupCreationSheet: View {
 
                 } else {
                     Color.gray
+                        .frame(width: frameWidth, height: frameHeight)
                 }
 
                 VStack {
