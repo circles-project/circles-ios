@@ -15,7 +15,7 @@ struct CircleInvitationsView: View {
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 10) {
                 let invitations = session.invitations.values.filter { $0.type == ROOM_TYPE_CIRCLE }
                 if invitations.isEmpty {
                     Text("No pending invitations")

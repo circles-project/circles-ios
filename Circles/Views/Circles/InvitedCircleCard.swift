@@ -23,20 +23,20 @@ struct InvitedCircleCard: View {
         HStack(spacing: 1) {
             RoomAvatarView(room: room, avatarText: .none)
                 //.overlay(Circle().stroke(Color.primary, lineWidth: 2))
-                .frame(width: 120, height: 120)
-                .scaledToFit()
-                .padding(-15)
-                .blur(radius: blur)
                 .clipShape(Circle())
+                .frame(width: 140, height: 140)
+                .scaledToFit()
+                .blur(radius: blur)
                 .onTapGesture {
                     if blur >= 5 {
                         blur -= 5
                     }
                 }
+                .padding(.horizontal, 5)
             
             VStack(alignment: .leading) {
                 Text(room.name ?? "(unnamed circle)")
-                    .lineLimit(2)
+                    .lineLimit(1)
                     .multilineTextAlignment(.leading)
                     .font(.title2)
                     .fontWeight(.bold)
@@ -51,20 +51,29 @@ struct InvitedCircleCard: View {
                     VStack(alignment: .leading) {
                         if let name = user.displayName {
                             Text(name)
+                                .lineLimit(1)
                             Text(user.userId.stringValue)
+                                .lineLimit(1)
                                 .font(.footnote)
                                 .foregroundColor(.gray)
                         } else {
                             Text(user.userId.stringValue)
+                                .lineLimit(1)
                         }
                     }
                 }
                 
                 HStack {
+                    Spacer()
+                    
                     AsyncButton(role: .destructive, action: {
                         try await room.reject()
                     }) {
-                        Label("Reject", systemImage: "hand.thumbsdown.fill")
+                        //Label("Reject", systemImage: "hand.thumbsdown.fill")
+                        Text("Reject")
+                            .padding(10)
+                            .background(RoundedRectangle(cornerRadius: 6)
+                                .stroke(Color.red))
                     }
                     
                     Spacer()
@@ -72,7 +81,12 @@ struct InvitedCircleCard: View {
                     Button(action: {
                         self.showAcceptSheet = true
                     }) {
-                        Label("Accept", systemImage: "hand.thumbsup.fill")
+                        //Label("Accept", systemImage: "hand.thumbsup.fill")
+                        Text("Accept")
+                            .padding(10)
+                            .foregroundColor(.white)
+                            .background(Color.accentColor)
+                            .cornerRadius(6)
                     }
                     .sheet(isPresented: $showAcceptSheet) {
                         CircleAcceptInviteView(room: room, user: user, container: container)
@@ -81,9 +95,12 @@ struct InvitedCircleCard: View {
                     Spacer()
                     
                     NavigationLink(destination: InvitedCircleDetailView(room: room, user: user)) {
-                        Label("Details", systemImage: "ellipsis.circle")
-                            .labelStyle(.iconOnly)
-
+                        //Label("Info", systemImage: "ellipsis.circle")
+                        Text("Info")
+                            //.labelStyle(.iconOnly)
+                            .padding(10)
+                            .background(RoundedRectangle(cornerRadius: 6)
+                                .stroke(Color.accentColor))
                     }
                 }
                 .padding(.top, 5)
