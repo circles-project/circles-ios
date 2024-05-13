@@ -31,26 +31,23 @@ struct MessageAuthorHeader: View {
             UserAvatarView(user: user)
                 //.resizable()
                 .scaledToFill()
-                .frame(width: 60, height: 60)
-                .clipShape(RoundedRectangle(cornerRadius: 6))
+                .frame(width: 45, height: 45)
+                .clipShape(RoundedRectangle(cornerRadius: 4))
                 //.padding(3)
 
             
             VStack(alignment: .leading) {
-                VStack(alignment: .leading) {
-                    Text(user.displayName ?? user.userId.username)
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                        .lineLimit(1)
-                        .padding(1)
+                Text(user.displayName ?? user.userId.username)
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                    .lineLimit(1)
+                    //.padding(1)
 
-                    Text(user.id)
-                        .font(.headline)
-                        .foregroundColor(Color.gray)
-                        .lineLimit(1)
-                        .padding(.leading, 1)
-
-                }
+                Text(user.id)
+                    .font(.subheadline)
+                    .foregroundColor(Color.gray)
+                    .lineLimit(1)
+                    //.padding(.leading, 1)
             }
             
         }
