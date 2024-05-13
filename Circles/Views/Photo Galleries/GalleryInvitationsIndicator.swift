@@ -23,7 +23,7 @@ struct GalleryInvitationsIndicator: View {
                 NavigationLink(destination: GalleryInvitationsView(session: session, container: container)) {
                     HStack {
                         Spacer()
-                        Label("\(invitations.count) invitation(s) to shared galleries", systemImage: "star")
+                        Label("You have \(invitations.count) pending invitation(s)", systemImage: "star")
                             .fontWeight(.bold)
                             .padding()
                         Spacer()
@@ -35,8 +35,6 @@ struct GalleryInvitationsIndicator: View {
                     .background(Color.accentColor)
                     .frame(maxHeight: 80)
                 }
-
-                .padding()
             }
         }
     }

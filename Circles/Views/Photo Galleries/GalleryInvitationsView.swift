@@ -15,7 +15,7 @@ struct GalleryInvitationsView: View {
     
     var body: some View {
         ScrollView {
-            VStack {
+            VStack(spacing: 10) {
                 let invitations = session.invitations.values.filter { $0.type == ROOM_TYPE_PHOTOS }
                 if invitations.isEmpty {
                     Text("No current invitations")
