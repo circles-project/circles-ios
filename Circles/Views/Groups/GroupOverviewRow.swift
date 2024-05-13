@@ -65,7 +65,7 @@ struct GroupOverviewRow: View {
                     }
 
                 }
-                .font(.body)
+                .font(.footnote)
                 .foregroundColor(.gray)
                 .padding(.leading, 8)
             }

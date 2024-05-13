@@ -24,15 +24,17 @@ struct CircleOverviewCard: View {
         VStack(alignment: .leading) {
             HStack(alignment: .center) {
                 
-                CircleAvatar(space: space)
-                    .frame(width: 100, height: 100)
+                //CircleAvatar(space: space)
+                RoomAvatarView(room: space.wall ?? space, avatarText: .none)
+                    .clipShape(Circle())
+                    .frame(width: 120, height: 120)
                 
                 VStack(alignment: .leading) {
                     HStack {
                         Text(space.name ?? "(unnamed circle)")
                             .lineLimit(2)
                             .multilineTextAlignment(.leading)
-                            .font(.title2)
+                            .font(.title3)
                             .fontWeight(.bold)
                             .foregroundColor(.primary)
                         Spacer()
@@ -65,10 +67,10 @@ struct CircleOverviewCard: View {
                             }
                         }
                     }
-                    .font(.body)
+                    .font(.footnote)
                     .foregroundColor(.gray)
                 }
-                .padding(.leading)
+                //.padding(.leading)
 
                 Spacer()
             }
