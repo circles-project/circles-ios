@@ -67,44 +67,46 @@ struct SignupScreen: View {
     }
     
     var body: some View {
-        VStack {
-            CirclesLogoView()
-                .frame(minWidth: 100,
-                       idealWidth: 150,
-                       maxWidth: 200,
-                       minHeight: 100,
-                       idealHeight: 150,
-                       maxHeight: 200,
-                       alignment: .center)
-            
-            switch session.state {
-            case .notConnected:
-                notConnectedView
+        ScrollView {
+            VStack {
+                CirclesLogoView()
+                    .frame(minWidth: 100,
+                           idealWidth: 150,
+                           maxWidth: 200,
+                           minHeight: 100,
+                           idealHeight: 150,
+                           maxHeight: 200,
+                           alignment: .center)
                 
-            case .failed(let error):
-                Text("Signup failed")
-                
-            case .canceled:
-                Text("Signup canceled")
-
-            case .connected(let uiaaState):
-                SignupStartForm(session: session, store: store, state: uiaaState)
-
-            case .inProgress(let uiaaState, let stages):
-                UiaInProgressView(session: session, state: uiaaState, stages: stages)
-                
-            case .finished(let data):
-                let decoder = JSONDecoder()
-                
-                if let creds = try? decoder.decode(Matrix.Credentials.self, from: data) {
-                    SignupFinishedView(store: store, creds: creds)
-                } else {
-                    Text("There was a problem")
+                switch session.state {
+                case .notConnected:
+                    notConnectedView
+                    
+                case .failed(let error):
+                    Text("Signup failed")
+                    
+                case .canceled:
+                    Text("Signup canceled")
+                    
+                case .connected(let uiaaState):
+                    SignupStartForm(session: session, store: store, state: uiaaState)
+                    
+                case .inProgress(let uiaaState, let stages):
+                    UiaInProgressView(session: session, state: uiaaState, stages: stages)
+                    
+                case .finished(let data):
+                    let decoder = JSONDecoder()
+                    
+                    if let creds = try? decoder.decode(Matrix.Credentials.self, from: data) {
+                        SignupFinishedView(store: store, creds: creds)
+                    } else {
+                        Text("There was a problem")
+                    }
                 }
+                Spacer()
+                cancelButton
             }
         }
-        Spacer()
-        cancelButton
     }
 
 }

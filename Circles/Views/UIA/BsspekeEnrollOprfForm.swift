@@ -83,6 +83,7 @@ struct BsspekeEnrollOprfForm: View {
             Label("WARNING: If you forget your passphrase, you won't be able to access your posts or photos on a new device.", systemImage: "exclamationmark.triangle")
                 .foregroundColor(.red)
                 .padding(.top)
+                .padding(.horizontal,5)
             
             Spacer()
 
@@ -109,6 +110,7 @@ struct BsspekeEnrollOprfForm: View {
                 
                 ProgressView("Strength", value: 1.0 * self.score, total: 5.0)
                     .tint(self.color)
+                    .foregroundColor(.gray)
             }
             .frame(maxWidth: 550)
             .padding()
