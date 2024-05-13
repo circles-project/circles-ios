@@ -48,7 +48,12 @@ struct CircleOverviewCard: View {
                             Text("\(space.unread) unread posts")
                                 .fontWeight(.bold)
                         } else {
-                            Text("Last updated \(space.timestamp, formatter: formatter)")
+                            let age = Date().timeIntervalSince(space.timestamp)
+                            if age < 2 * 60.0 {
+                                Text("Updated just now")
+                            } else {
+                                Text("Last updated \(space.timestamp, formatter: formatter)")
+                            }
                         }
                         
                         if let wall = space.wall {

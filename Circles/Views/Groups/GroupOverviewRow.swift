@@ -56,7 +56,12 @@ struct GroupOverviewRow: View {
                         Text("\(room.unread) unread posts")
                             .fontWeight(.bold)
                     } else {
-                        Text("Last updated \(room.timestamp, formatter: RelativeDateTimeFormatter())")
+                        let age = Date().timeIntervalSince(room.timestamp)
+                        if age < 2 * 60.0 {
+                            Text("Updated just now")
+                        } else {
+                            Text("Last updated \(room.timestamp, formatter: RelativeDateTimeFormatter())")
+                        }
                     }
 
                 }
