@@ -20,7 +20,7 @@ struct InvitedGroupCard: View {
             RoomAvatarView(room: room, avatarText: .roomInitials)
                 //.overlay(Circle().stroke(Color.primary, lineWidth: 2))
                 .scaledToFill()
-                .frame(width: 110, height: 110)
+                .frame(width: 140, height: 140)
                 .blur(radius: blur)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .padding(.trailing, 5)
@@ -37,25 +37,31 @@ struct InvitedGroupCard: View {
                     .font(.title2)
                     .fontWeight(.bold)
 
-                Text("From:")
                 HStack(alignment: .top) {
                     VStack(alignment: .leading) {
                         if let name = user.displayName {
                             Text(name)
+                                .lineLimit(1)
                             Text(user.userId.stringValue)
+                                .lineLimit(1)
                                 .font(.footnote)
                                 .foregroundColor(.gray)
                         } else {
                             Text(user.userId.stringValue)
+                                .lineLimit(1)
                         }
                     }
                 }
                 
                 HStack {
+                    Spacer()
+                    
                     AsyncButton(role: .destructive, action: {
                         try await room.reject()
                     }) {
-                        Label("Reject", systemImage: "hand.thumbsdown.fill")
+                        Text("Reject")
+                            .padding(10)
+                            .background(RoundedRectangle(cornerRadius: 6).stroke(Color.red))
                     }
                     
                     Spacer()
@@ -64,15 +70,20 @@ struct InvitedGroupCard: View {
                         try await room.accept()
                         try await container.addChild(room.roomId)
                     }) {
-                        Label("Accept", systemImage: "hand.thumbsup.fill")
+                        Text("Accept")
+                            .padding(10)
+                            .foregroundColor(.white)
+                            .background(Color.accentColor)
+                            .cornerRadius(6)
                     }
                     
                     Spacer()
                     
                     NavigationLink(destination: InvitedGroupDetailView(room: room, user: user)) {
-                        Label("Details", systemImage: "ellipsis.circle")
-                            .labelStyle(.iconOnly)
-
+                        Text("Info")
+                            .padding(10)
+                            .background(RoundedRectangle(cornerRadius: 6)
+                                .stroke(Color.accentColor))
                     }
                 }
                 .padding(.top, 5)

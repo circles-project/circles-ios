@@ -142,6 +142,7 @@ struct GroupCreationSheet: View {
             
             TextField("Group name", text: $groupName)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
+                .textInputAutocapitalization(.words)
                 .focused($inputFocused)
                 .padding(.horizontal)
                 .onAppear {
