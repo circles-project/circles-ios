@@ -842,7 +842,6 @@
 		A5A40B6429D6088A009A17EE /* UIA */ = {
 			isa = PBXGroup;
 			children = (
-				403CEA9226E864160054DBF4 /* TermsOfServiceForm.swift */,
 				A5A40B6929D62FC6009A17EE /* BsspekeEnrollOprfForm.swift */,
 				A5F0148729D789B3000D57B3 /* BsspekeEnrollSaveForm.swift */,
 				A54A27852A81735F00858846 /* BsspekeLoginForm.swift */,
@@ -854,6 +853,7 @@
 				A5698A412B46043E000CB2A4 /* FreeSubscriptionForm.swift */,
 				A562F9AA2B6AEDF90008D96A /* LegacyPasswordUiaForm.swift */,
 				A562C0932B15287F00522FCB /* SubscriptionUIaForm.swift */,
+				403CEA9226E864160054DBF4 /* TermsOfServiceForm.swift */,
 				A5A40B6529D608C7009A17EE /* UiaInProgressView.swift */,
 				A53E912D2A5C95DC007B0196 /* UiaOverlayView.swift */,
 				A5F2E95B2A4497E30097DBF8 /* UiaView.swift */,
