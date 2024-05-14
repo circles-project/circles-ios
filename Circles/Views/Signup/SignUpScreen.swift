@@ -29,7 +29,7 @@ struct SignupScreen: View {
             self.showConfirmCancel = true
         }) {
             Text("Cancel")
-                .padding()
+                .padding(5)
                 .frame(width: 300.0, height: 40.0)
                 .foregroundColor(.red)
                 .cornerRadius(10)
