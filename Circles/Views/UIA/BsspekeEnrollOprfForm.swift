@@ -90,6 +90,7 @@ struct BsspekeEnrollOprfForm: View {
             VStack(alignment: .leading) {
                 SecureField("correct horse battery staple", text: $passphrase, prompt: Text("New passphrase"))
                     .textContentType(.newPassword)
+                    .textFieldStyle(.roundedBorder)
                     .focused($focus, equals: .inputPassphrase)
                     .onChange(of: passphrase) { newPassword in
                         if newPassword.isEmpty {
@@ -106,7 +107,7 @@ struct BsspekeEnrollOprfForm: View {
                             color = .red
                         }
                     }
-                    .frame(width: 300.0, height: 40.0)
+                    //.frame(width: 350.0, height: 40.0)
                 
                 ProgressView("Strength", value: 1.0 * self.score, total: 5.0)
                     .tint(self.color)

@@ -66,7 +66,7 @@ struct UiaView: View {
             }) {
                 Text("Cancel")
             }
-            .padding()
+            //.padding()
         }
     }
 }
