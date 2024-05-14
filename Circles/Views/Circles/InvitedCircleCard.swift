@@ -17,22 +17,27 @@ struct InvitedCircleCard: View {
     
     @State var showAcceptSheet = false
     
-    @State var blur = 20.0
+    @State var blur = 10.0
     
     var body: some View {
         HStack(spacing: 1) {
-            RoomAvatarView(room: room, avatarText: .none)
+            VStack {
+                RoomAvatarView(room: room, avatarText: .none)
                 //.overlay(Circle().stroke(Color.primary, lineWidth: 2))
-                .clipShape(Circle())
-                .frame(width: 140, height: 140)
-                .scaledToFit()
-                .blur(radius: blur)
-                .onTapGesture {
-                    if blur >= 5 {
-                        blur -= 5
+                    .blur(radius: blur)
+                    .clipShape(Circle())
+                    .frame(width: 80, height: 80)
+                    .scaledToFit()
+                    .onTapGesture {
+                        if blur >= 5 {
+                            blur -= 5
+                        } else {
+                            blur = 0
+                        }
                     }
-                }
-                .padding(.horizontal, 5)
+                    .padding(.horizontal, 5)
+                Spacer()
+            }
             
             VStack(alignment: .leading) {
                 Text(room.name ?? "(unnamed circle)")
@@ -95,12 +100,9 @@ struct InvitedCircleCard: View {
                     Spacer()
                     
                     NavigationLink(destination: InvitedCircleDetailView(room: room, user: user)) {
-                        //Label("Info", systemImage: "ellipsis.circle")
-                        Text("Info")
-                            //.labelStyle(.iconOnly)
+                        Image(systemName: "ellipsis.circle")
+                            .imageScale(.large)
                             .padding(10)
-                            .background(RoundedRectangle(cornerRadius: 6)
-                                .stroke(Color.accentColor))
                     }
                 }
                 .padding(.top, 5)
