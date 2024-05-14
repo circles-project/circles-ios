@@ -23,11 +23,13 @@ struct CircleInvitationsView: View {
                     ForEach(invitations) { room in
                         let user = room.session.getUser(userId: room.sender)
                         InvitedCircleCard(room: room, user: user, container: container)
+                            .frame(maxWidth: 350)
+                        
                         Divider()
                     }
                 }
             }
-            .frame(maxWidth: 500)
+            .padding()
         }
         .navigationTitle(Text("Circle Invitations"))
     }
