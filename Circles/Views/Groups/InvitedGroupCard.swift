@@ -13,22 +13,25 @@ struct InvitedGroupCard: View {
     @ObservedObject var user: Matrix.User
     @ObservedObject var container: ContainerRoom<GroupRoom>
     
-    @State var blur = 20.0
+    @State var blur = 10.0
     
     var body: some View {
         HStack(spacing: 1) {
-            RoomAvatarView(room: room, avatarText: .roomInitials)
+            VStack {
+                RoomAvatarView(room: room, avatarText: .roomInitials)
                 //.overlay(Circle().stroke(Color.primary, lineWidth: 2))
-                .scaledToFill()
-                .frame(width: 140, height: 140)
-                .blur(radius: blur)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .padding(.trailing, 5)
-                .onTapGesture {
-                    if blur >= 5 {
-                        blur -= 5
+                    .scaledToFill()
+                    .frame(width: 80, height: 80)
+                    .blur(radius: blur)
+                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                    .onTapGesture {
+                        if blur >= 5 {
+                            blur -= 5
+                        }
                     }
-                }
+                    .padding(.horizontal, 5)
+                Spacer()
+            }
             
             VStack(alignment: .leading) {
                 Text(room.name ?? "(unnamed group)")
@@ -80,10 +83,9 @@ struct InvitedGroupCard: View {
                     Spacer()
                     
                     NavigationLink(destination: InvitedGroupDetailView(room: room, user: user)) {
-                        Text("Info")
+                        Image(systemName: "ellipsis.circle")
+                            .imageScale(.large)
                             .padding(10)
-                            .background(RoundedRectangle(cornerRadius: 6)
-                                .stroke(Color.accentColor))
                     }
                 }
                 .padding(.top, 5)
