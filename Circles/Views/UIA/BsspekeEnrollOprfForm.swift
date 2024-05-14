@@ -80,7 +80,7 @@ struct BsspekeEnrollOprfForm: View {
                 .font(.title2)
                 .fontWeight(.bold)
             
-            Label("WARNING: If you forget your passphrase, you won't be able to access your posts or photos on a new device.", systemImage: "exclamationmark.triangle")
+            Label("NOTICE: If you forget your passphrase, you won't be able to access your posts or photos on a new device.", systemImage: "exclamationmark.triangle")
                 .foregroundColor(.red)
                 .padding(.top)
                 .padding(.horizontal,5)
