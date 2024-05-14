@@ -719,7 +719,6 @@
 				403CEA9826E868F30054DBF4 /* AccountInfoForm.swift */,
 				40E4D889268A76CF0055968A /* SignupScreen.swift */,
 				403CEAA026E90DE10054DBF4 /* SignupStartForm.swift */,
-				403CEA9226E864160054DBF4 /* TermsOfServiceForm.swift */,
 				403CEA9426E865740054DBF4 /* TokenForm.swift */,
 				403CEA9626E866B70054DBF4 /* ValidateEmailForm.swift */,
 				A52ACB942A797FD3005D90C5 /* SignupFinishedView.swift */,
@@ -843,21 +842,22 @@
 		A5A40B6429D6088A009A17EE /* UIA */ = {
 			isa = PBXGroup;
 			children = (
+				403CEA9226E864160054DBF4 /* TermsOfServiceForm.swift */,
 				A5A40B6929D62FC6009A17EE /* BsspekeEnrollOprfForm.swift */,
 				A5F0148729D789B3000D57B3 /* BsspekeEnrollSaveForm.swift */,
 				A54A27852A81735F00858846 /* BsspekeLoginForm.swift */,
 				A5CC0ACF29DB7001005935F0 /* BsspekeLoginVerifyForm.swift */,
 				A5F0148129D72371000D57B3 /* EmailEnrollRequestTokenForm.swift */,
 				A5F0148329D7436E000D57B3 /* EmailEnrollSubmitTokenForm.swift */,
+				A5D353B22BB1F1C0003AA02A /* EmailLoginRequestTokenForm.swift */,
+				A5D353B42BB20183003AA02A /* EmailLoginSubmitTokenForm.swift */,
+				A5698A412B46043E000CB2A4 /* FreeSubscriptionForm.swift */,
+				A562F9AA2B6AEDF90008D96A /* LegacyPasswordUiaForm.swift */,
 				A562C0932B15287F00522FCB /* SubscriptionUIaForm.swift */,
 				A5A40B6529D608C7009A17EE /* UiaInProgressView.swift */,
 				A53E912D2A5C95DC007B0196 /* UiaOverlayView.swift */,
 				A5F2E95B2A4497E30097DBF8 /* UiaView.swift */,
 				A5F0148529D75899000D57B3 /* UsernameEnrollForm.swift */,
-				A5698A412B46043E000CB2A4 /* FreeSubscriptionForm.swift */,
-				A562F9AA2B6AEDF90008D96A /* LegacyPasswordUiaForm.swift */,
-				A5D353B22BB1F1C0003AA02A /* EmailLoginRequestTokenForm.swift */,
-				A5D353B42BB20183003AA02A /* EmailLoginSubmitTokenForm.swift */,
 			);
 			path = UIA;
 			sourceTree = "<group>";
