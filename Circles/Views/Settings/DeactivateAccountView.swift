@@ -22,6 +22,7 @@ struct DeactivateAccountView: View {
                     .font(.title)
                     .fontWeight(.bold)
                 Text("Deactivating an account is permanent, and cannot be undone.")
+                    .multilineTextAlignment(.center)
             }
             .foregroundColor(.red)
             
@@ -29,18 +30,20 @@ struct DeactivateAccountView: View {
             
             VStack {
                 Text("To permanently deactivate your account, enter your user ID and tap the button below.")
+                    .multilineTextAlignment(.center)
                 TextField("User ID", text: $userIdString, prompt: Text(userId.stringValue))
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
                     .frame(width: 300.0, height: 40.0)
                 
+                let fullUserIdString = "@\(userIdString):\(userId.domain)"
                 Button(role: .destructive, action: {
                     showConfirmation = true
                 }) {
                     Label("Deactivate my account", systemImage: "xmark.bin")
                 }
                 .buttonStyle(.bordered)
-                .disabled(userIdString != userId.stringValue)
+                .disabled(fullUserIdString != userId.stringValue)
                 .confirmationDialog("Confirm deactivation",
                                     isPresented: $showConfirmation,
                                     actions: {

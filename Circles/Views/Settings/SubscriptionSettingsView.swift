@@ -156,27 +156,30 @@ struct SubscriptionSettingsView: View {
     
     @State private var redeemSheetIsPresented = false
 
-    
     var body: some View {
         VStack(alignment: .leading) {
             Form {
                 let individualProducts = products.filter({ !$0.isFamilyShareable }).sorted(by: { $0.price < $1.price })
-                Section("Individual Subscriptions") {
-                    ForEach(individualProducts) { product in
-                        SubscriptionSettingsProductView(store: store, product: product, selected: $selected)
-                            .padding(.vertical, 5)
+                if !individualProducts.isEmpty {
+                    Section("Individual Subscriptions") {
+                        ForEach(individualProducts) { product in
+                            SubscriptionSettingsProductView(store: store, product: product, selected: $selected)
+                                .padding(.vertical, 5)
+                        }
                     }
+                    .listRowInsets(.init(top: 5, leading: 5, bottom: 5, trailing: 5))
                 }
-                .listRowInsets(.init(top: 5, leading: 5, bottom: 5, trailing: 5))
                 
                 let familyShareableProducts = products.filter({ $0.isFamilyShareable }).sorted(by: { $0.price < $1.price })
-                Section("Family Shareable Subscriptions") {
-                    ForEach(familyShareableProducts) { product in
-                        SubscriptionSettingsProductView(store: store, product: product, selected: $selected)
-                            .padding(.vertical, 5)
+                if !familyShareableProducts.isEmpty {
+                    Section("Family Shareable Subscriptions") {
+                        ForEach(familyShareableProducts) { product in
+                            SubscriptionSettingsProductView(store: store, product: product, selected: $selected)
+                                .padding(.vertical, 5)
+                        }
                     }
+                    .listRowInsets(.init(top: 5, leading: 5, bottom: 5, trailing: 5))
                 }
-                .listRowInsets(.init(top: 5, leading: 5, bottom: 5, trailing: 5))
                 
                 #if DEBUG
                 Section("Testing") {

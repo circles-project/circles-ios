@@ -52,6 +52,10 @@ struct StorageSettingsView: View {
     
     var body: some View {
         Form {
+            if configInfo == nil && usageInfo == nil {
+                Text("Server does not provide media usage info") // TODO: check if still needed after upload media
+            }
+            
             if let usage = usageInfo {
                 Section("Current Usage") {
                     Text("Storage used")

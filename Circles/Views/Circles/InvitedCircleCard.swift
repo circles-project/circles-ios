@@ -48,11 +48,10 @@ struct InvitedCircleCard: View {
                         .foregroundColor(.red)
                 }
 
-                Text("From:")
                 HStack(alignment: .top) {
                     VStack(alignment: .leading) {
                         if let name = user.displayName {
-                            Text(name)
+                            Text("From: \(name)")
                             Text(user.userId.stringValue)
                                 .font(.footnote)
                                 .foregroundColor(.gray)
@@ -79,9 +78,11 @@ struct InvitedCircleCard: View {
                     .sheet(isPresented: $showAcceptSheet) {
                         ScrollView {
                             VStack {
-                                Text("Where would you like to follow updates from \(room.name ?? "this friend's timeline")?")
-                                
-                                Text("You can choose one or more of your circles")
+                                VStack(alignment: .leading) {
+                                    Text("Where would you like to follow updates from \(room.name ?? "this friend's timeline")?")
+                                    
+                                    Text("You can choose one or more of your circles")
+                                }
                                 
                                 CirclePicker(container: container, selected: $selectedCircles)
                                 
@@ -90,9 +91,7 @@ struct InvitedCircleCard: View {
                                     for circle in selectedCircles {
                                         try await circle.addChild(room.roomId)
                                     }
-                                }) {
-                                    Label("Accept invite and follow", systemImage: "thumbsup")
-                                }
+                                }) { }
                                 .disabled(selectedCircles.isEmpty)
                             }
                             .padding()
