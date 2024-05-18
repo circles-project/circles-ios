@@ -12,7 +12,7 @@ import Matrix
 struct SignupStartForm: View {
     //var matrix: MatrixInterface
     @ObservedObject var session: SignupSession
-    @AppStorage("debugMode") var debugMode: Bool = false
+    @AppStorage("debugMode") private var debugMode: Bool = false
     var store: CirclesStore
     //@Binding var selectedScreen: LoggedOutScreen.Screen
     var state: UIAA.SessionState
@@ -60,9 +60,8 @@ struct SignupStartForm: View {
                 .disabled(true)
             }
 
-
             Spacer()
-                .frame(minHeight: 100)
+                .frame(minHeight: 20)
 
             let appleFlow = state.flows.first(where: {
                 $0.stages.contains(AUTH_TYPE_APPSTORE_SUBSCRIPTION)
@@ -84,9 +83,6 @@ struct SignupStartForm: View {
                     .cornerRadius(10)
             }
             .disabled( nil == appleFlow || !SKPaymentQueue.canMakePayments() )
-
-            Spacer()
-                .frame(minHeight: 100)
             
             if debugMode {
                 VStack {
