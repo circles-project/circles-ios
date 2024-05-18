@@ -34,13 +34,14 @@ struct DeactivateAccountView: View {
                     .disableAutocorrection(true)
                     .frame(width: 300.0, height: 40.0)
                 
+                let fullUserIdString = "@\(userIdString):\(userId.domain)"
                 Button(role: .destructive, action: {
                     showConfirmation = true
                 }) {
                     Label("Deactivate my account", systemImage: "xmark.bin")
                 }
                 .buttonStyle(.bordered)
-                .disabled(userIdString != userId.stringValue)
+                .disabled(fullUserIdString != userId.stringValue)
                 .confirmationDialog("Confirm deactivation",
                                     isPresented: $showConfirmation,
                                     actions: {
