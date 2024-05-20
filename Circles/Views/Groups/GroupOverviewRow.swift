@@ -81,12 +81,12 @@ struct GroupOverviewRow: View {
         .confirmationDialog(Text("Confirm Leaving Group"),
                             isPresented: $showConfirmLeave,
                             actions: { //rm in
-                                AsyncButton(role: .destructive, action: {
-                                    try await container.leaveChild(room.roomId)
-                                }) {
-                                    Text("Leave \(room.name ?? "this group")")
-                                }
-                            })
+            AsyncButton(role: .destructive, action: {
+                try await container.leaveChild(room.roomId)
+            }) {
+                Text("Leave \(room.name ?? "this group")")
+            }
+        })
     }
 }
 

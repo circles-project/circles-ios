@@ -13,6 +13,7 @@ import Matrix
 struct MessageContextMenu: View {
     var message: Matrix.Message
     @Binding var sheetType: MessageSheetType?
+    @Binding var showMessageDeleteConfirmation: Bool
 
     var body: some View {
 
@@ -119,24 +120,13 @@ struct MessageContextMenu: View {
         }
         
         if message.iCanRedact {
-            Menu {
-                AsyncButton(action: {
-                    try await deleteAndPurge(message: message)
-                }) {
-                    Label("Delete", systemImage: "trash")
-                }
-                .foregroundColor(.red)
-                
-            } label: {
+            AsyncButton(action: {
+                self.showMessageDeleteConfirmation = true
+            }) {
                 Label("Delete", systemImage: "trash")
             }
         }
     }
-    
-
-
-
-
 }
 
 /*
