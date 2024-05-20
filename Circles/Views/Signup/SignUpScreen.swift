@@ -37,19 +37,18 @@ struct SignupScreen: View {
         .confirmationDialog(Text("Abort Signup?"),
                             isPresented: $showConfirmCancel,
                             actions: {
-                                AsyncButton(role: .destructive, action: {
-                                    try await self.store.disconnect()
-                                }) {
-                                    Text("Abort Signup")
-                                }
+            AsyncButton(role: .destructive, action: {
+                try await self.store.disconnect()
+            }) {
+                Text("Abort Signup")
+            }
             
-                                Button(role: .cancel, action: {
-                                    self.showConfirmCancel = false
-                                }) {
-                                    Text("Continue Signup")
-                                }
-                            }
-        )
+            Button(role: .cancel, action: {
+                self.showConfirmCancel = false
+            }) {
+                Text("Continue Signup")
+            }
+        })
     }
     
     var notConnectedView: some View {
