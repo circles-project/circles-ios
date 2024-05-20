@@ -9,11 +9,11 @@ import SwiftUI
 import Matrix
 
 struct RoomMemberDetailView: View {
-    @ObservedObject var user: Matrix.User
-    @ObservedObject var room: Matrix.Room
+    @ObservedObject private var user: Matrix.User
+    @ObservedObject private var room: Matrix.Room
     
-    @EnvironmentObject var session: CirclesApplicationSession
-    @AppStorage("debugMode") var debugMode: Bool = false
+    @EnvironmentObject private var session: CirclesApplicationSession
+    @AppStorage("debugMode") private var debugMode: Bool = false
     
     @State private var selectedPower: Int
     
@@ -28,7 +28,7 @@ struct RoomMemberDetailView: View {
     
     private var userIsMe: Bool
     
-    let roles = [
+    private let roles = [
         100: "Owner",
         50: "Moderator",
         0: "Poster",
@@ -46,7 +46,7 @@ struct RoomMemberDetailView: View {
     }
     
     @ViewBuilder
-    var powerLevelSection: some View {
+    private var powerLevelSection: some View {
         let myPowerLevel = room.myPowerLevel
         
         Section("Power level") {
@@ -98,9 +98,9 @@ struct RoomMemberDetailView: View {
     }
     
     @ViewBuilder
-    var moderationSection: some View {
+    private var moderationSection: some View {
         Section("Moderation") {
-            setIgnoreButton()
+            setIgnoreButton
             
             if room.iCanKick {
                 Button(role: .destructive, action: {
@@ -171,7 +171,7 @@ struct RoomMemberDetailView: View {
     }
     
     @ViewBuilder
-    var circlesMenu: some View {
+    private var circlesMenu: some View {
         Menu {
             let rooms = Array(session.circles.rooms.values) //.sorted { $0.timestamp < $1.timestamp }
             ForEach(rooms) { space in
@@ -193,7 +193,7 @@ struct RoomMemberDetailView: View {
     }
     
     @ViewBuilder
-    var groupsMenu: some View {
+    private var groupsMenu: some View {
         Menu {
             let rooms = Array(session.groups.rooms.values)
             ForEach(rooms) { group in
@@ -214,7 +214,7 @@ struct RoomMemberDetailView: View {
     }
     
     @ViewBuilder
-    var photosMenu: some View {
+    private var photosMenu: some View {
         Menu {
             let rooms = Array(session.galleries.rooms.values)
             ForEach(rooms) { gallery in
@@ -235,7 +235,7 @@ struct RoomMemberDetailView: View {
     }
     
     @ViewBuilder
-    var invitationSection: some View {
+    private var invitationSection: some View {
         Section("Invitations") {
             
             Button(action: {
@@ -257,7 +257,7 @@ struct RoomMemberDetailView: View {
     }
 
     @ViewBuilder
-    var securitySection: some View {
+    private var securitySection: some View {
         Section("Security") {
             ForEach(user.devices) { device in
                 NavigationLink(destination: DeviceDetailsView(session: room.session, device: device)) {
@@ -266,6 +266,37 @@ struct RoomMemberDetailView: View {
                 .buttonStyle(.plain)
             }
         }
+    }
+    
+    @ViewBuilder
+    private var setIgnoreButton: some View {
+        let isUserIgnored = user.session.ignoredUserIds.contains(user.userId)
+        let buttonColor: Color = isUserIgnored ? .blue : .red
+        let buttonImage = isUserIgnored ? "speaker.fill" : "speaker.slash.fill"
+        let confirmationMessage = isUserIgnored ? "Confirm unignoring" : "Confirm ignoring"
+        let ignoreMessage = isUserIgnored ? "Unignore" : "Ignore"
+        
+        Button(action: {
+            showConfirmIgnore = true
+        }) {
+            Label {
+                Text("\(ignoreMessage) this user everywhere")
+                    .foregroundColor(buttonColor)
+            } icon: {
+                Image(systemName: buttonImage)
+                    .foregroundColor(buttonColor)
+            }
+        }
+        .disabled(userIsMe)
+        .confirmationDialog(confirmationMessage,
+                            isPresented: $showConfirmIgnore,
+                            actions: {
+            AsyncButton(role: .none, action: {
+                isUserIgnored ? try await room.session.unignoreUser(userId: user.userId) : try await room.session.ignoreUser(userId: user.userId)
+            }) {
+                Text("\(ignoreMessage) \(user.displayName ?? user.userId.stringValue)")
+            }
+        })
     }
     
     var body: some View {
@@ -312,36 +343,6 @@ struct RoomMemberDetailView: View {
             }
         }
         .navigationTitle(user.displayName ?? user.userId.username)
-    }
-    
-    private func setIgnoreButton() -> some View {
-        let isUserIgnored = user.session.ignoredUserIds.contains(user.userId)
-        let buttonColor: Color = isUserIgnored ? .blue : .red
-        let buttonImage = isUserIgnored ? "speaker.fill" : "speaker.slash.fill"
-        let confirmationMessage = isUserIgnored ? "Confirm unignoring" : "Confirm ignoring"
-        let ignoreMessage = isUserIgnored ? "Unignore" : "Ignore"
-        
-        return Button(action: {
-            showConfirmIgnore = true
-        }) {
-            Label {
-                Text("\(ignoreMessage) this user everywhere")
-                    .foregroundColor(buttonColor)
-            } icon: {
-                Image(systemName: buttonImage)
-                    .foregroundColor(buttonColor)
-            }
-        }
-        .disabled(userIsMe)
-        .confirmationDialog(confirmationMessage,
-                            isPresented: $showConfirmIgnore,
-                            actions: {
-            AsyncButton(role: .none, action: {
-                isUserIgnored ? try await room.session.unignoreUser(userId: user.userId) : try await room.session.ignoreUser(userId: user.userId)
-            }) {
-                Text("\(ignoreMessage) \(user.displayName ?? user.userId.stringValue)")
-            }
-        })
     }
 }
 
