@@ -119,24 +119,14 @@ struct MessageContextMenu: View {
         }
         
         if message.iCanRedact {
-            Menu {
-                AsyncButton(action: {
-                    try await deleteAndPurge(message: message)
-                }) {
-                    Label("Delete", systemImage: "trash")
-                }
-                .foregroundColor(.red)
-                
-            } label: {
+            AsyncButton(action: {
+                try await deleteAndPurge(message: message)
+            }) {
                 Label("Delete", systemImage: "trash")
             }
+            .foregroundColor(.red)
         }
     }
-    
-
-
-
-
 }
 
 /*
