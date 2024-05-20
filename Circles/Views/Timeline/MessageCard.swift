@@ -72,6 +72,7 @@ struct MessageCard: MessageView {
     @State var sheetType: MessageSheetType? = nil
     @State var showAllReactions = false
     var iCanReact: Bool
+    @State var showMessageDeleteConfirmation = false
     
     init(message: Matrix.Message, isLocalEcho: Bool = false, isThreaded: Bool = false) {
         self.message = message
@@ -266,13 +267,22 @@ struct MessageCard: MessageView {
 
     var menuButton: some View {
         Menu {
-        MessageContextMenu(message: message,
-                           sheetType: $sheetType)
+            MessageContextMenu(message: message,
+                               sheetType: $sheetType,
+                               showMessageDeleteConfirmation: $showMessageDeleteConfirmation)
         }
         label: {
             //Label("More", systemImage: "ellipsis.circle")
             Image(systemName: "ellipsis.circle")
         }
+        .confirmationDialog("Delete Message", isPresented: $showMessageDeleteConfirmation, actions: {
+            AsyncButton(role: .destructive, action: {
+                self.showMessageDeleteConfirmation = false
+                try await deleteAndPurge(message: message)
+            }) {
+                Text("Confirm deleting the message")
+            }
+        })
     }
 
     var reactions: some View {
@@ -447,12 +457,12 @@ struct MessageCard: MessageView {
     }
     
     var body: some View {
-
         //linkWrapper
         mainCard
             .contextMenu {
                 MessageContextMenu(message: message,
-                                   sheetType: $sheetType)
+                                   sheetType: $sheetType,
+                                   showMessageDeleteConfirmation: $showMessageDeleteConfirmation)
             }
             .sheet(item: $sheetType) { st in
                 switch(st) {
@@ -462,9 +472,7 @@ struct MessageCard: MessageView {
 
                 case .reporting:
                     MessageReportingSheet(message: message)
-
                 }
             }
-
     }
 }

@@ -53,8 +53,6 @@ struct WelcomeScreen: View {
         .eraseToAnyPublisher()
     }
     
-
-    
     @ViewBuilder
     var welcomeView: some View {
         VStack(alignment: .center) {
@@ -83,7 +81,6 @@ struct WelcomeScreen: View {
                 .focused($inputFocused)
                 .frame(width: 300.0, height: 40.0)
 
-
             AsyncButton(action: {
                 if !username.isEmpty {
                     if let userId = UserId(username) {
@@ -96,7 +93,6 @@ struct WelcomeScreen: View {
                             self.showUsernameError = true
                         }
                     }
-
                 }
             }) {
                 Text("Log In")
@@ -110,22 +106,21 @@ struct WelcomeScreen: View {
                                 isPresented: $showSuggestion,
                                 presenting: suggestedUserId,
                                 actions: { userId in
-                                    AsyncButton(action: {
-                                        try await store.login(userId: userId, filter: loginFilter)
-                                        await MainActor.run {
-                                            self.suggestedUserId = nil
-                                        }
-                                    }) {
-                                        Text("Log in as \(userId.stringValue)")
-                                    }
-                                    Button(role: .cancel, action: {}) {
-                                        Text("No, let me try again")
-                                    }
-                                },
+                AsyncButton(action: {
+                    try await store.login(userId: userId, filter: loginFilter)
+                    await MainActor.run {
+                        self.suggestedUserId = nil
+                    }
+                }) {
+                    Text("Log in as \(userId.stringValue)")
+                }
+                Button(role: .cancel, action: {}) {
+                    Text("No, let me try again")
+                }
+            },
                                 message: { userId in
-                                    Text("Did you mean \(userId.stringValue)?")
-                                }
-            )
+                Text("Did you mean \(userId.stringValue)?")
+            })
             .alert(isPresented: $showUsernameError) {
                 Alert(title: Text("Invalid User ID"),
                       message: Text("Circles user ID's should start with an @ and have a domain at the end, like @username:example.com"))
@@ -190,8 +185,6 @@ struct WelcomeScreen: View {
                         }
                     }
                     .frame(maxWidth: 300)
-
-
                 }
                 
                 Spacer()
@@ -223,7 +216,6 @@ struct WelcomeScreen: View {
                     }
                 }
             }
-
         }
         //.padding(.horizontal)
         /*
@@ -240,7 +232,6 @@ struct WelcomeScreen: View {
                 self.showingKeyboard = true
             }
         }
-
     }
 
     var body: some View {
@@ -248,7 +239,4 @@ struct WelcomeScreen: View {
             welcomeView
         }
     }
-    
 }
-
-
