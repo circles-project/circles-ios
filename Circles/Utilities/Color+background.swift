@@ -22,3 +22,19 @@ public extension Color {
     static let tertiaryBackground = Color(UIColor.tertiarySystemBackground)
     #endif
 }
+
+extension Color {
+    func randomColor(from name: String) -> Color {
+        let colorChoice: Int = name.chars.reduce(0, { acc, str in
+            guard let asciiValue = Character(str).asciiValue
+            else {
+                return acc
+            }
+            
+            return acc + Int(asciiValue)
+        })
+        
+        let colors = CIRCLES_COLORS
+        return colors[colorChoice % colors.count]
+    }
+}
