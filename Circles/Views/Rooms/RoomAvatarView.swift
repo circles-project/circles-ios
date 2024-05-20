@@ -7,15 +7,14 @@
 
 import Foundation
 import SwiftUI
-
 import Matrix
 
 struct RoomAvatarView<Room>: View where Room: BasicRoomProtocol {
     @ObservedObject var room: Room
-    @Environment(\.colorScheme) var colorScheme
+    @Environment(\.colorScheme) private var colorScheme
     
     var avatarText: AvatarText
-    var textColor: Color {
+    private var textColor: Color {
         colorScheme == .dark
             ? Color.white
             : Color.black
@@ -43,20 +42,7 @@ struct RoomAvatarView<Room>: View where Room: BasicRoomProtocol {
         else {
             GeometryReader { geometry in
                 ZStack {
-                    // Make the color choice pseudo-random, but fixed based on
-                    // the room name instead of changing the color randomly
-                    // each time the avatar is rendered.
-                    let colorChoice: Int = room.roomId.stringValue.chars.reduce(0, { acc, str in
-                        guard let asciiValue = Character(str).asciiValue
-                        else {
-                            return acc
-                        }
-
-                        return acc + Int(asciiValue)
-                    })
-                    //let colors = [Color.blue, Color.purple, Color.orange, Color.yellow, Color.red, Color.pink, Color.green]
-                    let colors = CIRCLES_COLORS
-                    let color = colors[colorChoice % colors.count]
+                    let color = Color.background.randomColor(from: room.roomId.stringValue)
 
                     RoundedRectangle(cornerSize: CGSize())
                         .foregroundColor(color)

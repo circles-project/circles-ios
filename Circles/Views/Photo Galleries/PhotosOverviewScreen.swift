@@ -29,7 +29,6 @@ struct PhotosOverviewScreen: View {
     @State var showConfirmLeave = false
     @State var roomToLeave: GalleryRoom?
     
-    
     @State private var sheetType: PhotosSheetType? = nil
     
     var toolbarMenu: some View {
@@ -85,9 +84,7 @@ struct PhotosOverviewScreen: View {
                             }
                         }
                         .listRowSeparator(.hidden)
-
                     }
-
                     
                     let sharedGalleries = container.rooms.values
                         .filter { $0.creator != container.session.creds.userId }
@@ -97,34 +94,34 @@ struct PhotosOverviewScreen: View {
                         .font(.subheadline)
                         .foregroundColor(.gray)
                     */
-                    Section("Shared Galleries") {
-                        ForEach(sharedGalleries) { room in
-                            //Text("Found room \(room.roomId.string)")
-                            NavigationLink(value: room.roomId) {
-                                PhotoGalleryCard(room: room)
-                                // FIXME Add a longPress gesture
-                                //       for setting/changing the
-                                //       avatar image for the gallery
-                            }
-                            .buttonStyle(.plain)
-                            .contextMenu {
-                                Button(role: .destructive, action: {
-                                    self.showConfirmLeave = true
-                                    self.roomToLeave = room
-                                }) {
-                                    Label("Leave gallery", systemImage: "xmark.bin")
+                    if !sharedGalleries.isEmpty {
+                        Section("Shared Galleries") {
+                            ForEach(sharedGalleries) { room in
+                                //Text("Found room \(room.roomId.string)")
+                                NavigationLink(value: room.roomId) {
+                                    PhotoGalleryCard(room: room)
+                                    // FIXME Add a longPress gesture
+                                    //       for setting/changing the
+                                    //       avatar image for the gallery
+                                }
+                                .buttonStyle(.plain)
+                                .contextMenu {
+                                    Button(role: .destructive, action: {
+                                        self.showConfirmLeave = true
+                                        self.roomToLeave = room
+                                    }) {
+                                        Label("Leave gallery", systemImage: "xmark.bin")
+                                    }
                                 }
                             }
+                            .listRowSeparator(.hidden)
                         }
-                        .listRowSeparator(.hidden)
                     }
-                    
                 }
                 .listStyle(.plain)
                 .accentColor(.secondaryBackground)
             }
             //.padding()
-
         }
         else {
             Text("Create a photo gallery to get started")
@@ -185,15 +182,14 @@ struct PhotosOverviewScreen: View {
         .confirmationDialog(Text("Confirm Leaving Gallery"),
                             isPresented: $showConfirmLeave,
                             actions: {
-                                if let room = self.roomToLeave {
-                                    AsyncButton(role: .destructive, action: {
-                                        try await container.leaveChild(room.roomId)
-                                    }) {
-                                        Text("Leave \(room.name ?? "this gallery")")
-                                    }
-                                }
-                            }
-        )
+            if let room = self.roomToLeave {
+                AsyncButton(role: .destructive, action: {
+                    try await container.leaveChild(room.roomId)
+                }) {
+                    Text("Leave \(room.name ?? "this gallery")")
+                }
+            }
+        })
     }
     
     var body: some View {
