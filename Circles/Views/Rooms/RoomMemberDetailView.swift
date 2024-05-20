@@ -100,27 +100,7 @@ struct RoomMemberDetailView: View {
     @ViewBuilder
     var moderationSection: some View {
         Section("Moderation") {
-            
-            Button(role: .destructive, action: {
-                showConfirmIgnore = true
-            }) {
-                Label {
-                    Text("Ignore this user everywhere")
-                } icon: {
-                    Image(systemName: "speaker.slash.fill")
-                        .foregroundColor(.red)
-                }
-            }
-            .disabled(userIsMe)
-            .confirmationDialog("Confirm ignoring",
-                                isPresented: $showConfirmIgnore,
-                                actions: {
-                AsyncButton(role: .destructive, action: {
-                    try await room.session.ignoreUser(userId: user.userId)
-                }) {
-                    Text("Ignore \(user.displayName ?? user.userId.stringValue)")
-                }
-            })
+            setIgnoreButton()
             
             if room.iCanKick {
                 Button(role: .destructive, action: {
@@ -291,7 +271,6 @@ struct RoomMemberDetailView: View {
     var body: some View {
         VStack {
             Form {
-                
                 Section("General") {
                     Text("Name")
                         .badge(user.displayName ?? "")
@@ -310,8 +289,6 @@ struct RoomMemberDetailView: View {
                     
                     Text("User ID")
                         .badge(user.userId.stringValue)
-                    
-                    
                 }
                 
                 let power = room.getPowerLevel(userId: user.userId)
@@ -335,6 +312,36 @@ struct RoomMemberDetailView: View {
             }
         }
         .navigationTitle(user.displayName ?? user.userId.username)
+    }
+    
+    private func setIgnoreButton() -> some View {
+        let isUserIgnored = user.session.ignoredUserIds.contains(user.userId)
+        let buttonColor: Color = isUserIgnored ? .blue : .red
+        let buttonImage = isUserIgnored ? "speaker.fill" : "speaker.slash.fill"
+        let confirmationMessage = isUserIgnored ? "Confirm unignoring" : "Confirm ignoring"
+        let ignoreMessage = isUserIgnored ? "Unignore" : "Ignore"
+        
+        return Button(action: {
+            showConfirmIgnore = true
+        }) {
+            Label {
+                Text("\(ignoreMessage) this user everywhere")
+                    .foregroundColor(buttonColor)
+            } icon: {
+                Image(systemName: buttonImage)
+                    .foregroundColor(buttonColor)
+            }
+        }
+        .disabled(userIsMe)
+        .confirmationDialog(confirmationMessage,
+                            isPresented: $showConfirmIgnore,
+                            actions: {
+            AsyncButton(role: .none, action: {
+                isUserIgnored ? try await room.session.unignoreUser(userId: user.userId) : try await room.session.ignoreUser(userId: user.userId)
+            }) {
+                Text("\(ignoreMessage) \(user.displayName ?? user.userId.stringValue)")
+            }
+        })
     }
 }
 
