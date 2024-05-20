@@ -27,10 +27,10 @@ struct SubscriptionSettingsProductView: View {
     var product: Product
     @Binding var selected: String?
     
-    @State var errorTitle = ""
-    @State var isShowingError: Bool = false
+    @State private var errorTitle = ""
+    @State private var isShowingError: Bool = false
     
-    var unit: String? {
+    private var unit: String? {
         guard let subscription = product.subscription
         else { return nil }
         
@@ -52,7 +52,7 @@ struct SubscriptionSettingsProductView: View {
         return u
     }
     
-    func buy() async {
+    private func buy() async {
         do {
             if try await store.purchase(product) != nil {
                 withAnimation {
@@ -68,7 +68,7 @@ struct SubscriptionSettingsProductView: View {
     }
     
     @ViewBuilder
-    var subscribeButton: some View {
+    private var subscribeButton: some View {
         AsyncButton(action: {
             print("User tapped \"\(product.displayName)\"")
             await buy()
@@ -100,7 +100,7 @@ struct SubscriptionSettingsProductView: View {
     }
     
     @ViewBuilder
-    var checkBox: some View {
+    private var checkBox: some View {
         Text(Image(systemName: "checkmark"))
             .bold()
             .padding()
@@ -143,40 +143,43 @@ struct SubscriptionSettingsProductView: View {
 
 struct SubscriptionSettingsView: View {
     @ObservedObject var store: AppStoreInterface
-    @State var selected: String?
+    @State private var selected: String?
     
     // FIXME Hard-coding this for initial development - Get this from the UIA session params
-    let productIds = [
+    private let productIds = [
         "org.futo.circles.individual_monthly",
         "org.futo.circles.family_monthly",
         "org.futo.circles.individual_yearly",
         "org.futo.circles.family_yearly",
     ]
-    @State var products: [Product] = []
+    @State private var products: [Product] = []
     
     @State private var redeemSheetIsPresented = false
 
-    
     var body: some View {
         VStack(alignment: .leading) {
             Form {
                 let individualProducts = products.filter({ !$0.isFamilyShareable }).sorted(by: { $0.price < $1.price })
-                Section("Individual Subscriptions") {
-                    ForEach(individualProducts) { product in
-                        SubscriptionSettingsProductView(store: store, product: product, selected: $selected)
-                            .padding(.vertical, 5)
+                if !individualProducts.isEmpty {
+                    Section("Individual Subscriptions") {
+                        ForEach(individualProducts) { product in
+                            SubscriptionSettingsProductView(store: store, product: product, selected: $selected)
+                                .padding(.vertical, 5)
+                        }
                     }
+                    .listRowInsets(.init(top: 5, leading: 5, bottom: 5, trailing: 5))
                 }
-                .listRowInsets(.init(top: 5, leading: 5, bottom: 5, trailing: 5))
                 
                 let familyShareableProducts = products.filter({ $0.isFamilyShareable }).sorted(by: { $0.price < $1.price })
-                Section("Family Shareable Subscriptions") {
-                    ForEach(familyShareableProducts) { product in
-                        SubscriptionSettingsProductView(store: store, product: product, selected: $selected)
-                            .padding(.vertical, 5)
+                if !familyShareableProducts.isEmpty {
+                    Section("Family Shareable Subscriptions") {
+                        ForEach(familyShareableProducts) { product in
+                            SubscriptionSettingsProductView(store: store, product: product, selected: $selected)
+                                .padding(.vertical, 5)
+                        }
                     }
+                    .listRowInsets(.init(top: 5, leading: 5, bottom: 5, trailing: 5))
                 }
-                .listRowInsets(.init(top: 5, leading: 5, bottom: 5, trailing: 5))
                 
                 #if DEBUG
                 Section("Testing") {
@@ -194,14 +197,10 @@ struct SubscriptionSettingsView: View {
                         case .failure(let error):
                             print("Boo offer code redemtion failed: \(error)")
                         }
-                        
                     }
                 }
                 #endif
             }
-            
-
-            
             Spacer()
         }
         .task {
@@ -224,7 +223,6 @@ struct SubscriptionSettingsView: View {
             }
         }
         .navigationTitle("Subscription Settings")
-
     }
 }
 
