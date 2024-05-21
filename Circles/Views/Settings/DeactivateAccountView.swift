@@ -11,55 +11,54 @@ import Matrix
 struct DeactivateAccountView: View {
     @ObservedObject var store: CirclesStore
     var session: CirclesApplicationSession
-    @State var userIdString: String = ""
-    @State var showConfirmation = false
-    
+    @State private var showAlert = false
+        
     var body: some View {
-        VStack {
-            let userId = session.matrix.creds.userId
+        ZStack {
             VStack {
-                Label("Warning", systemImage: "exclamationmark.triangle")
-                    .font(.title)
-                    .fontWeight(.bold)
-                Text("Deactivating an account is permanent, and cannot be undone.")
-            }
-            .foregroundColor(.red)
-            
-            Spacer()
-            
-            VStack {
-                Text("To permanently deactivate your account, enter your user ID and tap the button below.")
-                TextField("User ID", text: $userIdString, prompt: Text(userId.stringValue))
-                    .autocapitalization(.none)
-                    .disableAutocorrection(true)
-                    .frame(width: 300.0, height: 40.0)
-                
-                let fullUserIdString = "@\(userIdString):\(userId.domain)"
-                Button(role: .destructive, action: {
-                    showConfirmation = true
-                }) {
-                    Label("Deactivate my account", systemImage: "xmark.bin")
+                VStack {
+                    Label("Warning", systemImage: "exclamationmark.triangle")
+                        .font(.title)
+                        .fontWeight(.bold)
+                    Text("Deactivating an account is permanent, and cannot be undone.")
                 }
-                .buttonStyle(.bordered)
-                .disabled(fullUserIdString != userId.stringValue)
-                .confirmationDialog("Confirm deactivation",
-                                    isPresented: $showConfirmation,
-                                    actions: {
-                                        AsyncButton(role: .destructive, action: {
+                .foregroundColor(.red)
+                
+                Spacer()
+                
+                VStack {
+                    Text("To permanently deactivate your account press button bellow and follow the instructions.")
+                    Button(role: .destructive, action: {
+                        showAlert = true
+                    }) {
+                        Label("Deactivate my account", systemImage: "xmark.bin")
+                    }
+                    .buttonStyle(.bordered)
+                }
+                
+                Spacer()
+            }
+            if showAlert {
+                let userId = session.matrix.creds.userId.stringValue
+                let customViewModel = CustomAlertModel(userId: userId,
+                                                       title: "Deactivation",
+                                                       message: "To delete your account, type in your full user id \(userId) below.")
+                GeometryReader { geometry in
+                    CustomAlertView(model: customViewModel,
+                                    onConfirm: {
+                                        Task {
                                             try await self.store.deactivate()
-                                        }) {
-                                            Text("Permanently deactivate")
                                         }
                                     },
-                                    message: {
-                                        Text("Last chance to reconsider")
+                                    onCancel: {
+                                        showAlert = false
                                     }
-                )
+                    )
+                    .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
+                }
+                .background(Color.black.opacity(0.4).edgesIgnoringSafeArea(.all))
             }
-            
-            Spacer()
         }
-        .padding()
     }
 }
 
