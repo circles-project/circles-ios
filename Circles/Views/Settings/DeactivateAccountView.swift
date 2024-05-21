@@ -40,19 +40,19 @@ struct DeactivateAccountView: View {
             }
             if showAlert {
                 let userId = session.matrix.creds.userId.stringValue
-                let customViewModel = CustomAlertModel(userId: userId,
-                                                       title: "Deactivation",
-                                                       message: "To delete your account, type in your full user id \(userId) below.")
+                let customViewModel = DeactivateAccountAlertModel(userId: userId,
+                                                                  title: "Deactivation",
+                                                                  message: "To delete your account, type in your full user id \(userId) below.")
                 GeometryReader { geometry in
-                    CustomAlertView(model: customViewModel,
-                                    onConfirm: {
-                                        Task {
-                                            try await self.store.deactivate()
-                                        }
-                                    },
-                                    onCancel: {
-                                        showAlert = false
-                                    }
+                    DeactivateAccountAlertView(model: customViewModel,
+                                               onConfirm: {
+                                                    Task {
+                                                        try await self.store.deactivate()
+                                                    }
+                                                },
+                                                onCancel: {
+                                                    showAlert = false
+                                                }
                     )
                     .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
                 }

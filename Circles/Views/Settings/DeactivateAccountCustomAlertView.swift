@@ -7,15 +7,15 @@
 
 import SwiftUI
 
-struct CustomAlertModel {
+struct DeactivateAccountAlertModel {
     let userId: String
     let title: String
     let message: String
 }
 
-struct CustomAlertView: View {
+struct DeactivateAccountAlertView: View {
     @State private var text = ""
-    var model: CustomAlertModel
+    var model: DeactivateAccountAlertModel
     var onConfirm: () -> Void
     var onCancel: () -> Void
     
