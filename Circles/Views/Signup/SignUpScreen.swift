@@ -102,9 +102,10 @@ struct SignupScreen: View {
                         Text("There was a problem")
                     }
                 }
-                Spacer()
-                cancelButton
             }
+        }
+        .safeAreaInset(edge: .bottom) {
+            cancelButton
         }
     }
 
