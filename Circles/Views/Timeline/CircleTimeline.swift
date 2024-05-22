@@ -137,7 +137,7 @@ struct CircleTimeline: View {
                     if loading {
                         ProgressView("Loading...")
                     }
-                    else if space.canPaginateRooms {
+                    else if space.canPaginateRooms && space.unread != 0 {
                         AsyncButton(action: {
                             try await space.paginateRooms()
                         }) {
