@@ -24,6 +24,8 @@ struct RoomMemberDetailView: View {
     @State private var showConfirmKick = false
     @State private var showConfirmBan = false
     
+    @State private var isUserIgnored = false
+    
     @State private var inviteRoom: Matrix.Room?
     
     private var userIsMe: Bool
@@ -41,6 +43,7 @@ struct RoomMemberDetailView: View {
         self.room = room
         self.selectedPower = room.getPowerLevel(userId: user.userId)
         self.userIsMe = user.userId == room.session.creds.userId
+        self.isUserIgnored = user.session.ignoredUserIds.contains(user.userId)
         
         print("My power = \(room.myPowerLevel) vs theirs = \(selectedPower)")
     }
@@ -270,7 +273,6 @@ struct RoomMemberDetailView: View {
     
     @ViewBuilder
     private var setIgnoreButton: some View {
-        let isUserIgnored = user.session.ignoredUserIds.contains(user.userId)
         let buttonColor: Color = isUserIgnored ? .blue : .red
         let buttonImage = isUserIgnored ? "speaker.fill" : "speaker.slash.fill"
         let confirmationMessage = isUserIgnored ? "Confirm unignoring" : "Confirm ignoring"
@@ -293,6 +295,7 @@ struct RoomMemberDetailView: View {
                             actions: {
             AsyncButton(role: .none, action: {
                 isUserIgnored ? try await room.session.unignoreUser(userId: user.userId) : try await room.session.ignoreUser(userId: user.userId)
+                isUserIgnored = user.session.ignoredUserIds.contains(user.userId)
             }) {
                 Text("\(ignoreMessage) \(user.displayName ?? user.userId.stringValue)")
             }
@@ -330,7 +333,9 @@ struct RoomMemberDetailView: View {
                         powerLevelSection
                     }
                     
-                    moderationSection
+                    if !userIsMe {
+                        moderationSection
+                    }
                 }
                 
                 if !userIsMe {
