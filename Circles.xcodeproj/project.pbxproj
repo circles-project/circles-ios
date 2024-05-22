@@ -69,6 +69,7 @@
 		40CD7F6F2667E16100DE315F /* VideoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40CD7F6E2667E16100DE315F /* VideoPicker.swift */; };
 		40E4D88A268A76CF0055968A /* SignupScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E4D889268A76CF0055968A /* SignupScreen.swift */; };
 		40F906BB269DF96100287B27 /* MessageSheetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F906BA269DF96100287B27 /* MessageSheetType.swift */; };
+		42237CEF2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42237CEE2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift */; };
 		4C40ED262AA7CCFB00F58493 /* GalleryInvitationsIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C40ED252AA7CCFB00F58493 /* GalleryInvitationsIndicator.swift */; };
 		4C40ED282AA7D06800F58493 /* PeopleInvitationsIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C40ED272AA7D06800F58493 /* PeopleInvitationsIndicator.swift */; };
 		A504DA7328120AF100EFF42E /* AsyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A504DA7228120AF100EFF42E /* AsyncButton.swift */; };
@@ -314,6 +315,7 @@
 		40CD7F6E2667E16100DE315F /* VideoPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPicker.swift; sourceTree = "<group>"; };
 		40E4D889268A76CF0055968A /* SignupScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupScreen.swift; sourceTree = "<group>"; };
 		40F906BA269DF96100287B27 /* MessageSheetType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSheetType.swift; sourceTree = "<group>"; };
+		42237CEE2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeactivateAccountCustomAlertView.swift; sourceTree = "<group>"; };
 		4C40ED252AA7CCFB00F58493 /* GalleryInvitationsIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryInvitationsIndicator.swift; sourceTree = "<group>"; };
 		4C40ED272AA7D06800F58493 /* PeopleInvitationsIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleInvitationsIndicator.swift; sourceTree = "<group>"; };
 		A504DA7228120AF100EFF42E /* AsyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncButton.swift; sourceTree = "<group>"; };
@@ -812,6 +814,7 @@
 			children = (
 				A53E91312A5F152D007B0196 /* AcknowledgementsView.swift */,
 				A53E912B2A57416B007B0196 /* DeactivateAccountView.swift */,
+				42237CEE2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift */,
 				A5EE59C62A5F3A59007C24C7 /* DeviceDetailsView.swift */,
 				A5EE59C32A5F21C2007C24C7 /* DeviceInfoView.swift */,
 				A5EE59C22A5F21C2007C24C7 /* DevicesScreen.swift */,
@@ -1167,6 +1170,7 @@
 				A5D353B12BB1C5EE003AA02A /* ForgotPasswordView.swift in Sources */,
 				409F438C265DE2C200690A61 /* CircleTimeline.swift in Sources */,
 				409F4337265DE15F00690A61 /* CirclesOverviewScreen.swift in Sources */,
+				42237CEF2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift in Sources */,
 				A5A40B6329D46ABD009A17EE /* HtmlView.swift in Sources */,
 				A562C0922B0BEC2000522FCB /* UsersToInviteView.swift in Sources */,
 				409F4336265DE15F00690A61 /* CircleTimelineView.swift in Sources */,
