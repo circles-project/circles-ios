@@ -27,6 +27,8 @@ struct CircleCreationSheet: View {
     @State private var alertMessage: String = ""
     @State private var showAlert = false
     
+    var invitedCircleName: String? = nil
+    
     @FocusState var inputFocused
     
     func create() async throws {
@@ -47,7 +49,9 @@ struct CircleCreationSheet: View {
             try await container.session.inviteUser(roomId: wallRoomId, userId: user.userId)
         }
         
-        self.presentation.wrappedValue.dismiss()
+        if invitedCircleName != circleName {
+            self.presentation.wrappedValue.dismiss()
+        }
     }
     
     @ViewBuilder
@@ -124,8 +128,22 @@ struct CircleCreationSheet: View {
             Spacer()
         }
     }
-
-    var body: some View {
+    
+    /// Use this only if the user does not have any circles. This function automatically creates a circle with the same name as the circle from the invitation
+    var createInvitationCircle: some View {
+        VStack { }
+        .padding()
+        .onAppear(perform: {
+            guard let invitedCircleName else { return }
+            circleName = invitedCircleName
+            Task {
+                try await create()
+            }
+        })
+    }
+    
+    /// Use this when user want to create custom circle
+    var createCustomCircle: some View {
         VStack {
             buttonBar
             
@@ -158,6 +176,14 @@ struct CircleCreationSheet: View {
             Spacer()
         }
         .padding()
+    }
+
+    var body: some View {
+        if invitedCircleName == nil {
+            createCustomCircle
+        } else {
+            createInvitationCircle
+        }
     }
 }
 
