@@ -27,7 +27,9 @@ struct GalleryInviteCard: View {
              AsyncButton(role: .destructive, action: {
                 try await room.reject()
             }) {
-                Label("Reject", systemImage: "hand.thumbsdown.fill")
+                Text("Reject")
+                    .padding(10)
+                    .background(RoundedRectangle(cornerRadius: 6).stroke(Color.red))
             }
             .padding(2)
             .frame(width: 120.0, height: 40.0)
@@ -39,7 +41,11 @@ struct GalleryInviteCard: View {
                 try await room.accept()
                 try await container.addChild(roomId)
             }) {
-                Label("Accept", systemImage: "hand.thumbsup.fill")
+                Text("Accept")
+                    .padding(10)
+                    .foregroundColor(.white)
+                    .background(Color.accentColor)
+                    .cornerRadius(6)
             }
             .padding(2)
             .frame(width: 120.0, height: 40.0)

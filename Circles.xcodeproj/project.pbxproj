@@ -172,6 +172,8 @@
 		A5B74F402BC5F8E300299D90 /* ScanQrCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B74F3F2BC5F8E300299D90 /* ScanQrCodeView.swift */; };
 		A5B74F422BC5F92900299D90 /* KnockOnRoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B74F412BC5F92900299D90 /* KnockOnRoomView.swift */; };
 		A5B74F442BC85B7600299D90 /* StorageSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B74F432BC85B7600299D90 /* StorageSettingsView.swift */; };
+		A5B7917D2BE3E39000F199DA /* InviteToFollowMeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B7917C2BE3E39000F199DA /* InviteToFollowMeView.swift */; };
+		A5B7917F2BE3EAC100F199DA /* CircleAcceptInviteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B7917E2BE3EAC100F199DA /* CircleAcceptInviteView.swift */; };
 		A5BB4EEF2BD02C2A001FD0D8 /* VideoThumbnailCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB4EEE2BD02C2A001FD0D8 /* VideoThumbnailCard.swift */; };
 		A5BB4EF12BD02D26001FD0D8 /* VideoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB4EF02BD02D26001FD0D8 /* VideoDetailView.swift */; };
 		A5BB4EF32BD02FD7001FD0D8 /* VideoContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB4EF22BD02FD7001FD0D8 /* VideoContentView.swift */; };
@@ -411,6 +413,8 @@
 		A5B74F3F2BC5F8E300299D90 /* ScanQrCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanQrCodeView.swift; sourceTree = "<group>"; };
 		A5B74F412BC5F92900299D90 /* KnockOnRoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnockOnRoomView.swift; sourceTree = "<group>"; };
 		A5B74F432BC85B7600299D90 /* StorageSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageSettingsView.swift; sourceTree = "<group>"; };
+		A5B7917C2BE3E39000F199DA /* InviteToFollowMeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteToFollowMeView.swift; sourceTree = "<group>"; };
+		A5B7917E2BE3EAC100F199DA /* CircleAcceptInviteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleAcceptInviteView.swift; sourceTree = "<group>"; };
 		A5BB4EEE2BD02C2A001FD0D8 /* VideoThumbnailCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoThumbnailCard.swift; sourceTree = "<group>"; };
 		A5BB4EF02BD02D26001FD0D8 /* VideoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoDetailView.swift; sourceTree = "<group>"; };
 		A5BB4EF22BD02FD7001FD0D8 /* VideoContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoContentView.swift; sourceTree = "<group>"; };
@@ -651,6 +655,7 @@
 				A51ABE692B2B7E2000039276 /* FollowingTimelineDetailsView.swift */,
 				A5FB4B152BC9C71C00253A22 /* SingleTimelineView.swift */,
 				A51928B62BCDBD8E005DCFF4 /* CircleRenameView.swift */,
+				A5B7917E2BE3EAC100F199DA /* CircleAcceptInviteView.swift */,
 			);
 			path = Circles;
 			sourceTree = "<group>";
@@ -714,7 +719,6 @@
 				403CEA9826E868F30054DBF4 /* AccountInfoForm.swift */,
 				40E4D889268A76CF0055968A /* SignupScreen.swift */,
 				403CEAA026E90DE10054DBF4 /* SignupStartForm.swift */,
-				403CEA9226E864160054DBF4 /* TermsOfServiceForm.swift */,
 				403CEA9426E865740054DBF4 /* TokenForm.swift */,
 				403CEA9626E866B70054DBF4 /* ValidateEmailForm.swift */,
 				A52ACB942A797FD3005D90C5 /* SignupFinishedView.swift */,
@@ -761,6 +765,7 @@
 				A57BD8432BD1996800EC07E9 /* FollowersView.swift */,
 				A57BD8452BD19C1000EC07E9 /* FriendsOfFriendsView.swift */,
 				A57BD8472BD1A6A300EC07E9 /* FollowingView.swift */,
+				A5B7917C2BE3E39000F199DA /* InviteToFollowMeView.swift */,
 			);
 			path = People;
 			sourceTree = "<group>";
@@ -843,15 +848,16 @@
 				A5CC0ACF29DB7001005935F0 /* BsspekeLoginVerifyForm.swift */,
 				A5F0148129D72371000D57B3 /* EmailEnrollRequestTokenForm.swift */,
 				A5F0148329D7436E000D57B3 /* EmailEnrollSubmitTokenForm.swift */,
+				A5D353B22BB1F1C0003AA02A /* EmailLoginRequestTokenForm.swift */,
+				A5D353B42BB20183003AA02A /* EmailLoginSubmitTokenForm.swift */,
+				A5698A412B46043E000CB2A4 /* FreeSubscriptionForm.swift */,
+				A562F9AA2B6AEDF90008D96A /* LegacyPasswordUiaForm.swift */,
 				A562C0932B15287F00522FCB /* SubscriptionUIaForm.swift */,
+				403CEA9226E864160054DBF4 /* TermsOfServiceForm.swift */,
 				A5A40B6529D608C7009A17EE /* UiaInProgressView.swift */,
 				A53E912D2A5C95DC007B0196 /* UiaOverlayView.swift */,
 				A5F2E95B2A4497E30097DBF8 /* UiaView.swift */,
 				A5F0148529D75899000D57B3 /* UsernameEnrollForm.swift */,
-				A5698A412B46043E000CB2A4 /* FreeSubscriptionForm.swift */,
-				A562F9AA2B6AEDF90008D96A /* LegacyPasswordUiaForm.swift */,
-				A5D353B22BB1F1C0003AA02A /* EmailLoginRequestTokenForm.swift */,
-				A5D353B42BB20183003AA02A /* EmailLoginSubmitTokenForm.swift */,
 			);
 			path = UIA;
 			sourceTree = "<group>";
@@ -1097,6 +1103,7 @@
 				A5BB4EF12BD02D26001FD0D8 /* VideoDetailView.swift in Sources */,
 				409F4340265DE17500690A61 /* GroupCreationSheet.swift in Sources */,
 				409F4364265DE21A00690A61 /* MessageReportingSheet.swift in Sources */,
+				A5B7917F2BE3EAC100F199DA /* CircleAcceptInviteView.swift in Sources */,
 				4C40ED262AA7CCFB00F58493 /* GalleryInvitationsIndicator.swift in Sources */,
 				A56593632AF17EF90003C244 /* LegacyLoginScreen.swift in Sources */,
 				40F906BB269DF96100287B27 /* MessageSheetType.swift in Sources */,
@@ -1123,6 +1130,7 @@
 				A5EE59C52A5F21C2007C24C7 /* DeviceInfoView.swift in Sources */,
 				A562C08E2AFE8EA800522FCB /* CirclesLogoView.swift in Sources */,
 				40AEA6752678E24200C9CBD1 /* BlurHashEncode.swift in Sources */,
+				A5B7917D2BE3E39000F199DA /* InviteToFollowMeView.swift in Sources */,
 				A5EB046F2AFB30D400CC7A6C /* GallerySettingsView.swift in Sources */,
 				409F435C265DE1EE00690A61 /* UiaLoginScreen.swift in Sources */,
 				409F4335265DE15F00690A61 /* CirclePicker.swift in Sources */,
@@ -1401,7 +1409,7 @@
 				CODE_SIGN_ENTITLEMENTS = Circles/Circles.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 44;
+				CURRENT_PROJECT_VERSION = 45;
 				DEVELOPMENT_ASSET_PATHS = "\"Circles/Preview Content\"";
 				DEVELOPMENT_TEAM = 2W7AC6T8T5;
 				ENABLE_PREVIEWS = YES;
@@ -1413,7 +1421,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = org.futo.circles;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1438,7 +1446,7 @@
 				CODE_SIGN_ENTITLEMENTS = Circles/Circles.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 44;
+				CURRENT_PROJECT_VERSION = 45;
 				DEVELOPMENT_ASSET_PATHS = "\"Circles/Preview Content\"";
 				DEVELOPMENT_TEAM = 2W7AC6T8T5;
 				ENABLE_PREVIEWS = YES;
@@ -1450,7 +1458,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = org.futo.circles;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

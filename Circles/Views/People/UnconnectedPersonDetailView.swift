@@ -59,6 +59,9 @@ struct UnconnectedPersonDetailView: View {
                           message: Text(alertMessage),
                           dismissButton: .default(Text("OK")))
                 }
+                NavigationLink(destination: InviteToFollowMeView(user: user)) {
+                    Label("Invite to follow me", systemImage: "circle.hexagonpath")
+                }
             }
             
             Spacer()

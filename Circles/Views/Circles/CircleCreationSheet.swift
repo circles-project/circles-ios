@@ -69,7 +69,7 @@ struct CircleCreationSheet: View {
         HStack {
             let cardSize: CGFloat = 120
             
-            //Spacer()
+            Spacer()
             
             ZStack {
                 if let img = avatarImage {
@@ -106,15 +106,19 @@ struct CircleCreationSheet: View {
             }
 
             VStack(alignment: .leading) {
-                let myUser = container.session.getUser(userId: container.session.creds.userId)
-                Text(myUser.displayName ?? "\(myUser.userId)")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                
                 Text(circleName)
                     .lineLimit(3)
                     .font(.title2)
                     .fontWeight(.bold)
+                
+                let myUser = container.session.getUser(userId: container.session.creds.userId)
+                Text(myUser.displayName ?? "\(myUser.userId)")
+                    .font(.title2)
+                    //.fontWeight(.bold)
+                
+                Text(myUser.userId.stringValue)
+                    .font(.title3)
+                    .foregroundColor(.gray)
             }
             
             Spacer()
@@ -130,7 +134,9 @@ struct CircleCreationSheet: View {
             
             TextField("Circle name", text: $circleName)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
+                .textInputAutocapitalization(.words)
                 .focused($inputFocused)
+                .frame(maxWidth: 350)
                 .onAppear {
                     self.inputFocused = true
                 }

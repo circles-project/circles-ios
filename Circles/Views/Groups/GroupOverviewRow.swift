@@ -19,7 +19,7 @@ struct GroupOverviewRow: View {
     var body: some View {
         HStack(alignment: .top) {
             RoomAvatarView(room: room, avatarText: .roomInitials)
-                .frame(width: 110, height: 110)
+                .frame(width: 80, height: 80)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .padding(.leading, 5)
             
@@ -56,11 +56,16 @@ struct GroupOverviewRow: View {
                         Text("\(room.unread) unread posts")
                             .fontWeight(.bold)
                     } else {
-                        Text("Last updated \(room.timestamp, formatter: RelativeDateTimeFormatter())")
+                        let age = Date().timeIntervalSince(room.timestamp)
+                        if age < 2 * 60.0 {
+                            Text("Updated just now")
+                        } else {
+                            Text("Last updated \(room.timestamp, formatter: RelativeDateTimeFormatter())")
+                        }
                     }
 
                 }
-                .font(.title3)
+                .font(.footnote)
                 .foregroundColor(.gray)
                 .padding(.leading, 8)
             }

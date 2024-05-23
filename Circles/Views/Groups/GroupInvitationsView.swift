@@ -15,7 +15,7 @@ struct GroupInvitationsView: View {
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 10) {
                 let invitations = session.invitations.values.filter { $0.type == ROOM_TYPE_GROUP }
                 if invitations.isEmpty {
                     Text("No pending invitations")
@@ -23,11 +23,13 @@ struct GroupInvitationsView: View {
                     ForEach(invitations) { room in
                         let user = room.session.getUser(userId: room.sender)
                         InvitedGroupCard(room: room, user: user, container: container)
+                            .frame(maxWidth: 350)
+
                         Divider()
                     }
                 }
             }
-            .frame(maxWidth: 500)
+            .padding()
         }
         .navigationTitle(Text("Group Invitations"))
     }

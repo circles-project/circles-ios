@@ -11,24 +11,30 @@ import SwiftUI
 
 struct CircleOverviewCard: View {
     @ObservedObject var space: CircleSpace
+
+    var formatter: RelativeDateTimeFormatter
     
-    var avatar: some View {
-        CircleAvatar(space: space)
+    init(space: CircleSpace) {
+        self.space = space
+        self.formatter = RelativeDateTimeFormatter()
+        self.formatter.dateTimeStyle = .named
     }
     
     var body: some View {
         VStack(alignment: .leading) {
             HStack(alignment: .center) {
                 
-                avatar
-                    .frame(width: 100, height: 100)
+                //CircleAvatar(space: space)
+                RoomAvatarView(room: space.wall ?? space, avatarText: .none)
+                    .clipShape(Circle())
+                    .frame(width: 80, height: 80)
                 
                 VStack(alignment: .leading) {
                     HStack {
                         Text(space.name ?? "(unnamed circle)")
                             .lineLimit(2)
                             .multilineTextAlignment(.leading)
-                            .font(.title2)
+                            .font(.title3)
                             .fontWeight(.bold)
                             .foregroundColor(.primary)
                         Spacer()
@@ -44,7 +50,12 @@ struct CircleOverviewCard: View {
                             Text("\(space.unread) unread posts")
                                 .fontWeight(.bold)
                         } else {
-                            Text("Last updated \(space.timestamp, formatter: RelativeDateTimeFormatter())")
+                            let age = Date().timeIntervalSince(space.timestamp)
+                            if age < 2 * 60.0 {
+                                Text("Updated just now")
+                            } else {
+                                Text("Last updated \(space.timestamp, formatter: formatter)")
+                            }
                         }
                         
                         if let wall = space.wall {
@@ -56,10 +67,10 @@ struct CircleOverviewCard: View {
                             }
                         }
                     }
-                    .font(.headline)
+                    .font(.footnote)
                     .foregroundColor(.gray)
                 }
-                .padding(.leading)
+                //.padding(.leading)
 
                 Spacer()
             }

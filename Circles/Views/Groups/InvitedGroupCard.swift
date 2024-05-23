@@ -13,22 +13,25 @@ struct InvitedGroupCard: View {
     @ObservedObject var user: Matrix.User
     @ObservedObject var container: ContainerRoom<GroupRoom>
     
-    @State var blur = 20.0
+    @State var blur = 10.0
     
     var body: some View {
         HStack(spacing: 1) {
-            RoomAvatarView(room: room, avatarText: .roomInitials)
+            VStack {
+                RoomAvatarView(room: room, avatarText: .roomInitials)
                 //.overlay(Circle().stroke(Color.primary, lineWidth: 2))
-                .scaledToFill()
-                .frame(width: 110, height: 110)
-                .blur(radius: blur)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .padding(.trailing, 5)
-                .onTapGesture {
-                    if blur >= 5 {
-                        blur -= 5
+                    .scaledToFill()
+                    .frame(width: 80, height: 80)
+                    .blur(radius: blur)
+                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                    .onTapGesture {
+                        if blur >= 5 {
+                            blur -= 5
+                        }
                     }
-                }
+                    .padding(.horizontal, 5)
+                Spacer()
+            }
             
             VStack(alignment: .leading) {
                 Text(room.name ?? "(unnamed group)")
@@ -37,25 +40,31 @@ struct InvitedGroupCard: View {
                     .font(.title2)
                     .fontWeight(.bold)
 
-                Text("From:")
                 HStack(alignment: .top) {
                     VStack(alignment: .leading) {
                         if let name = user.displayName {
                             Text(name)
+                                .lineLimit(1)
                             Text(user.userId.stringValue)
+                                .lineLimit(1)
                                 .font(.footnote)
                                 .foregroundColor(.gray)
                         } else {
                             Text(user.userId.stringValue)
+                                .lineLimit(1)
                         }
                     }
                 }
                 
                 HStack {
+                    Spacer()
+                    
                     AsyncButton(role: .destructive, action: {
                         try await room.reject()
                     }) {
-                        Label("Reject", systemImage: "hand.thumbsdown.fill")
+                        Text("Reject")
+                            .padding(10)
+                            .background(RoundedRectangle(cornerRadius: 6).stroke(Color.red))
                     }
                     
                     Spacer()
@@ -64,15 +73,19 @@ struct InvitedGroupCard: View {
                         try await room.accept()
                         try await container.addChild(room.roomId)
                     }) {
-                        Label("Accept", systemImage: "hand.thumbsup.fill")
+                        Text("Accept")
+                            .padding(10)
+                            .foregroundColor(.white)
+                            .background(Color.accentColor)
+                            .cornerRadius(6)
                     }
                     
                     Spacer()
                     
                     NavigationLink(destination: InvitedGroupDetailView(room: room, user: user)) {
-                        Label("Details", systemImage: "ellipsis.circle")
-                            .labelStyle(.iconOnly)
-
+                        Image(systemName: "ellipsis.circle")
+                            .imageScale(.large)
+                            .padding(10)
                     }
                 }
                 .padding(.top, 5)

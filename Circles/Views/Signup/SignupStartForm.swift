@@ -27,6 +27,7 @@ struct SignupStartForm: View {
                 .padding()
 
             Spacer()
+                .frame(minHeight: 100)
 
             if let freeFlow = state.flows.first(where: { flow in
                 flow.stages.contains(AUTH_TYPE_FREE_SUBSCRIPTION) &&
@@ -61,6 +62,7 @@ struct SignupStartForm: View {
 
 
             Spacer()
+                .frame(minHeight: 100)
 
             let appleFlow = state.flows.first(where: {
                 $0.stages.contains(AUTH_TYPE_APPSTORE_SUBSCRIPTION)
@@ -84,6 +86,7 @@ struct SignupStartForm: View {
             .disabled( nil == appleFlow || !SKPaymentQueue.canMakePayments() )
 
             Spacer()
+                .frame(minHeight: 100)
             
             if debugMode {
                 VStack {

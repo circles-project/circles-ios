@@ -70,14 +70,12 @@ struct EmailEnrollRequestTokenForm: View {
                 .font(.title2)
                 .fontWeight(.bold)
             Text("We will send a short 6-digit code to your email address to verify your identity")
-                .lineLimit(2)
             
             // Extra call to .init() because SwiftUI actually uses different contructors based on whether you pass a string literal or a String
             // https://developer.apple.com/forums/thread/683632
             let markdown = "We will never sell your information or use it for advertising.  See our [Privacy Policy](\(PRIVACY_POLICY_URL)) for more information."
             Text(.init(markdown))
-                .lineLimit(3)
-                .padding()
+                .padding(.vertical)
             
             TextField("you@example.com", text: $address, prompt: Text("Email address"))
                 .textContentType(.emailAddress)

@@ -69,7 +69,7 @@ struct UsernameEnrollForm: View {
                 )
             }
             
-            Spacer()
+            //Spacer()
         }
     }
 }

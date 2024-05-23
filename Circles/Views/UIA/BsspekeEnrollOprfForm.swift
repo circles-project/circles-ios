@@ -80,15 +80,17 @@ struct BsspekeEnrollOprfForm: View {
                 .font(.title2)
                 .fontWeight(.bold)
             
-            Label("WARNING: If you forget your passphrase, you won't be able to access your posts or photos on a new device.", systemImage: "exclamationmark.triangle")
+            Label("NOTICE: If you forget your passphrase, you won't be able to access your posts or photos on a new device.", systemImage: "exclamationmark.triangle")
                 .foregroundColor(.red)
                 .padding(.top)
+                .padding(.horizontal,5)
             
             Spacer()
 
             VStack(alignment: .leading) {
                 SecureField("correct horse battery staple", text: $passphrase, prompt: Text("New passphrase"))
                     .textContentType(.newPassword)
+                    .textFieldStyle(.roundedBorder)
                     .focused($focus, equals: .inputPassphrase)
                     .onChange(of: passphrase) { newPassword in
                         if newPassword.isEmpty {
@@ -105,10 +107,11 @@ struct BsspekeEnrollOprfForm: View {
                             color = .red
                         }
                     }
-                    .frame(width: 300.0, height: 40.0)
+                    //.frame(width: 350.0, height: 40.0)
                 
                 ProgressView("Strength", value: 1.0 * self.score, total: 5.0)
                     .tint(self.color)
+                    .foregroundColor(.gray)
             }
             .frame(maxWidth: 550)
             .padding()

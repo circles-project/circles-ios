@@ -17,9 +17,7 @@ struct RoomCircleAvatar: View {
     var scale: CGFloat
 
     var outlineColor: Color {
-        colorScheme == .dark
-            ? Color.white
-            : Color.black
+        Color.gray
     }
     
     var body: some View {
@@ -29,7 +27,7 @@ struct RoomCircleAvatar: View {
             //let scale: CGFloat = 0.6
             
             ZStack {
-
+                
                 if let img = room.avatar {
                     Image(uiImage: img)
                         .resizable()
@@ -52,7 +50,7 @@ struct RoomCircleAvatar: View {
                         else {
                             return acc
                         }
-
+                        
                         return acc + Int(asciiValue)
                     })
                     //let colors = [Color.blue, Color.purple, Color.orange, Color.yellow, Color.red, Color.pink, Color.green]
@@ -71,26 +69,26 @@ struct RoomCircleAvatar: View {
                             room.updateAvatarImage()
                         }
                     
-                    if let displayName = user.displayName {
-                        var initials = displayName.split(whereSeparator: { $0.isWhitespace })
-                                                  .compactMap({ $0.first?.uppercased() })
-                                                  .joined()
-                        if initials.count > Int(scale * 10) {
-                            let _ = initials.removeLast(initials.count - Int(scale * 10))
-                        }
-
-                        Text(initials)
-                            .fontWeight(.bold)
-                            .foregroundColor(outlineColor)
-                            .position(x: location.x,
-                                      y: location.y)
-                    }
+                    /*
+                     if let displayName = user.displayName {
+                     var initials = displayName.split(whereSeparator: { $0.isWhitespace })
+                     .compactMap({ $0.first?.uppercased() })
+                     .joined()
+                     if initials.count > Int(scale * 10) {
+                     let _ = initials.removeLast(initials.count - Int(scale * 10))
+                     }
+                     
+                     Text(initials)
+                     .fontWeight(.bold)
+                     .foregroundColor(outlineColor)
+                     .position(x: location.x,
+                     y: location.y)
+                     }
+                     */
                 }
 
-                
-
                 Circle()
-                    .stroke(outlineColor, lineWidth: 2.0)
+                    .stroke(outlineColor, lineWidth: 1.0)
                     .scaleEffect(scale)
                     .position(x: location.x,
                               y: location.y)
@@ -105,26 +103,37 @@ struct CircleAvatar: View {
     @ObservedObject var space: CircleSpace
     @Environment(\.colorScheme) var colorScheme
 
-    var outlineColor: Color {
-        colorScheme == .dark
-            ? Color.white
-            : Color.black
-    }
+    let mainRoom: Matrix.Room?
+    let otherRooms: [Matrix.Room]
+    let secondaryRooms: [Matrix.Room]
+    let n: Int
     
-    var body: some View {
-        let mainRoom: Matrix.Room? = space.rooms.values.first {
+    init(space: CircleSpace) {
+        self.space = space
+        self.mainRoom = space.rooms.values.first {
             $0.creator == space.session.creds.userId
         }
-        let otherRooms = space.rooms.values.filter {
+        self.otherRooms = space.rooms.values.filter {
             $0.creator != space.session.creds.userId
         }
         let N_MAX = 9
-        let n = min(otherRooms.count, N_MAX)
-        let secondaryRooms = otherRooms.sample(UInt(n))
+        self.n = min(otherRooms.count, N_MAX)
+        
+        self.secondaryRooms = otherRooms
+            .filter({ $0.avatar != nil })
+            .sample(UInt(n))
+
+    }
+    
+    var outlineColor: Color {
+        Color.gray
+    }
+    
+    var body: some View {
         //let positions = (0 ..< N_MAX+1).sample(UInt(n))
         
         GeometryReader { geometry in
-            let mainCircleScale = CGFloat(0.7)
+            let mainCircleScale = CGFloat(0.98)
             let smallCircleScale = CGFloat(0.3)
             let len = min(geometry.size.height, geometry.size.width)
             let radius = mainCircleScale * len * 0.5
@@ -149,42 +158,44 @@ struct CircleAvatar: View {
             }
             else {
                 Circle()
-                    .stroke(outlineColor, lineWidth: 2.0)
+                    .stroke(outlineColor, lineWidth: 1.0)
                     .position(x: midpointX, y: midpointY)
                     .scaleEffect(mainCircleScale)
             }
             
-            ForEach(0 ..< n) { i in
-                let theirRoom = secondaryRooms[i]
-                //let p = positions[i]
-                let p = i
-                let fraction: Double = Double(p) / Double(n)
-                let maxAngle = (360.0 / Double(n)) / 3.0 // Dividing by two would give us half the angle between two positions.  We want to limit this even further, hence the 3.
-                let offsetAngle = Double.random(in: -maxAngle ..< maxAngle)
-                //let offsetAngle = 0.0
-                let angle = Angle(degrees: 360 * fraction + startAngle + offsetAngle)
-                let radians = CGFloat(angle.radians)
-
-                //let rand = CGFloat(0.3)
-                let offset = (1.0 + 0.4 * smallCircleScale) * radius
-                let x = midpointX + cos(radians) * offset
-                let y = midpointY + sin(radians) * offset
-                
-                //if room.avatarImage != nil {
+            if !secondaryRooms.isEmpty {
+                ForEach(0 ..< n) { i in
+                    let theirRoom = secondaryRooms[i]
+                    //let p = positions[i]
+                    let p = i
+                    let fraction: Double = Double(p) / Double(n)
+                    let maxAngle = (360.0 / Double(n)) / 3.0 // Dividing by two would give us half the angle between two positions.  We want to limit this even further, hence the 3.
+                    let offsetAngle = Double.random(in: -maxAngle ..< maxAngle)
+                    //let offsetAngle = 0.0
+                    let angle = Angle(degrees: 360 * fraction + startAngle + offsetAngle)
+                    let radians = CGFloat(angle.radians)
+                    
+                    //let rand = CGFloat(0.3)
+                    let offset = (1.0 - 0.5 * smallCircleScale) * radius
+                    let x = midpointX + cos(radians) * offset
+                    let y = midpointY + sin(radians) * offset
+                    
+                    //if room.avatarImage != nil {
                     RoomCircleAvatar(room: theirRoom,
                                      location: CGPoint(x: x, y:y),
                                      scale: smallCircleScale)
-                /*
+                    /*
+                     }
+                     else {
+                     let color = [Color.blue, Color.purple, Color.orange, Color.yellow, Color.red, Color.pink, Color.green].randomElement() ?? Color.green
+                     Circle()
+                     .foregroundColor(color)
+                     .scaleEffect(smallCircleScale)
+                     .position(x: x, y: y)
+                     }
+                     */
+                    
                 }
-                else {
-                    let color = [Color.blue, Color.purple, Color.orange, Color.yellow, Color.red, Color.pink, Color.green].randomElement() ?? Color.green
-                    Circle()
-                        .foregroundColor(color)
-                        .scaleEffect(smallCircleScale)
-                        .position(x: x, y: y)
-                }
-                */
-                
             }
             
 

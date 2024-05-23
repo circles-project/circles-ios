@@ -16,28 +16,32 @@ struct InvitedCircleCard: View {
     @AppStorage("debugMode") var debugMode: Bool = false
     
     @State var showAcceptSheet = false
-    @State var selectedCircles: Set<CircleSpace> = []
     
-    @State var blur = 20.0
+    @State var blur = 10.0
     
     var body: some View {
         HStack(spacing: 1) {
-            RoomAvatarView(room: room, avatarText: .none)
+            VStack {
+                RoomAvatarView(room: room, avatarText: .none)
                 //.overlay(Circle().stroke(Color.primary, lineWidth: 2))
-                .frame(width: 120, height: 120)
-                .scaledToFit()
-                .padding(-15)
-                .blur(radius: blur)
-                .clipShape(Circle())
-                .onTapGesture {
-                    if blur >= 5 {
-                        blur -= 5
+                    .blur(radius: blur)
+                    .clipShape(Circle())
+                    .frame(width: 80, height: 80)
+                    .scaledToFit()
+                    .onTapGesture {
+                        if blur >= 5 {
+                            blur -= 5
+                        } else {
+                            blur = 0
+                        }
                     }
-                }
+                    .padding(.horizontal, 5)
+                Spacer()
+            }
             
             VStack(alignment: .leading) {
                 Text(room.name ?? "(unnamed circle)")
-                    .lineLimit(2)
+                    .lineLimit(1)
                     .multilineTextAlignment(.leading)
                     .font(.title2)
                     .fontWeight(.bold)
@@ -48,25 +52,33 @@ struct InvitedCircleCard: View {
                         .foregroundColor(.red)
                 }
 
-                Text("From:")
                 HStack(alignment: .top) {
                     VStack(alignment: .leading) {
                         if let name = user.displayName {
                             Text(name)
+                                .lineLimit(1)
                             Text(user.userId.stringValue)
+                                .lineLimit(1)
                                 .font(.footnote)
                                 .foregroundColor(.gray)
                         } else {
                             Text(user.userId.stringValue)
+                                .lineLimit(1)
                         }
                     }
                 }
                 
                 HStack {
+                    Spacer()
+                    
                     AsyncButton(role: .destructive, action: {
                         try await room.reject()
                     }) {
-                        Label("Reject", systemImage: "hand.thumbsdown.fill")
+                        //Label("Reject", systemImage: "hand.thumbsdown.fill")
+                        Text("Reject")
+                            .padding(10)
+                            .background(RoundedRectangle(cornerRadius: 6)
+                                .stroke(Color.red))
                     }
                     
                     Spacer()
@@ -74,41 +86,36 @@ struct InvitedCircleCard: View {
                     Button(action: {
                         self.showAcceptSheet = true
                     }) {
-                        Label("Accept", systemImage: "hand.thumbsup.fill")
+                        //Label("Accept", systemImage: "hand.thumbsup.fill")
+                        Text("Accept")
+                            .padding(10)
+                            .foregroundColor(.white)
+                            .background(Color.accentColor)
+                            .cornerRadius(6)
                     }
                     .sheet(isPresented: $showAcceptSheet) {
-                        ScrollView {
-                            VStack {
-                                Text("Where would you like to follow updates from \(room.name ?? "this friend's timeline")?")
-                                
-                                Text("You can choose one or more of your circles")
-                                
-                                CirclePicker(container: container, selected: $selectedCircles)
-                                
-                                AsyncButton(action: {
-                                    try await room.accept()
-                                    for circle in selectedCircles {
-                                        try await circle.addChild(room.roomId)
-                                    }
-                                }) {
-                                    Label("Accept invite and follow", systemImage: "thumbsup")
-                                }
-                                .disabled(selectedCircles.isEmpty)
-                            }
-                            .padding()
-                        }
+                        CircleAcceptInviteView(room: room, user: user, container: container)
                     }
                     
                     Spacer()
                     
                     NavigationLink(destination: InvitedCircleDetailView(room: room, user: user)) {
-                        Label("Details", systemImage: "ellipsis.circle")
-                            .labelStyle(.iconOnly)
-
+                        Image(systemName: "ellipsis.circle")
+                            .imageScale(.large)
+                            .padding(10)
                     }
                 }
                 .padding(.top, 5)
                 .padding(.horizontal, 10)
+
+                if debugMode {
+                    let joinedRoomIds = room.session.rooms.values.compactMap { $0.roomId }
+                    if joinedRoomIds.contains(room.roomId) {
+                        Text("Room is already joined")
+                    } else {
+                        Text("New room")
+                    }
+                }
             }
         }
         .onAppear {
