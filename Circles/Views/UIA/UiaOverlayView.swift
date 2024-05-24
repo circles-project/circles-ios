@@ -20,9 +20,9 @@ struct UiaOverlayView: View {
         if let uia = matrix.uiaSession,
            !uia.isFinished
         {
-            Color.gray.opacity(0.5)
+            //Color.gray.opacity(0.5)
             UiaView(session: circles, uia: uia)
-                .frame(width: 350, height: 700, alignment: .center)
+                .frame(minWidth: 325, maxWidth: 500, maxHeight: 700, alignment: .center)
                 .background(in: RoundedRectangle(cornerRadius: 10))
         }
     }
