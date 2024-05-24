@@ -31,10 +31,12 @@ struct DevicesScreen: View {
     var body: some View {
         Form {
             ForEach(session.devices, id: \.deviceId) { device in
-                NavigationLink(destination: DeviceDetailsView(session: session, device: device)) {
-                    DeviceInfoView(session: session, device: device)
+                if !device.dehydrated {
+                    NavigationLink(destination: DeviceDetailsView(session: session, device: device)) {
+                        DeviceInfoView(session: session, device: device)
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
             }
         }
         .navigationTitle(Text("Active Login Sessions"))

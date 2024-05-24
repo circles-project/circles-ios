@@ -139,16 +139,31 @@ struct CircleTimeline: View {
                     }
                     else if space.canPaginateRooms {
                         AsyncButton(action: {
-                            try await space.paginateRooms()
+                            self.loading = true
+                            do {
+                                try await space.paginateRooms()
+                            } catch {
+                                print("Failed to manually paginate rooms")
+                            }
+                            self.loading = false
                         }) {
                             Text("Load More")
                         }
                         .onAppear {
                             // Basically it's like we automatically click "Load More" for the user
+                            self.loading = true
                             let _ = Task {
-                                try await space.paginateRooms()
+                                do {
+                                    try await space.paginateRooms()
+                                } catch {
+                                    print("Failed to automatically paginate rooms")
+                                }
+                                self.loading = false
                             }
                         }
+                    } else if debugMode {
+                        Text("Not currently loading; Can't paginate rooms")
+                            .foregroundColor(.red)
                     }
                     
                     Spacer()

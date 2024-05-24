@@ -62,9 +62,11 @@ class ContainerRoom<T: Matrix.Room>: Matrix.SpaceRoom {
                     tmpRooms[childRoomId] = room
                     
                     // Also re-publish changes from this child room
-                    self.sinks[room.roomId] = room.objectWillChange.sink { _ in
-                        self.objectWillChange.send()
-                    }
+                    self.sinks[room.roomId] = room.objectWillChange
+                                                  .receive(on: DispatchQueue.main)
+                                                  .sink { _ in
+                                                      self.objectWillChange.send()
+                                                  }
                 }
                 let newRooms = tmpRooms
                 logger.debug("Found a total of \(newRooms.count) child rooms")
