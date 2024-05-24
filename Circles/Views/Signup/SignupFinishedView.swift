@@ -20,10 +20,9 @@ struct SignupFinishedView: View {
             
             AsyncButton(action: {
                 do {
-                    print("Doing nothing because we don't have the SSSS key here")
-                    //try await store.beginSetup(creds: creds)
+                    try await store.connect(creds: creds)
                 } catch {
-                    
+                    print("Failed to connect with creds for user \(creds.userId)")
                 }
             }) {
                 Text("Next: Set Up")
@@ -37,3 +36,4 @@ struct SignupFinishedView: View {
         }
     }
 }
+
