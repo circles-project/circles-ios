@@ -45,13 +45,7 @@ struct CircleAcceptInviteView: View {
                     VStack(alignment: .leading) {
                         Text("Choose one or more of your circles to continue")
                             .padding(.top)
-                        if container.rooms.isEmpty {
-                            let circleName = room.name
-                            CircleCreationSheet(container : container, invitedCircleName: circleName)
-                            CirclePicker(selected: $selectedCircles)
-                        } else {
-                            CirclePicker(selected: $selectedCircles)
-                        }
+                        CirclePicker(selected: $selectedCircles)
                     }
                     .frame(maxWidth: 350)
                     

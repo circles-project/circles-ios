@@ -94,7 +94,16 @@ struct InvitedCircleCard: View {
                             .cornerRadius(6)
                     }
                     .sheet(isPresented: $showAcceptSheet) {
-                        CircleAcceptInviteView(room: room, user: user, container: container)
+                        
+                        if container.rooms.isEmpty {
+                            let model = CircleInvitationModel(circleName: room.name ?? "",
+                                                              userName: user.displayName ?? "",
+                                                              userId: user.userId,
+                                                              room: room)
+                            CircleCreationSheet(container: container, invitationModel: model)
+                        } else {
+                            CircleAcceptInviteView(room: room, user: user, container: container)
+                        }
                     }
                     
                     Spacer()
