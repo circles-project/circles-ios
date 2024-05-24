@@ -120,8 +120,18 @@ struct RoomInviteSheet: View {
             actions: {
                 if let userId = self.suggestedUserId {
                     Button(action: {
-                        let user = room.session.getUser(userId: userId)
-                        self.newUsers.insert(user)
+                        
+                        if room.joinedMembers.contains(userId) {
+                            self.alertTitle = "\(userId) is already a member"
+                            self.alertMessage = ""
+                            self.showAlert = true
+                            print("RoomInviteSheet - ERROR:\t \(self.alertMessage)")
+                        }
+                        else {
+                            let user = room.session.getUser(userId: userId)
+                            self.newUsers.insert(user)
+                        }
+                        
                         self.newestUserIdString = ""
                         self.suggestedUserId = nil
                         self.searchFocused = false
