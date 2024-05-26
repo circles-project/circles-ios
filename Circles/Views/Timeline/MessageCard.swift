@@ -43,7 +43,7 @@ struct TopOverlayView: View {
             let users = emojiUsersList.map { $0.username }.joined(separator: "\n")
             Text(users)
                 .padding()
-                .background(Color.blue)
+                .background(Color.gray)
                 .foregroundColor(.white)
                 .cornerRadius(10)
             Spacer()
@@ -339,14 +339,12 @@ struct MessageCard: MessageView {
                             Text("\(emoji) \(count)")
                         }
                         .buttonStyle(.bordered)
-                        .simultaneousGesture(
-                            LongPressGesture(minimumDuration: 0.25)
-                                .onEnded { _ in
-                                    emojiUsersList = users
-                                    showOverlay = true
-                                    hideOverlayAfterDelay()
-                                }
-                        )
+                        .simultaneousGesture(LongPressGesture(minimumDuration: 0.25)
+                            .onEnded { _ in
+                                emojiUsersList = users
+                                showOverlay = true
+                                hideOverlayAfterDelay()
+                            })
                     } else {
                         AsyncButton(action: {
                             // We have not sent this reaction yet..  Send it
@@ -356,6 +354,12 @@ struct MessageCard: MessageView {
                         }
                         .disabled(!iCanReact)
                         .buttonStyle(.plain)
+                        .simultaneousGesture(LongPressGesture(minimumDuration: 0.25)
+                            .onEnded { _ in
+                                emojiUsersList = users
+                                showOverlay = true
+                                hideOverlayAfterDelay()
+                            })
                     }
                 }
                 
@@ -518,7 +522,7 @@ struct MessageCard: MessageView {
         if showOverlay {
             TopOverlayView(emojiUsersList: emojiUsersList)
                 .transition(.move(edge: .top))
-                .animation(.easeInOut, value: showOverlay)
+                .animation(.linear, value: showOverlay)
         }
     }
 }
