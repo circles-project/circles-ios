@@ -13,6 +13,8 @@ struct PersonHeaderRow: View {
     @ObservedObject var user: Matrix.User
     var profile: ProfileSpace
     
+    @AppStorage("blurUnknownUserPicture") var blurUnknownUserPicture = true
+    
     @State private var alertTitle: String = ""
     @State private var alertMessage: String = ""
     @State private var showAlert = false
@@ -75,7 +77,7 @@ struct PersonHeaderRow: View {
                 .foregroundColor(.gray)
             */
         }
-        .blur(radius: blurRadius)
+        .blur(radius: blurUnknownUserPicture ? blurRadius : 0)
         //.padding([.leading, .top], 5)
         .contextMenu {
             if profile.joinedMembers.contains(user.userId) {

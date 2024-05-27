@@ -14,6 +14,7 @@ struct InvitedCircleCard: View {
     @ObservedObject var container: ContainerRoom<CircleSpace>
     
     @AppStorage("debugMode") var debugMode: Bool = false
+    @AppStorage("blurUnknownUserPicture") var blurUnknownUserPicture = true
     
     @State var showAcceptSheet = false
     
@@ -24,7 +25,7 @@ struct InvitedCircleCard: View {
             VStack {
                 RoomAvatarView(room: room, avatarText: .none)
                 //.overlay(Circle().stroke(Color.primary, lineWidth: 2))
-                    .blur(radius: blur)
+                    .blur(radius: blurUnknownUserPicture ? blur : 0)
                     .clipShape(Circle())
                     .frame(width: 80, height: 80)
                     .scaledToFit()
