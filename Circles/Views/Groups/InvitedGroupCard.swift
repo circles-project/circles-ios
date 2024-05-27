@@ -12,7 +12,7 @@ struct InvitedGroupCard: View {
     @ObservedObject var room: Matrix.InvitedRoom
     @ObservedObject var user: Matrix.User
     @ObservedObject var container: ContainerRoom<GroupRoom>
-    
+    @AppStorage("blurUnknownUserPicture") var blurUnknownUserPicture = true
     @State var blur = 10.0
     
     var body: some View {
@@ -22,7 +22,7 @@ struct InvitedGroupCard: View {
                 //.overlay(Circle().stroke(Color.primary, lineWidth: 2))
                     .scaledToFill()
                     .frame(width: 80, height: 80)
-                    .blur(radius: blur)
+                    .blur(radius: blurUnknownUserPicture ? blur : 0)
                     .clipShape(RoundedRectangle(cornerRadius: 6))
                     .onTapGesture {
                         if blur >= 5 {
