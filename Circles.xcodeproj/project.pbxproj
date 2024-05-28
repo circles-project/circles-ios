@@ -70,6 +70,7 @@
 		40E4D88A268A76CF0055968A /* SignupScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E4D889268A76CF0055968A /* SignupScreen.swift */; };
 		40F906BB269DF96100287B27 /* MessageSheetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F906BA269DF96100287B27 /* MessageSheetType.swift */; };
 		42237CEF2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42237CEE2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift */; };
+		42DC60292C0646E0000F1BE8 /* UpdateAppIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DC60282C0646E0000F1BE8 /* UpdateAppIconView.swift */; };
 		4C40ED262AA7CCFB00F58493 /* GalleryInvitationsIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C40ED252AA7CCFB00F58493 /* GalleryInvitationsIndicator.swift */; };
 		4C40ED282AA7D06800F58493 /* PeopleInvitationsIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C40ED272AA7D06800F58493 /* PeopleInvitationsIndicator.swift */; };
 		A504DA7328120AF100EFF42E /* AsyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A504DA7228120AF100EFF42E /* AsyncButton.swift */; };
@@ -316,6 +317,7 @@
 		40E4D889268A76CF0055968A /* SignupScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupScreen.swift; sourceTree = "<group>"; };
 		40F906BA269DF96100287B27 /* MessageSheetType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSheetType.swift; sourceTree = "<group>"; };
 		42237CEE2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeactivateAccountCustomAlertView.swift; sourceTree = "<group>"; };
+		42DC60282C0646E0000F1BE8 /* UpdateAppIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateAppIconView.swift; sourceTree = "<group>"; };
 		4C40ED252AA7CCFB00F58493 /* GalleryInvitationsIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryInvitationsIndicator.swift; sourceTree = "<group>"; };
 		4C40ED272AA7D06800F58493 /* PeopleInvitationsIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleInvitationsIndicator.swift; sourceTree = "<group>"; };
 		A504DA7228120AF100EFF42E /* AsyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncButton.swift; sourceTree = "<group>"; };
@@ -827,6 +829,7 @@
 				A53E91252A5710C5007B0196 /* UpdateDisplaynameView.swift */,
 				A53E91272A572E8D007B0196 /* UpdateStatusMessageView.swift */,
 				A5B74F432BC85B7600299D90 /* StorageSettingsView.swift */,
+				42DC60282C0646E0000F1BE8 /* UpdateAppIconView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1201,6 +1204,7 @@
 				A56BE1742AD5CEFA00B15F51 /* RoomKnockDetailsView.swift in Sources */,
 				409F4343265DE17500690A61 /* GroupOverviewRow.swift in Sources */,
 				403CEA9726E866B70054DBF4 /* ValidateEmailForm.swift in Sources */,
+				42DC60292C0646E0000F1BE8 /* UpdateAppIconView.swift in Sources */,
 				A5B74F442BC85B7600299D90 /* StorageSettingsView.swift in Sources */,
 				A54A27862A81735F00858846 /* BsspekeLoginForm.swift in Sources */,
 				404C72D1265DDF35000473DF /* CirclesApp.swift in Sources */,
@@ -1407,8 +1411,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "PremiumIcon3 PremiumIcon2 PremiumIcon1 Regular";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Circles/Circles.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1444,8 +1450,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "PremiumIcon3 PremiumIcon2 PremiumIcon1 Regular";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Circles/Circles.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";

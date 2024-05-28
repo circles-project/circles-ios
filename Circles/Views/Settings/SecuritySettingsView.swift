@@ -11,6 +11,9 @@ import Matrix
 struct SecuritySettingsView: View {
     var session: Matrix.Session
     
+    @State var showSheet = false
+    @AppStorage("appIcon") var appIcon = ""
+    
     @ViewBuilder
     var passwordButton: some View {
         AsyncButton(action: {
@@ -74,6 +77,25 @@ struct SecuritySettingsView: View {
                         .foregroundColor(.gray)
                 }
             }
+        }
+        
+        Section(header: Text("Premium Settings")) {
+            HStack {
+                Image(appIcon == "" ? "AppIcon0" : appIcon)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 40, height: 40)
+                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                Button("Update App Icon") {
+                    showSheet.toggle()
+                }
+                .buttonStyle(.plain)
+            }
+            .sheet(isPresented: $showSheet) {
+                UpdateAppIconView()
+                    .presentationDetents([.height(260), .medium, .large])
+            }
+            .padding()
         }
     }
     
