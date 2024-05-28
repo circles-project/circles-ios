@@ -61,6 +61,22 @@ struct SecuritySettingsView: View {
         .buttonStyle(.plain)
     }
     
+    @ViewBuilder
+    var blurSettingForUnknownUserButton: some View {
+        @AppStorage("blurUnknownUserPicture") var blurUnknownUserPicture = true
+        
+        Section(header: Text("Privacy Settings")) {
+            Toggle(isOn: $blurUnknownUserPicture) {
+                VStack(alignment: .leading) {
+                    Text("Blur Image for Unknown Users")
+                    Text("Enable this option to blur images for invitations from users not in your contacts.")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                }
+            }
+        }
+    }
+    
     var body: some View {
         //NavigationView {
         VStack {
@@ -72,6 +88,8 @@ struct SecuritySettingsView: View {
                 passwordButton
 
                 enrollEmailButton
+                
+                blurSettingForUnknownUserButton
             }
             .navigationTitle("Account Security")
         }
