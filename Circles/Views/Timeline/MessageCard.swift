@@ -347,7 +347,6 @@ struct MessageCard: MessageView {
                     }
                 }
             }
-
         }
         .foregroundColor(.secondary)
         //.padding(2)
@@ -373,11 +372,16 @@ struct MessageCard: MessageView {
             .padding(.horizontal, 3)
             .font(.headline)
             
-            if !message.reactions.isEmpty
+            let reactionsFooterAction = message.reactions.values.map {
+                !$0.isEmpty ? "show" : "hide"
+            }
+            if reactionsFooterAction.rawValue.contains("show")
             {
                 Divider()
 
                 reactions
+            } else {
+                reactions.hidden()
             }
 
         }
