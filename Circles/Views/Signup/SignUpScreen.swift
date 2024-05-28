@@ -94,13 +94,7 @@ struct SignupScreen: View {
                     UiaInProgressView(session: session, state: uiaaState, stages: stages)
                     
                 case .finished(let data):
-                    let decoder = JSONDecoder()
-                    
-                    if let creds = try? decoder.decode(Matrix.Credentials.self, from: data) {
-                        SignupFinishedView(store: store, creds: creds)
-                    } else {
-                        Text("There was a problem")
-                    }
+                    Text("Signup was successful!")
                 }
             }
         }

@@ -9,31 +9,55 @@ import SwiftUI
 import Matrix
 
 struct SignupFinishedView: View {
-    var store: CirclesStore
     var creds: Matrix.Credentials
-    
+    var key: Matrix.SecretStorageKey?
+    var store: CirclesStore
+
     var body: some View {
         VStack {
-            Spacer()
+            
+            CirclesLogoView()
+                .frame(minWidth: 100,
+                       idealWidth: 150,
+                       maxWidth: 200,
+                       minHeight: 100,
+                       idealHeight: 150,
+                       maxHeight: 200,
+                       alignment: .center)
+                        
             Text("Successfully signed up!")
                 .font(.headline)
+                .padding(.top)
+
+            VStack {
+                Text("Your new user ID is:")
+                Text(creds.userId.stringValue)
+                    .padding(.leading)
+                    .padding(.top)
+            }
+            .padding(.vertical, 40)
             
+            Text("Your user ID works like a username or an email address. Friends will need your user ID in order to invite you to follow them.")
+
+            Spacer()
+
             AsyncButton(action: {
                 do {
-                    try await store.connect(creds: creds)
+                    try await store.connect(creds: creds, s4Key: key)
                 } catch {
                     print("Failed to connect with creds for user \(creds.userId)")
                 }
             }) {
-                Text("Next: Set Up")
+                Text("Next: Set up your account")
                     .padding()
                     .frame(width: 300.0, height: 40.0)
                     .foregroundColor(.white)
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
-            Spacer()
+            
         }
+        .padding()
     }
 }
 

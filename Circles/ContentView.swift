@@ -49,6 +49,9 @@ struct ContentView: View {
             SignupScreen(session: signupSession, store: store)
                 .environmentObject(store.appStore)
         
+        case .signedUp(let creds, let key):
+            SignupFinishedView(creds: creds, key: key, store: store)
+            
         //case .settingUp(let setupSession):
         //    SetupScreen(session: setupSession, store: store)
             
