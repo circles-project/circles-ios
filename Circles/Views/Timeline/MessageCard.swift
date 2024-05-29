@@ -35,22 +35,6 @@ struct TextContentView: View {
     }
 }
 
-struct TopOverlayView: View {
-    @State var emojiUsersList: Set<UserId> = []
-    
-    var body: some View {
-        VStack {
-            let users = emojiUsersList.map { $0.username }.joined(separator: "\n")
-            Text(users)
-                .padding()
-                .background(Color.gray)
-                .foregroundColor(.white)
-                .cornerRadius(10)
-            Spacer()
-        }
-    }
-}
-
 struct ImageContentView: View {
     @ObservedObject var message: Matrix.Message
     
@@ -74,13 +58,12 @@ struct ImageContentView: View {
     }
 }
 
-
-
 struct MessageCard: MessageView {
     @ObservedObject var message: Matrix.Message
     var isLocalEcho = false
     var isThreaded = false
     @AppStorage("debugMode") var debugMode: Bool = false
+    @State var emojiUsersListModel: [EmojiUsersListModel] = []
     @Environment(\.colorScheme) var colorScheme
     //@State var showReplyComposer = false
     @State var reporting = false
@@ -89,8 +72,6 @@ struct MessageCard: MessageView {
     @State var showAllReactions = false
     var iCanReact: Bool
     @State var showMessageDeleteConfirmation = false
-    @State private var showOverlay = false
-    @State var emojiUsersList: Set<UserId> = []
     
     init(message: Matrix.Message, isLocalEcho: Bool = false, isThreaded: Bool = false) {
         self.message = message
@@ -339,12 +320,6 @@ struct MessageCard: MessageView {
                             Text("\(emoji) \(count)")
                         }
                         .buttonStyle(.bordered)
-                        .simultaneousGesture(LongPressGesture(minimumDuration: 0.25)
-                            .onEnded { _ in
-                                emojiUsersList = users
-                                showOverlay = true
-                                hideOverlayAfterDelay()
-                            })
                     } else {
                         AsyncButton(action: {
                             // We have not sent this reaction yet..  Send it
@@ -354,12 +329,6 @@ struct MessageCard: MessageView {
                         }
                         .disabled(!iCanReact)
                         .buttonStyle(.plain)
-                        .simultaneousGesture(LongPressGesture(minimumDuration: 0.25)
-                            .onEnded { _ in
-                                emojiUsersList = users
-                                showOverlay = true
-                                hideOverlayAfterDelay()
-                            })
                     }
                 }
                 
@@ -490,14 +459,6 @@ struct MessageCard: MessageView {
         }
     }
     
-    private func hideOverlayAfterDelay() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            withAnimation {
-                showOverlay = false
-            }
-        }
-    }
-    
     var body: some View {
         //linkWrapper
         ZStack {
@@ -509,20 +470,16 @@ struct MessageCard: MessageView {
                 }
                 .sheet(item: $sheetType) { st in
                     switch(st) {
-                        
                     case .reactions:
                         EmojiPicker(message: message)
                         
                     case .reporting:
                         MessageReportingSheet(message: message)
+                        
+                    case .liked:
+                        LikedEmojiView(message: message, emojiUsersListModel: emojiUsersListModel)
                     }
                 }
-        }
-        
-        if showOverlay {
-            TopOverlayView(emojiUsersList: emojiUsersList)
-                .transition(.move(edge: .top))
-                .animation(.linear, value: showOverlay)
         }
     }
 }
