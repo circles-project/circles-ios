@@ -25,6 +25,7 @@ public class CirclesStore: ObservableObject {
         case error(CirclesError)
         case needCreds
         case signingUp(SignupSession)
+        case signedUp(Matrix.Credentials, Matrix.SecretStorageKey?)
         case loggingInUIA(UiaLoginSession, Matrix.AuthFlowFilter)          // Because /login can now take more than a simple username/password
         case loggingInNonUIA(LegacyLoginSession)    // For accounts without fancy swiclops authentication
         case haveCreds(Matrix.Credentials, Matrix.SecretStorageKey?, String?)
@@ -517,7 +518,7 @@ public class CirclesStore: ObservableObject {
     
     // MARK: Space hierarchy
     func createSpaceHierarchy(displayName: String,
-                              circles: [(String,UIImage?)],
+                              circles: [CircleSetupInfo],
                               onProgress: ((Int,Int,String) -> Void)? = nil
     ) async throws {
         
@@ -597,14 +598,14 @@ public class CirclesStore: ObservableObject {
         try await matrix.putAccountData(config, for: EVENT_TYPE_CIRCLES_CONFIG)
         
         var count = 9
-        for (name, avatar) in circles {
-            logger.debug("- Creating circle [\(name, privacy: .public)]")
+        for circle in circles {
+            logger.debug("- Creating circle [\(circle.name, privacy: .public)]")
             //status = "Creating circle \"\(circle.name)\""
-            onProgress?(count, total, "Creating circle \"\(name)\"")
+            onProgress?(count, total, "Creating circle \"\(circle.name)\"")
             try await Task.sleep(for: .milliseconds(sleepMS))
-            let circleRoomId = try await matrix.createSpace(name: name)
-            let wallRoomId = try await matrix.createRoom(name: name, type: ROOM_TYPE_CIRCLE, joinRule: .knock)
-            if let image = avatar {
+            let circleRoomId = try await matrix.createSpace(name: circle.name)
+            let wallRoomId = try await matrix.createRoom(name: circle.name, type: ROOM_TYPE_CIRCLE, joinRule: .knock)
+            if let image = circle.avatar {
                 try await matrix.setAvatarImage(roomId: wallRoomId, image: image)
             }
             try await matrix.addSpaceChild(wallRoomId, to: circleRoomId)
@@ -614,7 +615,7 @@ public class CirclesStore: ObservableObject {
         
         logger.debug("- Creating photo gallery [Photos]")
         //status = "Creating photo gallery"
-        onProgress?(12, total, "Creating photo gallery")
+        onProgress?(9+circles.count, total, "Creating photo gallery")
         try await Task.sleep(for: .milliseconds(sleepMS))
         let photosGallery = try await matrix.createRoom(name: "Photos", type: ROOM_TYPE_PHOTOS, joinRule: .knock)
         try await matrix.addSpaceChild(photosGallery, to: myGalleries)
@@ -798,12 +799,12 @@ public class CirclesStore: ObservableObject {
                 self.logger.debug("Configuring with keyId [\(s4Key.keyId)]")
                 
                 await MainActor.run {
-                    self.state = .haveCreds(creds, s4Key, nil)
+                    self.state = .signedUp(creds, s4Key)
                 }
             } else {
                 self.logger.warning("Could not find BS-SPEKE client -- Unable to generate SSSS key from passphrase")
                 await MainActor.run {
-                    self.state = .haveCreds(creds, nil, nil)
+                    self.state = .signedUp(creds, nil)
                 }
             }
         })
@@ -824,7 +825,9 @@ public class CirclesStore: ObservableObject {
             return nil
         case .signingUp(_):
             return nil
-        case .loggingInUIA(_):
+        case .signedUp(_, _):
+            return nil
+        case .loggingInUIA(_, _):
             return nil
         case .loggingInNonUIA(_):
             return nil
