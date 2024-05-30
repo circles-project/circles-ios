@@ -9,7 +9,7 @@ import SwiftUI
 import PhotosUI
 import Matrix
 
-struct AvatarForm: View {
+struct SetupAvatarView: View {
     var matrix: Matrix.Session
 
     @Binding var displayName: String?

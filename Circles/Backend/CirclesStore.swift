@@ -518,7 +518,7 @@ public class CirclesStore: ObservableObject {
     
     // MARK: Space hierarchy
     func createSpaceHierarchy(displayName: String,
-                              circles: [(String,UIImage?)],
+                              circles: [CircleSetupInfo],
                               onProgress: ((Int,Int,String) -> Void)? = nil
     ) async throws {
         
@@ -598,14 +598,14 @@ public class CirclesStore: ObservableObject {
         try await matrix.putAccountData(config, for: EVENT_TYPE_CIRCLES_CONFIG)
         
         var count = 9
-        for (name, avatar) in circles {
-            logger.debug("- Creating circle [\(name, privacy: .public)]")
+        for circle in circles {
+            logger.debug("- Creating circle [\(circle.name, privacy: .public)]")
             //status = "Creating circle \"\(circle.name)\""
-            onProgress?(count, total, "Creating circle \"\(name)\"")
+            onProgress?(count, total, "Creating circle \"\(circle.name)\"")
             try await Task.sleep(for: .milliseconds(sleepMS))
-            let circleRoomId = try await matrix.createSpace(name: name)
-            let wallRoomId = try await matrix.createRoom(name: name, type: ROOM_TYPE_CIRCLE, joinRule: .knock)
-            if let image = avatar {
+            let circleRoomId = try await matrix.createSpace(name: circle.name)
+            let wallRoomId = try await matrix.createRoom(name: circle.name, type: ROOM_TYPE_CIRCLE, joinRule: .knock)
+            if let image = circle.avatar {
                 try await matrix.setAvatarImage(roomId: wallRoomId, image: image)
             }
             try await matrix.addSpaceChild(wallRoomId, to: circleRoomId)
