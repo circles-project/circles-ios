@@ -15,6 +15,8 @@ struct SettingsScreen: View {
     @ObservedObject var session: CirclesApplicationSession
     var user: Matrix.User
     
+    @AppStorage(DEFAULTS_KEY_ENABLE_GALLERIES, store: .standard) var enableGalleries: Bool = false
+    
     @AppStorage("developerMode") var developerMode: Bool = false
     @AppStorage("debugMode") var debugMode: Bool = false
     
@@ -89,6 +91,11 @@ struct SettingsScreen: View {
                     }
                 }
 
+                Section("Advanced") {
+                    Toggle(isOn: $enableGalleries) {
+                        Label("Enable photo galleries", systemImage: "photo.fill")
+                    }
+                }
                 
                 if developerMode {
                     Section("Developer Mode") {

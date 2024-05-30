@@ -107,3 +107,5 @@ let CIRCLES_COLORS = [
     Color(rgba: 0xfaaf72ff), // Orange
     Color(rgba: 0xfa72a4ff), // Pink
 ]
+
+let DEFAULTS_KEY_ENABLE_GALLERIES = "enable_photo_galleries"

@@ -337,12 +337,15 @@ struct PostComposer: View {
                 }) {
                     Label("Take a new photo", systemImage: "camera.fill")
                 }
-                Button(action: {
-                    //self.imageSourceType = .cloud
-                    //self.showPicker = true
-                    self.showPickerOfType = .cloud
-                }) {
-                    Label("Choose an already uploaded photo", systemImage: "photo")
+                let enableGalleries = UserDefaults.standard.bool(forKey: DEFAULTS_KEY_ENABLE_GALLERIES)
+                if enableGalleries {
+                    Button(action: {
+                        //self.imageSourceType = .cloud
+                        //self.showPicker = true
+                        self.showPickerOfType = .cloud
+                    }) {
+                        Label("Choose an already uploaded photo", systemImage: "photo")
+                    }
                 }
             },
             label: {

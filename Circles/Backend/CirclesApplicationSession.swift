@@ -176,13 +176,18 @@ class CirclesApplicationSession: ObservableObject {
         
         case "gallery":
             print("DEEPLINK Url is for a photo gallery")
-            if let matchingGallery = self.galleries.rooms[roomId] {
-                print("DEEPLINK Setting tab to Photos")
-                self.viewState.tab = .photos
-                self.viewState.selectedGalleryId = roomId
-                return
+            let enableGalleries = UserDefaults.standard.bool(forKey: DEFAULTS_KEY_ENABLE_GALLERIES)
+            if enableGalleries {
+                if let matchingGallery = self.galleries.rooms[roomId] {
+                    print("DEEPLINK Setting tab to Photos")
+                    self.viewState.tab = .photos
+                    self.viewState.selectedGalleryId = roomId
+                    return
+                } else {
+                    print("DEEPLINK Gallery room is not one of ours")
+                }
             } else {
-                print("DEEPLINK Gallery room is not one of ours")
+                print("DEEPLINK Galleries are not enabled - ignoring")
             }
         
         case "room":
