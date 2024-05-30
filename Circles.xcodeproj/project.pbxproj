@@ -70,6 +70,8 @@
 		40E4D88A268A76CF0055968A /* SignupScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E4D889268A76CF0055968A /* SignupScreen.swift */; };
 		40F906BB269DF96100287B27 /* MessageSheetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F906BA269DF96100287B27 /* MessageSheetType.swift */; };
 		42237CEF2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42237CEE2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift */; };
+		42DC604B2C08DF1A000F1BE8 /* JDStatusBarNotification in Frameworks */ = {isa = PBXBuildFile; productRef = 42DC604A2C08DF1A000F1BE8 /* JDStatusBarNotification */; };
+		42DC604D2C08F09F000F1BE8 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DC604C2C08F09F000F1BE8 /* ToastView.swift */; };
 		4C40ED262AA7CCFB00F58493 /* GalleryInvitationsIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C40ED252AA7CCFB00F58493 /* GalleryInvitationsIndicator.swift */; };
 		4C40ED282AA7D06800F58493 /* PeopleInvitationsIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C40ED272AA7D06800F58493 /* PeopleInvitationsIndicator.swift */; };
 		A504DA7328120AF100EFF42E /* AsyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A504DA7228120AF100EFF42E /* AsyncButton.swift */; };
@@ -320,6 +322,7 @@
 		40E4D889268A76CF0055968A /* SignupScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupScreen.swift; sourceTree = "<group>"; };
 		40F906BA269DF96100287B27 /* MessageSheetType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSheetType.swift; sourceTree = "<group>"; };
 		42237CEE2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeactivateAccountCustomAlertView.swift; sourceTree = "<group>"; };
+		42DC604C2C08F09F000F1BE8 /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		4C40ED252AA7CCFB00F58493 /* GalleryInvitationsIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryInvitationsIndicator.swift; sourceTree = "<group>"; };
 		4C40ED272AA7D06800F58493 /* PeopleInvitationsIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleInvitationsIndicator.swift; sourceTree = "<group>"; };
 		A504DA7228120AF100EFF42E /* AsyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncButton.swift; sourceTree = "<group>"; };
@@ -494,6 +497,7 @@
 				4069F79826729DD200FB6090 /* StoreKit.framework in Frameworks */,
 				A54346C12A1D485D0025D147 /* KeychainAccess in Frameworks */,
 				A5481C2528108DC7006F782F /* AnyCodable in Frameworks */,
+				42DC604B2C08DF1A000F1BE8 /* JDStatusBarNotification in Frameworks */,
 				A509B89A28189E950053E5BC /* BlindSaltSpeke in Frameworks */,
 				A56BE1792AD6DE0800B15F51 /* CodeScanner in Frameworks */,
 			);
@@ -622,6 +626,7 @@
 			children = (
 				A54A83092C066E8000CE4000 /* Help */,
 				A562C08D2AFE8EA800522FCB /* CirclesLogoView.swift */,
+				42DC604C2C08F09F000F1BE8 /* ToastView.swift */,
 				409F4328265DE13B00690A61 /* Circles */,
 				A5EAAC1B2B30CEAF00476B94 /* Composer */,
 				409F4329265DE14100690A61 /* Groups */,
@@ -986,6 +991,7 @@
 				A5A40B6029D468C3009A17EE /* MarkdownUI */,
 				A54346C02A1D485D0025D147 /* KeychainAccess */,
 				A56BE1782AD6DE0800B15F51 /* CodeScanner */,
+				42DC604A2C08DF1A000F1BE8 /* JDStatusBarNotification */,
 			);
 			productName = Circles;
 			productReference = 404C72CD265DDF35000473DF /* Circles.app */;
@@ -1046,6 +1052,7 @@
 				A5A40B5F29D468C3009A17EE /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 				A54346BF2A1D485D0025D147 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 				A56BE1772AD6DE0800B15F51 /* XCRemoteSwiftPackageReference "CodeScanner" */,
+				42DC60492C08DDBE000F1BE8 /* XCRemoteSwiftPackageReference "JDStatusBarNotification" */,
 			);
 			productRefGroup = 404C72CE265DDF35000473DF /* Products */;
 			projectDirPath = "";
@@ -1147,6 +1154,7 @@
 				A5D3C9C12A708F1300B41CC0 /* DBZxcvbn.m in Sources */,
 				A5D3C9C32A708F1300B41CC0 /* DBScorer.m in Sources */,
 				A55F367329EDB66300F46971 /* GalleryInviteCard.swift in Sources */,
+				42DC604D2C08F09F000F1BE8 /* ToastView.swift in Sources */,
 				409F4323265DE11900690A61 /* Constants.swift in Sources */,
 				A5BB4EFB2BD0559D001FD0D8 /* MyConnectionsView.swift in Sources */,
 				A52C77542A89CCB8005D2C0B /* MessageThumbnail.swift in Sources */,
@@ -1600,6 +1608,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		42DC60492C08DDBE000F1BE8 /* XCRemoteSwiftPackageReference "JDStatusBarNotification" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:calimarkus/JDStatusBarNotification.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.2;
+			};
+		};
 		A509B89828189E950053E5BC /* XCRemoteSwiftPackageReference "BlindSaltSpeke" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://gitlab.futo.org/cvwright/BlindSaltSpeke.git";
@@ -1659,6 +1675,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		42DC604A2C08DF1A000F1BE8 /* JDStatusBarNotification */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42DC60492C08DDBE000F1BE8 /* XCRemoteSwiftPackageReference "JDStatusBarNotification" */;
+			productName = JDStatusBarNotification;
+		};
 		A509B89928189E950053E5BC /* BlindSaltSpeke */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = A509B89828189E950053E5BC /* XCRemoteSwiftPackageReference "BlindSaltSpeke" */;
