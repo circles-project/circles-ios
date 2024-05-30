@@ -25,10 +25,10 @@ struct SetupScreen: View {
         
         switch stage {
         case .profileSetup:
-            SetupAvatarView(matrix: matrix, displayName: $displayName)
+            SetupAvatarView(matrix: matrix, displayName: $displayName, stage: $stage)
 
         case .circlesIntro:
-            CirclesHelpView()
+            SetupIntroToCircles(stage: $stage)
             
         case .circlesSetup:
             SetupCirclesView(store: store, matrix: matrix, user: matrix.me)

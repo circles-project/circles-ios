@@ -14,12 +14,13 @@ struct SetupCirclesView: View {
     var store: CirclesStore
     var matrix: Matrix.Session
     @ObservedObject var user: Matrix.User // me
-
-    @State var friendsAvatar: UIImage?
-    @State var familyAvatar: UIImage?
-    @State var communityAvatar: UIImage?
     
-    @State var circles: [CircleSetupInfo] = []
+    @State var circles: [CircleSetupInfo] = [
+        CircleSetupInfo(name: "Family"),
+        CircleSetupInfo(name: "Friends")
+    ]
+    
+    @State var showNewCircleSheet = false
     
     @State var currentStep = 0.0
     @State var totalSteps = 15.0
@@ -38,18 +39,38 @@ struct SetupCirclesView: View {
         VStack(alignment: .center) {
             //let currentStage: SignupStage = .setupCircles
 
-            Text("Set up your circles")
+            Text("Create your circles")
                 .font(.title)
                 .fontWeight(.bold)
 
-            Divider()
-
-            VStack(alignment: .leading) {
+            List {
                 ForEach(circles) { info in
-                    SetupCircleCard(matrix: matrix, user: user, info: info)
+                    HStack {
+                        SetupCircleCard(matrix: matrix, user: user, info: info)
+                        
+                        Spacer()
+                        
+                        Button(role: .destructive, action: {
+                            circles.removeAll { $0.name == info.name }
+                        }) {
+                            Image(systemName: "minus.circle.fill")
+                        }
+                    }
                 }
-
             }
+            .listStyle(.inset)
+
+            Button(action: {
+                showNewCircleSheet = true
+            }) {
+                Label("Add a new circle", systemImage: "plus.circle")
+            }
+            .padding()
+            .sheet(isPresented: $showNewCircleSheet) {
+                SetupAddNewCircleSheet(me: user, circles: $circles)
+            }
+            
+            Spacer()
 
             Label("NOTE: Circle names and cover images are not encrypted", systemImage: "exclamationmark.shield")
                 .font(.headline)
@@ -59,6 +80,7 @@ struct SetupCirclesView: View {
 
             AsyncButton(action: {
                 self.pending = true
+                self.totalSteps = Double(10 + circles.count)
                 try await store.createSpaceHierarchy(displayName: user.displayName ?? user.userId.username,
                                                      circles: circles,
                                                      onProgress: handleProgressUpdate)
@@ -71,6 +93,7 @@ struct SetupCirclesView: View {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
+            .disabled(circles.isEmpty)
 
         }
         .padding()

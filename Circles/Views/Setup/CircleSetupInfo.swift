@@ -6,10 +6,11 @@
 //
 
 import Foundation
+import UIKit
 
 class CircleSetupInfo: ObservableObject, Identifiable {
     var name: String
-    var avatar: UIImage?
+    @Published var avatar: UIImage?
     
     var id: String {
         name
@@ -18,5 +19,10 @@ class CircleSetupInfo: ObservableObject, Identifiable {
     init(name: String, avatar: UIImage? = nil) {
         self.name = name
         self.avatar = avatar
+    }
+    
+    @MainActor
+    func setAvatar(_ img: UIImage) {
+        self.avatar = img
     }
 }

@@ -33,7 +33,7 @@ struct SetupCircleCard: View {
                     }
                 }
                 .clipShape(Circle())
-                .frame(width: 120, height: 120, alignment: .center)
+                .frame(width: 100, height: 100, alignment: .center)
                 .foregroundColor(.gray)
                 .overlay(alignment: .bottomTrailing) {
                     PhotosPicker(selection: $selectedItem) {
@@ -58,9 +58,7 @@ struct SetupCircleCard: View {
                     if let data = try? await newItem?.loadTransferable(type: Data.self),
                        let img = UIImage(data: data)
                     {
-                        await MainActor.run {
-                            info.avatar = img
-                        }
+                        info.setAvatar(img)
                     }
                 }
             }

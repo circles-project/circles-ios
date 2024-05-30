@@ -13,6 +13,7 @@ struct SetupAvatarView: View {
     var matrix: Matrix.Session
 
     @Binding var displayName: String?
+    @Binding var stage: SetupScreen.Stage
     
     @State var newName: String = ""
     @State var avatarImage: UIImage?
@@ -22,8 +23,6 @@ struct SetupAvatarView: View {
     @State var selectedItem: PhotosPickerItem?
 
     @State var pending = false
-
-    let stage = "avatar"
 
     var avatar: Image {
         if let img = self.avatarImage {
@@ -132,6 +131,8 @@ struct SetupAvatarView: View {
                 if let image = avatarImage {
                     try await matrix.setMyAvatarImage(image)
                 }
+                
+                stage = .circlesIntro
             }) {
                 Text("Next")
                     .padding()

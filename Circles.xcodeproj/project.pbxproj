@@ -128,6 +128,8 @@
 		A54A278E2A843CC600858846 /* InvitedGroupDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54A278D2A843CC600858846 /* InvitedGroupDetailView.swift */; };
 		A54A830B2C066E9700CE4000 /* CirclesHelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54A830A2C066E9700CE4000 /* CirclesHelpView.swift */; };
 		A54A830D2C06856E00CE4000 /* CircleSetupInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54A830C2C06856E00CE4000 /* CircleSetupInfo.swift */; };
+		A54A830F2C08B99100CE4000 /* SetupIntroToCircles.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54A830E2C08B99100CE4000 /* SetupIntroToCircles.swift */; };
+		A54A83112C08D0F000CE4000 /* SetupAddNewCircleSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54A83102C08D0F000CE4000 /* SetupAddNewCircleSheet.swift */; };
 		A54BA3A22850108300453D5E /* CirclesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3A12850108300453D5E /* CirclesStore.swift */; };
 		A54BA3A62851222200453D5E /* WelcomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3A52851222200453D5E /* WelcomeScreen.swift */; };
 		A54BA3A928529BE500453D5E /* SetupScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3A828529BE500453D5E /* SetupScreen.swift */; };
@@ -374,6 +376,8 @@
 		A54A278D2A843CC600858846 /* InvitedGroupDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitedGroupDetailView.swift; sourceTree = "<group>"; };
 		A54A830A2C066E9700CE4000 /* CirclesHelpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesHelpView.swift; sourceTree = "<group>"; };
 		A54A830C2C06856E00CE4000 /* CircleSetupInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleSetupInfo.swift; sourceTree = "<group>"; };
+		A54A830E2C08B99100CE4000 /* SetupIntroToCircles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupIntroToCircles.swift; sourceTree = "<group>"; };
+		A54A83102C08D0F000CE4000 /* SetupAddNewCircleSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupAddNewCircleSheet.swift; sourceTree = "<group>"; };
 		A54BA3A12850108300453D5E /* CirclesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesStore.swift; sourceTree = "<group>"; };
 		A54BA3A52851222200453D5E /* WelcomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreen.swift; sourceTree = "<group>"; };
 		A54BA3A828529BE500453D5E /* SetupScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupScreen.swift; sourceTree = "<group>"; };
@@ -852,6 +856,8 @@
 				403CEA9E26E86C7F0054DBF4 /* SetupCirclesView.swift */,
 				403CEA9C26E86B920054DBF4 /* SetupAvatarView.swift */,
 				A54A830C2C06856E00CE4000 /* CircleSetupInfo.swift */,
+				A54A830E2C08B99100CE4000 /* SetupIntroToCircles.swift */,
+				A54A83102C08D0F000CE4000 /* SetupAddNewCircleSheet.swift */,
 			);
 			path = Setup;
 			sourceTree = "<group>";
@@ -1154,6 +1160,7 @@
 				A521C3F72A68D9390051ED88 /* CircleInvitationsIndicator.swift in Sources */,
 				409F42E9265DE06C00690A61 /* WebView.swift in Sources */,
 				A51ABE6A2B2B7E2000039276 /* FollowingTimelineDetailsView.swift in Sources */,
+				A54A830F2C08B99100CE4000 /* SetupIntroToCircles.swift in Sources */,
 				40878FC72694C00000A66EF0 /* MessageContextMenu.swift in Sources */,
 				409F4377265DE25000690A61 /* PhotoGalleryView.swift in Sources */,
 				A51928B32BCDAE38005DCFF4 /* BannedRoomMemberRow.swift in Sources */,
@@ -1190,6 +1197,7 @@
 				409F4336265DE15F00690A61 /* CircleTimelineView.swift in Sources */,
 				A52ACB8F2A786974005D90C5 /* UnconnectedPersonDetailView.swift in Sources */,
 				A56593612AEBE5D30003C244 /* Room+URL.swift in Sources */,
+				A54A83112C08D0F000CE4000 /* SetupAddNewCircleSheet.swift in Sources */,
 				409F4370265DE24000690A61 /* PersonHeaderRow.swift in Sources */,
 				409F4332265DE15F00690A61 /* CircleCreationSheet.swift in Sources */,
 				40CD7F6F2667E16100DE315F /* VideoPicker.swift in Sources */,
