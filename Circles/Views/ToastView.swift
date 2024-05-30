@@ -119,10 +119,8 @@ struct ToastView: View {
     
     var body: some View {
         switch style {
-        case .simple:
-            simpleToast
-        case .icon:
-            iconToast
+        case .simple: simpleToast
+        case .icon: iconToast
         }
     }
 }
