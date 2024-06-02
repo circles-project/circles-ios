@@ -14,7 +14,6 @@ struct GroupSettingsView: View {
     var container: ContainerRoom<GroupRoom>
     
     @Environment(\.presentationMode) var presentation
-    @AppStorage("debugMode") var debugMode: Bool = false
 
     @State var newAvatarImageItem: PhotosPickerItem?
     
@@ -89,7 +88,7 @@ struct GroupSettingsView: View {
                     .badge(room.topic ?? "(none)")
             }
             
-            if debugMode {
+            if DebugModel.shared.debugMode {
                 Text("Matrix roomId")
                     .badge(room.roomId.stringValue)
             }
@@ -188,7 +187,7 @@ struct GroupSettingsView: View {
                 }
             }
             
-            if debugMode {
+            if DebugModel.shared.debugMode {
                 RoomDebugDetailsSection(room: room)
             }
             

@@ -12,7 +12,6 @@ struct GroupInvitationsIndicator: View {
     //@Binding var invitations: [Matrix.InvitedRoom]
     @ObservedObject var session: Matrix.Session
     @ObservedObject var container: ContainerRoom<GroupRoom>
-    @AppStorage("debugMode") var debugMode: Bool = false
         
     var body: some View {
         VStack {
@@ -34,7 +33,7 @@ struct GroupInvitationsIndicator: View {
                 .background(Color.accentColor)
                 .frame(maxHeight: 60)
             }
-            if debugMode {
+            if DebugModel.shared.debugMode {
                 Text("Debug: \(invitations.count) invitations here; \(session.invitations.count) total in the session")
                     .foregroundColor(.red)
                     .padding()

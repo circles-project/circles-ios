@@ -13,7 +13,6 @@ struct GalleryGridView: View {
     @ObservedObject var room: GalleryRoom
     @State var debug = false
     @State var loading = false
-    @AppStorage("debugMode") var debugMode: Bool = false
     
     @State var prevZoom: Double = 1.0
     
@@ -55,7 +54,7 @@ struct GalleryGridView: View {
                 Spacer()
             }
             
-            if debugMode {
+            if DebugModel.shared.debugMode {
                 VStack(alignment: .leading) {
                     if self.debug {
                         let messages = room.timeline.values.filter {
@@ -186,7 +185,7 @@ struct GalleryGridView: View {
                             self.loading = false
                         }
                     }
-                } else if debugMode {
+                } else if DebugModel.shared.debugMode {
                     Text("Not currently loading; Can't paginate")
                         .foregroundColor(.red)
                 }

@@ -15,7 +15,6 @@ struct PhotoThumbnailCard: View {
     var width: CGFloat
     @State var showFullScreen: Bool = false
     
-    @AppStorage("debugMode") var debugMode: Bool = false
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
@@ -58,7 +57,7 @@ struct PhotoThumbnailCard: View {
                         .padding()
                     VStack {
                         Text("Decryption error")
-                        if debugMode {
+                        if DebugModel.shared.debugMode {
                             Text("Message id: \(message.id)")
                                 .font(.footnote)
                         }
