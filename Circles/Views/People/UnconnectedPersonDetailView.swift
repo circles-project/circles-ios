@@ -40,25 +40,6 @@ struct UnconnectedPersonDetailView: View {
                 Text(user.userId.stringValue)
                     .font(.subheadline)
                     .foregroundColor(.gray)
-                AsyncButton(action: {
-                    do {
-                        try await myProfileRoom.invite(userId: user.userId)
-                    } catch {
-                        print("UnconnectedPersonDetailView - ERROR:\t \(error)")
-
-                        self.alertTitle = "Request failed"
-                        self.alertMessage = "An unknown error has occurred. Please try again later."
-                        self.showAlert = true
-                    }
-                }) {
-                    Label("Invite to connect", systemImage: "link")
-                }
-                .padding(5)
-                .alert(isPresented: $showAlert) {
-                    Alert(title: Text(alertTitle),
-                          message: Text(alertMessage),
-                          dismissButton: .default(Text("OK")))
-                }
                 NavigationLink(destination: InviteToFollowMeView(user: user)) {
                     Label("Invite to follow me", systemImage: "circle.hexagonpath")
                 }

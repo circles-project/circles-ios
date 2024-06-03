@@ -58,7 +58,6 @@ struct PeopleOverviewScreen: View {
         var id: String { rawValue }
         
         case me = "Me"
-        case connections = "My Connections"
         case following = "People I'm Following"
         case followers = "My Followers"
         case friendsOfFriends = "Friends of Friends"
@@ -77,25 +76,6 @@ struct PeopleOverviewScreen: View {
                             PersonHeaderRow(user: me, profile: profile)
                         }
                         .buttonStyle(.plain)
-                    }
-                    
-                    Section("My Connections") {
-                        let count = connections.count
-                        if count > 0 {
-                            let units = count > 1 ? "Connections" : "Connection"
-                            NavigationLink(value: PeopleTabSection.connections) {
-                                Text("See \(count) \(units)")
-                            }
-                        } else {
-                            Text("No connections")
-                        }
-                    }
-                    .onAppear {
-                        let userIds = people.rooms.values.compactMap { $0.creator }
-                        let sorted = Set(userIds).sorted { $0 < $1 }
-                        connections = sorted.compactMap {
-                            profile.session.getUser(userId: $0)
-                        }
                     }
                     
                     Section("People I'm Following") {
@@ -184,8 +164,6 @@ struct PeopleOverviewScreen: View {
                 switch selected {
                 case .me:
                     SelfDetailView(profile: profile, circles: circles)
-                case .connections:
-                    MyConnectionsView(profile: profile, people: people)
                 case .following:
                     FollowingView(profile: profile, following: $following)
                 case .followers:

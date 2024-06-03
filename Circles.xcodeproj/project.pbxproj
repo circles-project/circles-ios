@@ -48,7 +48,6 @@
 		409F4364265DE21A00690A61 /* MessageReportingSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4361265DE21A00690A61 /* MessageReportingSheet.swift */; };
 		409F436C265DE24000690A61 /* PersonsCircleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4367265DE23E00690A61 /* PersonsCircleRow.swift */; };
 		409F436D265DE24000690A61 /* PeopleOverviewScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4368265DE23F00690A61 /* PeopleOverviewScreen.swift */; };
-		409F436F265DE24000690A61 /* ConnectedPersonDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F436A265DE24000690A61 /* ConnectedPersonDetailView.swift */; };
 		409F4370265DE24000690A61 /* PersonHeaderRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F436B265DE24000690A61 /* PersonHeaderRow.swift */; };
 		409F4376265DE25000690A61 /* PhotoGalleryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4372265DE24F00690A61 /* PhotoGalleryCard.swift */; };
 		409F4377265DE25000690A61 /* PhotoGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4373265DE24F00690A61 /* PhotoGalleryView.swift */; };
@@ -300,7 +299,6 @@
 		409F4361265DE21A00690A61 /* MessageReportingSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageReportingSheet.swift; sourceTree = "<group>"; };
 		409F4367265DE23E00690A61 /* PersonsCircleRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonsCircleRow.swift; sourceTree = "<group>"; };
 		409F4368265DE23F00690A61 /* PeopleOverviewScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeopleOverviewScreen.swift; sourceTree = "<group>"; };
-		409F436A265DE24000690A61 /* ConnectedPersonDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectedPersonDetailView.swift; sourceTree = "<group>"; };
 		409F436B265DE24000690A61 /* PersonHeaderRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonHeaderRow.swift; sourceTree = "<group>"; };
 		409F4372265DE24F00690A61 /* PhotoGalleryCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoGalleryCard.swift; sourceTree = "<group>"; };
 		409F4373265DE24F00690A61 /* PhotoGalleryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoGalleryView.swift; sourceTree = "<group>"; };
@@ -767,7 +765,6 @@
 		409F4366265DE22F00690A61 /* People */ = {
 			isa = PBXGroup;
 			children = (
-				409F436A265DE24000690A61 /* ConnectedPersonDetailView.swift */,
 				4C40ED272AA7D06800F58493 /* PeopleInvitationsIndicator.swift */,
 				A52ACB902A793B5A005D90C5 /* PeopleInvitationsView.swift */,
 				409F4368265DE23F00690A61 /* PeopleOverviewScreen.swift */,
@@ -1172,7 +1169,6 @@
 				40878FC72694C00000A66EF0 /* MessageContextMenu.swift in Sources */,
 				409F4377265DE25000690A61 /* PhotoGalleryView.swift in Sources */,
 				A51928B32BCDAE38005DCFF4 /* BannedRoomMemberRow.swift in Sources */,
-				409F436F265DE24000690A61 /* ConnectedPersonDetailView.swift in Sources */,
 				403CEAA126E90DE10054DBF4 /* SignupStartForm.swift in Sources */,
 				409F4334265DE15F00690A61 /* CircleOverviewCard.swift in Sources */,
 				A56BE1762AD5D0E900B15F51 /* KnockingUserCard.swift in Sources */,
