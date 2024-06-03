@@ -13,7 +13,6 @@ struct RoomMemberDetailView: View {
     @ObservedObject private var room: Matrix.Room
     
     @EnvironmentObject private var session: CirclesApplicationSession
-    @AppStorage("debugMode") private var debugMode: Bool = false
     
     @State private var selectedPower: Int
     
@@ -342,7 +341,7 @@ struct RoomMemberDetailView: View {
                     invitationSection
                 }
                 
-                if debugMode {
+                if DebugModel.shared.debugMode {
                     securitySection
                 }
             }

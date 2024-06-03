@@ -15,8 +15,6 @@ struct SecretStoragePasswordScreen: View {
     var keyId: String
     var description: Matrix.KeyDescriptionContent
     
-    @AppStorage("debugMode") var debugMode: Bool = false
-    
     @State var useRawKey = false
     
     @State var password = ""
@@ -182,7 +180,7 @@ struct SecretStoragePasswordScreen: View {
             
             Spacer()
             
-            if debugMode {
+            if DebugModel.shared.debugMode {
                 VStack(alignment: .leading) {
                     Text("Info")
                         .font(.headline)

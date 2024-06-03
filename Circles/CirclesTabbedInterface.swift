@@ -35,8 +35,6 @@ struct CirclesTabbedInterface: View {
     @ObservedObject var session: CirclesApplicationSession
     @ObservedObject var viewState: CirclesApplicationSession.ViewState
     
-    @AppStorage("debugMode") var debugMode: Bool = false
-    
     typealias Tab = CirclesApplicationSession.ViewState.Tab
 
     #if DEBUG
@@ -122,7 +120,7 @@ struct CirclesTabbedInterface: View {
     var body: some View {
         ZStack {
             #if DEBUG
-            if debugMode {
+            if DebugModel.shared.debugMode {
                 debugTabView
             } else {
                 tabview

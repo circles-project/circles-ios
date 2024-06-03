@@ -10,10 +10,9 @@ import Matrix
 
 struct RoomDebugDetailsSection: View {
     @ObservedObject var room: Matrix.Room
-    @AppStorage("debugMode") var debugMode: Bool = false
     
     var body: some View {
-        if debugMode {
+        if DebugModel.shared.debugMode {
             Section("Matrix Debug Details") {
                 Text("History visibiilty")
                     .badge(room.historyVisibility?.rawValue ?? "unknown")

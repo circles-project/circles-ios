@@ -72,6 +72,7 @@
 		42237CEF2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42237CEE2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift */; };
 		42DC604D2C08F09F000F1BE8 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DC604C2C08F09F000F1BE8 /* ToastView.swift */; };
 		42DC60502C094A8C000F1BE8 /* JDStatusBarNotification in Frameworks */ = {isa = PBXBuildFile; productRef = 42DC604F2C094A8C000F1BE8 /* JDStatusBarNotification */; };
+		42DC60522C0CE636000F1BE8 /* DebugMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DC60512C0CE636000F1BE8 /* DebugMode.swift */; };
 		4C40ED262AA7CCFB00F58493 /* GalleryInvitationsIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C40ED252AA7CCFB00F58493 /* GalleryInvitationsIndicator.swift */; };
 		4C40ED282AA7D06800F58493 /* PeopleInvitationsIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C40ED272AA7D06800F58493 /* PeopleInvitationsIndicator.swift */; };
 		A504DA7328120AF100EFF42E /* AsyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A504DA7228120AF100EFF42E /* AsyncButton.swift */; };
@@ -323,6 +324,7 @@
 		40F906BA269DF96100287B27 /* MessageSheetType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSheetType.swift; sourceTree = "<group>"; };
 		42237CEE2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeactivateAccountCustomAlertView.swift; sourceTree = "<group>"; };
 		42DC604C2C08F09F000F1BE8 /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
+		42DC60512C0CE636000F1BE8 /* DebugMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugMode.swift; sourceTree = "<group>"; };
 		4C40ED252AA7CCFB00F58493 /* GalleryInvitationsIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryInvitationsIndicator.swift; sourceTree = "<group>"; };
 		4C40ED272AA7D06800F58493 /* PeopleInvitationsIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleInvitationsIndicator.swift; sourceTree = "<group>"; };
 		A504DA7228120AF100EFF42E /* AsyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncButton.swift; sourceTree = "<group>"; };
@@ -556,6 +558,7 @@
 				409F4322265DE11900690A61 /* Constants.swift */,
 				404C72D2265DDF35000473DF /* ContentView.swift */,
 				A5E101F62814FAFD000B2C42 /* Circles-Bridging-Header.h */,
+				42DC60512C0CE636000F1BE8 /* DebugMode.swift */,
 				404C72D4265DDF35000473DF /* Assets.xcassets */,
 				A5B32ACA2810E9EF001BB952 /* Backend */,
 				409F42E1265DDFEB00690A61 /* Models */,
@@ -1197,6 +1200,7 @@
 				A52ACB952A797FD3005D90C5 /* SignupFinishedView.swift in Sources */,
 				403CEA9526E865740054DBF4 /* TokenForm.swift in Sources */,
 				A5D353B12BB1C5EE003AA02A /* ForgotPasswordView.swift in Sources */,
+				42DC60522C0CE636000F1BE8 /* DebugMode.swift in Sources */,
 				409F438C265DE2C200690A61 /* CircleTimeline.swift in Sources */,
 				409F4337265DE15F00690A61 /* CirclesOverviewScreen.swift in Sources */,
 				42237CEF2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift in Sources */,
