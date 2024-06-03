@@ -12,8 +12,6 @@ struct CircleInvitationsIndicator: View {
     //@Binding var invitations: [Matrix.InvitedRoom]
     @ObservedObject var session: Matrix.Session
     @ObservedObject var container: ContainerRoom<CircleSpace>
-    @AppStorage("debugMode") var debugMode: Bool = false
-
     
     var body: some View {
         VStack {
@@ -38,7 +36,7 @@ struct CircleInvitationsIndicator: View {
                 }
 
             }
-            if debugMode {
+            if DebugModel.shared.debugMode {
                 Text("Debug: \(invitations.count) invitations here; \(session.invitations.count) total in the session")
                     .foregroundColor(.red)
                     .padding()

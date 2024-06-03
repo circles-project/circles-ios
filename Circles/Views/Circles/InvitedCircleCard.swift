@@ -13,7 +13,6 @@ struct InvitedCircleCard: View {
     @ObservedObject var user: Matrix.User
     @ObservedObject var container: ContainerRoom<CircleSpace>
     
-    @AppStorage("debugMode") var debugMode: Bool = false
     @AppStorage("blurUnknownUserPicture") var blurUnknownUserPicture = true
     
     @State var showAcceptSheet = false
@@ -47,7 +46,7 @@ struct InvitedCircleCard: View {
                     .font(.title2)
                     .fontWeight(.bold)
                 
-                if debugMode {
+                if DebugModel.shared.debugMode {
                     Text(room.roomId.stringValue)
                         .font(.subheadline)
                         .foregroundColor(.red)
@@ -109,7 +108,7 @@ struct InvitedCircleCard: View {
                 .padding(.top, 5)
                 .padding(.horizontal, 10)
 
-                if debugMode {
+                if DebugModel.shared.debugMode {
                     let joinedRoomIds = room.session.rooms.values.compactMap { $0.roomId }
                     if joinedRoomIds.contains(room.roomId) {
                         Text("Room is already joined")

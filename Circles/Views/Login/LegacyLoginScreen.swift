@@ -13,7 +13,6 @@ struct LegacyLoginScreen: View {
     @ObservedObject var session: LegacyLoginSession
     var store: CirclesStore
 
-    @AppStorage("debugMode") var debugMode: Bool = false
     @AppStorage("previousUserIds") var previousUserIds: [UserId] = []
     
     @State var password: String = ""
@@ -21,7 +20,7 @@ struct LegacyLoginScreen: View {
     
     var body: some View {
         VStack {
-            if debugMode {
+            if DebugModel.shared.debugMode {
                 Text("m.login.password")
                     .foregroundColor(.red)
             }

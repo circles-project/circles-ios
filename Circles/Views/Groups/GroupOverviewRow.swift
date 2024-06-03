@@ -12,7 +12,6 @@ import Matrix
 struct GroupOverviewRow: View {
     var container: ContainerRoom<GroupRoom>
     @ObservedObject var room: Matrix.Room
-    @AppStorage("debugMode") var debugMode: Bool = false
     
     @State var showConfirmLeave = false
 
@@ -36,7 +35,7 @@ struct GroupOverviewRow: View {
 
                 VStack(alignment: .leading) {
                     
-                    if debugMode {
+                    if DebugModel.shared.debugMode {
                         Text(room.roomId.stringValue)
                             .font(.subheadline)
                             .foregroundColor(.red)

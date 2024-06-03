@@ -11,7 +11,6 @@ import Matrix
 struct RepliesView: View {
     var room: Matrix.Room
     @ObservedObject var parent: Matrix.Message
-    @AppStorage("debugMode") var debugMode: Bool = false
     @State var expanded = false
     @State var showReplyComposer = false
 
@@ -29,7 +28,7 @@ struct RepliesView: View {
             }
             
             if messages.isEmpty {
-                if debugMode {
+                if DebugModel.shared.debugMode {
                     HStack {
                         Spacer()
                         Text("No replies")
