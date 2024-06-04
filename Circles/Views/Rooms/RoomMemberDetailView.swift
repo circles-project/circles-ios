@@ -240,13 +240,6 @@ struct RoomMemberDetailView: View {
     private var invitationSection: some View {
         Section("Invitations") {
             
-            Button(action: {
-                inviteRoom = session.profile
-            }) {
-                Label("Invite to connect", systemImage: "link")
-            }
-            .disabled(session.profile.joinedMembers.contains(user.userId))
-            
             circlesMenu
             
             groupsMenu
