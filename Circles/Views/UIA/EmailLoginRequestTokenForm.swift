@@ -16,6 +16,7 @@ struct EmailLoginRequestTokenForm: View {
     var addresses: [String]
 
     @State var emailAddress: String = ""
+    @State private var errorMessage = ""
 
     @Binding var secret: String
     
@@ -27,11 +28,7 @@ struct EmailLoginRequestTokenForm: View {
     var addressIsValid: Bool {
         // https://stackoverflow.com/questions/201323/how-can-i-validate-an-email-address-using-a-regular-expression
         let regex = #/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/#
-        guard let match = try? regex.wholeMatch(in: emailAddress)
-        else {
-            return false
-        }
-        return true
+        return ((try? regex.wholeMatch(in: emailAddress)) != nil)
     }
     
     func submit() async throws {
@@ -47,6 +44,18 @@ struct EmailLoginRequestTokenForm: View {
             }
         } else {
             print("submit() - Error: No email address selected")
+        }
+    }
+    
+    var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
         }
     }
     
@@ -70,6 +79,7 @@ struct EmailLoginRequestTokenForm: View {
             }
             .padding(.leading)
             
+            showErrorMessageView
             TextField("you@example.com", text: $emailAddress, prompt: Text("Email address"))
                 .textContentType(.emailAddress)
                 .focused($focus, equals: .email)
@@ -80,7 +90,11 @@ struct EmailLoginRequestTokenForm: View {
                 //.frame(width: 300.0, height: 40.0)
                 .onSubmit {
                     Task {
-                        try await submit()
+                        do {
+                            try await submit()
+                        } catch {
+                            errorMessage = error.localizedDescription
+                        }
                     }
                 }
                 .onAppear {

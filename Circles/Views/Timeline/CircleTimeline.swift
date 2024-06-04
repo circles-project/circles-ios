@@ -16,6 +16,7 @@ struct CircleTimeline: View {
     @State private var showDebug = false
     @State private var loading = false
     private var cutoff: Date
+    @State private var errorMessage = ""
 
     init(space: CircleSpace) {
         self.space = space
@@ -102,6 +103,18 @@ struct CircleTimeline: View {
         return true
     }
     
+    private var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
+    }
+    
     var body: some View {
         let messages: [Matrix.Message] = space.getCollatedTimeline(filter: self.filter).reversed()
         
@@ -132,6 +145,7 @@ struct CircleTimeline: View {
                 .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
             
                 HStack(alignment: .bottom) {
+                    showErrorMessageView
                     Spacer()
                     if loading {
                         ProgressView("Loading...")
@@ -142,6 +156,7 @@ struct CircleTimeline: View {
                             do {
                                 try await space.paginateRooms()
                             } catch {
+                                errorMessage = error.localizedDescription
                                 print("Failed to manually paginate rooms")
                             }
                             self.loading = false
@@ -155,6 +170,7 @@ struct CircleTimeline: View {
                                 do {
                                     try await space.paginateRooms()
                                 } catch {
+                                    errorMessage = error.localizedDescription
                                     print("Failed to automatically paginate rooms")
                                 }
                                 self.loading = false
@@ -171,7 +187,11 @@ struct CircleTimeline: View {
             }
             .onAppear {
                 _ = Task {
-                    try await space.paginateEmptyTimelines(limit: 25)
+                    do {
+                        try await space.paginateEmptyTimelines(limit: 25)
+                    } catch {
+                        errorMessage = error.localizedDescription
+                    }
                 }
             }
             .refreshable {

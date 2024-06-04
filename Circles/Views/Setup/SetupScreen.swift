@@ -31,8 +31,9 @@ struct SetupScreen: View {
             SetupIntroToCircles(stage: $stage)
             
         case .circlesSetup:
-            SetupCirclesView(store: store, matrix: matrix, user: matrix.me)
-
+            SetupCirclesView(store: store, matrix: matrix, user: matrix.me) {
+                ToastView(titleMessage: $0)
+            }
         }
         
     }

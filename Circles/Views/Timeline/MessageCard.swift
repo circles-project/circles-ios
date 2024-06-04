@@ -72,6 +72,7 @@ struct MessageCard: MessageView {
     @State var showAllReactions = false
     var iCanReact: Bool
     @State var showMessageDeleteConfirmation = false
+    @State private var errorMessage = ""
     
     init(message: Matrix.Message, isLocalEcho: Bool = false, isThreaded: Bool = false) {
         self.message = message
@@ -215,7 +216,11 @@ struct MessageCard: MessageView {
                  .onAppear {
                      print("Trying to decrypt message \(current.eventId) ...")
                      Task {
-                         try await current.decrypt()
+                         do {
+                             try await current.decrypt()
+                         } catch {
+                             errorMessage = error.localizedDescription
+                         }
                      }
                  }
             } else {
@@ -268,7 +273,9 @@ struct MessageCard: MessageView {
         Menu {
             MessageContextMenu(message: message,
                                sheetType: $sheetType,
-                               showMessageDeleteConfirmation: $showMessageDeleteConfirmation)
+                               showMessageDeleteConfirmation: $showMessageDeleteConfirmation) {
+                errorMessage = $0
+            }
         }
         label: {
             //Label("More", systemImage: "ellipsis.circle")
@@ -277,7 +284,11 @@ struct MessageCard: MessageView {
         .confirmationDialog("Delete Message", isPresented: $showMessageDeleteConfirmation, actions: {
             AsyncButton(role: .destructive, action: {
                 self.showMessageDeleteConfirmation = false
-                try await deleteAndPurge(message: message)
+                do {
+                    try await deleteAndPurge(message: message)
+                } catch {
+                    errorMessage = error.localizedDescription
+                }
             }) {
                 Text("Confirm deleting the message")
             }
@@ -315,7 +326,11 @@ struct MessageCard: MessageView {
                     if users.contains(userId) {
                         AsyncButton(action: {
                             // We already sent this reaction...  So redact it
-                            try await message.sendRemoveReaction(emoji)
+                            do {
+                                try await message.sendRemoveReaction(emoji)
+                            } catch {
+                                errorMessage = error.localizedDescription
+                            }
                         }) {
                             Text("\(emoji) \(count)")
                         }
@@ -323,7 +338,11 @@ struct MessageCard: MessageView {
                     } else {
                         AsyncButton(action: {
                             // We have not sent this reaction yet..  Send it
-                            try await message.sendReaction(emoji)
+                            do {
+                                try await message.sendReaction(emoji)
+                            } catch {
+                                errorMessage = error.localizedDescription
+                            }
                         }) {
                             Text("\(emoji) \(count)")
                         }
@@ -439,7 +458,11 @@ struct MessageCard: MessageView {
             if message.sender.userId != message.room.session.creds.userId {
                 print("Updating m.read for room \(message.roomId) to be \(message.eventId)")
                 Task {
-                    try await message.room.sendReadReceipt(eventId: message.eventId, threadId: message.threadId)
+                    do {
+                        try await message.room.sendReadReceipt(eventId: message.eventId, threadId: message.threadId)
+                    } catch {
+                        errorMessage = error.localizedDescription
+                    }
                 }
             }
         }
@@ -459,13 +482,28 @@ struct MessageCard: MessageView {
         }
     }
     
+    var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
+    }
+    
     var body: some View {
         //linkWrapper
+        showErrorMessageView
         mainCard
             .contextMenu {
                 MessageContextMenu(message: message,
                                    sheetType: $sheetType,
-                                   showMessageDeleteConfirmation: $showMessageDeleteConfirmation)
+                                   showMessageDeleteConfirmation: $showMessageDeleteConfirmation) {
+                    errorMessage = $0
+                }
             }
             .sheet(item: $sheetType) { st in
                 switch(st) {

@@ -10,6 +10,19 @@ import Matrix
 
 struct IgnoredUsersView: View {
     @ObservedObject var session: Matrix.Session
+    @State private var errorMessage = ""
+    
+    private var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
+    }
     
     var body: some View {
         Form {
@@ -19,6 +32,7 @@ struct IgnoredUsersView: View {
                     Text("Not ignoring any users")
                         .padding()
                 } else {
+                    showErrorMessageView
                     ForEach(ignored) { userId in
                         let user = session.getUser(userId: userId)
                         
@@ -34,7 +48,11 @@ struct IgnoredUsersView: View {
                             }
                             Spacer()
                             AsyncButton(action: {
-                                try await user.session.unignoreUser(userId: user.userId)
+                                do {
+                                    try await user.session.unignoreUser(userId: user.userId)
+                                } catch {
+                                    errorMessage = error.localizedDescription
+                                }
                             }) {
                                 Image(systemName: "trash")
                                     .foregroundColor(.red)

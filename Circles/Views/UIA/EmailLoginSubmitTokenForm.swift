@@ -21,11 +21,24 @@ struct EmailLoginSubmitTokenForm: View {
     @FocusState var focus: FocusField?
     
     @State var showAlert = false
+    @State private var errorMessage = ""
     let alertTitle = "Invalid code"
     let alertMessage = "Please double-check the code and enter it again, or request a new code."
     
     var tokenIsValid: Bool {
         token.count == 6 && Int(token) != nil
+    }
+    
+    var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
     }
     
     var body: some View {
@@ -68,9 +81,13 @@ struct EmailLoginSubmitTokenForm: View {
                           dismissButton: .default(Text("OK"), action: { self.token = "" })
                     )
                 }
-                
+                showErrorMessageView
                 AsyncButton(action: {
-                    try await session.redoEmailLoginRequestTokenStage()
+                    do {
+                        try await session.redoEmailLoginRequestTokenStage()
+                    } catch {
+                        errorMessage = error.localizedDescription
+                    }
                 }) {
                     Text("Send a new code")
                         .padding()

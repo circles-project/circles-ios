@@ -21,6 +21,7 @@ struct SetupAvatarView: View {
     @State var showCamera = false
     //@State var pickerSourceType: UIImagePickerController.SourceType = .photoLibrary
     @State var selectedItem: PhotosPickerItem?
+    @State private var errorMessage = ""
 
     @State var pending = false
 
@@ -31,9 +32,22 @@ struct SetupAvatarView: View {
             return Image(systemName: "person.crop.square")
         }
     }
+    
+    var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
+    }
 
     var body: some View {
         VStack {
+            showErrorMessageView
             //let currentStage: SignupStage = .getAvatarImage
 
             Spacer()
@@ -126,13 +140,23 @@ struct SetupAvatarView: View {
             AsyncButton(action: {
                 displayName = newName
                 if let name = displayName {
-                    try await matrix.setMyDisplayName(name)
+                    do {
+                        try await matrix.setMyDisplayName(name)
+                    } catch {
+                        errorMessage = error.localizedDescription
+                    }
                 }
                 if let image = avatarImage {
-                    try await matrix.setMyAvatarImage(image)
+                    do {
+                        try await matrix.setMyAvatarImage(image)
+                    } catch {
+                        errorMessage = error.localizedDescription
+                    }
                 }
                 
-                stage = .circlesIntro
+                if errorMessage == "" {
+                    stage = .circlesIntro
+                }
             }) {
                 Text("Next")
                     .padding()

@@ -12,9 +12,23 @@ struct UiaView: View {
     var session: CirclesApplicationSession
     //var matrix: Matrix.Session
     @ObservedObject var uia: UIAuthSession
+    @State private var errorMessage = ""
+    
+    var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
+    }
     
     var body: some View {
         VStack {
+            showErrorMessageView
             Text("Authentication Required")
                 .font(.title2)
                 .fontWeight(.bold)
@@ -26,12 +40,16 @@ struct UiaView: View {
             switch uia.state {
             case .notConnected:
                 AsyncButton(action: {
-                    try await uia.connect()
+                    do {
+                        try await uia.connect()
+                    } catch {
+                        errorMessage = error.localizedDescription
+                    }
                 }) {
                     Text("Tap to Authenticate")
                 }
                 
-            case .failed(let error):
+            case .failed(_):
                 Text("Authentication failed")
                 
             case .canceled:
@@ -50,18 +68,26 @@ struct UiaView: View {
             case .inProgress(let uiaaState, let stages):
                 UiaInProgressView(session: uia, state: uiaaState, stages: stages)
                 
-            case .finished(let data):
+            case .finished(_):
                 Text("Success!")
                     .onAppear {
                         _ = Task {
-                            try await session.cancelUIA()
+                            do {
+                                try await session.cancelUIA()
+                            } catch {
+                                errorMessage = error.localizedDescription
+                            }
                         }
                     }
             }
         }
         .safeAreaInset(edge: .bottom) {
             AsyncButton(role: .destructive, action: {
-                try await session.cancelUIA()
+                do {
+                    try await session.cancelUIA()
+                } catch {
+                    errorMessage = error.localizedDescription
+                }
             }) {
                 Text("Cancel")
                     .padding()

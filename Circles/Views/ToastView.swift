@@ -48,7 +48,7 @@ struct ToastView: View {
         case icon /// "icon" style will work only if we set "customToast"
     }
     var titleMessage: String
-    var style: ToastStyle
+    var style: ToastStyle = .simple
     var customToast: CustomToastSetup?
     var font = Font(DefaultFonts.title.font)
     var textColor = Color(DefaultColors.text.color)

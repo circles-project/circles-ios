@@ -29,6 +29,7 @@ struct MessageReportingSheet: View {
     ]
     @State private var selectedCategories: Set<String> = []
     @State private var other: String = ""
+    @State private var errorMessage = ""
     
     var buttonBar: some View {
         HStack {
@@ -43,7 +44,11 @@ struct MessageReportingSheet: View {
             Spacer()
             AsyncButton(action: {
                 let reasons = Array(selectedCategories)
-                try await message.room.report(eventId: message.eventId, score: Int(reportedSeverity), reason: reasons.joined(separator: "; "))
+                do {
+                    try await message.room.report(eventId: message.eventId, score: Int(reportedSeverity), reason: reasons.joined(separator: "; "))
+                } catch {
+                    errorMessage = error.localizedDescription
+                }
                 self.presentation.wrappedValue.dismiss()
             }) {
                 Label("Submit Report", systemImage: "exclamationmark.shield")
@@ -125,6 +130,18 @@ struct MessageReportingSheet: View {
                 }
             }
             .padding(.leading)
+        }
+    }
+    
+    var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
         }
     }
     

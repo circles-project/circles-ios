@@ -13,6 +13,7 @@ struct BsspekeEnrollOprfForm: View {
     var session: UIAuthSession
     @State var passphrase: String = ""
     @State var repeatPassphrase: String = ""
+    @State private var errorMessage = ""
     //@State var passwordStrength: Int = 0
     @State var score: Double = 0.0
     @State var color: Color = .red
@@ -186,13 +187,30 @@ struct BsspekeEnrollOprfForm: View {
             print("Couldn't get user id")
             return
         }
-        try await session.doBSSpekeEnrollOprfStage(userId: userId, password: passphrase)
+        do {
+            try await session.doBSSpekeEnrollOprfStage(userId: userId, password: passphrase)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+    
+    private var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
     }
     
     @ViewBuilder
     var savePasswordView: some View {
         VStack(spacing: 50) {
-
+            showErrorMessageView
+            
             Text("Would you like to save your passphrase to iCloud Keychain?")
             
             AsyncButton(action: {
@@ -217,10 +235,8 @@ struct BsspekeEnrollOprfForm: View {
                     .background(Color.blue)
                     .cornerRadius(10)
             }
-            
         }
         .padding(.top)
-
     }
     
     var body: some View {

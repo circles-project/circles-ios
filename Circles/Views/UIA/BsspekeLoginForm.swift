@@ -15,6 +15,7 @@ struct BsspekeLoginForm: View {
 
     @State var passphrase: String = ""
     @State var failed = false
+    @State private var errorMessage = ""
     
     enum FocusField {
         case passphrase
@@ -24,6 +25,8 @@ struct BsspekeLoginForm: View {
     @ViewBuilder
     var oprfForm: some View {
         VStack {
+            showErrorMessageView
+            
             Spacer()
             
             Text("Enter your passphrase")
@@ -52,7 +55,11 @@ struct BsspekeLoginForm: View {
                     }
                 AsyncButton(action: {
                     print("Doing BS-SPEKE OPRF stage for UIA")
-                    try await session.doBSSpekeLoginOprfStage(password: passphrase)
+                    do {
+                        try await session.doBSSpekeLoginOprfStage(password: passphrase)
+                    } catch {
+                        errorMessage = "error.localizedDescription"
+                    }
                 }) {
                     Text("Submit")
                         .padding()
@@ -99,7 +106,18 @@ struct BsspekeLoginForm: View {
                 }
             }
         }
-
+    }
+    
+    private var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
     }
 
     var body: some View {

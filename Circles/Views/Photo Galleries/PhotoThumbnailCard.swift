@@ -14,8 +14,21 @@ struct PhotoThumbnailCard: View {
     var height: CGFloat
     var width: CGFloat
     @State var showFullScreen: Bool = false
+    @State private var errorMessage = ""
     
     @Environment(\.colorScheme) var colorScheme
+    
+    var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
+    }
 
     var body: some View {
         ZStack {
@@ -34,7 +47,9 @@ struct PhotoThumbnailCard: View {
                             PhotoDetailView(message: message)
                         }
                         .contextMenu {
-                            PhotoContextMenu(message: message, showDetail: $showFullScreen)
+                            PhotoContextMenu(message: message, showDetail: $showFullScreen) {
+                                errorMessage = $0
+                            }
                         }
 
                 } else {

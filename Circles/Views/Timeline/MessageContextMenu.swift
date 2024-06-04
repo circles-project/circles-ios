@@ -14,6 +14,7 @@ struct MessageContextMenu: View {
     var message: Matrix.Message
     @Binding var sheetType: MessageSheetType?
     @Binding var showMessageDeleteConfirmation: Bool
+    var onErrorMessage: (String) -> Void
 
     var body: some View {
 
@@ -23,7 +24,11 @@ struct MessageContextMenu: View {
            let imageContent = content as? Matrix.mImageContent
         {
             AsyncButton(action: {
-                try await saveImage(content: imageContent, session: message.room.session)
+                do {
+                    try await saveImage(content: imageContent, session: message.room.session)
+                } catch {
+                    onErrorMessage(error.localizedDescription)
+                }
             }) {
                 Label("Save image", systemImage: "square.and.arrow.down")
             }
@@ -45,22 +50,34 @@ struct MessageContextMenu: View {
         if message.sender.userId != message.room.session.creds.userId {
             Menu {
                 AsyncButton(action: {
-                    try await message.room.setPowerLevel(userId: message.sender.userId, power: -10)
+                    do {
+                        try await message.room.setPowerLevel(userId: message.sender.userId, power: -10)
+                    } catch {
+                        onErrorMessage(error.localizedDescription)
+                    }
                 }) {
                     Label("Block sender from posting here", systemImage: "person.crop.circle.badge.xmark")
                 }
                 .disabled( !message.room.iCanChangeState(type: M_ROOM_POWER_LEVELS) )
                 
                 AsyncButton(action: {
-                    try await message.room.kick(userId: message.sender.userId,
-                                                reason: "Removed by \(message.room.session.whoAmI()) for message \(message.eventId)")
+                    do {
+                        try await message.room.kick(userId: message.sender.userId,
+                                                    reason: "Removed by \(message.room.session.whoAmI()) for message \(message.eventId)")
+                    } catch {
+                        onErrorMessage(error.localizedDescription)
+                    }
                 }) {
                     Label("Remove sender", systemImage: "trash.circle")
                 }
                 .disabled( !message.room.iCanKick )
                 
                 AsyncButton(action: {
-                    try await message.room.session.ignoreUser(userId: message.sender.userId)
+                    do {
+                        try await message.room.session.ignoreUser(userId: message.sender.userId)
+                    } catch {
+                        onErrorMessage(error.localizedDescription)
+                    }
                 }) {
                     Label("Ignore sender", systemImage: "person.crop.circle.badge.minus")
                 }
@@ -93,7 +110,7 @@ struct MessageContextMenu: View {
             case M_TEXT:
                 guard let textContent = content as? Matrix.mTextContent
                 else {
-                    print("Failed to get content to copy m.text message \(message.eventId)")
+                    onErrorMessage("Failed to get content to copy m.text message \(message.eventId)")
                     return
                 }
                 pasteboard.string = textContent.body
@@ -101,13 +118,13 @@ struct MessageContextMenu: View {
             case M_IMAGE:
                 guard let imageContent = content as? Matrix.mImageContent
                 else {
-                    print("Failed to get content to copy m.image message \(message.eventId)")
+                    onErrorMessage("Failed to get content to copy m.image message \(message.eventId)")
                     return
                 }
                 pasteboard.image = message.thumbnail
                 
             default:
-                print("Cannot copy msgtype \(content.msgtype)")
+                onErrorMessage("Cannot copy msgtype \(content.msgtype)")
             }
         }) {
             Label("Copy", systemImage: "doc.on.doc")

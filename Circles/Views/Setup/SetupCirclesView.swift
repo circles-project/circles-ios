@@ -26,7 +26,8 @@ struct SetupCirclesView: View {
     @State var totalSteps = 15.0
     @State var status: String = "Waiting for input"
     @State var pending = false
-
+    
+    var onErrorMessage: (String) -> Void
     let stage = "circles"
     
     func handleProgressUpdate(current: Int, total: Int, message: String) {
@@ -81,9 +82,13 @@ struct SetupCirclesView: View {
             AsyncButton(action: {
                 self.pending = true
                 self.totalSteps = Double(10 + circles.count)
-                try await store.createSpaceHierarchy(displayName: user.displayName ?? user.userId.username,
-                                                     circles: circles,
-                                                     onProgress: handleProgressUpdate)
+                do {
+                    try await store.createSpaceHierarchy(displayName: user.displayName ?? user.userId.username,
+                                                         circles: circles,
+                                                         onProgress: handleProgressUpdate)
+                } catch {
+                    onErrorMessage(error.localizedDescription)
+                }
                 self.pending = false
             }) {
                 Text("Next")

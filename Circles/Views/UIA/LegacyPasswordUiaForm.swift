@@ -13,12 +13,25 @@ struct LegacyPasswordUiaForm: View {
     var session: UIAuthSession
 
     @State var passphrase: String = ""
+    @State var errorMessage = ""
     @State var failed = false
     
     enum FocusField {
         case passphrase
     }
     @FocusState var focus: FocusField?
+    
+    var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
+    }
 
     var body: some View {
         VStack {
@@ -52,9 +65,14 @@ struct LegacyPasswordUiaForm: View {
                         }
                     }
                 
+                showErrorMessageView
                 AsyncButton(action: {
                     print("Doing m.login.password stage for UIA")
-                    try await session.doPasswordAuthStage(password: passphrase)
+                    do {
+                        try await session.doPasswordAuthStage(password: passphrase)
+                    } catch {
+                        errorMessage = error.localizedDescription
+                    }
                 }) {
                     Text("Submit")
                         .padding()

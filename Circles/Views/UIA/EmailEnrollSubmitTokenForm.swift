@@ -14,6 +14,7 @@ struct EmailEnrollSubmitTokenForm: View {
     var secret: String
 
     @State var token = ""
+    @State private var errorMessage = ""
     
     enum FocusField {
         case token
@@ -26,6 +27,18 @@ struct EmailEnrollSubmitTokenForm: View {
     
     var tokenIsValid: Bool {
         token.count == 6 && Int(token) != nil
+    }
+    
+    var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
     }
     
     var body: some View {
@@ -68,9 +81,13 @@ struct EmailEnrollSubmitTokenForm: View {
                           dismissButton: .default(Text("OK"), action: { self.token = "" })
                     )
                 }
-                
+                showErrorMessageView
                 AsyncButton(action: {
-                    try await session.redoEmailEnrollRequestTokenStage()
+                    do {
+                        try await session.redoEmailEnrollRequestTokenStage()
+                    } catch {
+                        errorMessage = error.localizedDescription
+                    }
                 }) {
                     Text("Send a new code")
                         .padding()

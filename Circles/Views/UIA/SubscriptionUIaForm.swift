@@ -18,6 +18,7 @@ struct SubscriptionUiaProductView: View {
     @State var purchased = false
     @State var errorTitle = ""
     @State var isShowingError: Bool = false
+    @State var errorMessage = ""
     
     var unit: String? {
         guard let subscription = product.subscription
@@ -52,7 +53,7 @@ struct SubscriptionUiaProductView: View {
             errorTitle = "Your purchase could not be verified by the App Store."
             isShowingError = true
         } catch {
-            print("Failed purchase for \(product.id): \(error)")
+            errorMessage = "Failed purchase for \(product.id): \(error)"
         }
     }
     
@@ -94,11 +95,24 @@ struct SubscriptionUiaProductView: View {
             .cornerRadius(15)
     }
     
+    var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
+    }
+    
     var body: some View {
         let selected = selectedProduct == product
         let color: Color = selected ? .accentColor : .gray
         
         return HStack {
+            showErrorMessageView
             let emoji = store.emoji(for: product.id)
 
             Text(emoji)
@@ -151,6 +165,7 @@ struct SubscriptionUIaForm: View {
     @State var selectedProduct: Product?
     @State var selectedTransaction: Transaction?
     @State var jwsSignedTransaction: String?
+    @State var errorMessage = ""
 
     var alreadyPurchased: Bool {
         guard let product = selectedProduct
@@ -161,8 +176,21 @@ struct SubscriptionUIaForm: View {
         return appStore.isPurchased(product)
     }
     
+    var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
+    }
+    
     var body: some View {
         VStack {
+            showErrorMessageView
             Text("App Store Subscriptions")
 
             ScrollView {
@@ -224,9 +252,13 @@ struct SubscriptionUIaForm: View {
                     
                     // Now do the apple storekit v2 UIA stage
                     // Send bundleId, productId, and signedTransaction to the server
-                    try await session.doAppStoreSubscriptionStage(bundleId: transaction.appBundleID,
-                                                                  productId: transaction.productID,
-                                                                  signedTransaction: jws)
+                    do {
+                        try await session.doAppStoreSubscriptionStage(bundleId: transaction.appBundleID,
+                                                                      productId: transaction.productID,
+                                                                      signedTransaction: jws)
+                    } catch {
+                        errorMessage = error.localizedDescription
+                    }
                 }
             }) {
                 if selectedTransaction != nil,

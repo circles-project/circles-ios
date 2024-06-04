@@ -14,6 +14,7 @@ import Matrix
 struct PhotoContextMenu: View {
     var message: Matrix.Message
     @Binding var showDetail: Bool
+    var onErrorMessage: (String) -> Void
     
     var body: some View {
         let current = message.replacement ?? message
@@ -23,7 +24,11 @@ struct PhotoContextMenu: View {
            let imageContent = content as? Matrix.mImageContent
         {
             AsyncButton(action: {
-                try await saveImage(content: imageContent, session: message.room.session)
+                do {
+                    try await saveImage(content: imageContent, session: message.room.session)
+                } catch {
+                    onErrorMessage(error.localizedDescription)
+                }
             }) {
                 Label("Save image", systemImage: "square.and.arrow.down")
             }
@@ -49,7 +54,11 @@ struct PhotoContextMenu: View {
         
         if message.iCanRedact {
             AsyncButton(action: {
-                try await deleteAndPurge(message: message)
+                do {
+                    try await deleteAndPurge(message: message)
+                } catch {
+                    onErrorMessage(error.localizedDescription)
+                }
             }) {
                 Label("Delete", systemImage: "trash")
             }
