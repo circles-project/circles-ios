@@ -11,7 +11,8 @@ struct AsyncButton<Label: View>: View {
     var role: ButtonRole?
     var action: () async throws -> Void
     @ViewBuilder var label: () -> Label
-
+    
+    @State private var errorMessage = ""
     @State private var pending = false
 
     func runAction() {
@@ -21,6 +22,7 @@ struct AsyncButton<Label: View>: View {
             do {
                 try await action()
             } catch {
+                errorMessage = error.localizedDescription
                 print("AsyncButton: Action failed")
             }
             await MainActor.run {
@@ -29,14 +31,29 @@ struct AsyncButton<Label: View>: View {
         }
     }
     
-    var body: some View {
-        Button(
-            role: role,
-            action: runAction,
-            label: {
-                label()
+    private var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
             }
-        )
-        .disabled(pending)
+        }
+    }
+    
+    var body: some View {
+        VStack {
+            showErrorMessageView
+            Button(
+                role: role,
+                action: runAction,
+                label: {
+                    label()
+                }
+            )
+            .disabled(pending)
+        }
     }
 }
