@@ -36,6 +36,7 @@ struct CirclesTabbedInterface: View {
     @ObservedObject var viewState: CirclesApplicationSession.ViewState
     
     @AppStorage("debugMode") var debugMode: Bool = false
+    @AppStorage(DEFAULTS_KEY_ENABLE_GALLERIES, store: .standard) var enableGalleries: Bool = false
     
     typealias Tab = CirclesApplicationSession.ViewState.Tab
 
@@ -83,7 +84,6 @@ struct CirclesTabbedInterface: View {
                 }
                 .tag(Tab.people)
 
-            let enableGalleries = UserDefaults.standard.bool(forKey: DEFAULTS_KEY_ENABLE_GALLERIES)
             if enableGalleries {
                 PhotosOverviewScreen(container: self.session.galleries,
                                      selected: $session.viewState.selectedGalleryId)
