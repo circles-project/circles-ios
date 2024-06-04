@@ -125,7 +125,7 @@ struct CirclesTabbedInterface: View {
     var body: some View {
         ZStack {
             #if DEBUG
-            if debugMode {
+            if DebugModel.shared.debugMode {
                 debugTabView
             } else {
                 tabview

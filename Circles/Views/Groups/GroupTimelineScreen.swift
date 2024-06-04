@@ -23,7 +23,6 @@ struct GroupTimelineScreen: View {
     var container: ContainerRoom<GroupRoom>
     //@ObservedObject var group: SocialGroup
     @Environment(\.presentationMode) var presentation
-    @AppStorage("debugMode") var debugMode: Bool = false
     
     @State private var sheetType: GroupScreenSheetType? = nil
 

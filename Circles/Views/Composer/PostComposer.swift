@@ -17,7 +17,6 @@ struct PostComposer: View {
     //@Binding var isPresented: Bool
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.presentationMode) var presentation
-    @AppStorage("debugMode") var debugMode: Bool = false
 
     var parent: Matrix.Message?
     var editing: Matrix.Message?
@@ -407,7 +406,7 @@ struct PostComposer: View {
         switch(messageState) {
             
         case .text:
-            if debugMode {
+            if DebugModel.shared.debugMode {
                 Text("Editing")
                     .font(.footnote)
                     .foregroundColor(.red)

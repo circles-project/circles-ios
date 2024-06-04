@@ -13,7 +13,6 @@ struct RoomMemberDetailView: View {
     @ObservedObject private var room: Matrix.Room
     
     @EnvironmentObject private var session: CirclesApplicationSession
-    @AppStorage("debugMode") private var debugMode: Bool = false
     
     @State private var selectedPower: Int
     
@@ -241,13 +240,6 @@ struct RoomMemberDetailView: View {
     private var invitationSection: some View {
         Section("Invitations") {
             
-            Button(action: {
-                inviteRoom = session.profile
-            }) {
-                Label("Invite to connect", systemImage: "link")
-            }
-            .disabled(session.profile.joinedMembers.contains(user.userId))
-            
             circlesMenu
             
             groupsMenu
@@ -342,7 +334,7 @@ struct RoomMemberDetailView: View {
                     invitationSection
                 }
                 
-                if debugMode {
+                if DebugModel.shared.debugMode {
                     securitySection
                 }
             }

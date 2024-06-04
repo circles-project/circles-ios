@@ -34,6 +34,17 @@ struct MessageContextMenu: View {
                 ShareLink(item: image, preview: SharePreview(imageContent.caption ?? "", image: image))
             }
         }
+        
+        let reactions = message.reactions.values.map {
+            !$0.isEmpty ? "exist" : "empty"
+        }
+        if reactions.rawValue.contains("exist") {
+            AsyncButton(action: {
+                self.sheetType = .liked
+            }) {
+                Label("Show likes", systemImage: "hand.thumbsup")
+            }
+        }
 
         Button(action: {
             message.objectWillChange.send()

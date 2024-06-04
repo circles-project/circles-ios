@@ -11,7 +11,6 @@ import Matrix
 
 struct TimelineView<V: MessageView>: View {
     @ObservedObject var room: Matrix.Room
-    @AppStorage("debugMode") var debugMode: Bool = false
     @State var debug = false
     @State var loading = false
     @State var selectedMessage: Matrix.Message?
@@ -49,7 +48,7 @@ struct TimelineView<V: MessageView>: View {
                             self.loading = false
                         }
                     }
-                } else if debugMode {
+                } else if DebugModel.shared.debugMode {
                     Text("Not currently loading; Can't paginate")
                         .foregroundColor(.red)
                 }
@@ -57,7 +56,7 @@ struct TimelineView<V: MessageView>: View {
             }
             .frame(minHeight: TIMELINE_BOTTOM_PADDING)
             
-            if debugMode {
+            if DebugModel.shared.debugMode {
                 VStack(alignment: .leading) {
                     if self.debug {
                         Text("Room has \(room.timeline.count) total messages")
@@ -119,7 +118,7 @@ struct TimelineView<V: MessageView>: View {
                             .onAppear {
                                 message.loadReactions()
                             }
-                        } else if debugMode && message.stateKey != nil {
+                        } else if DebugModel.shared.debugMode && message.stateKey != nil {
                             StateEventView(message: message)
                         }
                     }

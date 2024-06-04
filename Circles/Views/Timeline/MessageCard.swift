@@ -58,13 +58,11 @@ struct ImageContentView: View {
     }
 }
 
-
-
 struct MessageCard: MessageView {
     @ObservedObject var message: Matrix.Message
     var isLocalEcho = false
     var isThreaded = false
-    @AppStorage("debugMode") var debugMode: Bool = false
+    @State var emojiUsersListModel: [EmojiUsersListModel] = []
     @Environment(\.colorScheme) var colorScheme
     //@State var showReplyComposer = false
     @State var reporting = false
@@ -200,7 +198,7 @@ struct MessageCard: MessageView {
                         Label("Could not decrypt message", systemImage: "exclamationmark.triangle")
                             .font(.title2)
                             .fontWeight(.semibold)
-                        if debugMode {
+                        if DebugModel.shared.debugMode {
                             Text("Message id: \(message.id)")
                                 .font(.footnote)
                         }
@@ -415,14 +413,14 @@ struct MessageCard: MessageView {
             
             MessageAuthorHeader(user: message.sender)
 
-            if debugMode && self.debug {
+            if DebugModel.shared.debugMode && self.debug {
                 Text(message.eventId)
                     .font(.caption)
             }
 
             content
             
-            if debugMode {
+            if DebugModel.shared.debugMode {
                 details
                     .font(.caption)
             }
@@ -462,21 +460,25 @@ struct MessageCard: MessageView {
     
     var body: some View {
         //linkWrapper
-        mainCard
-            .contextMenu {
-                MessageContextMenu(message: message,
-                                   sheetType: $sheetType,
-                                   showMessageDeleteConfirmation: $showMessageDeleteConfirmation)
-            }
-            .sheet(item: $sheetType) { st in
-                switch(st) {
-
-                case .reactions:
-                    EmojiPicker(message: message)
-
-                case .reporting:
-                    MessageReportingSheet(message: message)
+        ZStack {
+            mainCard
+                .contextMenu {
+                    MessageContextMenu(message: message,
+                                       sheetType: $sheetType,
+                                       showMessageDeleteConfirmation: $showMessageDeleteConfirmation)
                 }
-            }
+                .sheet(item: $sheetType) { st in
+                    switch(st) {
+                    case .reactions:
+                        EmojiPicker(message: message)
+                        
+                    case .reporting:
+                        MessageReportingSheet(message: message)
+                        
+                    case .liked:
+                        LikedEmojiView(message: message, emojiUsersListModel: emojiUsersListModel)
+                    }
+                }
+        }
     }
 }

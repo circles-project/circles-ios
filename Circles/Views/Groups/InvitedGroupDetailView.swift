@@ -12,8 +12,6 @@ struct InvitedGroupDetailView: View {
     @ObservedObject var room: Matrix.InvitedRoom
     @ObservedObject var user: Matrix.User
     
-    @AppStorage("debugMode") var debugMode: Bool = false
-    
     @State var showRoomIdPopover = false
 
     var body: some View {
@@ -36,7 +34,7 @@ struct InvitedGroupDetailView: View {
                     .fontWeight(.bold)
                 
                 Grid(alignment: .topLeading, horizontalSpacing: 10, verticalSpacing: 20) {
-                    if debugMode {
+                    if DebugModel.shared.debugMode {
                         GridRow {
                             Text("Group ID:")
                             

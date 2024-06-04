@@ -13,8 +13,6 @@ struct GallerySettingsView: View {
     @ObservedObject var room: GalleryRoom
     var container: ContainerRoom<GalleryRoom>
     @Environment(\.presentationMode) var presentation
-    
-    @AppStorage("debugMode") var debugMode: Bool = false
 
     @State var newAvatarImageItem: PhotosPickerItem?
     
@@ -62,7 +60,7 @@ struct GallerySettingsView: View {
             Text("Created by")
                 .badge(creator.displayName ?? creator.userId.stringValue)
             
-            if debugMode {
+            if DebugModel.shared.debugMode {
                 Text("Matrix roomId")
                     .badge(room.roomId.stringValue)
             }
@@ -171,7 +169,7 @@ struct GallerySettingsView: View {
                 }
             }
             
-            if debugMode {
+            if DebugModel.shared.debugMode {
                 RoomDebugDetailsSection(room: room)
             }
             

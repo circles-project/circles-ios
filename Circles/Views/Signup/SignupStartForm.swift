@@ -12,7 +12,6 @@ import Matrix
 struct SignupStartForm: View {
     //var matrix: MatrixInterface
     @ObservedObject var session: SignupSession
-    @AppStorage("debugMode") private var debugMode: Bool = false
     var store: CirclesStore
     //@Binding var selectedScreen: LoggedOutScreen.Screen
     var state: UIAA.SessionState
@@ -85,7 +84,7 @@ struct SignupStartForm: View {
             }
             .disabled( nil == appleFlow || !SKPaymentQueue.canMakePayments() )
             
-            if debugMode {
+            if DebugModel.shared.debugMode {
                 VStack {
                     let flows = state.flows
                     ForEach(flows, id: \.self) { flow in

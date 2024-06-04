@@ -14,7 +14,6 @@ struct VideoThumbnailCard: View {
     var width: CGFloat
     @State var playVideo: Bool = false
     
-    @AppStorage("debugMode") var debugMode: Bool = false
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
@@ -62,7 +61,7 @@ struct VideoThumbnailCard: View {
                         .padding()
                     VStack {
                         Text("Decryption error")
-                        if debugMode {
+                        if DebugModel.shared.debugMode {
                             Text("Message id: \(message.id)")
                                 .font(.footnote)
                         }

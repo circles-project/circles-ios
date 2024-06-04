@@ -12,8 +12,6 @@ import Matrix
 struct CircleSettingsView: View {
     @ObservedObject var space: CircleSpace
     
-    @AppStorage("debugMode") var debugMode: Bool = false
-
     @State var newAvatarImageItem: PhotosPickerItem?
 
     @State var showConfirmUnfollow = false
@@ -58,7 +56,7 @@ struct CircleSettingsView: View {
                 }
             }
             
-            if debugMode {
+            if DebugModel.shared.debugMode {
                 Text("Space roomId")
                     .badge(space.roomId.stringValue)
             }
@@ -68,7 +66,7 @@ struct CircleSettingsView: View {
                let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/timeline/\(wall.roomId.stringValue)")
             {
                 
-                if debugMode {
+                if DebugModel.shared.debugMode {
                     Text("Wall roomId")
                         .badge(wall.roomId.stringValue)
                 }
@@ -171,7 +169,7 @@ struct CircleSettingsView: View {
                 followersSection
                 
                 if let wall = space.wall,
-                   debugMode
+                   DebugModel.shared.debugMode
                 {
                     RoomDebugDetailsSection(room: wall)
                 }

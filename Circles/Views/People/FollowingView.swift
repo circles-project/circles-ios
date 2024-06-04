@@ -16,7 +16,7 @@ struct FollowingView: View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 10) {
                 ForEach(following) { user in
-                    NavigationLink(destination: UnconnectedPersonDetailView(user: user, myProfileRoom: profile)) {
+                    NavigationLink(destination: PersonDetailView(user: user, myProfileRoom: profile)) {
                         PersonHeaderRow(user: user, profile: profile)
                             .contentShape(Rectangle())
                     }

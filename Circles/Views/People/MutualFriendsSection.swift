@@ -29,7 +29,7 @@ struct MutualFriendsSection: View {
                     ForEach(friends) { friend in
                         // FIXME: Should probably check to see if we're connected to this person's profile space
                         //        And if we are, use the ConnectedPersonDetailView
-                        NavigationLink(destination: UnconnectedPersonDetailView(user: friend, myProfileRoom: profile)) {
+                        NavigationLink(destination: PersonDetailView(user: friend, myProfileRoom: profile)) {
                             PersonHeaderRow(user: friend, profile: profile)
                         }
                         .buttonStyle(.plain)
