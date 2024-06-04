@@ -8,7 +8,7 @@
 import SwiftUI
 import Matrix
 
-struct UnconnectedPersonDetailView: View {
+struct PersonDetailView: View {
     @ObservedObject var user: Matrix.User
     @ObservedObject var myProfileRoom: ProfileSpace
 

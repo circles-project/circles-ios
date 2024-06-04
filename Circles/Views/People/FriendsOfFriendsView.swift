@@ -20,19 +20,12 @@ struct FriendsOfFriendsView: View {
                     ForEach(userIds, id: \.self) { userId in
                         if userId != profile.session.creds.userId {
                             let user = profile.session.getUser(userId: userId)
-                            if let friendsSpace = people.rooms.values.first(where: { $0.creator == userId }) {
-                                NavigationLink(destination: ConnectedPersonDetailView(space: friendsSpace, profile: profile)) {
-                                    PersonHeaderRow(user: user, profile: profile)
-                                        //.contentShape(Rectangle())
-                                }
-                                .buttonStyle(.plain)
-                            } else {
-                                NavigationLink(destination: UnconnectedPersonDetailView(user: user, myProfileRoom: profile)) {
-                                    PersonHeaderRow(user: user, profile: profile)
-                                        //.contentShape(Rectangle())
-                                }
-                                .buttonStyle(.plain)
+
+                            NavigationLink(destination: PersonDetailView(user: user, myProfileRoom: profile)) {
+                                PersonHeaderRow(user: user, profile: profile)
+                                    //.contentShape(Rectangle())
                             }
+                            .buttonStyle(.plain)
                             
                             Divider()
                         }
