@@ -58,12 +58,11 @@ struct ImageContentView: View {
     }
 }
 
-
-
 struct MessageCard: MessageView {
     @ObservedObject var message: Matrix.Message
     var isLocalEcho = false
     var isThreaded = false
+    @State var emojiUsersListModel: [EmojiUsersListModel] = []
     @Environment(\.colorScheme) var colorScheme
     //@State var showReplyComposer = false
     @State var reporting = false
@@ -461,21 +460,25 @@ struct MessageCard: MessageView {
     
     var body: some View {
         //linkWrapper
-        mainCard
-            .contextMenu {
-                MessageContextMenu(message: message,
-                                   sheetType: $sheetType,
-                                   showMessageDeleteConfirmation: $showMessageDeleteConfirmation)
-            }
-            .sheet(item: $sheetType) { st in
-                switch(st) {
-
-                case .reactions:
-                    EmojiPicker(message: message)
-
-                case .reporting:
-                    MessageReportingSheet(message: message)
+        ZStack {
+            mainCard
+                .contextMenu {
+                    MessageContextMenu(message: message,
+                                       sheetType: $sheetType,
+                                       showMessageDeleteConfirmation: $showMessageDeleteConfirmation)
                 }
-            }
+                .sheet(item: $sheetType) { st in
+                    switch(st) {
+                    case .reactions:
+                        EmojiPicker(message: message)
+                        
+                    case .reporting:
+                        MessageReportingSheet(message: message)
+                        
+                    case .liked:
+                        LikedEmojiView(message: message, emojiUsersListModel: emojiUsersListModel)
+                    }
+                }
+        }
     }
 }
