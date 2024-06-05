@@ -13,9 +13,23 @@ struct InviteToFollowMeView: View {
     @Environment(\.presentationMode) var presentation
     
     @State var selected: Set<CircleSpace> = []
+    @State private var errorMessage = ""
+        
+    private var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
+    }
     
     var body: some View {
         ScrollView {
+            showErrorMessageView
             VStack {
                 
                 Text("Which of your timelines do you want \(user.displayName ?? user.userId.username) to follow?")
@@ -33,7 +47,11 @@ struct InviteToFollowMeView: View {
                             if wall.invitedMembers.contains(user.userId) {
                                 print("User \(user.userId) is already following us in circle \(space.name ?? wall.name ?? space.roomId.stringValue)")
                             } else {
-                                try await wall.invite(userId: user.userId)
+                                do {
+                                    try await wall.invite(userId: user.userId)
+                                } catch {
+                                    errorMessage = error.localizedDescription
+                                }
                             }
                         } else {
                             print("No 'wall' timeline room for circle \(space.name ?? space.roomId.stringValue)")

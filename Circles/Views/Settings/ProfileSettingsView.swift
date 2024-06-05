@@ -15,10 +15,23 @@ struct ProfileSettingsView: View {
     
     @State var showPicker = false
     @State var newAvatarImageItem: PhotosPickerItem?
+    @State private var errorMessage = ""
+        
+    private var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
+    }
     
     var body: some View {
         VStack {
-
+            showErrorMessageView
             Form {
                 HStack {
                     Text("Profile picture")
@@ -34,7 +47,11 @@ struct ProfileSettingsView: View {
                         Task {
                             if let data = try? await newAvatarImageItem?.loadTransferable(type: Data.self) {
                                 if let img = UIImage(data: data) {
-                                    try await session.setMyAvatarImage(img)
+                                    do {
+                                        try await session.setMyAvatarImage(img)
+                                    } catch {
+                                        errorMessage = error.localizedDescription
+                                    }
                                 }
                             }
                         }

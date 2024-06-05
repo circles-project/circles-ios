@@ -22,6 +22,7 @@ struct CircleSettingsView: View {
     
     @State var showConfirmResend = false
     @State var showConfirmCancelInvite = false
+    @State private var errorMessage = ""
     
     @ViewBuilder
     var generalSection: some View {
@@ -48,7 +49,11 @@ struct CircleSettingsView: View {
                             if let img = UIImage(data: data) {
                                 //try await space.setAvatarImage(image: img)
                                 if let wall = space.wall {
-                                    try await wall.setAvatarImage(image: img)
+                                    do {
+                                        try await wall.setAvatarImage(image: img)
+                                    } catch {
+                                        errorMessage = error.localizedDescription
+                                    }
                                 }
                             }
                         }
@@ -158,10 +163,23 @@ struct CircleSettingsView: View {
         }
     }
     
+    private var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
+    }
 
     var body: some View {
         VStack {
             Form {
+                showErrorMessageView
+                
                 generalSection
                 
                 followingSection

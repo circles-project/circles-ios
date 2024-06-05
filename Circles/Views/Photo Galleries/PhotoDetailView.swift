@@ -19,7 +19,19 @@ struct PhotoDetailView: View {
     //@GestureState private var magnifyBy = 1.0
     @State var magnifyBy = 1.0
     @State private var viewPort = CGSize.zero
-
+    @State private var errorMessage = ""
+    
+    private var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
+    }
     
     var body: some View {
         ZStack {
@@ -92,16 +104,24 @@ struct PhotoDetailView: View {
             }
             Task {
                 if let file = content.file {
-                    let data = try await message.room.session.downloadAndDecryptData(file)
-                    let image = UIImage(data: data)
-                    await MainActor.run {
-                        self.fullres = image
+                    do {
+                        let data = try await message.room.session.downloadAndDecryptData(file)
+                        let image = UIImage(data: data)
+                        await MainActor.run {
+                            self.fullres = image
+                        }
+                    } catch {
+                        errorMessage = error.localizedDescription
                     }
                 } else if let url = content.url {
-                    let data = try await message.room.session.downloadData(mxc: url)
-                    let image = UIImage(data: data)
-                    await MainActor.run {
-                        self.fullres = image
+                    do {
+                        let data = try await message.room.session.downloadData(mxc: url)
+                        let image = UIImage(data: data)
+                        await MainActor.run {
+                            self.fullres = image
+                        }
+                    } catch {
+                        errorMessage = error.localizedDescription
                     }
                 }
             }

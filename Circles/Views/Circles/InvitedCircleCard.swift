@@ -18,9 +18,23 @@ struct InvitedCircleCard: View {
     @State var showAcceptSheet = false
     
     @State var blur = 10.0
+    @State private var errorMessage = ""
+        
+    private var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
+    }
     
     var body: some View {
         HStack(spacing: 1) {
+            showErrorMessageView
             VStack {
                 RoomAvatarView(room: room, avatarText: .none)
                 //.overlay(Circle().stroke(Color.primary, lineWidth: 2))
@@ -134,7 +148,11 @@ struct InvitedCircleCard: View {
                 // Somehow we've already joined this one
                 print("INVITE Room \(room.roomId) is already followed in circle \(existingCircle.name ?? existingCircle.roomId.stringValue)")
                 Task {
-                    try await container.session.deleteInvitedRoom(roomId: room.roomId)
+                    do {
+                        try await container.session.deleteInvitedRoom(roomId: room.roomId)
+                    } catch {
+                        errorMessage = error.localizedDescription
+                    }
                 }
             } else {
                 print("INVITE Room \(room.roomId) is not already followed")

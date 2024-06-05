@@ -12,9 +12,23 @@ struct DeactivateAccountView: View {
     @ObservedObject var store: CirclesStore
     var session: CirclesApplicationSession
     @State private var showAlert = false
+    @State private var errorMessage = ""
+    
+    private var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
+    }
         
     var body: some View {
         ZStack {
+            showErrorMessageView
             VStack {
                 VStack {
                     Label("Warning", systemImage: "exclamationmark.triangle")
@@ -47,7 +61,11 @@ struct DeactivateAccountView: View {
                     DeactivateAccountAlertView(model: customViewModel,
                                                onConfirm: {
                                                     Task {
-                                                        try await self.store.deactivate()
+                                                        do {
+                                                            try await self.store.deactivate()
+                                                        } catch {
+                                                            errorMessage = error.localizedDescription
+                                                        }
                                                     }
                                                 },
                                                 onCancel: {

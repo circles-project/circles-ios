@@ -20,6 +20,7 @@ struct GallerySettingsView: View {
     @State var showInviteSheet = false
     @State var showShareSheet = false
     
+    @State private var errorMessage = ""
     @ViewBuilder
     var generalSection: some View {
         Section("General") {
@@ -44,7 +45,11 @@ struct GallerySettingsView: View {
                             if let data = try? await newAvatarImageItem?.loadTransferable(type: Data.self) {
                                 
                                 if let img = UIImage(data: data) {
-                                    try await room.setAvatarImage(image: img)
+                                    do {
+                                        try await room.setAvatarImage(image: img)
+                                    } catch {
+                                        errorMessage = error.localizedDescription
+                                    }
                                 }
                             }
                         }
@@ -100,10 +105,21 @@ struct GallerySettingsView: View {
         }
     }
     
-
+    private var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
+    }
     
     var body: some View {
         Form {
+            showErrorMessageView
             generalSection
             
             sharingSection

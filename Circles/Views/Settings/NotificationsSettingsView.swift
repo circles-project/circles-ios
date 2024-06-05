@@ -21,6 +21,7 @@ struct NotificationsSettingsView: View {
     @State var notifyOnMessage: Bool = true
     
     var logger = CirclesApp.logger
+    @State private var errorMessage = ""
     
     @ViewBuilder
     var configSection: some View {
@@ -30,16 +31,24 @@ struct NotificationsSettingsView: View {
                     logger.debug("Notify on invite = \(value)")
                     let actions: [Matrix.PushRules.Action] = value ? [.notify] : [.dontNotify]
                     Task {
-                        try await matrix.setPushRuleActions(kind: .override, ruleId: M_RULE_INVITE_FOR_ME, actions: actions)
+                        do {
+                            try await matrix.setPushRuleActions(kind: .override, ruleId: M_RULE_INVITE_FOR_ME, actions: actions)
+                        } catch {
+                            errorMessage = error.localizedDescription
+                        }
                     }
                 }
                 .onAppear {
                     Task {
-                        let actions = try await matrix.getPushRuleActions(kind: .override, ruleId: M_RULE_INVITE_FOR_ME)
-                        let enabled = actions.contains(.notify)
-                        logger.debug("Invite notifications enabled? \(enabled)")
-                        await MainActor.run {
-                            self.notifyOnInvite = enabled
+                        do {
+                            let actions = try await matrix.getPushRuleActions(kind: .override, ruleId: M_RULE_INVITE_FOR_ME)
+                            let enabled = actions.contains(.notify)
+                            logger.debug("Invite notifications enabled? \(enabled)")
+                            await MainActor.run {
+                                self.notifyOnInvite = enabled
+                            }
+                        } catch {
+                            errorMessage = error.localizedDescription
                         }
                     }
                 }
@@ -49,16 +58,24 @@ struct NotificationsSettingsView: View {
                     logger.debug("Notify on message = \(value)")
                     let actions: [Matrix.PushRules.Action] = value ? [.notify] : [.dontNotify]
                     Task {
-                        try await matrix.setPushRuleActions(kind: .underride, ruleId: M_RULE_MESSAGE, actions: actions)
+                        do {
+                            try await matrix.setPushRuleActions(kind: .underride, ruleId: M_RULE_MESSAGE, actions: actions)
+                        } catch {
+                            errorMessage = error.localizedDescription
+                        }
                     }
                 }
                 .onAppear {
                     Task {
-                        let actions = try await matrix.getPushRuleActions(kind: .underride, ruleId: M_RULE_MESSAGE)
-                        let enabled = actions.contains(.notify)
-                        logger.debug("Message notifications enabled? \(enabled)")
-                        await MainActor.run {
-                            self.notifyOnMessage = enabled
+                        do {
+                            let actions = try await matrix.getPushRuleActions(kind: .underride, ruleId: M_RULE_MESSAGE)
+                            let enabled = actions.contains(.notify)
+                            logger.debug("Message notifications enabled? \(enabled)")
+                            await MainActor.run {
+                                self.notifyOnMessage = enabled
+                            }
+                        } catch {
+                            errorMessage = error.localizedDescription
                         }
                     }
                 }
@@ -74,9 +91,21 @@ struct NotificationsSettingsView: View {
         }
     }
     
+    private var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
+    }
+    
     var body: some View {
         Form {
-                        
+            showErrorMessageView
             if let notificationsAreEnabled = self.notificationsEnabled {
                 if notificationsAreEnabled {
                     configSection
@@ -107,6 +136,7 @@ struct NotificationsSettingsView: View {
                                 logger.debug("task: loading settings")
                                 loadCurrentSettings()
                             } catch {
+                                errorMessage = error.localizedDescription
                                 logger.debug("NotificationSettingsView: Failed to sleep and load settings")
                                 stop = true
                             }

@@ -225,7 +225,6 @@ struct BsspekeEnrollOprfForm: View {
     
     var body: some View {
         VStack {
-            
             switch screen {
             case .enterPassword:
                 enterPasswordView

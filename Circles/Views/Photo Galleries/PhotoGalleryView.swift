@@ -39,6 +39,7 @@ struct PhotoGalleryView: View {
     @State var uploadItems: [PhotosPickerItem] = []
     @State var totalUploadItems: Int = 0
     @State var showErrorAlert = false
+    @State private var errorMessage = ""
     
     var toolbarMenu: some View {
         Menu {
@@ -63,8 +64,21 @@ struct PhotoGalleryView: View {
         }
     }
     
+    private var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
+    }
+    
     var body: some View {
         NavigationStack {
+            showErrorMessageView
             if uploadItems.isEmpty {
                 
                 ZStack {
@@ -102,7 +116,11 @@ struct PhotoGalleryView: View {
                             if let data = try? await newItem?.loadTransferable(type: Data.self),
                                let img = UIImage(data: data)
                             {
-                                try await room.setAvatarImage(image: img)
+                                do {
+                                    try await room.setAvatarImage(image: img)
+                                } catch {
+                                    errorMessage = error.localizedDescription
+                                }
                             }
                         }
                     }

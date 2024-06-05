@@ -30,6 +30,7 @@ struct CircleTimelineView: View {
     @State var showPhotosPicker: Bool = false
     @State var selectedItem: PhotosPickerItem?
     //@State var image: UIImage?
+    @State private var errorMessage = ""
     
     var toolbarMenu: some View {
         Menu {
@@ -56,9 +57,22 @@ struct CircleTimelineView: View {
         return 0
     }
     
+    private var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
+    }
+    
     var body: some View {
         NavigationStack {
             ZStack {
+                showErrorMessageView
                 
                 let foo = self.stupidSwiftUiTrick
                 
@@ -82,7 +96,11 @@ struct CircleTimelineView: View {
                                let data = try? await newItem?.loadTransferable(type: Data.self),
                                let img = UIImage(data: data)
                             {
-                                try await room.setAvatarImage(image: img)
+                                do {
+                                    try await room.setAvatarImage(image: img)
+                                } catch {
+                                    errorMessage = error.localizedDescription
+                                }
                             }
                         }
                     }

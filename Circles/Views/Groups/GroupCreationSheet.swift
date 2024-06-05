@@ -32,6 +32,7 @@ struct GroupCreationSheet: View {
     @State private var showAlert = false
     
     @FocusState var inputFocused
+    @State private var errorMessage = ""
     
     func create() async throws {
         guard let roomId = try? await groups.createChild(name: self.groupName,
@@ -49,7 +50,7 @@ struct GroupCreationSheet: View {
             do {
                 try await room.setTopic(newTopic: self.groupTopic)
             } catch {
-                // set error message
+                errorMessage = error.localizedDescription
                 return
             }
         }
@@ -58,7 +59,7 @@ struct GroupCreationSheet: View {
             do {
                 try await room.invite(userId: user.userId)
             } catch {
-                // set error message
+                errorMessage = error.localizedDescription
                 return
             }
         }
@@ -80,8 +81,21 @@ struct GroupCreationSheet: View {
         }
     }
     
+    private var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
+    }
+    
     var body: some View {
         VStack {
+            showErrorMessageView
             buttonbar
             let frameWidth = 300.0
             let frameHeight = 200.0

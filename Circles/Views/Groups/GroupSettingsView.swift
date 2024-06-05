@@ -20,6 +20,7 @@ struct GroupSettingsView: View {
     @State var showConfirmLeave = false
     @State var showInviteSheet = false
     @State var showShareSheet = false
+    @State private var errorMessage = ""
     
     let users: [UserId]
     let admins: [UserId]
@@ -67,7 +68,11 @@ struct GroupSettingsView: View {
                             if let data = try? await newAvatarImageItem?.loadTransferable(type: Data.self) {
                                 
                                 if let img = UIImage(data: data) {
-                                    try await room.setAvatarImage(image: img)
+                                    do {
+                                        try await room.setAvatarImage(image: img)
+                                    } catch {
+                                        errorMessage = error.localizedDescription
+                                    }
                                 }
                             }
                         }
@@ -130,10 +135,21 @@ struct GroupSettingsView: View {
         }
     }
     
-
+    private var showErrorMessageView: some View {
+        VStack {
+            if errorMessage != "" {
+                ToastView(titleMessage: errorMessage)
+                Text("")
+                    .onAppear {
+                        errorMessage = ""
+                    }
+            }
+        }
+    }
     
     var body: some View {
         Form {
+            showErrorMessageView
             generalSection
             
             sharingSection
