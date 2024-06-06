@@ -71,11 +71,8 @@ struct EmailLoginRequestTokenForm: View {
             .padding(.leading)
             
             TextField("you@example.com", text: $emailAddress, prompt: Text("Email address"))
-                .textContentType(.emailAddress)
+                .customEmailTextFieldStyle(contentType: .emailAddress, keyboardType: .emailAddress)
                 .focused($focus, equals: .email)
-                .keyboardType(.emailAddress)
-                .autocorrectionDisabled()
-                .textInputAutocapitalization(.never)
                 //.focused($inputFocused)
                 //.frame(width: 300.0, height: 40.0)
                 .onSubmit {
@@ -90,11 +87,7 @@ struct EmailLoginRequestTokenForm: View {
             
             AsyncButton(action: submit) {
                 Text("Request Code")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
+                    .customTextInButtonStyle()
             }
             .disabled(!addressIsValid)
             

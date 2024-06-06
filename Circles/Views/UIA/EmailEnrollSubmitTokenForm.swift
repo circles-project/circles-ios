@@ -37,11 +37,8 @@ struct EmailEnrollSubmitTokenForm: View {
             Spacer()
             VStack {
                 TextField("123456", text: $token, prompt: Text("6-Digit Code"))
-                    .textContentType(.oneTimeCode)
+                    .customEmailTextFieldStyle(contentType: .oneTimeCode, keyboardType: .numberPad)
                     .focused($focus, equals: .token)
-                    .keyboardType(.numberPad)
-                    .autocorrectionDisabled()
-                    .textInputAutocapitalization(.never)
                     .frame(width: 300.0, height: 40.0)
                     .onAppear {
                         self.focus = .token
@@ -55,11 +52,7 @@ struct EmailEnrollSubmitTokenForm: View {
                     }
                 }) {
                     Text("Submit")
-                        .padding()
-                        .frame(width: 300.0, height: 40.0)
-                        .foregroundColor(.white)
-                        .background(Color.accentColor)
-                        .cornerRadius(10)
+                        .customTextInButtonStyle()
                 }
                 .disabled(!tokenIsValid)
                 .alert(isPresented: $showAlert) {

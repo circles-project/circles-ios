@@ -259,11 +259,7 @@ struct RoomInviteSheet: View {
                         self.presentation.wrappedValue.dismiss()
                     }) {
                         Label("Send \(newUsers.count) Invitation(s)", systemImage: "paperplane")
-                            .padding()
-                            .frame(width: 300.0, height: 40.0)
-                            .foregroundColor(.white)
-                            .background(Color.accentColor)
-                            .cornerRadius(10)
+                            .customTextInButtonStyle()       
                     }
                     .disabled(pending || newUsers.isEmpty)
                     .padding(5)

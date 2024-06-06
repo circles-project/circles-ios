@@ -55,11 +55,7 @@ struct BsspekeLoginForm: View {
                     try await session.doBSSpekeLoginOprfStage(password: passphrase)
                 }) {
                     Text("Submit")
-                        .padding()
-                        .frame(width: 300.0, height: 40.0)
-                        .foregroundColor(.white)
-                        .background(Color.accentColor)
-                        .cornerRadius(10)
+                        .customTextInButtonStyle()
                 }
                 .disabled(passphrase.isEmpty)
                 .alert(isPresented: $failed) {

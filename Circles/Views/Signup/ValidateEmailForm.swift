@@ -140,11 +140,7 @@ struct ValidateEmailForm: View {
                 Text("Verify Code from Email")
             }
             .disabled(emailToken.isEmpty)
-            .padding()
-            .frame(width: 300.0, height: 40.0)
-            .foregroundColor(.white)
-            .background(Color.accentColor)
-            .cornerRadius(10)
+            .customTextInButtonStyle()
 
             Spacer()
 

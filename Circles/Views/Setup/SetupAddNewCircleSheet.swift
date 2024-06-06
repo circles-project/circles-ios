@@ -140,11 +140,7 @@ struct SetupAddNewCircleSheet: View {
                 presentation.wrappedValue.dismiss()
             }) {
                 Text("Add circle \"\(circleName.isEmpty ? "New Circle" : circleName)\"")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
+                    .customTextInButtonStyle()
             }
             .disabled(circleName.isEmpty)
             

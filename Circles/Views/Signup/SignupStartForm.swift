@@ -38,11 +38,7 @@ struct SignupStartForm: View {
                     await session.selectFlow(flow: freeFlow)
                 }) {
                     Text("Sign up for free")
-                        .padding()
-                        .frame(width: 300.0, height: 40.0)
-                        .foregroundColor(.white)
-                        .background(Color.accentColor)
-                        .cornerRadius(10)
+                        .customTextInButtonStyle()
                 }
             } else {
                 Label("Subscriptionless signup is not available at this time.  Please try again later.", systemImage: "exclamationmark.triangle")
@@ -50,11 +46,7 @@ struct SignupStartForm: View {
                     .padding(.horizontal, 20)
                 Button(action: {}) {
                     Text("Sign up for free")
-                        .padding()
-                        .frame(width: 300.0, height: 40.0)
-                        .foregroundColor(.white)
-                        .background(Color.accentColor)
-                        .cornerRadius(10)
+                        .customTextInButtonStyle()
                 }
                 .disabled(true)
             }
@@ -76,11 +68,7 @@ struct SignupStartForm: View {
                 await session.selectFlow(flow: appleFlow!)
             }) {
                 Text("New Circles subscription")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
+                    .customTextInButtonStyle()
             }
             .disabled( nil == appleFlow || !SKPaymentQueue.canMakePayments() )
             

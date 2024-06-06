@@ -72,11 +72,7 @@ struct TokenForm: View {
 
             }) {
                 Text("Validate Token")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
+                    .customTextInButtonStyle()
             }
             .alert(isPresented: $showAlert) {
                 Alert(title: Text(alertTitle),

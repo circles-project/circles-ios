@@ -189,11 +189,7 @@ struct AccountInfoForm: View {
                 }
             }) {
                 Text("Submit")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
+                    .customTextInButtonStyle()
             }
             .disabled(accountInfo.username.isEmpty ||
                       accountInfo.password.isEmpty || accountInfo.password != repeatPassword ||
