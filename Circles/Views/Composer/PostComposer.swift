@@ -313,16 +313,14 @@ struct PostComposer: View {
         
     var buttonBar: some View {
         HStack(spacing: 5.0) {
-            Button(action: {
-                self.messageState = .text
-            }) {
-                Image(systemName: "doc.plaintext")
-                    .scaleEffect(1.5)
-            }
-            .disabled(messageState.isText || editing != nil)
-            .padding(1)
-
             Menu(content: {
+                Button(action: {
+                    self.newPickerFilter = .videos
+                    self.showNewPicker = true
+                    self.selectedItem = nil
+                }) {
+                    Label("Upload a video", systemImage: "film")
+                }
                 Button(action: {
                     self.newPickerFilter = .images
                     self.showNewPicker = true
@@ -347,27 +345,9 @@ struct PostComposer: View {
                 }
             },
             label: {
-                Image(systemName: "photo.fill")
+                Image(systemName: "photo.badge.plus.fill")
                     .scaleEffect(1.5)
             })
-            .disabled(messageState.isImage || editing != nil)
-            .padding(1)
-
-            
-            Menu(content: {
-                Button(action: {
-                    self.newPickerFilter = .videos
-                    self.showNewPicker = true
-                    self.selectedItem = nil
-                }) {
-                    Label("Upload a video", systemImage: "film")
-                }
-            },
-            label: {
-                Image(systemName: "film")
-                    .scaleEffect(1.5)
-            })
-            .disabled(messageState.isVideo || editing != nil)
             .padding(1)
 
             
