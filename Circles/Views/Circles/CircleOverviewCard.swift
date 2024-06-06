@@ -37,6 +37,7 @@ struct CircleOverviewCard: View {
                             .font(.title3)
                             .fontWeight(.bold)
                             .foregroundColor(.primary)
+                            .minimumScaleFactor(0.8)
                         Spacer()
                     }
                     
