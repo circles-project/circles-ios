@@ -417,15 +417,9 @@ struct PostComposer: View {
                 .resizable()
                 .scaledToFit()
                 .clipShape(RoundedRectangle(cornerRadius: 6))
-                .overlay(alignment: .bottomTrailing) {
-                    PhotosPicker(selection: $selectedItem, matching: .images) {
-                        Image(systemName: "pencil.circle.fill")
-                            .symbolRenderingMode(.multicolor)
-                            .font(.system(size: 30))
-                            .foregroundColor(.accentColor)
-                    }
-                }
-            
+                .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
+                .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
+
         case .loadingVideo(let task):
             ZStack {
                 Color.secondaryBackground
@@ -452,14 +446,8 @@ struct PostComposer: View {
                 .resizable()
                 .scaledToFit()
                 .clipShape(RoundedRectangle(cornerRadius: 6))
-                .overlay(alignment: .bottomTrailing) {
-                    PhotosPicker(selection: $selectedItem, matching: .videos) {
-                        Image(systemName: "pencil.circle.fill")
-                            .symbolRenderingMode(.multicolor)
-                            .font(.system(size: 30))
-                            .foregroundColor(.accentColor)
-                    }
-                }
+                .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
+                .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
             
         case .cloudImage(let cloudImageContent, let thumbnail):
             if let image = thumbnail {
@@ -467,14 +455,8 @@ struct PostComposer: View {
                     .resizable()
                     .scaledToFit()
                     .clipShape(RoundedRectangle(cornerRadius: 6))
-                    .overlay(alignment: .bottomTrailing) {
-                        PhotosPicker(selection: $selectedItem, matching: .images) {
-                            Image(systemName: "pencil.circle.fill")
-                                .symbolRenderingMode(.multicolor)
-                                .font(.system(size: 30))
-                                .foregroundColor(.accentColor)
-                        }
-                    }
+                    .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
+                    .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
             } else {
                 ZStack {
                     Image(systemName: "photo.artframe")
@@ -502,14 +484,8 @@ struct PostComposer: View {
                             }
                         }
                 }
-                .overlay(alignment: .bottomTrailing) {
-                    PhotosPicker(selection: $selectedItem, matching: .images) {
-                        Image(systemName: "pencil.circle.fill")
-                            .symbolRenderingMode(.multicolor)
-                            .font(.system(size: 30))
-                            .foregroundColor(.accentColor)
-                    }
-                }
+                .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
+                .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
             }
             
         case .oldImage(let originalImageContent, let thumbnail):
@@ -518,14 +494,8 @@ struct PostComposer: View {
                     .resizable()
                     .scaledToFit()
                     .clipShape(RoundedRectangle(cornerRadius: 6))
-                    .overlay(alignment: .bottomTrailing) {
-                        PhotosPicker(selection: $selectedItem, matching: .images) {
-                            Image(systemName: "pencil.circle.fill")
-                                .symbolRenderingMode(.multicolor)
-                                .font(.system(size: 30))
-                                .foregroundColor(.accentColor)
-                        }
-                    }
+                    .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
+                    .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
             } else {
                 ZStack {
                     Image(systemName: "photo.artframe")
@@ -553,14 +523,8 @@ struct PostComposer: View {
                             }
                         }
                 }
-                .overlay(alignment: .bottomTrailing) {
-                    PhotosPicker(selection: $selectedItem, matching: .images) {
-                        Image(systemName: "pencil.circle.fill")
-                            .symbolRenderingMode(.multicolor)
-                            .font(.system(size: 30))
-                            .foregroundColor(.accentColor)
-                    }
-                }
+                .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
+                .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
             }
             
         case .oldVideo(let originalVideoContent, let thumbnail):
@@ -569,14 +533,8 @@ struct PostComposer: View {
                     .resizable()
                     .scaledToFit()
                     .clipShape(RoundedRectangle(cornerRadius: 6))
-                    .overlay(alignment: .bottomTrailing) {
-                        PhotosPicker(selection: $selectedItem, matching: .videos) {
-                            Image(systemName: "pencil.circle.fill")
-                                .symbolRenderingMode(.multicolor)
-                                .font(.system(size: 30))
-                                .foregroundColor(.accentColor)
-                        }
-                    }
+                    .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
+                    .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
             } else {
                 ZStack {
                     Image(systemName: "photo.artframe")
@@ -604,14 +562,8 @@ struct PostComposer: View {
                             }
                         }
                 }
-                .overlay(alignment: .bottomTrailing) {
-                    PhotosPicker(selection: $selectedItem, matching: .videos) {
-                        Image(systemName: "pencil.circle.fill")
-                            .symbolRenderingMode(.multicolor)
-                            .font(.system(size: 30))
-                            .foregroundColor(.accentColor)
-                    }
-                }
+                .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
+                .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
             }
         }
     }
@@ -765,3 +717,57 @@ struct TimelineMessageComposer_Previews: PreviewProvider {
     }
 }
  */
+
+// MARK: - Put it temporary here, till we not merge PR with ViewModifier+Extension file
+struct DeleteMediaOverlay: ViewModifier {
+    @Binding var selectedItem: PhotosPickerItem?
+    @Binding var messageState: PostComposer.MessageState
+    
+    func body(content: Content) -> some View {
+        content
+            .overlay(
+                Button(action: {
+                    selectedItem = nil
+                    messageState = .text
+                }) {
+                    Image(systemName: "x.circle.fill")
+                        .symbolRenderingMode(.multicolor)
+                        .font(.system(size: 30))
+                        .foregroundColor(.red)
+                }
+                    .alignmentGuide(.trailing) { $0[.trailing] - 0 }
+                    .alignmentGuide(.top) { $0[.top] + 0 },
+                alignment: .topTrailing
+            )
+    }
+}
+
+struct ChangeMediaOverlay: ViewModifier {
+    @Binding var selectedItem: PhotosPickerItem?
+    @Binding var matching: PHPickerFilter
+    
+    func body(content: Content) -> some View {
+        content
+            .overlay(
+                PhotosPicker(selection: $selectedItem, matching: matching) {
+                    Image(systemName: "pencil.circle.fill")
+                        .symbolRenderingMode(.multicolor)
+                        .font(.system(size: 30))
+                        .foregroundColor(.accentColor)
+                }
+                    .alignmentGuide(.trailing) { $0[.trailing] - 0 }
+                    .alignmentGuide(.bottom) { $0[.bottom] + 0 },
+                alignment: .bottomTrailing
+            )
+    }
+}
+
+extension View {
+    func deleteMediaOverlay(selectedItem: Binding<PhotosPickerItem?>, messageState: Binding<PostComposer.MessageState>) -> some View {
+        self.modifier(DeleteMediaOverlay(selectedItem: selectedItem, messageState: messageState))
+    }
+    
+    func changeMediaOverlay(selectedItem: Binding<PhotosPickerItem?>, matching: Binding<PHPickerFilter>) -> some View {
+        self.modifier(ChangeMediaOverlay(selectedItem: selectedItem, matching: matching))
+    }
+}
