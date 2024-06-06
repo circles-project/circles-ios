@@ -126,6 +126,7 @@ struct CircleCreationSheet: View {
                     .lineLimit(3)
                     .font(.title2)
                     .fontWeight(.bold)
+                    .minimumScaleFactor(0.8)
                 
                 let myUser = container.session.getUser(userId: container.session.creds.userId)
                 Text(myUser.displayName ?? "\(myUser.userId)")
