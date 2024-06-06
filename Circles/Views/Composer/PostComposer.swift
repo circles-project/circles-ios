@@ -31,7 +31,6 @@ struct PostComposer: View {
         case newImage(UIImage)
         case newVideo(Movie, UIImage)
         case loadingVideo(Task<Void,Error>)
-        case cloudImage(Matrix.mImageContent, UIImage?)
         case oldImage(Matrix.mImageContent, UIImage?)
         case oldVideo(Matrix.mVideoContent, UIImage?)
         
@@ -45,7 +44,7 @@ struct PostComposer: View {
         
         var isImage: Bool {
             switch self {
-            case .newImage, .oldImage, .cloudImage:
+            case .newImage, .oldImage:
                 return true
             default:
                 return false
@@ -87,7 +86,6 @@ struct PostComposer: View {
     @State private var showAlert = false
 
     enum ImageSourceType: String, Identifiable {
-        case cloud
         case camera
         
         var id: String {
@@ -287,20 +285,6 @@ struct PostComposer: View {
             print("COMPOSER\tSent edited m.image with new eventId = \(eventId)")
             self.presentation.wrappedValue.dismiss()
             
-        case .cloudImage(let cloudImageContent, _):
-            let caption: String? = !self.newMessageText.isEmpty ? self.newMessageText : nil
-            
-            // We initially tried to be clever and simply re-post the old mxc:// URL from the photo gallery event
-            // But that makes deleting media unsafe -- If we want to delete an event, we never know if there are other events referencing that same media id or not :(
-            // Eventually MSC3911 or something similar will come along to spec a proper way to do this
-            // Until then, we must simply re-download and re-upload the same media content
-            // For maximum privacy, we can do like on Circles Android and re-encrypt the plaintext too
-            // But we do not need to re-encode a JPEG or any other lossy compression -- don't want to degrade quality by doing this over and over again
-            
-            let eventId = try await repostImageContent(cloudImageContent, caption: caption)
-            print("COMPOSER\tSent cloud m.image with new eventId = \(eventId)")
-            self.presentation.wrappedValue.dismiss()
-            
         case .oldVideo(let oldVideoContent, _):
             let caption: String? = !self.newMessageText.isEmpty ? self.newMessageText : nil
             let newContent = Matrix.mVideoContent(oldVideoContent, caption: caption, relatesTo: self.relatesTo)
@@ -334,14 +318,6 @@ struct PostComposer: View {
                     self.showPickerOfType = .camera
                 }) {
                     Label("Take a new photo", systemImage: "camera.fill")
-                }
-                Button(action: {
-                    //self.imageSourceType = .cloud
-                    //self.showPicker = true
-                    self.showPickerOfType = .cloud
-                    self.selectedItem = nil
-                }) {
-                    Label("Choose an already uploaded photo", systemImage: "photo")
                 }
             },
             label: {
@@ -428,46 +404,7 @@ struct PostComposer: View {
                 .clipShape(RoundedRectangle(cornerRadius: 6))
                 .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
                 .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
-            
-        case .cloudImage(let cloudImageContent, let thumbnail):
-            if let image = thumbnail {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
-                    .clipShape(RoundedRectangle(cornerRadius: 6))
-                    .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
-                    .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
-            } else {
-                ZStack {
-                    Image(systemName: "photo.artframe")
-                        .resizable()
-                        .scaledToFit()
-                        .clipShape(RoundedRectangle(cornerRadius: 6))
-                    
-                    ProgressView()
-                        .onAppear {
-                            // Start fetching the thumbnail
-                            Task {
-                                if let file = cloudImageContent.thumbnail_file ?? cloudImageContent.file {
-                                    let data = try await self.room.session.downloadAndDecryptData(file)
-                                    let thumbnail = UIImage(data: data)
-                                    await MainActor.run {
-                                        self.messageState = .cloudImage(cloudImageContent, thumbnail)
-                                    }
-                                } else if let mxc = cloudImageContent.thumbnail_url ?? cloudImageContent.url {
-                                    let data = try await self.room.session.downloadData(mxc: mxc)
-                                    let thumbnail = UIImage(data: data)
-                                    await MainActor.run {
-                                        self.messageState = .cloudImage(cloudImageContent, thumbnail)
-                                    }
-                                }
-                            }
-                        }
-                }
-                .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
-                .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
-            }
-            
+        
         case .oldImage(let originalImageContent, let thumbnail):
             if let image = thumbnail {
                 Image(uiImage: image)
@@ -670,13 +607,6 @@ struct PostComposer: View {
                 .onAppear {
                     print("Showing picker of type = \(self.showPickerOfType?.rawValue ?? "nil") -- type = \(type)")
                 }
-            case .cloud:
-                CloudImagePicker(galleries: appSession.galleries, selected: self.$selectedImageContent) { content, image in
-                    self.messageState = .cloudImage(content, image)
-                }
-                    .onAppear {
-                        print("Showing picker of type = \(self.showPickerOfType?.rawValue ?? "nil") -- type = \(type)")
-                    }
             }
         })
         .photosPicker(isPresented: $showNewPicker, selection: $selectedItem, matching: self.newPickerFilter)
