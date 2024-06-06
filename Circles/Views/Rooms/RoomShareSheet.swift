@@ -41,7 +41,7 @@ struct RoomShareSheet: View {
                         .font(.title)
                         .fontWeight(.bold)
                         .padding()
-                        .minimumScaleFactor(0.5)
+                        .minimumScaleFactor(0.8)
                     
                     //Spacer()
                 }

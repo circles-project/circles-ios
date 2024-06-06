@@ -105,6 +105,7 @@ struct GroupCreationSheet: View {
                         .multilineTextAlignment(.center)
                         .foregroundColor(Color.white)
                         .shadow(color: Color.black, radius: 3.0)
+                        .minimumScaleFactor(0.8)
                         .padding()
                     
                     Text(self.groupTopic)
