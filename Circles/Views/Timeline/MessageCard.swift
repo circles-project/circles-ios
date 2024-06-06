@@ -48,6 +48,7 @@ struct ImageContentView: View {
                     if let caption = imageContent.caption {
                         let markdown = MarkdownContent(caption)
                         Markdown(markdown)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
                 //Spacer()

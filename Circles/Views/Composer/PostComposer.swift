@@ -45,7 +45,7 @@ struct PostComposer: View {
         
         var isImage: Bool {
             switch self {
-            case .newImage, .oldImage:
+            case .newImage, .oldImage, .cloudImage:
                 return true
             default:
                 return false
@@ -201,7 +201,7 @@ struct PostComposer: View {
             }
             
             let info = Matrix.mImageInfo(oldContent.info, thumbnail_url: nil, thumbnail_file: thumbnailFile, thumbnail_info: oldContent.thumbnail_info)
-            let newContent = Matrix.mImageContent(oldContent, file: mainFile, info: info, url: nil)
+            let newContent = Matrix.mImageContent(oldContent, caption: caption, file: mainFile, info: info, url: nil)
             
             let eventId = try await room.sendMessage(content: newContent)
             return eventId
@@ -326,6 +326,7 @@ struct PostComposer: View {
                 Button(action: {
                     self.newPickerFilter = .images
                     self.showNewPicker = true
+                    self.selectedItem = nil
                 }) {
                     Label("Upload a photo", systemImage: "photo.fill")
                 }
@@ -340,6 +341,7 @@ struct PostComposer: View {
                     //self.imageSourceType = .cloud
                     //self.showPicker = true
                     self.showPickerOfType = .cloud
+                    self.selectedItem = nil
                 }) {
                     Label("Choose an already uploaded photo", systemImage: "photo")
                 }
@@ -356,6 +358,7 @@ struct PostComposer: View {
                 Button(action: {
                     self.newPickerFilter = .videos
                     self.showNewPicker = true
+                    self.selectedItem = nil
                 }) {
                     Label("Upload a video", systemImage: "film")
                 }

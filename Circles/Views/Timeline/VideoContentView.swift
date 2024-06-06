@@ -175,6 +175,7 @@ struct VideoContentView: View {
                 if let caption = content.caption {
                     let markdown = MarkdownContent(caption)
                     Markdown(markdown)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
 
             } else {
