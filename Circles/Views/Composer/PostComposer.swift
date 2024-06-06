@@ -232,17 +232,22 @@ struct PostComposer: View {
         switch(self.messageState) {
             
         case .text:
-            if let parentMessage = self.parent {
-                let replyEventId = try await room.sendText(text: self.newMessageText, inReplyTo: parentMessage)
-                print("REPLY\tSent m.text reply with eventId = \(replyEventId)")
-            } else if let oldMessage = self.editing {
-                let replacementEventId = try await room.sendText(text: self.newMessageText, replacing: oldMessage)
-                print("EDIT\tSent edited m.text with eventId = \(replacementEventId)")
+            if self.newMessageText.isEmpty {
+                throw CustomErrors.errorWith(message: "You can not send an empty post")
             } else {
-                let newEventId = try await room.sendText(text: self.newMessageText)
-                print("COMPOSER\tSent m.text with eventId = \(newEventId)")
+                if let parentMessage = self.parent {
+                    let replyEventId = try await room.sendText(text: self.newMessageText, inReplyTo: parentMessage)
+                    print("REPLY\tSent m.text reply with eventId = \(replyEventId)")
+                } else if let oldMessage = self.editing {
+                    let replacementEventId = try await room.sendText(text: self.newMessageText, replacing: oldMessage)
+                    print("EDIT\tSent edited m.text with eventId = \(replacementEventId)")
+                } else {
+                    let newEventId = try await room.sendText(text: self.newMessageText)
+                    print("COMPOSER\tSent m.text with eventId = \(newEventId)")
+                }
+                
+                self.presentation.wrappedValue.dismiss()
             }
-            self.presentation.wrappedValue.dismiss()
 
             
         case .newImage(let img):

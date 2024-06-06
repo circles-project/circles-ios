@@ -22,7 +22,11 @@ struct AsyncButton<Label: View>: View {
             do {
                 try await action()
             } catch {
-                errorMessage = error.localizedDescription
+                if let error = error as? CustomErrors {
+                    errorMessage = error.errorDescription ?? "Unknown error"
+                } else {
+                    errorMessage = error.localizedDescription
+                }
                 print("AsyncButton: Action failed")
             }
             await MainActor.run {

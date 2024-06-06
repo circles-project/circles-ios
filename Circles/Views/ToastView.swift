@@ -14,8 +14,8 @@ private enum DefaultColors {
     
     var color: UIColor {
         switch self {
-        case .text: return .lightText
-        case .background: return .lightGray
+        case .text: return .white
+        case .background: return .systemGray4
         }
     }
 }
