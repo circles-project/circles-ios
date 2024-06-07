@@ -86,8 +86,8 @@ struct ForgotPasswordView: View {
                 }
             }) {
                 Text("Reset Password and Log In")
-                    .customTextInButtonStyle()
             }
+            .buttonStyle(BigBlueButtonStyle())
             .confirmationDialog("It looks like maybe you mis-typed your username",
                                 isPresented: $showSuggestion,
                                 presenting: suggestedUserId,

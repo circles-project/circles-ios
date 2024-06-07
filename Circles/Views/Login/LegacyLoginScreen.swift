@@ -57,8 +57,8 @@ struct LegacyLoginScreen: View {
                 keychain.setSharedPassword(password, account: session.userId.stringValue)
             }) {
                 Text("Log In")
-                    .customTextInButtonStyle()
             }
+            .buttonStyle(BigBlueButtonStyle())
             
             Spacer()
 

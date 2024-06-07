@@ -189,8 +189,8 @@ struct AccountInfoForm: View {
                 }
             }) {
                 Text("Submit")
-                    .customTextInButtonStyle()
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled(accountInfo.username.isEmpty ||
                       accountInfo.password.isEmpty || accountInfo.password != repeatPassword ||
                       accountInfo.emailAddress.isEmpty)

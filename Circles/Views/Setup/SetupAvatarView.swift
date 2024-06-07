@@ -135,8 +135,8 @@ struct SetupAvatarView: View {
                 stage = .circlesIntro
             }) {
                 Text("Next")
-                    .customTextInButtonStyle()
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled(newName.isEmpty)
             .padding()
 

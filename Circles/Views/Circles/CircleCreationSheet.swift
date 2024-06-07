@@ -163,8 +163,8 @@ struct CircleCreationSheet: View {
                 try await create()
             }) {
                 Text("Create circle")
-                    .customTextInButtonStyle()
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled(circleName.isEmpty)
             
             Spacer()

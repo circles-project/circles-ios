@@ -72,8 +72,8 @@ struct TokenForm: View {
 
             }) {
                 Text("Validate Token")
-                    .customTextInButtonStyle()
             }
+            .buttonStyle(BigBlueButtonStyle())
             .alert(isPresented: $showAlert) {
                 Alert(title: Text(alertTitle),
                       message: Text(alertMessage),

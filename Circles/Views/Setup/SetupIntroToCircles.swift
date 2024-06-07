@@ -18,8 +18,8 @@ struct SetupIntroToCircles: View {
                 stage = .circlesSetup
             }) {
                 Text("Next: Set up my circles")
-                    .customTextInButtonStyle()
             }
+            .buttonStyle(BigBlueButtonStyle())
         }
     }
 }

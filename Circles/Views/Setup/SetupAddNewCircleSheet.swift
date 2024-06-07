@@ -140,8 +140,8 @@ struct SetupAddNewCircleSheet: View {
                 presentation.wrappedValue.dismiss()
             }) {
                 Text("Add circle \"\(circleName.isEmpty ? "New Circle" : circleName)\"")
-                    .customTextInButtonStyle()
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled(circleName.isEmpty)
             
             Spacer()

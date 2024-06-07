@@ -87,8 +87,8 @@ struct SetupCirclesView: View {
                 self.pending = false
             }) {
                 Text("Next")
-                    .customTextInButtonStyle()
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled(circles.isEmpty)
 
         }

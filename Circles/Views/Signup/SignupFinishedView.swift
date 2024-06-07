@@ -49,8 +49,8 @@ struct SignupFinishedView: View {
                 }
             }) {
                 Text("Next: Set up your account")
-                    .customTextInButtonStyle()
             }
+            .buttonStyle(BigBlueButtonStyle())
             
         }
         .padding()

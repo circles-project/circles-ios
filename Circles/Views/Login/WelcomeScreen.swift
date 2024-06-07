@@ -96,8 +96,8 @@ struct WelcomeScreen: View {
                 }
             }) {
                 Text("Log In")
-                    .customTextInButtonStyle()
             }
+            .buttonStyle(BigBlueButtonStyle())
             .confirmationDialog("It looks like maybe you mis-typed your user id",
                                 isPresented: $showSuggestion,
                                 presenting: suggestedUserId,
@@ -190,8 +190,8 @@ struct WelcomeScreen: View {
                     self.showDomainPicker = true
                 }) {
                     Text("Sign Up")
-                        .customTextInButtonStyle()
                 }
+                .buttonStyle(BigBlueButtonStyle())
                 .padding(.bottom, 20)
                 .confirmationDialog("Select a region", isPresented: $showDomainPicker) {
                     AsyncButton(action: {

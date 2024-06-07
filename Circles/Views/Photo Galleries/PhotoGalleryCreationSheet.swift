@@ -123,8 +123,8 @@ struct PhotoGalleryCreationSheet: View {
                 try await create()
             }) {
                 Text("Create gallery \(galleryName)")
-                    .customTextInButtonStyle()
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled(galleryName.isEmpty)
             
             Spacer()

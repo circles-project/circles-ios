@@ -139,8 +139,8 @@ struct ValidateEmailForm: View {
             }) {
                 Text("Verify Code from Email")
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled(emailToken.isEmpty)
-            .customTextInButtonStyle()
 
             Spacer()
 

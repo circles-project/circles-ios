@@ -129,8 +129,8 @@ struct BsspekeEnrollOprfForm: View {
                 self.screen = .repeatPassword
             }) {
                 Text("Next")
-                    .customTextInButtonStyle()
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled(passphrase.isEmpty || score < MINIMUM_PASSWORD_ZXCVBN_SCORE)
         }
     }
@@ -165,8 +165,8 @@ struct BsspekeEnrollOprfForm: View {
                 self.screen = .savePassword
             }) {
                 Text("Submit")
-                    .customTextInButtonStyle()
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled(passphrase.isEmpty || passphrase != repeatPassphrase || score < MINIMUM_PASSWORD_ZXCVBN_SCORE)
         }
         .padding()
@@ -192,15 +192,15 @@ struct BsspekeEnrollOprfForm: View {
                 try await submit()
             }) {
                 Text("Save passphrase")
-                    .customTextInButtonStyle()
             }
+            .buttonStyle(BigBlueButtonStyle())
             
             AsyncButton(action: {
                 try await submit()
             }) {
                 Text("Don't save my passphrase")
-                    .customTextInButtonStyle()
             }
+            .buttonStyle(BigBlueButtonStyle())
             
         }
         .padding(.top)

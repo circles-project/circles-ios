@@ -38,16 +38,16 @@ struct SignupStartForm: View {
                     await session.selectFlow(flow: freeFlow)
                 }) {
                     Text("Sign up for free")
-                        .customTextInButtonStyle()
                 }
+                .buttonStyle(BigBlueButtonStyle())
             } else {
                 Label("Subscriptionless signup is not available at this time.  Please try again later.", systemImage: "exclamationmark.triangle")
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 20)
                 Button(action: {}) {
                     Text("Sign up for free")
-                        .customTextInButtonStyle()
                 }
+                .buttonStyle(BigBlueButtonStyle())
                 .disabled(true)
             }
 
@@ -68,8 +68,8 @@ struct SignupStartForm: View {
                 await session.selectFlow(flow: appleFlow!)
             }) {
                 Text("New Circles subscription")
-                    .customTextInButtonStyle()
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled( nil == appleFlow || !SKPaymentQueue.canMakePayments() )
             
             if DebugModel.shared.debugMode {

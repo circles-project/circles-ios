@@ -87,8 +87,8 @@ struct EmailLoginRequestTokenForm: View {
             
             AsyncButton(action: submit) {
                 Text("Request Code")
-                    .customTextInButtonStyle()
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled(!addressIsValid)
             
             Spacer()
