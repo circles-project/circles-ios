@@ -87,9 +87,7 @@ struct VideoContentView: View {
                             AsyncButton(action: {
                                 try await download(content: content)
                             }) {
-                                Image(systemName: "play.circle")
-                                    .resizable()
-                                    .scaledToFit()
+                                BasicImage(systemName: "play.circle")
                                     .frame(width: 80, height: 80)
                                     .foregroundColor(.white)
                                     .shadow(color: .black, radius: 10)

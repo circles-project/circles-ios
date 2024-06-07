@@ -369,9 +369,7 @@ struct PostComposer: View {
             }
             
         case .newImage(let image):
-            Image(uiImage: image)
-                .resizable()
-                .scaledToFit()
+            BasicImage(uiImage: image)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
                 .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
                 .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
@@ -398,26 +396,20 @@ struct PostComposer: View {
             }
             
         case .newVideo(let movie, let thumbnail):
-            Image(uiImage: thumbnail)
-                .resizable()
-                .scaledToFit()
+            BasicImage(uiImage: thumbnail)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
                 .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
                 .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
         
         case .oldImage(let originalImageContent, let thumbnail):
             if let image = thumbnail {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
+                BasicImage(uiImage: image)
                     .clipShape(RoundedRectangle(cornerRadius: 6))
                     .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
                     .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
             } else {
                 ZStack {
-                    Image(systemName: "photo.artframe")
-                        .resizable()
-                        .scaledToFit()
+                    BasicImage(systemName: "photo.artframe")
                         .clipShape(RoundedRectangle(cornerRadius: 6))
                     
                     ProgressView()
@@ -446,17 +438,13 @@ struct PostComposer: View {
             
         case .oldVideo(let originalVideoContent, let thumbnail):
             if let image = thumbnail {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
+                BasicImage(uiImage: image)
                     .clipShape(RoundedRectangle(cornerRadius: 6))
                     .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
                     .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
             } else {
                 ZStack {
-                    Image(systemName: "photo.artframe")
-                        .resizable()
-                        .scaledToFit()
+                    BasicImage(systemName: "photo.artframe")
                         .clipShape(RoundedRectangle(cornerRadius: 6))
                     
                     ProgressView()
@@ -679,5 +667,30 @@ extension View {
     
     func changeMediaOverlay(selectedItem: Binding<PhotosPickerItem?>, matching: Binding<PHPickerFilter>) -> some View {
         self.modifier(ChangeMediaOverlay(selectedItem: selectedItem, matching: matching))
+    }
+}
+
+// MARK: - Put it temporary here, till we not merge PR with View+Extension file
+struct BasicImage: View {
+    var uiImage: UIImage? = nil
+    var systemName: String? = nil
+    var name: String? = nil
+    
+    var body: some View {
+        if let uiImage {
+            Image(uiImage: uiImage)
+                .resizable()
+                .scaledToFit()
+        }
+        if let systemName {
+            Image(systemName: systemName)
+                .resizable()
+                .scaledToFit()
+        }
+        if let name {
+            Image(name)
+                .resizable()
+                .scaledToFit()
+        }
     }
 }

@@ -189,10 +189,8 @@ struct MessageCard: MessageView {
             } else if current.type == M_ROOM_ENCRYPTED {
                 VStack {
                     let bgColor = colorScheme == .dark ? Color.black : Color.white
-                    Image(systemName: "lock.rectangle")
-                        .resizable()
+                    BasicImage(systemName: "lock.rectangle")
                         .foregroundColor(Color.gray)
-                        .scaledToFit()
                         .frame(width: 240, height: 240)
                         .padding()
                     VStack {

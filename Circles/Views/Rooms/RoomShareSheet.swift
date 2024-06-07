@@ -82,9 +82,7 @@ struct RoomShareSheet: View {
             Spacer()
 
             if let image =  qrImage {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
+                BasicImage(uiImage: image)
                     .frame(width: 240, height: 240)
                     .padding()
                 
