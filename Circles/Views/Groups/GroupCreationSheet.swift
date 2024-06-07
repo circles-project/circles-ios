@@ -170,12 +170,8 @@ struct GroupCreationSheet: View {
             })
             {
                 Text("Create group")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled(groupName.isEmpty)
             
             Spacer()

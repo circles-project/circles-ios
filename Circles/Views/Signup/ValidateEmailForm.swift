@@ -139,12 +139,8 @@ struct ValidateEmailForm: View {
             }) {
                 Text("Verify Code from Email")
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled(emailToken.isEmpty)
-            .padding()
-            .frame(width: 300.0, height: 40.0)
-            .foregroundColor(.white)
-            .background(Color.accentColor)
-            .cornerRadius(10)
 
             Spacer()
 

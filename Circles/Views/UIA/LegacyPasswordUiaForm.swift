@@ -57,12 +57,8 @@ struct LegacyPasswordUiaForm: View {
                     try await session.doPasswordAuthStage(password: passphrase)
                 }) {
                     Text("Submit")
-                        .padding()
-                        .frame(width: 300.0, height: 40.0)
-                        .foregroundColor(.white)
-                        .background(Color.accentColor)
-                        .cornerRadius(10)
                 }
+                .buttonStyle(BigBlueButtonStyle())
                 .disabled(passphrase.isEmpty)
                 .alert(isPresented: $failed) {
                     Alert(title: Text("Incorrect Passphrase"),
