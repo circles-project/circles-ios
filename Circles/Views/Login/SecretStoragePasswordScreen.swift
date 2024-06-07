@@ -67,12 +67,8 @@ struct SecretStoragePasswordScreen: View {
                 try await store.addMissingKey(key: key)
             }) {
                 Text("Submit")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
             }
+            .buttonStyle(BigBlueButtonStyle())
             
             Button(action: {
                 self.useRawKey = true
@@ -114,12 +110,8 @@ struct SecretStoragePasswordScreen: View {
                 CirclesApp.logger.debug("Added SSSS key \(keyId)")
             }) {
                 Text("Submit")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled(base58Key.isEmpty)
             
             Button(action: {
@@ -157,12 +149,8 @@ struct SecretStoragePasswordScreen: View {
                 try await store.logout()
             }) {
                 Text("Cancel")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                //.foregroundColor(.white)
-                //.background(Color.red)
-                    .cornerRadius(10)
             }
+            .buttonStyle(BigBlueButtonStyle())
             .alert(self.alertTitle,
                    isPresented: $showAlert,
                    actions: {
