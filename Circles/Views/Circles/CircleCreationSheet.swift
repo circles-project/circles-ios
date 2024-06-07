@@ -126,6 +126,7 @@ struct CircleCreationSheet: View {
                     .lineLimit(3)
                     .font(.title2)
                     .fontWeight(.bold)
+                    .minimumScaleFactor(0.8)
                 
                 let myUser = container.session.getUser(userId: container.session.creds.userId)
                 Text(myUser.displayName ?? "\(myUser.userId)")
@@ -163,12 +164,8 @@ struct CircleCreationSheet: View {
                 try await create()
             }) {
                 Text("Create circle")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled(circleName.isEmpty)
             
             Spacer()

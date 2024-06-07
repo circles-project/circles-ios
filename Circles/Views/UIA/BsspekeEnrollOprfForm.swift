@@ -129,12 +129,8 @@ struct BsspekeEnrollOprfForm: View {
                 self.screen = .repeatPassword
             }) {
                 Text("Next")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled(passphrase.isEmpty || score < MINIMUM_PASSWORD_ZXCVBN_SCORE)
         }
     }
@@ -169,12 +165,8 @@ struct BsspekeEnrollOprfForm: View {
                 self.screen = .savePassword
             }) {
                 Text("Submit")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled(passphrase.isEmpty || passphrase != repeatPassphrase || score < MINIMUM_PASSWORD_ZXCVBN_SCORE)
         }
         .padding()
@@ -200,23 +192,15 @@ struct BsspekeEnrollOprfForm: View {
                 try await submit()
             }) {
                 Text("Save passphrase")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.blue)
-                    .cornerRadius(10)
             }
+            .buttonStyle(BigBlueButtonStyle())
             
             AsyncButton(action: {
                 try await submit()
             }) {
                 Text("Don't save my passphrase")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.blue)
-                    .cornerRadius(10)
             }
+            .buttonStyle(BigBlueButtonStyle())
             
         }
         .padding(.top)

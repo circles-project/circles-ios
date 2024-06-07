@@ -87,12 +87,8 @@ struct SetupCirclesView: View {
                 self.pending = false
             }) {
                 Text("Next")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled(circles.isEmpty)
 
         }
