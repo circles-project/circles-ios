@@ -16,6 +16,7 @@ struct CirclesApp: App {
     @UIApplicationDelegateAdaptor(CirclesAppDelegate.self) var appDelegate
 
     @StateObject private var store = CirclesStore()
+    @StateObject private var toastManager = ToastManager()
     private var paymentQueue = SKPaymentQueue.default()
     private var countryCode = SKPaymentQueue.default().storefront?.countryCode
     
@@ -29,12 +30,22 @@ struct CirclesApp: App {
     }
 
     var body: some Scene {
-        WindowGroup {
-            ContentView(store: store)
-                .environmentObject(store)
-                .onAppear {
-                    print("CirclesApp: onAppear")
-                }
+            WindowGroup {
+                ContentView(store: store)
+                    .environmentObject(store)
+                    .environmentObject(toastManager)
+                    .overlay(
+                        VStack {
+                            if toastManager.isShowing {
+                                ToastView(message: toastManager.message)
+                                    .padding(.top, 50)
+                                    .transition(.move(edge: .top))
+                                    .zIndex(1)
+                            }
+                            Spacer()
+                        }
+                    )
+                    .edgesIgnoringSafeArea(.all)
+            }
         }
-    }
 }

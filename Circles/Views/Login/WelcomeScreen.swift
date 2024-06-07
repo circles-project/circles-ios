@@ -38,6 +38,7 @@ struct WelcomeScreen: View {
     @State var suggestedUserId: UserId? = nil
     
     @State var showUsernameError = false
+    @EnvironmentObject var toastManager: ToastManager
             
     // Inspired by https://www.vadimbulavin.com/how-to-move-swiftui-view-when-keyboard-covers-text-field/
     private var keyboardPublisher: AnyPublisher<CGFloat,Never> {
@@ -93,6 +94,8 @@ struct WelcomeScreen: View {
                             self.showUsernameError = true
                         }
                     }
+                } else {
+                    toastManager.showToast(message: "This is a toast message!")
                 }
             }) {
                 Text("Log In")

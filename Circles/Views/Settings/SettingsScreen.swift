@@ -20,6 +20,8 @@ struct SettingsScreen: View {
     @AppStorage("showCirclesHelpText") var showCirclesHelpText = true
     @AppStorage("showGroupsHelpText") var showGroupsHelpText = true
     
+    @EnvironmentObject var toastManager: ToastManager
+    
     @State var showConfirmLogout = false
     @State var showConfirmSwitch = false
     
@@ -142,25 +144,28 @@ struct SettingsScreen: View {
                                         }
                     )
                     
-                    Button(action: { showConfirmLogout = true }) {
+                    Button(action: {
+                        toastManager.showToast(message: "This is a toast message!")
+//                        showConfirmLogout = true
+                    }) {
                         Label("Log Out", systemImage: "power")
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
-                    .confirmationDialog("Confirm Log Out",
-                                        isPresented: $showConfirmLogout,
-                                        actions: {
-                                            AsyncButton(role: .destructive, action: {
-                                                try await store.logout()
-                                            }) {
-                                                Text("Log me out")
-                                            }
-                                        },
-                                        message: {
-                                            Text("WARNING: You must be logged in on at least one device in order to receive decryption keys from your friends. If you log out from all devices, you may be unable to decrypt any posts or comments sent while you are logged out.")
-                                        }
-                    )
+//                    .confirmationDialog("Confirm Log Out",
+//                                        isPresented: $showConfirmLogout,
+//                                        actions: {
+//                                            AsyncButton(role: .destructive, action: {
+//                                                try await store.logout()
+//                                            }) {
+//                                                Text("Log me out")
+//                                            }
+//                                        },
+//                                        message: {
+//                                            Text("WARNING: You must be logged in on at least one device in order to receive decryption keys from your friends. If you log out from all devices, you may be unable to decrypt any posts or comments sent while you are logged out.")
+//                                        }
+//                    )
                     
                     NavigationLink(destination: DeactivateAccountView(store: store, session: session)) {
                         Label("Deactivate Account", systemImage: "person.fill.xmark")
