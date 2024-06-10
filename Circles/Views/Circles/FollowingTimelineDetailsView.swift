@@ -47,9 +47,7 @@ struct FollowingTimelineDetailsView: View {
                         HStack {
                             Text("QR code")
                             Spacer()
-                            Image(uiImage: qr)
-                                .resizable()
-                                .scaledToFit()
+                            BasicImage(uiImage: qr)
                                 .frame(width: 80, height: 80)
                         }
                     }

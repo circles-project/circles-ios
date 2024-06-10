@@ -70,6 +70,7 @@
 		40F906BB269DF96100287B27 /* MessageSheetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F906BA269DF96100287B27 /* MessageSheetType.swift */; };
 		42237CEF2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42237CEE2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift */; };
 		422C08F52C13530000ADE377 /* ButtonStyle+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422C08F42C13530000ADE377 /* ButtonStyle+Extensions.swift */; };
+		42A4CE432C17583A004792DC /* View+Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A4CE422C17583A004792DC /* View+Extentions.swift */; };
 		42CCE0C82C11306C001B19D2 /* ReactionsButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CCE0C72C11306C001B19D2 /* ReactionsButtonStyle.swift */; };
 		42CCE0CC2C122D7B001B19D2 /* ViewModifier+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CCE0CB2C122D7B001B19D2 /* ViewModifier+Extensions.swift */; };
 		42DC602B2C07B628000F1BE8 /* LikedEmojiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DC602A2C07B627000F1BE8 /* LikedEmojiView.swift */; };
@@ -325,6 +326,7 @@
 		40F906BA269DF96100287B27 /* MessageSheetType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSheetType.swift; sourceTree = "<group>"; };
 		42237CEE2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeactivateAccountCustomAlertView.swift; sourceTree = "<group>"; };
 		422C08F42C13530000ADE377 /* ButtonStyle+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ButtonStyle+Extensions.swift"; sourceTree = "<group>"; };
+		42A4CE422C17583A004792DC /* View+Extentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Extentions.swift"; sourceTree = "<group>"; };
 		42CCE0C72C11306C001B19D2 /* ReactionsButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionsButtonStyle.swift; sourceTree = "<group>"; };
 		42CCE0CB2C122D7B001B19D2 /* ViewModifier+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModifier+Extensions.swift"; sourceTree = "<group>"; };
 		42DC602A2C07B627000F1BE8 /* LikedEmojiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikedEmojiView.swift; sourceTree = "<group>"; };
@@ -827,8 +829,9 @@
 		422C08F22C1352CA00ADE377 /* View+Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				42CCE0CB2C122D7B001B19D2 /* ViewModifier+Extensions.swift */,
 				422C08F42C13530000ADE377 /* ButtonStyle+Extensions.swift */,
+				42A4CE422C17583A004792DC /* View+Extentions.swift */,
+				42CCE0CB2C122D7B001B19D2 /* ViewModifier+Extensions.swift */,
 			);
 			path = "View+Extensions";
 			sourceTree = "<group>";
@@ -1139,6 +1142,7 @@
 				404C72D3265DDF35000473DF /* ContentView.swift in Sources */,
 				403CEA9F26E86C7F0054DBF4 /* SetupCirclesView.swift in Sources */,
 				A5E101FA2814FB60000B2C42 /* blf.c in Sources */,
+				42A4CE432C17583A004792DC /* View+Extentions.swift in Sources */,
 				A5E101FE2814FC9F000B2C42 /* PerfectBCrypt.swift in Sources */,
 				A5FCF64129CC9B30008278B0 /* GroupRoom.swift in Sources */,
 				A5698A422B46043E000CB2A4 /* FreeSubscriptionForm.swift in Sources */,

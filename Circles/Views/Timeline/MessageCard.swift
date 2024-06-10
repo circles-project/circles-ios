@@ -48,6 +48,7 @@ struct ImageContentView: View {
                     if let caption = imageContent.caption {
                         let markdown = MarkdownContent(caption)
                         Markdown(markdown)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
                 //Spacer()
@@ -188,10 +189,8 @@ struct MessageCard: MessageView {
             } else if current.type == M_ROOM_ENCRYPTED {
                 VStack {
                     let bgColor = colorScheme == .dark ? Color.black : Color.white
-                    Image(systemName: "lock.rectangle")
-                        .resizable()
+                    BasicImage(systemName: "lock.rectangle")
                         .foregroundColor(Color.gray)
-                        .scaledToFit()
                         .frame(width: 240, height: 240)
                         .padding()
                     VStack {

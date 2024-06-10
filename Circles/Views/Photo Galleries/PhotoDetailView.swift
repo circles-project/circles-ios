@@ -24,9 +24,7 @@ struct PhotoDetailView: View {
     var body: some View {
         ZStack {
             if let image = fullres {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
+                BasicImage(uiImage: image)
                     .scaleEffect(magnifyBy)
                     .offset(x: viewPort.width, y: viewPort.height)
                     .gesture(DragGesture()
@@ -42,9 +40,7 @@ struct PhotoDetailView: View {
             } else {
                 ZStack {
                     let thumb = message.thumbnail ?? UIImage()
-                    Image(uiImage: thumb)
-                        .resizable()
-                        .scaledToFit()
+                    BasicImage(uiImage: thumb)
                     ProgressView()
                         .scaleEffect(4)
                 }
