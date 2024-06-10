@@ -159,9 +159,7 @@ struct GroupsOverviewScreen: View {
         }
         .sheet(isPresented: $showHelpText) {
             VStack {
-                Image("iStock-1176559812")
-                    .resizable()
-                    .scaledToFit()
+                BasicImage(name: "iStock-1176559812")
                 
                 Markdown(helpTextMarkdown)
                 

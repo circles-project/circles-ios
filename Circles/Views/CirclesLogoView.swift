@@ -12,9 +12,7 @@ struct CirclesLogoView: View {
     
     var body: some View {
         let imageName = colorScheme == .dark ? "circles-logo-dark" : "circles-logo-light"
-        Image(imageName)
-            .resizable()
-            .scaledToFit()
+        BasicImage(name: imageName)
     }
 }
 
