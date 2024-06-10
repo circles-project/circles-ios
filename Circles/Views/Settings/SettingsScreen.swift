@@ -99,6 +99,17 @@ struct SettingsScreen: View {
                             Label("Debug Mode", systemImage: "ladybug.fill")
                         }
                         
+                        AsyncButton(action: {
+                            throw CirclesError("Something failed")
+                        }) {
+                            Label("Tap to throw an error", systemImage: "ant.fill")
+                        }
+                        
+                        Label("This will show a Toast on appear", systemImage: "wineglass")
+                            .onAppear {
+                                ToastPresenter.shared.showToast(message: "Text has appeared")
+                            }
+                        
                         Toggle(isOn: $showCirclesHelpText) {
                             Text("Circles tab \"help\" popup")
                         }

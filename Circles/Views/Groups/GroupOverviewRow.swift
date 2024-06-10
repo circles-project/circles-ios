@@ -30,6 +30,7 @@ struct GroupOverviewRow: View {
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(.primary)
+                        .minimumScaleFactor(0.8)
                     Spacer()
                 }
 

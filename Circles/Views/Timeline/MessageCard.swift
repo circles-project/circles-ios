@@ -317,7 +317,7 @@ struct MessageCard: MessageView {
                         }) {
                             Text("\(emoji) \(count)")
                         }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(ReactionsButtonStyle(buttonColor: .blue))
                     } else {
                         AsyncButton(action: {
                             // We have not sent this reaction yet..  Send it
@@ -326,7 +326,7 @@ struct MessageCard: MessageView {
                             Text("\(emoji) \(count)")
                         }
                         .disabled(!iCanReact)
-                        .buttonStyle(.plain)
+                        .buttonStyle(ReactionsButtonStyle(buttonColor: Color(UIColor.systemGray5)))
                     }
                 }
                 

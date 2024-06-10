@@ -30,12 +30,8 @@ struct TermsOfServicePolicySheet: View {
                         self.presentation.wrappedValue.dismiss()
                     }) {
                         Text("Got it")
-                            .padding()
-                            .frame(width: 300.0, height: 40.0)
-                            .foregroundColor(.white)
-                            .background(Color.accentColor)
-                            .cornerRadius(10)
                     }
+                    .buttonStyle(BigBlueButtonStyle())
                 }
                 .padding()
             } else {
@@ -130,12 +126,8 @@ struct TermsOfServiceForm: View {
                 }
             }) {
                 Text("Accept and Continue")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled(accept == false)
 
             Spacer()

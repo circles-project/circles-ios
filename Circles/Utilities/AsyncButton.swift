@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import JDStatusBarNotification
 
 struct AsyncButton<Label: View>: View {
     var role: ButtonRole?
+    var errorMessage: String?
     var action: () async throws -> Void
     @ViewBuilder var label: () -> Label
 
@@ -22,6 +24,8 @@ struct AsyncButton<Label: View>: View {
                 try await action()
             } catch {
                 print("AsyncButton: Action failed")
+                
+                await ToastPresenter.shared.showToast(message: errorMessage ?? error.localizedDescription)
             }
             await MainActor.run {
                 pending = false
