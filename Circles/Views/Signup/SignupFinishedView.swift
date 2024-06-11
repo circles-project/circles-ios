@@ -49,12 +49,8 @@ struct SignupFinishedView: View {
                 }
             }) {
                 Text("Next: Set up your account")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
             }
+            .buttonStyle(BigBlueButtonStyle())
             
         }
         .padding()

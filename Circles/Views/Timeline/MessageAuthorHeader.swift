@@ -26,15 +26,10 @@ struct MessageAuthorHeader: View {
     
     var body: some View {
         HStack(alignment: .top) {
-            
-            //profileImage
             UserAvatarView(user: user)
-                //.resizable()
                 .scaledToFill()
                 .frame(width: 45, height: 45)
                 .clipShape(RoundedRectangle(cornerRadius: 4))
-                //.padding(3)
-
             
             VStack(alignment: .leading) {
                 Text(user.displayName ?? user.userId.username)

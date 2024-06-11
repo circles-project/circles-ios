@@ -48,6 +48,7 @@ struct ImageContentView: View {
                     if let caption = imageContent.caption {
                         let markdown = MarkdownContent(caption)
                         Markdown(markdown)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
                 //Spacer()
@@ -188,10 +189,8 @@ struct MessageCard: MessageView {
             } else if current.type == M_ROOM_ENCRYPTED {
                 VStack {
                     let bgColor = colorScheme == .dark ? Color.black : Color.white
-                    Image(systemName: "lock.rectangle")
-                        .resizable()
+                    BasicImage(systemName: "lock.rectangle")
                         .foregroundColor(Color.gray)
-                        .scaledToFit()
                         .frame(width: 240, height: 240)
                         .padding()
                     VStack {
@@ -318,7 +317,7 @@ struct MessageCard: MessageView {
                         }) {
                             Text("\(emoji) \(count)")
                         }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(ReactionsButtonStyle(buttonColor: .blue))
                     } else {
                         AsyncButton(action: {
                             // We have not sent this reaction yet..  Send it
@@ -327,7 +326,7 @@ struct MessageCard: MessageView {
                             Text("\(emoji) \(count)")
                         }
                         .disabled(!iCanReact)
-                        .buttonStyle(.plain)
+                        .buttonStyle(ReactionsButtonStyle(buttonColor: Color(UIColor.systemGray5)))
                     }
                 }
                 

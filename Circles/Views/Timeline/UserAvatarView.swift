@@ -21,14 +21,10 @@ struct UserAvatarView: View {
     
     var body: some View {
         if let avatar = user.avatar {
-            Image(uiImage: avatar)
-                .resizable()
-                .scaledToFit()
+            BasicImage(uiImage: avatar)
         }
         else if let jdenticon = user.jdenticon {
-            Image(uiImage: jdenticon)
-                .resizable()
-                .scaledToFit()
+            BasicImage(uiImage: jdenticon)
                 .onAppear {
                     user.fetchAvatarImage()
                 }

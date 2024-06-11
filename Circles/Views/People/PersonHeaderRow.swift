@@ -46,11 +46,9 @@ struct PersonHeaderRow: View {
     var body: some View {
         HStack(alignment: .center) {
             UserAvatarView(user: user)
+                .scaledToFill()
                 .frame(width: 70, height:70)
-                //.clipped()
-                //.clipShape(Circle())
                 .clipShape(RoundedRectangle(cornerRadius: 7))
-
             
             VStack(alignment: .leading) {
                 Text(displayName)
@@ -61,11 +59,6 @@ struct PersonHeaderRow: View {
                 Text(user.id)
                     .font(.subheadline)
                     .foregroundColor(Color.gray)
-                    .lineLimit(1)
-                
-                Text(status)
-                    .font(.headline)
-                    .fontWeight(.regular)
                     .lineLimit(1)
             }
             

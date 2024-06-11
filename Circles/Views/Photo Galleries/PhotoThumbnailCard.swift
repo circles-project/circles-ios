@@ -50,10 +50,8 @@ struct PhotoThumbnailCard: View {
             else {
                 VStack {
                     let bgColor = colorScheme == .dark ? Color.black : Color.white
-                    Image(systemName: "lock.rectangle")
-                        .resizable()
+                    BasicImage(systemName: "lock.rectangle")
                         .foregroundColor(Color.gray)
-                        .scaledToFit()
                         .padding()
                     VStack {
                         Text("Decryption error")

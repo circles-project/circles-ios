@@ -38,9 +38,7 @@ struct PhotosUploadView: View {
                     .frame(width: 80, height: 80, alignment: .center)
             } else {
                 if let image = currentImage {
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFit()
+                    BasicImage(uiImage: image)
                         .frame(width: 200, height: 200)
                 }
                 let ratio = Float(total-items.count) / Float(total)
