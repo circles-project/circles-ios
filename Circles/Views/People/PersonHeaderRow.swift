@@ -13,6 +13,8 @@ struct PersonHeaderRow: View {
     @ObservedObject var user: Matrix.User
     var profile: ProfileSpace
     
+    @AppStorage("blurUnknownUserPicture") var blurUnknownUserPicture = true
+    
     @State private var alertTitle: String = ""
     @State private var alertMessage: String = ""
     @State private var showAlert = false
@@ -44,11 +46,9 @@ struct PersonHeaderRow: View {
     var body: some View {
         HStack(alignment: .center) {
             UserAvatarView(user: user)
+                .scaledToFill()
                 .frame(width: 70, height:70)
-                //.clipped()
-                //.clipShape(Circle())
                 .clipShape(RoundedRectangle(cornerRadius: 7))
-
             
             VStack(alignment: .leading) {
                 Text(displayName)
@@ -60,11 +60,6 @@ struct PersonHeaderRow: View {
                     .font(.subheadline)
                     .foregroundColor(Color.gray)
                     .lineLimit(1)
-                
-                Text(status)
-                    .font(.headline)
-                    .fontWeight(.regular)
-                    .lineLimit(1)
             }
             
             Spacer()
@@ -75,7 +70,7 @@ struct PersonHeaderRow: View {
                 .foregroundColor(.gray)
             */
         }
-        .blur(radius: blurRadius)
+        .blur(radius: blurUnknownUserPicture ? blurRadius : 0)
         //.padding([.leading, .top], 5)
         .contextMenu {
             if profile.joinedMembers.contains(user.userId) {

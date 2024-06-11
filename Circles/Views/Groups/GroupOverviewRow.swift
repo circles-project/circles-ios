@@ -12,7 +12,6 @@ import Matrix
 struct GroupOverviewRow: View {
     var container: ContainerRoom<GroupRoom>
     @ObservedObject var room: Matrix.Room
-    @AppStorage("debugMode") var debugMode: Bool = false
     
     @State var showConfirmLeave = false
 
@@ -31,12 +30,13 @@ struct GroupOverviewRow: View {
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(.primary)
+                        .minimumScaleFactor(0.8)
                     Spacer()
                 }
 
                 VStack(alignment: .leading) {
                     
-                    if debugMode {
+                    if DebugModel.shared.debugMode {
                         Text(room.roomId.stringValue)
                             .font(.subheadline)
                             .foregroundColor(.red)
@@ -81,12 +81,12 @@ struct GroupOverviewRow: View {
         .confirmationDialog(Text("Confirm Leaving Group"),
                             isPresented: $showConfirmLeave,
                             actions: { //rm in
-                                AsyncButton(role: .destructive, action: {
-                                    try await container.leaveChild(room.roomId)
-                                }) {
-                                    Text("Leave \(room.name ?? "this group")")
-                                }
-                            })
+            AsyncButton(role: .destructive, action: {
+                try await container.leaveChild(room.roomId)
+            }) {
+                Text("Leave \(room.name ?? "this group")")
+            }
+        })
     }
 }
 

@@ -37,19 +37,18 @@ struct SignupScreen: View {
         .confirmationDialog(Text("Abort Signup?"),
                             isPresented: $showConfirmCancel,
                             actions: {
-                                AsyncButton(role: .destructive, action: {
-                                    try await self.store.disconnect()
-                                }) {
-                                    Text("Abort Signup")
-                                }
+            AsyncButton(role: .destructive, action: {
+                try await self.store.disconnect()
+            }) {
+                Text("Abort Signup")
+            }
             
-                                Button(role: .cancel, action: {
-                                    self.showConfirmCancel = false
-                                }) {
-                                    Text("Continue Signup")
-                                }
-                            }
-        )
+            Button(role: .cancel, action: {
+                self.showConfirmCancel = false
+            }) {
+                Text("Continue Signup")
+            }
+        })
     }
     
     var notConnectedView: some View {
@@ -95,17 +94,12 @@ struct SignupScreen: View {
                     UiaInProgressView(session: session, state: uiaaState, stages: stages)
                     
                 case .finished(let data):
-                    let decoder = JSONDecoder()
-                    
-                    if let creds = try? decoder.decode(Matrix.Credentials.self, from: data) {
-                        SignupFinishedView(store: store, creds: creds)
-                    } else {
-                        Text("There was a problem")
-                    }
+                    Text("Signup was successful!")
                 }
-                Spacer()
-                cancelButton
             }
+        }
+        .safeAreaInset(edge: .bottom) {
+            cancelButton
         }
     }
 

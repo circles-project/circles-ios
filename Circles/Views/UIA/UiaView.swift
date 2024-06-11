@@ -58,16 +58,16 @@ struct UiaView: View {
                         }
                     }
             }
-            
-            Divider()
-            
-            AsyncButton(action: {
+        }
+        .safeAreaInset(edge: .bottom) {
+            AsyncButton(role: .destructive, action: {
                 try await session.cancelUIA()
             }) {
                 Text("Cancel")
+                    .padding()
             }
-            //.padding()
         }
+        .padding(.horizontal)
     }
 }
 

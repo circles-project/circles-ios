@@ -15,7 +15,6 @@ struct PhotoThumbnailCard: View {
     var width: CGFloat
     @State var showFullScreen: Bool = false
     
-    @AppStorage("debugMode") var debugMode: Bool = false
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
@@ -51,14 +50,12 @@ struct PhotoThumbnailCard: View {
             else {
                 VStack {
                     let bgColor = colorScheme == .dark ? Color.black : Color.white
-                    Image(systemName: "lock.rectangle")
-                        .resizable()
+                    BasicImage(systemName: "lock.rectangle")
                         .foregroundColor(Color.gray)
-                        .scaledToFit()
                         .padding()
                     VStack {
                         Text("Decryption error")
-                        if debugMode {
+                        if DebugModel.shared.debugMode {
                             Text("Message id: \(message.id)")
                                 .font(.footnote)
                         }

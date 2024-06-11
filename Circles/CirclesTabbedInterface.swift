@@ -36,6 +36,7 @@ struct CirclesTabbedInterface: View {
     @ObservedObject var viewState: CirclesApplicationSession.ViewState
     
     @AppStorage("debugMode") var debugMode: Bool = false
+    @AppStorage(DEFAULTS_KEY_ENABLE_GALLERIES, store: .standard) var enableGalleries: Bool = false
     
     typealias Tab = CirclesApplicationSession.ViewState.Tab
 
@@ -62,6 +63,15 @@ struct CirclesTabbedInterface: View {
                     Text("Circles")
                 }
                 .tag(Tab.circles)
+   
+            GroupsOverviewScreen(container: self.session.groups,
+                                 selected: $session.viewState.selectedGroupId)
+                .environmentObject(session)
+                .tabItem {
+                    Image(systemName: "person.2.square.stack")
+                    Text("Groups")
+                }
+                .tag(Tab.groups)
             
             PeopleOverviewScreen(people: self.session.people,
                                  profile: self.session.profile,
@@ -73,24 +83,17 @@ struct CirclesTabbedInterface: View {
                     Text("People")
                 }
                 .tag(Tab.people)
-            
-            GroupsOverviewScreen(container: self.session.groups,
-                                 selected: $session.viewState.selectedGroupId)
-                .environmentObject(session)
-                .tabItem {
-                    Image(systemName: "person.2.square.stack")
-                    Text("Groups")
-                }
-                .tag(Tab.groups)
-            
-            PhotosOverviewScreen(container: self.session.galleries,
-                                 selected: $session.viewState.selectedGalleryId)
-                .environmentObject(session)
-                .tabItem {
-                    Image(systemName: "photo.fill.on.rectangle.fill")
-                    Text("Photos")
-                }
-                .tag(Tab.photos)
+
+            if enableGalleries {
+                PhotosOverviewScreen(container: self.session.galleries,
+                                     selected: $session.viewState.selectedGalleryId)
+                    .environmentObject(session)
+                    .tabItem {
+                        Image(systemName: "photo.fill.on.rectangle.fill")
+                        Text("Photos")
+                    }
+                    .tag(Tab.photos)
+            }
             
             SettingsScreen(store: store, session: session)
                 .environmentObject(session)
@@ -122,7 +125,7 @@ struct CirclesTabbedInterface: View {
     var body: some View {
         ZStack {
             #if DEBUG
-            if debugMode {
+            if DebugModel.shared.debugMode {
                 debugTabView
             } else {
                 tabview

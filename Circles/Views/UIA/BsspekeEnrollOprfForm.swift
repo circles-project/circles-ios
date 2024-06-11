@@ -25,7 +25,13 @@ struct BsspekeEnrollOprfForm: View {
     let MINIMUM_PASSWORD_ZXCVBN_SCORE = 3.0
     #endif
     
-    @State var showRepeat = false
+    enum Screen: String {
+        case enterPassword
+        case repeatPassword
+        case savePassword
+    }
+    @State var screen: Screen = .enterPassword
+    //@State var showRepeat = false
     
     enum FocusField {
         case inputPassphrase
@@ -72,7 +78,7 @@ struct BsspekeEnrollOprfForm: View {
     }
     
     @ViewBuilder
-    var passwordView: some View {
+    var enterPasswordView: some View {
         VStack {
             Spacer()
 
@@ -120,15 +126,11 @@ struct BsspekeEnrollOprfForm: View {
             Spacer()
 
             Button(action: {
-                self.showRepeat = true
+                self.screen = .repeatPassword
             }) {
                 Text("Next")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled(passphrase.isEmpty || score < MINIMUM_PASSWORD_ZXCVBN_SCORE)
         }
     }
@@ -145,7 +147,7 @@ struct BsspekeEnrollOprfForm: View {
                 self.passphrase = ""
                 self.score = 0.0
                 self.color = .red
-                self.showRepeat = false
+                self.screen = .enterPassword
             }) {
                 Label("Choose a different passphrase", systemImage: "arrowshape.turn.up.backward.fill")
             }
@@ -159,41 +161,69 @@ struct BsspekeEnrollOprfForm: View {
 
             Spacer()
             
-            AsyncButton(action: {
-                guard let userId = getUserId()
-                else {
-                    print("Couldn't get user id")
-                    return
-                }
-                try await session.doBSSpekeEnrollOprfStage(userId: userId, password: passphrase)
+            Button(action: {
+                self.screen = .savePassword
             }) {
                 Text("Submit")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled(passphrase.isEmpty || passphrase != repeatPassphrase || score < MINIMUM_PASSWORD_ZXCVBN_SCORE)
         }
         .padding()
     }
     
+    func submit() async throws {
+        guard let userId = getUserId()
+        else {
+            print("Couldn't get user id")
+            return
+        }
+        try await session.doBSSpekeEnrollOprfStage(userId: userId, password: passphrase)
+    }
+    
+    @ViewBuilder
+    var savePasswordView: some View {
+        VStack(spacing: 50) {
+
+            Text("Would you like to save your passphrase to iCloud Keychain?")
+            
+            AsyncButton(action: {
+                session.savePasswordToKeychain()
+                try await submit()
+            }) {
+                Text("Save passphrase")
+            }
+            .buttonStyle(BigBlueButtonStyle())
+            
+            AsyncButton(action: {
+                try await submit()
+            }) {
+                Text("Don't save my passphrase")
+            }
+            .buttonStyle(BigBlueButtonStyle())
+            
+        }
+        .padding(.top)
+
+    }
     
     var body: some View {
         VStack {
-            if passphrase.isEmpty || showRepeat == false {
-                passwordView
+            
+            switch screen {
+            case .enterPassword:
+                enterPasswordView
                     .onAppear {
                         self.focus = .inputPassphrase
                     }
-            } else {
+            case .repeatPassword:
                 repeatPasswordView
                     .onAppear {
                         self.focus = .repeatPassphrase
                     }
+            case .savePassword:
+                savePasswordView
             }
-            
         }
     }
 }

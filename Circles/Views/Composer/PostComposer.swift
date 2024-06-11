@@ -17,7 +17,6 @@ struct PostComposer: View {
     //@Binding var isPresented: Bool
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.presentationMode) var presentation
-    @AppStorage("debugMode") var debugMode: Bool = false
 
     var parent: Matrix.Message?
     var editing: Matrix.Message?
@@ -32,7 +31,6 @@ struct PostComposer: View {
         case newImage(UIImage)
         case newVideo(Movie, UIImage)
         case loadingVideo(Task<Void,Error>)
-        case cloudImage(Matrix.mImageContent, UIImage?)
         case oldImage(Matrix.mImageContent, UIImage?)
         case oldVideo(Matrix.mVideoContent, UIImage?)
         
@@ -88,7 +86,6 @@ struct PostComposer: View {
     @State private var showAlert = false
 
     enum ImageSourceType: String, Identifiable {
-        case cloud
         case camera
         
         var id: String {
@@ -202,7 +199,7 @@ struct PostComposer: View {
             }
             
             let info = Matrix.mImageInfo(oldContent.info, thumbnail_url: nil, thumbnail_file: thumbnailFile, thumbnail_info: oldContent.thumbnail_info)
-            let newContent = Matrix.mImageContent(oldContent, file: mainFile, info: info, url: nil)
+            let newContent = Matrix.mImageContent(oldContent, caption: caption, file: mainFile, info: info, url: nil)
             
             let eventId = try await room.sendMessage(content: newContent)
             return eventId
@@ -233,18 +230,22 @@ struct PostComposer: View {
         switch(self.messageState) {
             
         case .text:
-            if let parentMessage = self.parent {
-                let replyEventId = try await room.sendText(text: self.newMessageText, inReplyTo: parentMessage)
-                print("REPLY\tSent m.text reply with eventId = \(replyEventId)")
-            } else if let oldMessage = self.editing {
-                let replacementEventId = try await room.sendText(text: self.newMessageText, replacing: oldMessage)
-                print("EDIT\tSent edited m.text with eventId = \(replacementEventId)")
+            if self.newMessageText.isEmpty {
+                await ToastPresenter.shared.showToast(message: "You can not send an empty post")
             } else {
-                let newEventId = try await room.sendText(text: self.newMessageText)
-                print("COMPOSER\tSent m.text with eventId = \(newEventId)")
+                if let parentMessage = self.parent {
+                    let replyEventId = try await room.sendText(text: self.newMessageText, inReplyTo: parentMessage)
+                    print("REPLY\tSent m.text reply with eventId = \(replyEventId)")
+                } else if let oldMessage = self.editing {
+                    let replacementEventId = try await room.sendText(text: self.newMessageText, replacing: oldMessage)
+                    print("EDIT\tSent edited m.text with eventId = \(replacementEventId)")
+                } else {
+                    let newEventId = try await room.sendText(text: self.newMessageText)
+                    print("COMPOSER\tSent m.text with eventId = \(newEventId)")
+                }
+                
+                self.presentation.wrappedValue.dismiss()
             }
-            self.presentation.wrappedValue.dismiss()
-
             
         case .newImage(let img):
             let caption: String? = !self.newMessageText.isEmpty ? self.newMessageText : nil
@@ -288,20 +289,6 @@ struct PostComposer: View {
             print("COMPOSER\tSent edited m.image with new eventId = \(eventId)")
             self.presentation.wrappedValue.dismiss()
             
-        case .cloudImage(let cloudImageContent, _):
-            let caption: String? = !self.newMessageText.isEmpty ? self.newMessageText : nil
-            
-            // We initially tried to be clever and simply re-post the old mxc:// URL from the photo gallery event
-            // But that makes deleting media unsafe -- If we want to delete an event, we never know if there are other events referencing that same media id or not :(
-            // Eventually MSC3911 or something similar will come along to spec a proper way to do this
-            // Until then, we must simply re-download and re-upload the same media content
-            // For maximum privacy, we can do like on Circles Android and re-encrypt the plaintext too
-            // But we do not need to re-encode a JPEG or any other lossy compression -- don't want to degrade quality by doing this over and over again
-            
-            let eventId = try await repostImageContent(cloudImageContent, caption: caption)
-            print("COMPOSER\tSent cloud m.image with new eventId = \(eventId)")
-            self.presentation.wrappedValue.dismiss()
-            
         case .oldVideo(let oldVideoContent, _):
             let caption: String? = !self.newMessageText.isEmpty ? self.newMessageText : nil
             let newContent = Matrix.mVideoContent(oldVideoContent, caption: caption, relatesTo: self.relatesTo)
@@ -314,19 +301,18 @@ struct PostComposer: View {
         
     var buttonBar: some View {
         HStack(spacing: 5.0) {
-            Button(action: {
-                self.messageState = .text
-            }) {
-                Image(systemName: "doc.plaintext")
-                    .scaleEffect(1.5)
-            }
-            .disabled(messageState.isText || editing != nil)
-            .padding(1)
-
             Menu(content: {
+                Button(action: {
+                    self.newPickerFilter = .videos
+                    self.showNewPicker = true
+                    self.selectedItem = nil
+                }) {
+                    Label("Upload a video", systemImage: "film")
+                }
                 Button(action: {
                     self.newPickerFilter = .images
                     self.showNewPicker = true
+                    self.selectedItem = nil
                 }) {
                     Label("Upload a photo", systemImage: "photo.fill")
                 }
@@ -337,35 +323,11 @@ struct PostComposer: View {
                 }) {
                     Label("Take a new photo", systemImage: "camera.fill")
                 }
-                Button(action: {
-                    //self.imageSourceType = .cloud
-                    //self.showPicker = true
-                    self.showPickerOfType = .cloud
-                }) {
-                    Label("Choose an already uploaded photo", systemImage: "photo")
-                }
             },
             label: {
-                Image(systemName: "photo.fill")
+                Image(systemName: "photo.badge.plus.fill")
                     .scaleEffect(1.5)
             })
-            .disabled(messageState.isImage || editing != nil)
-            .padding(1)
-
-            
-            Menu(content: {
-                Button(action: {
-                    self.newPickerFilter = .videos
-                    self.showNewPicker = true
-                }) {
-                    Label("Upload a video", systemImage: "film")
-                }
-            },
-            label: {
-                Image(systemName: "film")
-                    .scaleEffect(1.5)
-            })
-            .disabled(messageState.isVideo || editing != nil)
             .padding(1)
 
             
@@ -404,26 +366,18 @@ struct PostComposer: View {
         switch(messageState) {
             
         case .text:
-            if debugMode {
+            if DebugModel.shared.debugMode {
                 Text("Editing")
                     .font(.footnote)
                     .foregroundColor(.red)
             }
             
         case .newImage(let image):
-            Image(uiImage: image)
-                .resizable()
-                .scaledToFit()
+            BasicImage(uiImage: image)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
-                .overlay(alignment: .bottomTrailing) {
-                    PhotosPicker(selection: $selectedItem, matching: .images) {
-                        Image(systemName: "pencil.circle.fill")
-                            .symbolRenderingMode(.multicolor)
-                            .font(.system(size: 30))
-                            .foregroundColor(.accentColor)
-                    }
-                }
-            
+                .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
+                .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
+
         case .loadingVideo(let task):
             ZStack {
                 Color.secondaryBackground
@@ -446,89 +400,20 @@ struct PostComposer: View {
             }
             
         case .newVideo(let movie, let thumbnail):
-            Image(uiImage: thumbnail)
-                .resizable()
-                .scaledToFit()
+            BasicImage(uiImage: thumbnail)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
-                .overlay(alignment: .bottomTrailing) {
-                    PhotosPicker(selection: $selectedItem, matching: .videos) {
-                        Image(systemName: "pencil.circle.fill")
-                            .symbolRenderingMode(.multicolor)
-                            .font(.system(size: 30))
-                            .foregroundColor(.accentColor)
-                    }
-                }
-            
-        case .cloudImage(let cloudImageContent, let thumbnail):
-            if let image = thumbnail {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
-                    .clipShape(RoundedRectangle(cornerRadius: 6))
-                    .overlay(alignment: .bottomTrailing) {
-                        PhotosPicker(selection: $selectedItem, matching: .images) {
-                            Image(systemName: "pencil.circle.fill")
-                                .symbolRenderingMode(.multicolor)
-                                .font(.system(size: 30))
-                                .foregroundColor(.accentColor)
-                        }
-                    }
-            } else {
-                ZStack {
-                    Image(systemName: "photo.artframe")
-                        .resizable()
-                        .scaledToFit()
-                        .clipShape(RoundedRectangle(cornerRadius: 6))
-                    
-                    ProgressView()
-                        .onAppear {
-                            // Start fetching the thumbnail
-                            Task {
-                                if let file = cloudImageContent.thumbnail_file ?? cloudImageContent.file {
-                                    let data = try await self.room.session.downloadAndDecryptData(file)
-                                    let thumbnail = UIImage(data: data)
-                                    await MainActor.run {
-                                        self.messageState = .cloudImage(cloudImageContent, thumbnail)
-                                    }
-                                } else if let mxc = cloudImageContent.thumbnail_url ?? cloudImageContent.url {
-                                    let data = try await self.room.session.downloadData(mxc: mxc)
-                                    let thumbnail = UIImage(data: data)
-                                    await MainActor.run {
-                                        self.messageState = .cloudImage(cloudImageContent, thumbnail)
-                                    }
-                                }
-                            }
-                        }
-                }
-                .overlay(alignment: .bottomTrailing) {
-                    PhotosPicker(selection: $selectedItem, matching: .images) {
-                        Image(systemName: "pencil.circle.fill")
-                            .symbolRenderingMode(.multicolor)
-                            .font(.system(size: 30))
-                            .foregroundColor(.accentColor)
-                    }
-                }
-            }
-            
+                .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
+                .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
+        
         case .oldImage(let originalImageContent, let thumbnail):
             if let image = thumbnail {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
+                BasicImage(uiImage: image)
                     .clipShape(RoundedRectangle(cornerRadius: 6))
-                    .overlay(alignment: .bottomTrailing) {
-                        PhotosPicker(selection: $selectedItem, matching: .images) {
-                            Image(systemName: "pencil.circle.fill")
-                                .symbolRenderingMode(.multicolor)
-                                .font(.system(size: 30))
-                                .foregroundColor(.accentColor)
-                        }
-                    }
+                    .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
+                    .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
             } else {
                 ZStack {
-                    Image(systemName: "photo.artframe")
-                        .resizable()
-                        .scaledToFit()
+                    BasicImage(systemName: "photo.artframe")
                         .clipShape(RoundedRectangle(cornerRadius: 6))
                     
                     ProgressView()
@@ -551,35 +436,19 @@ struct PostComposer: View {
                             }
                         }
                 }
-                .overlay(alignment: .bottomTrailing) {
-                    PhotosPicker(selection: $selectedItem, matching: .images) {
-                        Image(systemName: "pencil.circle.fill")
-                            .symbolRenderingMode(.multicolor)
-                            .font(.system(size: 30))
-                            .foregroundColor(.accentColor)
-                    }
-                }
+                .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
+                .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
             }
             
         case .oldVideo(let originalVideoContent, let thumbnail):
             if let image = thumbnail {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
+                BasicImage(uiImage: image)
                     .clipShape(RoundedRectangle(cornerRadius: 6))
-                    .overlay(alignment: .bottomTrailing) {
-                        PhotosPicker(selection: $selectedItem, matching: .videos) {
-                            Image(systemName: "pencil.circle.fill")
-                                .symbolRenderingMode(.multicolor)
-                                .font(.system(size: 30))
-                                .foregroundColor(.accentColor)
-                        }
-                    }
+                    .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
+                    .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
             } else {
                 ZStack {
-                    Image(systemName: "photo.artframe")
-                        .resizable()
-                        .scaledToFit()
+                    BasicImage(systemName: "photo.artframe")
                         .clipShape(RoundedRectangle(cornerRadius: 6))
                     
                     ProgressView()
@@ -602,14 +471,8 @@ struct PostComposer: View {
                             }
                         }
                 }
-                .overlay(alignment: .bottomTrailing) {
-                    PhotosPicker(selection: $selectedItem, matching: .videos) {
-                        Image(systemName: "pencil.circle.fill")
-                            .symbolRenderingMode(.multicolor)
-                            .font(.system(size: 30))
-                            .foregroundColor(.accentColor)
-                    }
-                }
+                .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
+                .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
             }
         }
     }
@@ -736,13 +599,6 @@ struct PostComposer: View {
                 .onAppear {
                     print("Showing picker of type = \(self.showPickerOfType?.rawValue ?? "nil") -- type = \(type)")
                 }
-            case .cloud:
-                CloudImagePicker(galleries: appSession.galleries, selected: self.$selectedImageContent) { content, image in
-                    self.messageState = .cloudImage(content, image)
-                }
-                    .onAppear {
-                        print("Showing picker of type = \(self.showPickerOfType?.rawValue ?? "nil") -- type = \(type)")
-                    }
             }
         })
         .photosPicker(isPresented: $showNewPicker, selection: $selectedItem, matching: self.newPickerFilter)

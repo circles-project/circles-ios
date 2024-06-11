@@ -19,7 +19,7 @@ struct PhotoContextMenu: View {
         let current = message.replacement ?? message
         
         if let content = current.content as? Matrix.MessageContent,
-            content.msgtype == M_IMAGE,
+           content.msgtype == M_IMAGE,
            let imageContent = content as? Matrix.mImageContent
         {
             AsyncButton(action: {
@@ -48,17 +48,12 @@ struct PhotoContextMenu: View {
         }
         
         if message.iCanRedact {
-            Menu {
-                AsyncButton(action: {
-                    try await deleteAndPurge(message: message)
-                }) {
-                    Label("Delete", systemImage: "trash")
-                }
-                .foregroundColor(.red)
-                
-            } label: {
+            AsyncButton(action: {
+                try await deleteAndPurge(message: message)
+            }) {
                 Label("Delete", systemImage: "trash")
             }
+            .foregroundColor(.red)
         }
     }
 }

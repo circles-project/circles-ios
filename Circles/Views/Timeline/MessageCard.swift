@@ -48,6 +48,7 @@ struct ImageContentView: View {
                     if let caption = imageContent.caption {
                         let markdown = MarkdownContent(caption)
                         Markdown(markdown)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
                 //Spacer()
@@ -58,13 +59,11 @@ struct ImageContentView: View {
     }
 }
 
-
-
 struct MessageCard: MessageView {
     @ObservedObject var message: Matrix.Message
     var isLocalEcho = false
     var isThreaded = false
-    @AppStorage("debugMode") var debugMode: Bool = false
+    @State var emojiUsersListModel: [EmojiUsersListModel] = []
     @Environment(\.colorScheme) var colorScheme
     //@State var showReplyComposer = false
     @State var reporting = false
@@ -72,6 +71,7 @@ struct MessageCard: MessageView {
     @State var sheetType: MessageSheetType? = nil
     @State var showAllReactions = false
     var iCanReact: Bool
+    @State var showMessageDeleteConfirmation = false
     
     init(message: Matrix.Message, isLocalEcho: Bool = false, isThreaded: Bool = false) {
         self.message = message
@@ -189,17 +189,15 @@ struct MessageCard: MessageView {
             } else if current.type == M_ROOM_ENCRYPTED {
                 VStack {
                     let bgColor = colorScheme == .dark ? Color.black : Color.white
-                    Image(systemName: "lock.rectangle")
-                        .resizable()
+                    BasicImage(systemName: "lock.rectangle")
                         .foregroundColor(Color.gray)
-                        .scaledToFit()
                         .frame(width: 240, height: 240)
                         .padding()
                     VStack {
                         Label("Could not decrypt message", systemImage: "exclamationmark.triangle")
                             .font(.title2)
                             .fontWeight(.semibold)
-                        if debugMode {
+                        if DebugModel.shared.debugMode {
                             Text("Message id: \(message.id)")
                                 .font(.footnote)
                         }
@@ -266,13 +264,22 @@ struct MessageCard: MessageView {
 
     var menuButton: some View {
         Menu {
-        MessageContextMenu(message: message,
-                           sheetType: $sheetType)
+            MessageContextMenu(message: message,
+                               sheetType: $sheetType,
+                               showMessageDeleteConfirmation: $showMessageDeleteConfirmation)
         }
         label: {
             //Label("More", systemImage: "ellipsis.circle")
             Image(systemName: "ellipsis.circle")
         }
+        .confirmationDialog("Delete Message", isPresented: $showMessageDeleteConfirmation, actions: {
+            AsyncButton(role: .destructive, action: {
+                self.showMessageDeleteConfirmation = false
+                try await deleteAndPurge(message: message)
+            }) {
+                Text("Confirm deleting the message")
+            }
+        })
     }
 
     var reactions: some View {
@@ -290,54 +297,51 @@ struct MessageCard: MessageView {
                 }
                 .sorted(by: >)
             
-            let limit = 5
+            let limit = 3
             let reactionCounts = showAllReactions ? allReactionCounts : Array(allReactionCounts.prefix(limit))
             
-            let columns = [
-                GridItem(.adaptive(minimum: 60))
-            ]
-            
-            LazyVGrid(columns: columns, alignment: .center, spacing: 10) {
-                
-                ForEach(reactionCounts, id: \.key) { emoji, count in
-                    let userId = message.room.session.creds.userId
-                    let users = message.reactions[emoji] ?? []
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 10) {
                     
-                    if users.contains(userId) {
-                        AsyncButton(action: {
-                            // We already sent this reaction...  So redact it
-                            try await message.sendRemoveReaction(emoji)
-                        }) {
-                            Text("\(emoji) \(count)")
+                    ForEach(reactionCounts, id: \.key) { emoji, count in
+                        let userId = message.room.session.creds.userId
+                        let users = message.reactions[emoji] ?? []
+                        
+                        if users.contains(userId) {
+                            AsyncButton(action: {
+                                // We already sent this reaction...  So redact it
+                                try await message.sendRemoveReaction(emoji)
+                            }) {
+                                Text("\(emoji) \(count)")
+                            }
+                            .buttonStyle(ReactionsButtonStyle(buttonColor: .blue))
+                        } else {
+                            AsyncButton(action: {
+                                // We have not sent this reaction yet..  Send it
+                                try await message.sendReaction(emoji)
+                            }) {
+                                Text("\(emoji) \(count)")
+                            }
+                            .disabled(!iCanReact)
+                            .buttonStyle(ReactionsButtonStyle(buttonColor: Color(UIColor.systemGray5)))
                         }
-                        .buttonStyle(.bordered)
-                    } else {
-                        AsyncButton(action: {
-                            // We have not sent this reaction yet..  Send it
-                            try await message.sendReaction(emoji)
-                        }) {
-                            Text("\(emoji) \(count)")
-                        }
-                        .disabled(!iCanReact)
-                        .buttonStyle(.plain)
                     }
-                }
-                
-                if allReactionCounts.count > limit {
-                    if !showAllReactions {
-                        Button(action: {self.showAllReactions = true}) {
-                            Text("(more)")
-                                .font(.subheadline)
-                        }
-                    } else {
-                        Button(action: {self.showAllReactions = false}) {
-                            Text("(less)")
-                                .font(.subheadline)
+                    
+                    if allReactionCounts.count > limit {
+                        if !showAllReactions {
+                            Button(action: {self.showAllReactions = true}) {
+                                Text("(more)")
+                                    .font(.subheadline)
+                            }
+                        } else {
+                            Button(action: {self.showAllReactions = false}) {
+                                Text("(less)")
+                                    .font(.subheadline)
+                            }
                         }
                     }
                 }
             }
-
         }
         .foregroundColor(.secondary)
         //.padding(2)
@@ -363,11 +367,16 @@ struct MessageCard: MessageView {
             .padding(.horizontal, 3)
             .font(.headline)
             
-            if !message.reactions.isEmpty
+            let reactionsFooterAction = message.reactions.values.map {
+                !$0.isEmpty ? "show" : "hide"
+            }
+            if reactionsFooterAction.rawValue.contains("show")
             {
                 Divider()
 
                 reactions
+            } else {
+                reactions.hidden()
             }
 
         }
@@ -401,14 +410,14 @@ struct MessageCard: MessageView {
             
             MessageAuthorHeader(user: message.sender)
 
-            if debugMode && self.debug {
+            if DebugModel.shared.debugMode && self.debug {
                 Text(message.eventId)
                     .font(.caption)
             }
 
             content
             
-            if debugMode {
+            if DebugModel.shared.debugMode {
                 details
                     .font(.caption)
             }
@@ -447,24 +456,26 @@ struct MessageCard: MessageView {
     }
     
     var body: some View {
-
         //linkWrapper
-        mainCard
-            .contextMenu {
-                MessageContextMenu(message: message,
-                                   sheetType: $sheetType)
-            }
-            .sheet(item: $sheetType) { st in
-                switch(st) {
-
-                case .reactions:
-                    EmojiPicker(message: message)
-
-                case .reporting:
-                    MessageReportingSheet(message: message)
-
+        ZStack {
+            mainCard
+                .contextMenu {
+                    MessageContextMenu(message: message,
+                                       sheetType: $sheetType,
+                                       showMessageDeleteConfirmation: $showMessageDeleteConfirmation)
                 }
-            }
-
+                .sheet(item: $sheetType) { st in
+                    switch(st) {
+                    case .reactions:
+                        EmojiPicker(message: message)
+                        
+                    case .reporting:
+                        MessageReportingSheet(message: message)
+                        
+                    case .liked:
+                        LikedEmojiView(message: message, emojiUsersListModel: emojiUsersListModel)
+                    }
+                }
+        }
     }
 }

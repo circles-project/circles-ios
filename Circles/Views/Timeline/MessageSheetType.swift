@@ -10,6 +10,7 @@ import Foundation
 enum MessageSheetType: String {
     case reactions
     case reporting
+    case liked
 }
 
 extension MessageSheetType: Identifiable {

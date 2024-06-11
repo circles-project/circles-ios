@@ -49,8 +49,8 @@ struct ContentView: View {
             SignupScreen(session: signupSession, store: store)
                 .environmentObject(store.appStore)
         
-        //case .settingUp(let setupSession):
-        //    SetupScreen(session: setupSession, store: store)
+        case .signedUp(let creds, let key):
+            SignupFinishedView(creds: creds, key: key, store: store)
             
         case .loggingInUIA(let uiaLoginSession, let filter):
             UiaLoginScreen(session: uiaLoginSession, store: store, filter: filter)
@@ -93,7 +93,6 @@ struct ContentView: View {
             SecretStoragePasswordScreen(store: store, matrix: matrix, keyId: keyId, description: keyDescription)
             
         case .haveSecretStorageAndKey(let matrix):
-            //Text("Have secret storage and key")
             ProgressView("Checking cross signing")
                 .onAppear {
                     Task {
@@ -102,7 +101,6 @@ struct ContentView: View {
                 }
             
         case .haveCrossSigning(let matrix):
-            //Text("Have cross signing")
             ProgressView("Checking key backup")
                 .onAppear {
                     Task {
@@ -111,7 +109,6 @@ struct ContentView: View {
                 }
             
         case .haveKeyBackup(let matrix):
-            //Text("Have key backup")
             ProgressView("Checking space hierarchy")
                 .onAppear {
                     Task {
@@ -120,11 +117,9 @@ struct ContentView: View {
                 }
             
         case .needSpaceHierarchy(let matrix):
-            //Text("Need space hierarchy")
             SetupScreen(store: store, matrix: matrix)
 
         case .haveSpaceHierarchy(let matrix, let config):
-            //Text("Have space hierarchy")
             ProgressView("Loading Circles")
                 .onAppear {
                     Task {

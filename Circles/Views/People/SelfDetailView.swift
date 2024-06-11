@@ -37,74 +37,8 @@ struct SelfDetailView: View {
                         Text(me.userId.stringValue)
                             .font(.subheadline)
                             .foregroundColor(.gray)
-                        
-                        if let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/profile/\(profile.roomId.stringValue)"),
-                           let qr = qrCode(url: url)
-                        {
-                             Image(uiImage: qr)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 180, height: 180)
-                                //.border(Color.red)
-                         } else {
-                             Text("🙁 Failed to generate QR code")
-                         }
                     }
                     Spacer()
-                }
-                
-                Divider()
-                HStack(alignment: .bottom) {
-                    Text("SHARED CIRCLES")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                        .padding(.top, 20)
-                    
-                    Spacer()
-                    
-                    Button(action: {
-                        self.showPicker = true
-                    }) {
-                        //Label("Add circle(s)", systemImage: "plus.circle")
-                        Label("Add", systemImage: "plus.circle")
-                    }
-                    .padding(.leading)
-                    .sheet(isPresented: $showPicker) {
-                        SharedCirclesPicker(circles: circles, profile: profile)
-                    }
-                }
-                if profile.rooms.isEmpty {
-                    Text("No circles are visible to my connections.")
-                        .padding()
-                } else {
-                    let rooms = Array(profile.rooms.values)
-                    ForEach(rooms) { room in
-                        HStack {
-                            RoomAvatarView(room: room, avatarText: .roomInitials)
-                                .frame(width: 60, height: 60)
-                                .clipShape(Circle())
-
-                            Text(room.name ?? "??")
-                                .font(.title2)
-                                .fontWeight(.bold)
-                            
-                            Spacer()
-                            
-                            Button(action: {
-                                self.showConfirmRemove = true
-                            }) {
-                                Image(systemName: "trash")
-                            }
-                            .confirmationDialog("Stop sharing circle?", isPresented: $showConfirmRemove) {
-                                AsyncButton(role: .destructive, action: {
-                                    try await profile.removeChild(room.roomId)
-                                }) {
-                                    Text("Stop sharing \(room.name ?? "this circle")")
-                                }
-                            }
-                        }
-                        .padding()
-                    }
                 }
 
             }

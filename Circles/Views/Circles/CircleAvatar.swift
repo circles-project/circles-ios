@@ -42,20 +42,7 @@ struct RoomCircleAvatar: View {
                                   y: location.y)
                 }
                 else {
-                    // Make the color choice pseudo-random, but fixed based on
-                    // the room name instead of changing the color randomly
-                    // each time the avatar is rendered.
-                    let colorChoice: Int = room.roomId.stringValue.chars.reduce(0, { acc, str in
-                        guard let asciiValue = Character(str).asciiValue
-                        else {
-                            return acc
-                        }
-                        
-                        return acc + Int(asciiValue)
-                    })
-                    //let colors = [Color.blue, Color.purple, Color.orange, Color.yellow, Color.red, Color.pink, Color.green]
-                    let colors = CIRCLES_COLORS
-                    let color = colors[colorChoice % colors.count]
+                    let color = Color.background.randomColor(from: room.roomId.stringValue)
                     
                     let userId = room.creator
                     let user = room.session.getUser(userId: userId)

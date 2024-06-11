@@ -105,6 +105,7 @@ struct GroupCreationSheet: View {
                         .multilineTextAlignment(.center)
                         .foregroundColor(Color.white)
                         .shadow(color: Color.black, radius: 3.0)
+                        .minimumScaleFactor(0.8)
                         .padding()
                     
                     Text(self.groupTopic)
@@ -169,12 +170,8 @@ struct GroupCreationSheet: View {
             })
             {
                 Text("Create group")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled(groupName.isEmpty)
             
             Spacer()

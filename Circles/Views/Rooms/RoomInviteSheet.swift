@@ -120,8 +120,18 @@ struct RoomInviteSheet: View {
             actions: {
                 if let userId = self.suggestedUserId {
                     Button(action: {
-                        let user = room.session.getUser(userId: userId)
-                        self.newUsers.insert(user)
+                        
+                        if room.joinedMembers.contains(userId) {
+                            self.alertTitle = "\(userId) is already a member"
+                            self.alertMessage = ""
+                            self.showAlert = true
+                            print("RoomInviteSheet - ERROR:\t \(self.alertMessage)")
+                        }
+                        else {
+                            let user = room.session.getUser(userId: userId)
+                            self.newUsers.insert(user)
+                        }
+                        
                         self.newestUserIdString = ""
                         self.suggestedUserId = nil
                         self.searchFocused = false
@@ -249,12 +259,8 @@ struct RoomInviteSheet: View {
                         self.presentation.wrappedValue.dismiss()
                     }) {
                         Label("Send \(newUsers.count) Invitation(s)", systemImage: "paperplane")
-                            .padding()
-                            .frame(width: 300.0, height: 40.0)
-                            .foregroundColor(.white)
-                            .background(Color.accentColor)
-                            .cornerRadius(10)
                     }
+                    .buttonStyle(BigBlueButtonStyle())
                     .disabled(pending || newUsers.isEmpty)
                     .padding(5)
                     

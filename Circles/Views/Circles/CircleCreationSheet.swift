@@ -30,8 +30,27 @@ struct CircleCreationSheet: View {
     @FocusState var inputFocused
     
     func create() async throws {
-        // First create the Space for the circle
-        let circleRoomId = try await container.createChild(name: circleName, type: M_SPACE, encrypted: false, avatar: avatarImage)
+        // NOTE: We must be careful here.
+        //       We only want the new circle to appear as one of our circles IFF it is fully-formed with a valid "wall" room.
+        //       Therefore we must create the "wall" room first, then create the space for the circle, then add the wall to the circle.
+        //       Only then can we add the circle to our container as one of our active circles.
+        
+        // First create the "wall" timeline room
+        let wallRoomId = try await container.session.createRoom(name: circleName, type: ROOM_TYPE_CIRCLE, encrypted: true)
+        if let image = avatarImage {
+            try await container.session.setAvatarImage(roomId: wallRoomId, image: image)
+        }
+        
+        // Then create the Space for the circle
+        let circleRoomId = try await container.session.createRoom(name: circleName, type: M_SPACE, encrypted: false)
+        if let image = avatarImage {
+            try await container.session.setAvatarImage(roomId: circleRoomId, image: image)
+        }
+        
+        // Add the wall as a child room of the circle
+        try await container.session.addSpaceChild(wallRoomId, to: circleRoomId)
+        // Add the circle as a child room of the container
+        try await container.addChild(circleRoomId)
         
         guard let circleRoom = try await container.session.getRoom(roomId: circleRoomId, as: CircleSpace.self)
         else {
@@ -39,9 +58,6 @@ struct CircleCreationSheet: View {
             return
         }
         
-        // Then create the "wall" timeline room
-        let wallRoomId = try await circleRoom.createChild(name: circleName, type: ROOM_TYPE_CIRCLE, encrypted: true, avatar: avatarImage)
-
         // Invite our followers to join the room where we're going to post
         for user in users {
             try await container.session.inviteUser(roomId: wallRoomId, userId: user.userId)
@@ -110,6 +126,7 @@ struct CircleCreationSheet: View {
                     .lineLimit(3)
                     .font(.title2)
                     .fontWeight(.bold)
+                    .minimumScaleFactor(0.8)
                 
                 let myUser = container.session.getUser(userId: container.session.creds.userId)
                 Text(myUser.displayName ?? "\(myUser.userId)")
@@ -147,12 +164,8 @@ struct CircleCreationSheet: View {
                 try await create()
             }) {
                 Text("Create circle")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled(circleName.isEmpty)
             
             Spacer()

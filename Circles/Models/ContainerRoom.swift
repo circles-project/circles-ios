@@ -140,9 +140,12 @@ class ContainerRoom<T: Matrix.Room>: Matrix.SpaceRoom {
             }
             
             // Re-publish changes from the child room
-            self.sinks[room.roomId] = room.objectWillChange.sink { _ in
-                self.objectWillChange.send()
-            }
+            self.sinks[room.roomId] = room
+                .objectWillChange
+                .receive(on: RunLoop.main)
+                .sink { _ in
+                    self.objectWillChange.send()
+                }
         }
     }
     

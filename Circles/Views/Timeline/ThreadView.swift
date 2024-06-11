@@ -12,7 +12,6 @@ struct ThreadView<V: MessageView>: View {
     @ObservedObject var room: Matrix.Room
     var root: Matrix.Message
     var messages: [Matrix.Message]
-    @AppStorage("debugMode") var debugMode: Bool = false
     
     init(room: Matrix.Room, root: Matrix.Message) {
         self.room = room
@@ -32,7 +31,7 @@ struct ThreadView<V: MessageView>: View {
                     V(message: message, isLocalEcho: false, isThreaded: true)
                 }
                 
-                if debugMode {
+                if DebugModel.shared.debugMode {
                     Text("Thread Id: \(root.eventId)")
                     if let thread = room.threads[root.eventId] {
                         Text("root + \(thread.count) messages in the thread")

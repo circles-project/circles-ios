@@ -9,10 +9,11 @@ import SwiftUI
 import PhotosUI
 import Matrix
 
-struct AvatarForm: View {
+struct SetupAvatarView: View {
     var matrix: Matrix.Session
 
     @Binding var displayName: String?
+    @Binding var stage: SetupScreen.Stage
     
     @State var newName: String = ""
     @State var avatarImage: UIImage?
@@ -22,8 +23,6 @@ struct AvatarForm: View {
     @State var selectedItem: PhotosPickerItem?
 
     @State var pending = false
-
-    let stage = "avatar"
 
     var avatar: Image {
         if let img = self.avatarImage {
@@ -132,14 +131,12 @@ struct AvatarForm: View {
                 if let image = avatarImage {
                     try await matrix.setMyAvatarImage(image)
                 }
+                
+                stage = .circlesIntro
             }) {
                 Text("Next")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled(newName.isEmpty)
             .padding()
 

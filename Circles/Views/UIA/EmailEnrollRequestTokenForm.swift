@@ -78,11 +78,8 @@ struct EmailEnrollRequestTokenForm: View {
                 .padding(.vertical)
             
             TextField("you@example.com", text: $address, prompt: Text("Email address"))
-                .textContentType(.emailAddress)
+                .customEmailTextFieldStyle(contentType: .emailAddress, keyboardType: .emailAddress)
                 .focused($focus, equals: .email)
-                .keyboardType(.emailAddress)
-                .autocorrectionDisabled()
-                .textInputAutocapitalization(.never)
                 //.focused($inputFocused)
                 //.frame(width: 300.0, height: 40.0)
                 .onSubmit {
@@ -102,12 +99,8 @@ struct EmailEnrollRequestTokenForm: View {
             
             AsyncButton(action: submit) {
                 Text("Request Code")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
             }
+            .buttonStyle(BigBlueButtonStyle())
             .disabled(!addressIsValid)
             
         }

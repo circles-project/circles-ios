@@ -10,14 +10,18 @@ import SwiftUI
 import PhotosUI
 import Matrix
 
-struct CirclesForm: View {
+struct SetupCirclesView: View {
     var store: CirclesStore
     var matrix: Matrix.Session
-    let displayName: String
-
-    @State var friendsAvatar: UIImage?
-    @State var familyAvatar: UIImage?
-    @State var communityAvatar: UIImage?
+    @ObservedObject var user: Matrix.User // me
+    
+    @State var circles: [CircleSetupInfo] = [
+        CircleSetupInfo(name: "Family"),
+        CircleSetupInfo(name: "Friends")
+    ]
+    
+    @State var showNewCircleSheet = false
+    
     @State var currentStep = 0.0
     @State var totalSteps = 15.0
     @State var status: String = "Waiting for input"
@@ -35,26 +39,38 @@ struct CirclesForm: View {
         VStack(alignment: .center) {
             //let currentStage: SignupStage = .setupCircles
 
-            Text("Set up your circles")
+            Text("Create your circles")
                 .font(.title)
                 .fontWeight(.bold)
 
-            Divider()
-
-            VStack(alignment: .leading) {
-                // FIXME lol what's a ForEach?
-                // But seriously it's unreasonably difficult to
-                // iterate over a Dictionary containing bindings.
-                // So, sigh, f*** it.  We can do it the YAGNI way.
-                SetupCircleCard(matrix: matrix, circleName: "Friends", userDisplayName: self.displayName, avatar: self.$friendsAvatar)
-                Divider()
-
-                SetupCircleCard(matrix: matrix, circleName: "Family", userDisplayName: self.displayName, avatar: self.$familyAvatar)
-                Divider()
-
-                SetupCircleCard(matrix: matrix, circleName: "Community", userDisplayName: self.displayName, avatar: self.$communityAvatar)
-                Divider()
+            List {
+                ForEach(circles) { info in
+                    HStack {
+                        SetupCircleCard(matrix: matrix, user: user, info: info)
+                        
+                        Spacer()
+                        
+                        Button(role: .destructive, action: {
+                            circles.removeAll { $0.name == info.name }
+                        }) {
+                            Image(systemName: "minus.circle.fill")
+                        }
+                    }
+                }
             }
+            .listStyle(.inset)
+
+            Button(action: {
+                showNewCircleSheet = true
+            }) {
+                Label("Add a new circle", systemImage: "plus.circle")
+            }
+            .padding()
+            .sheet(isPresented: $showNewCircleSheet) {
+                SetupAddNewCircleSheet(me: user, circles: $circles)
+            }
+            
+            Spacer()
 
             Label("NOTE: Circle names and cover images are not encrypted", systemImage: "exclamationmark.shield")
                 .font(.headline)
@@ -63,31 +79,26 @@ struct CirclesForm: View {
             Spacer()
 
             AsyncButton(action: {
-                let circles: [(String, UIImage?)] = [
-                    ("Friends", friendsAvatar),
-                    ("Family", familyAvatar),
-                    ("Community", communityAvatar),
-                ]
                 self.pending = true
-                try await store.createSpaceHierarchy(displayName: displayName, circles: circles, onProgress: handleProgressUpdate)
+                self.totalSteps = Double(10 + circles.count)
+                try await store.createSpaceHierarchy(displayName: user.displayName ?? user.userId.username,
+                                                     circles: circles,
+                                                     onProgress: handleProgressUpdate)
                 self.pending = false
             }) {
                 Text("Next")
-                    .padding()
-                    .frame(width: 300.0, height: 40.0)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
             }
+            .buttonStyle(BigBlueButtonStyle())
+            .disabled(circles.isEmpty)
 
         }
         .padding()
+        .onAppear {
+            user.refreshProfile()
+        }
     }
     
-    struct CircleInfo {
-        var name: String
-        var avatar: UIImage?
-    }
+
    
     
     var body: some View {

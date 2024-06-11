@@ -12,7 +12,6 @@ import Matrix
 
 struct CircleTimeline: View {
     @ObservedObject var space: CircleSpace
-    @AppStorage("debugMode") var debugMode: Bool = false
     private var formatter: DateFormatter
     @State private var showDebug = false
     @State private var loading = false
@@ -118,7 +117,7 @@ struct CircleTimeline: View {
                     ForEach(messages) { message in
                         VStack(alignment: .leading) {
                             HStack {
-                                if debugMode && showDebug {
+                                if DebugModel.shared.debugMode && showDebug {
                                     let index: Int = messages.firstIndex(of: message)!
                                     Text("\(index)")
                                 }
@@ -161,7 +160,7 @@ struct CircleTimeline: View {
                                 self.loading = false
                             }
                         }
-                    } else if debugMode {
+                    } else if DebugModel.shared.debugMode {
                         Text("Not currently loading; Can't paginate rooms")
                             .foregroundColor(.red)
                     }
@@ -200,7 +199,7 @@ struct CircleTimeline: View {
 
 
 
-            if debugMode {
+            if DebugModel.shared.debugMode {
                 if showDebug {
                     debugFooter
                 } else {

@@ -14,7 +14,6 @@ struct VideoThumbnailCard: View {
     var width: CGFloat
     @State var playVideo: Bool = false
     
-    @AppStorage("debugMode") var debugMode: Bool = false
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
@@ -28,10 +27,7 @@ struct VideoThumbnailCard: View {
                         .frame(width: width, height: height, alignment: .center)
                         .clipped()
 
-                    
-                    Image(systemName: "play.circle")
-                        .resizable()
-                        .scaledToFit()
+                    BasicImage(systemName: "play.circle")
                         .foregroundColor(.white)
                         .shadow(color: .black, radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
                         .frame(width: width/2, height: height/2)
@@ -55,14 +51,12 @@ struct VideoThumbnailCard: View {
             else {
                 VStack {
                     let bgColor = colorScheme == .dark ? Color.black : Color.white
-                    Image(systemName: "lock.rectangle")
-                        .resizable()
+                    BasicImage(systemName: "lock.rectangle")
                         .foregroundColor(Color.gray)
-                        .scaledToFit()
                         .padding()
                     VStack {
                         Text("Decryption error")
-                        if debugMode {
+                        if DebugModel.shared.debugMode {
                             Text("Message id: \(message.id)")
                                 .font(.footnote)
                         }

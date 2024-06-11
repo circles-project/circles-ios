@@ -12,10 +12,9 @@ import Matrix
 
 struct SetupCircleCard: View {
     var matrix: Matrix.Session
-    var circleName: String
-    var userDisplayName: String
+    @ObservedObject var user: Matrix.User
+    @ObservedObject var info: CircleSetupInfo
     
-    @Binding var avatar: UIImage?
     //@State var showPicker = false
     @State var selectedItem: PhotosPickerItem?
     
@@ -27,14 +26,14 @@ struct SetupCircleCard: View {
                 ZStack {
                     Color.gray
                     
-                    if let img = self.avatar {
+                    if let img = info.avatar {
                         Image(uiImage: img)
                             .resizable()
                             .scaledToFill()
                     }
                 }
                 .clipShape(Circle())
-                .frame(width: 120, height: 120, alignment: .center)
+                .frame(width: 100, height: 100, alignment: .center)
                 .foregroundColor(.gray)
                 .overlay(alignment: .bottomTrailing) {
                     PhotosPicker(selection: $selectedItem) {
@@ -47,10 +46,10 @@ struct SetupCircleCard: View {
                 }
 
                 VStack(alignment: .leading) {
-                    Text(self.circleName)
+                    Text(info.name)
                         .font(.title)
                         .fontWeight(.bold)
-                    Text(self.userDisplayName)
+                    Text(self.user.displayName ?? "")
                 }
                 .padding(.leading)
             }
@@ -59,9 +58,7 @@ struct SetupCircleCard: View {
                     if let data = try? await newItem?.loadTransferable(type: Data.self),
                        let img = UIImage(data: data)
                     {
-                        await MainActor.run {
-                            self.avatar = img
-                        }
+                        info.setAvatar(img)
                     }
                 }
             }

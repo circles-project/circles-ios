@@ -13,8 +13,6 @@ struct FollowingTimelineDetailsView: View {
     @ObservedObject var user: Matrix.User
     @ObservedObject var circle: CircleSpace
     
-    @AppStorage("debugMode") var debugMode: Bool = false
-    
     @State var showConfirmUnfollow = false
 
     
@@ -49,9 +47,7 @@ struct FollowingTimelineDetailsView: View {
                         HStack {
                             Text("QR code")
                             Spacer()
-                            Image(uiImage: qr)
-                                .resizable()
-                                .scaledToFit()
+                            BasicImage(uiImage: qr)
                                 .frame(width: 80, height: 80)
                         }
                     }
@@ -78,7 +74,7 @@ struct FollowingTimelineDetailsView: View {
                     }
                 }
                 
-                if debugMode {
+                if DebugModel.shared.debugMode {
                     RoomDebugDetailsSection(room: room)
                 }
                 
