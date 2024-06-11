@@ -613,13 +613,6 @@ public class CirclesStore: ObservableObject {
             count += 1
         }
         
-        logger.debug("- Creating photo gallery [Photos]")
-        //status = "Creating photo gallery"
-        onProgress?(9+circles.count, total, "Creating photo gallery")
-        try await Task.sleep(for: .milliseconds(sleepMS))
-        let photosGallery = try await matrix.createRoom(name: "Photos", type: ROOM_TYPE_PHOTOS, joinRule: .knock)
-        try await matrix.addSpaceChild(photosGallery, to: myGalleries)
-        
         //status = "All done!"
         onProgress?(total, total, "All done!")
         
