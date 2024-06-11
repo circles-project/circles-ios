@@ -69,12 +69,12 @@ struct SignupScreen: View {
         ScrollView {
             VStack {
                 CirclesLogoView()
-                    .frame(minWidth: 100,
-                           idealWidth: 150,
-                           maxWidth: 200,
-                           minHeight: 100,
-                           idealHeight: 150,
-                           maxHeight: 200,
+                    .frame(minWidth: 50,
+                           idealWidth: 75,
+                           maxWidth: 100,
+                           minHeight: 50,
+                           idealHeight: 75,
+                           maxHeight: 100,
                            alignment: .center)
                 
                 switch session.state {
