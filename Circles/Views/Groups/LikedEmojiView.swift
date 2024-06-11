@@ -8,7 +8,7 @@
 import Matrix
 import SwiftUI
 
-struct EmojiUsersListModel: Codable {
+struct EmojiUsersListModel: Codable, Equatable {
     let userId: UserId
     let emoji: String
     let id: String
@@ -41,7 +41,7 @@ struct LikedEmojiView: View {
         ForEach(allReactions, id: \.key) { emoji, count in
             let users = message.reactions[emoji] ?? []
             
-            Button("") { }
+            HStack { }
                 .onAppear {
                     users.forEach {
                         emojiUsersListModel.append(.init(userId: $0, emoji: emoji, id: NSUUID().uuidString))
@@ -79,14 +79,11 @@ private struct EmojiListView: View {
         ForEach(users, id: \.id) { userModel in
             let user = room.session.getUser(userId: userModel.userId)
 
-//            NavigationLink {
-//                RoomMemberRow(user: user, room: room)
-            AsyncButton(action: {
-//                RoomMemberRow(room: room, user: user)
-            }, label: {
+            AsyncButton(action: { }, label: {
                 if let img = user.avatar {
                     Image(uiImage: img)
                         .resizable()
+                        .scaledToFill()
                         .frame(width: UIConstants.imageSize, height: UIConstants.imageSize)
                         .clipShape(RoundedRectangle(cornerRadius: UIConstants.cornerRadius))
                     
@@ -94,7 +91,7 @@ private struct EmojiListView: View {
                     Circle()
                         .frame(width: UIConstants.imageSize, height: UIConstants.imageSize)
                         .overlay(
-                            Text(user.displayName?.first?.uppercased() ?? "*")
+                            Text(user.displayName?.first?.uppercased() ?? "Unknown user")
                                 .clipShape(ContainerRelativeShape()).padding()
                                 .foregroundColor(Color.white)
                         )
@@ -106,8 +103,12 @@ private struct EmojiListView: View {
                 Text(userModel.emoji)
                     .font(.largeTitle)
             })
+            .disabled(true)
             .frame(height: UIConstants.buttonHeight)
-            Divider()
+            
+            if users.last != userModel {
+                Divider()
+            }
         }
     }
     

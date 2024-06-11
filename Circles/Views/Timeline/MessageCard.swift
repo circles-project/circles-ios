@@ -297,49 +297,47 @@ struct MessageCard: MessageView {
                 }
                 .sorted(by: >)
             
-            let limit = 5
+            let limit = 3
             let reactionCounts = showAllReactions ? allReactionCounts : Array(allReactionCounts.prefix(limit))
             
-            let columns = [
-                GridItem(.adaptive(minimum: 60))
-            ]
-            
-            LazyVGrid(columns: columns, alignment: .center, spacing: 10) {
-                
-                ForEach(reactionCounts, id: \.key) { emoji, count in
-                    let userId = message.room.session.creds.userId
-                    let users = message.reactions[emoji] ?? []
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 10) {
                     
-                    if users.contains(userId) {
-                        AsyncButton(action: {
-                            // We already sent this reaction...  So redact it
-                            try await message.sendRemoveReaction(emoji)
-                        }) {
-                            Text("\(emoji) \(count)")
+                    ForEach(reactionCounts, id: \.key) { emoji, count in
+                        let userId = message.room.session.creds.userId
+                        let users = message.reactions[emoji] ?? []
+                        
+                        if users.contains(userId) {
+                            AsyncButton(action: {
+                                // We already sent this reaction...  So redact it
+                                try await message.sendRemoveReaction(emoji)
+                            }) {
+                                Text("\(emoji) \(count)")
+                            }
+                            .buttonStyle(ReactionsButtonStyle(buttonColor: .blue))
+                        } else {
+                            AsyncButton(action: {
+                                // We have not sent this reaction yet..  Send it
+                                try await message.sendReaction(emoji)
+                            }) {
+                                Text("\(emoji) \(count)")
+                            }
+                            .disabled(!iCanReact)
+                            .buttonStyle(ReactionsButtonStyle(buttonColor: Color(UIColor.systemGray5)))
                         }
-                        .buttonStyle(ReactionsButtonStyle(buttonColor: .blue))
-                    } else {
-                        AsyncButton(action: {
-                            // We have not sent this reaction yet..  Send it
-                            try await message.sendReaction(emoji)
-                        }) {
-                            Text("\(emoji) \(count)")
-                        }
-                        .disabled(!iCanReact)
-                        .buttonStyle(ReactionsButtonStyle(buttonColor: Color(UIColor.systemGray5)))
                     }
-                }
-                
-                if allReactionCounts.count > limit {
-                    if !showAllReactions {
-                        Button(action: {self.showAllReactions = true}) {
-                            Text("(more)")
-                                .font(.subheadline)
-                        }
-                    } else {
-                        Button(action: {self.showAllReactions = false}) {
-                            Text("(less)")
-                                .font(.subheadline)
+                    
+                    if allReactionCounts.count > limit {
+                        if !showAllReactions {
+                            Button(action: {self.showAllReactions = true}) {
+                                Text("(more)")
+                                    .font(.subheadline)
+                            }
+                        } else {
+                            Button(action: {self.showAllReactions = false}) {
+                                Text("(less)")
+                                    .font(.subheadline)
+                            }
                         }
                     }
                 }
