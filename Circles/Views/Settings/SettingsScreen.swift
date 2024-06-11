@@ -105,14 +105,6 @@ struct SettingsScreen: View {
                         Toggle(isOn: DebugModel.shared.$debugMode) {
                             Label("Debug Mode", systemImage: "ladybug.fill")
                         }
-                        
-                        Toggle(isOn: $showCirclesHelpText) {
-                            Text("Circles tab \"help\" popup")
-                        }
-                        
-                        Toggle(isOn: $showGroupsHelpText) {
-                            Text("Groups tab \"help\" popup")
-                        }
                     }
                 }
                 
