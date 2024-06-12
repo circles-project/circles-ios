@@ -12,27 +12,6 @@ struct ChangelogSheet: View {
     let content: String
     @Binding var showChangelog: Bool
     
-    func loadMarkdownFile(named name: String) -> String {
-        guard let url = Bundle.main.url(forResource: name, withExtension: "md"),
-              let content = try? String(contentsOf: url) else {
-            return "Error loading file."
-        }
-        return content
-    }
-        
-    func getFileModificationDate(named name: String) -> Date? {
-        guard let url = Bundle.main.url(forResource: name, withExtension: "md") else {
-            return nil
-        }
-        do {
-            let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
-            return attributes[.modificationDate] as? Date
-        } catch {
-            print("Failed to get file attributes: \(error)")
-            return nil
-        }
-    }
-    
     var body: some View {
         ScrollView {
             HStack {
