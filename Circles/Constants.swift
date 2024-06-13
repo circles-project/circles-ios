@@ -57,7 +57,7 @@ let CIRCLES_DOMAINS = [
 
 #if DEBUG
     let usDomain = "us.circles-dev.net"
-    let euDomain = "nl.circles-dev.net"
+    let euDomain = "fi.circles-dev.net"
 #else
     let usDomain = "circles.futo.org"
     let euDomain = "eu.circles.futo.org"
