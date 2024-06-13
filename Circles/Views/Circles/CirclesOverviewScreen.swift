@@ -177,16 +177,16 @@ struct CirclesOverviewScreen: View {
                 .padding()
             }
         }
-        .sheet(isPresented: $showChangelog) {
-            ChangelogSheet(content: changelogFile.loadMarkdown(named: "CHANGELOG"), showChangelog: $showChangelog)
-        }
     }
     
     var body: some View {
         NavigationSplitView {
             master
                 .onAppear {
-                    changelogFile.checkLastUpdates(showChangelog: &showChangelog, changelogLastUpdate: &changelogLastUpdate)
+                    changelogFile.checkLastUpdates(for: .lastUpdates, showChangelog: &showChangelog, changelogLastUpdate: &changelogLastUpdate)
+                }
+                .sheet(isPresented: $showChangelog) {
+                    ChangelogSheet(content: changelogFile.loadMarkdown(named: .lastUpdates), showChangelog: $showChangelog)
                 }
                 .refreshable {
                     await MainActor.run {

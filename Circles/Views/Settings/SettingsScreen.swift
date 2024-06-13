@@ -24,6 +24,7 @@ struct SettingsScreen: View {
     
     @State var showConfirmLogout = false
     @State var showConfirmSwitch = false
+    @State var showChangelog = false
     
     init(store: CirclesStore, session: CirclesApplicationSession) {
         self.store = store
@@ -93,6 +94,9 @@ struct SettingsScreen: View {
                 Section("Advanced") {
                     Toggle(isOn: $enableGalleries) {
                         Label("Enable photo galleries", systemImage: "photo.fill")
+                    }
+                    Button("Show list of changes", systemImage: "newspaper.fill") {
+                        showChangelog = true
                     }
                 }
                 
@@ -167,6 +171,9 @@ struct SettingsScreen: View {
                 }
             }
             .navigationTitle("Settings")
+        }
+        .sheet(isPresented: $showChangelog) {
+            ChangelogSheet(content: ChangelogFile().loadMarkdown(named: .fullList), title: .fullList, showChangelog: $showChangelog)
         }
     }
 }
