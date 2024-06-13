@@ -14,6 +14,7 @@ struct SetupAvatarView: View {
 
     @Binding var displayName: String?
     @Binding var stage: SetupScreen.Stage
+    @FocusState var inputFocused
     
     @State var newName: String = ""
     @State var avatarImage: UIImage?
@@ -33,7 +34,8 @@ struct SetupAvatarView: View {
     }
 
     var body: some View {
-        VStack {
+        let avatarSize: CGFloat = UIDevice.isPhoneSE ? 133 : 200
+        ScrollView {
             //let currentStage: SignupStage = .getAvatarImage
 
             Spacer()
@@ -45,7 +47,7 @@ struct SetupAvatarView: View {
             avatar
                 .resizable()
                 .scaledToFill()
-                .frame(width: 200, height: 200, alignment: .center)
+                .frame(width: avatarSize, height: avatarSize, alignment: .center)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .task {
                     // Check to see -- Does this user already have an avatar image?
@@ -58,7 +60,6 @@ struct SetupAvatarView: View {
                 }
                 .overlay(alignment: .bottomTrailing) {
                     Menu {
-                        
                         Button(action: {
                             self.showPicker = true
                         }) {
@@ -99,19 +100,20 @@ struct SetupAvatarView: View {
                         }
                     }
                 }
-                
-
-                
+            
             Label("NOTE: Profile photos are not encrypted", systemImage: "exclamationmark.triangle")
                 .foregroundColor(.orange)
 
-            
             TextField("First Last", text: $newName, prompt: Text("Your name"))
                 .textContentType(.name)
                 .autocorrectionDisabled()
+                .focused($inputFocused)
                 .textInputAutocapitalization(.words)
                 .frame(width: 300)
                 .padding()
+                .onAppear {
+                    self.inputFocused = true
+                }
                 /*
                 .task {
                     let userId = session.client.creds.userId
@@ -142,6 +144,7 @@ struct SetupAvatarView: View {
 
             Spacer()
         }
+        .scrollIndicators(.hidden)
     }
 }
 

@@ -300,7 +300,7 @@ struct MessageCard: MessageView {
             let limit = 3
             let reactionCounts = showAllReactions ? allReactionCounts : Array(allReactionCounts.prefix(limit))
             
-            ScrollView(.horizontal, showsIndicators: false) {
+            ScrollView(.horizontal) {
                 HStack(spacing: 10) {
                     
                     ForEach(reactionCounts, id: \.key) { emoji, count in
@@ -342,6 +342,7 @@ struct MessageCard: MessageView {
                     }
                 }
             }
+            .scrollIndicators(.hidden)
         }
         .foregroundColor(.secondary)
         //.padding(2)
