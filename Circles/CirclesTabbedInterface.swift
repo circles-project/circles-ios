@@ -37,6 +37,9 @@ struct CirclesTabbedInterface: View {
     
     @AppStorage("debugMode") var debugMode: Bool = false
     @AppStorage(DEFAULTS_KEY_ENABLE_GALLERIES, store: .standard) var enableGalleries: Bool = false
+    @AppStorage("changelogLastUpdate") var changelogLastUpdate: TimeInterval = 0
+    @State var showChangelog = false
+    var changelogFile = ChangelogFile()
     
     typealias Tab = CirclesApplicationSession.ViewState.Tab
 
@@ -58,6 +61,12 @@ struct CirclesTabbedInterface: View {
             CirclesOverviewScreen(container: self.session.circles,
                                   selected: $session.viewState.selectedCircleId)
                 .environmentObject(session)
+                .onAppear {
+                    changelogFile.checkLastUpdates(for: .lastUpdates, showChangelog: &showChangelog, changelogLastUpdate: &changelogLastUpdate)
+                }
+                .sheet(isPresented: $showChangelog) {
+                    ChangelogSheet(content: changelogFile.loadMarkdown(named: .lastUpdates), showChangelog: $showChangelog)
+                }
                 .tabItem {
                     Image(systemName: "circles.hexagonpath")
                     Text("Circles")

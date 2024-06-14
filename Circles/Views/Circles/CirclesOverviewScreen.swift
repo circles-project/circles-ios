@@ -28,10 +28,7 @@ struct CirclesOverviewScreen: View {
     @State var confirmDeleteCircle = false
     @State var circleToDelete: CircleSpace? = nil
     
-    @State var showChangelog = false
-    @AppStorage("changelogLastUpdate") var changelogLastUpdate: TimeInterval = 0
     @AppStorage("showCirclesHelpText") var showHelpText = false
-    var changelogFile = ChangelogFile()
     
     var toolbarMenu: some View {
         Menu {
@@ -182,12 +179,6 @@ struct CirclesOverviewScreen: View {
     var body: some View {
         NavigationSplitView {
             master
-                .onAppear {
-                    changelogFile.checkLastUpdates(for: .lastUpdates, showChangelog: &showChangelog, changelogLastUpdate: &changelogLastUpdate)
-                }
-                .sheet(isPresented: $showChangelog) {
-                    ChangelogSheet(content: changelogFile.loadMarkdown(named: .lastUpdates), showChangelog: $showChangelog)
-                }
                 .refreshable {
                     await MainActor.run {
                         container.objectWillChange.send()
