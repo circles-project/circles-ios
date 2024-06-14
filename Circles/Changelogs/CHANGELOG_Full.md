@@ -1,4 +1,8 @@
 # v1.0.5
+* Add "What's new in Circles" pop-up to show changes for each new version
+* Remove the toggle that asks about receiving project updates via email
+* Bugfix: Errors when requesting a new email code during signup
+* Remove the "connections" feature
 * Hide photo galleries tab by default (see the Advanced section under Settings to re-enable them)
 * Prevent posting an empty message
 * Simplify UI for choosing media to post

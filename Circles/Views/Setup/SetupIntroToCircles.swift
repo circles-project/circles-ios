@@ -20,6 +20,8 @@ struct SetupIntroToCircles: View {
                 Text("Next: Set up my circles")
             }
             .buttonStyle(BigBlueButtonStyle())
+            
+            Spacer()
         }
     }
 }

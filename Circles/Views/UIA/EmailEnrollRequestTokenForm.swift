@@ -19,7 +19,6 @@ struct EmailEnrollRequestTokenForm: View {
 
     @Binding var secret: String
     @State var address = ""
-    @State var signupForList = true
     
     enum FocusField {
         case email
@@ -52,7 +51,7 @@ struct EmailEnrollRequestTokenForm: View {
     
     func submit() async throws {
         if addressIsValid {
-            guard let secret = try? await session.doEmailEnrollRequestTokenStage(email: address, subscribeToList: signupForList)
+            guard let secret = try? await session.doEmailEnrollRequestTokenStage(email: address, subscribeToList: true)
             else {
                 print("Failed to request email token")
                 return
@@ -91,9 +90,6 @@ struct EmailEnrollRequestTokenForm: View {
                     self.focus = .email
                 }
                 .padding()
-            
-            Toggle("Receive Circles product updates?", isOn: $signupForList)
-                //.padding()
 
             Spacer()
             

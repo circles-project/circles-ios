@@ -70,8 +70,11 @@
 		40F906BB269DF96100287B27 /* MessageSheetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F906BA269DF96100287B27 /* MessageSheetType.swift */; };
 		42237CEF2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42237CEE2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift */; };
 		422C08F52C13530000ADE377 /* ButtonStyle+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422C08F42C13530000ADE377 /* ButtonStyle+Extensions.swift */; };
+		424CEE052C1A2A89005D871C /* CHANGELOG_Full.md in Resources */ = {isa = PBXBuildFile; fileRef = 424CEE042C1A2A89005D871C /* CHANGELOG_Full.md */; };
+		424CEE072C1A2B08005D871C /* ChangelogSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424CEE062C1A2B08005D871C /* ChangelogSheet.swift */; };
+		424CEE092C1B6099005D871C /* CHANGELOG_LastUpdates.md in Resources */ = {isa = PBXBuildFile; fileRef = 424CEE082C1B6098005D871C /* CHANGELOG_LastUpdates.md */; };
+		424CEE0C2C1B7AF9005D871C /* UIDevice+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424CEE0B2C1B7AF9005D871C /* UIDevice+Extensions.swift */; };
 		42A4CE432C17583A004792DC /* View+Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A4CE422C17583A004792DC /* View+Extentions.swift */; };
-		42CCE0C82C11306C001B19D2 /* ReactionsButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CCE0C72C11306C001B19D2 /* ReactionsButtonStyle.swift */; };
 		42CCE0CC2C122D7B001B19D2 /* ViewModifier+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CCE0CB2C122D7B001B19D2 /* ViewModifier+Extensions.swift */; };
 		42DC602B2C07B628000F1BE8 /* LikedEmojiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DC602A2C07B627000F1BE8 /* LikedEmojiView.swift */; };
 		42DC60502C094A8C000F1BE8 /* JDStatusBarNotification in Frameworks */ = {isa = PBXBuildFile; productRef = 42DC604F2C094A8C000F1BE8 /* JDStatusBarNotification */; };
@@ -326,8 +329,11 @@
 		40F906BA269DF96100287B27 /* MessageSheetType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSheetType.swift; sourceTree = "<group>"; };
 		42237CEE2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeactivateAccountCustomAlertView.swift; sourceTree = "<group>"; };
 		422C08F42C13530000ADE377 /* ButtonStyle+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ButtonStyle+Extensions.swift"; sourceTree = "<group>"; };
+		424CEE042C1A2A89005D871C /* CHANGELOG_Full.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG_Full.md; sourceTree = "<group>"; };
+		424CEE062C1A2B08005D871C /* ChangelogSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangelogSheet.swift; sourceTree = "<group>"; };
+		424CEE082C1B6098005D871C /* CHANGELOG_LastUpdates.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG_LastUpdates.md; sourceTree = "<group>"; };
+		424CEE0B2C1B7AF9005D871C /* UIDevice+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Extensions.swift"; sourceTree = "<group>"; };
 		42A4CE422C17583A004792DC /* View+Extentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Extentions.swift"; sourceTree = "<group>"; };
-		42CCE0C72C11306C001B19D2 /* ReactionsButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionsButtonStyle.swift; sourceTree = "<group>"; };
 		42CCE0CB2C122D7B001B19D2 /* ViewModifier+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModifier+Extensions.swift"; sourceTree = "<group>"; };
 		42DC602A2C07B627000F1BE8 /* LikedEmojiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikedEmojiView.swift; sourceTree = "<group>"; };
 		42DC60512C0CE636000F1BE8 /* DebugMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugMode.swift; sourceTree = "<group>"; };
@@ -566,6 +572,7 @@
 				A5E101F62814FAFD000B2C42 /* Circles-Bridging-Header.h */,
 				42DC60512C0CE636000F1BE8 /* DebugMode.swift */,
 				404C72D4265DDF35000473DF /* Assets.xcassets */,
+				424CEE0A2C1B624F005D871C /* Changelogs */,
 				A5B32ACA2810E9EF001BB952 /* Backend */,
 				409F42E1265DDFEB00690A61 /* Models */,
 				404C72D6265DDF35000473DF /* Preview Content */,
@@ -634,7 +641,6 @@
 		409F430C265DE0CE00690A61 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				42CCE0C62C11304F001B19D2 /* Custom UI Elements */,
 				422C08F22C1352CA00ADE377 /* View+Extensions */,
 				A54A83092C066E8000CE4000 /* Help */,
 				A562C08D2AFE8EA800522FCB /* CirclesLogoView.swift */,
@@ -683,6 +689,7 @@
 				A5FB4B152BC9C71C00253A22 /* SingleTimelineView.swift */,
 				A51928B62BCDBD8E005DCFF4 /* CircleRenameView.swift */,
 				A5B7917E2BE3EAC100F199DA /* CircleAcceptInviteView.swift */,
+				424CEE062C1A2B08005D871C /* ChangelogSheet.swift */,
 			);
 			path = Circles;
 			sourceTree = "<group>";
@@ -832,16 +839,18 @@
 				422C08F42C13530000ADE377 /* ButtonStyle+Extensions.swift */,
 				42A4CE422C17583A004792DC /* View+Extentions.swift */,
 				42CCE0CB2C122D7B001B19D2 /* ViewModifier+Extensions.swift */,
+				424CEE0B2C1B7AF9005D871C /* UIDevice+Extensions.swift */,
 			);
 			path = "View+Extensions";
 			sourceTree = "<group>";
 		};
-		42CCE0C62C11304F001B19D2 /* Custom UI Elements */ = {
+		424CEE0A2C1B624F005D871C /* Changelogs */ = {
 			isa = PBXGroup;
 			children = (
-				42CCE0C72C11306C001B19D2 /* ReactionsButtonStyle.swift */,
+				424CEE082C1B6098005D871C /* CHANGELOG_LastUpdates.md */,
+				424CEE042C1A2A89005D871C /* CHANGELOG_Full.md */,
 			);
-			path = "Custom UI Elements";
+			path = Changelogs;
 			sourceTree = "<group>";
 		};
 		8F950EBDD063263CCF586FCD /* Pods */ = {
@@ -1099,7 +1108,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				A5D3C9BF2A708F1300B41CC0 /* frequency_lists.json in Resources */,
+				424CEE052C1A2A89005D871C /* CHANGELOG_Full.md in Resources */,
 				404C72D8265DDF35000473DF /* Preview Assets.xcassets in Resources */,
+				424CEE092C1B6099005D871C /* CHANGELOG_LastUpdates.md in Resources */,
 				A5D3C9BE2A708F1300B41CC0 /* adjacency_graphs.json in Resources */,
 				404C72D5265DDF35000473DF /* Assets.xcassets in Resources */,
 			);
@@ -1126,13 +1137,13 @@
 				A52DF68529E72CC1008860C3 /* Keychain.swift in Sources */,
 				A57BD8462BD19C1000EC07E9 /* FriendsOfFriendsView.swift in Sources */,
 				409F4345265DE17500690A61 /* GroupsOverviewScreen.swift in Sources */,
+				424CEE072C1A2B08005D871C /* ChangelogSheet.swift in Sources */,
 				A52ACB8D2A7824D3005D90C5 /* ProfileSpace.swift in Sources */,
 				4047F3DE26B895B80010B2C3 /* SecureFieldWithEye.swift in Sources */,
 				A53EADA62A6F0EA600EF18B7 /* CirclesTabbedInterface.swift in Sources */,
 				A5DDA6A52B98F8B900BD8A1D /* Data+hex.swift in Sources */,
 				A52ACB8B2A78240C005D90C5 /* SelfDetailView.swift in Sources */,
 				A51928B72BCDBD8E005DCFF4 /* CircleRenameView.swift in Sources */,
-				42CCE0C82C11306C001B19D2 /* ReactionsButtonStyle.swift in Sources */,
 				409F4379265DE25000690A61 /* PhotoGalleryCreationSheet.swift in Sources */,
 				403CEA9D26E86B920054DBF4 /* SetupAvatarView.swift in Sources */,
 				A52ACB912A793B5A005D90C5 /* PeopleInvitationsView.swift in Sources */,
@@ -1279,6 +1290,7 @@
 				409F43BA265DE51C00690A61 /* RoomInviteSheet.swift in Sources */,
 				A52FEBFD2862521F00AE4E3A /* CirclesApplicationSession.swift in Sources */,
 				A53E91302A5C9DEE007B0196 /* IgnoredUsersView.swift in Sources */,
+				424CEE0C2C1B7AF9005D871C /* UIDevice+Extensions.swift in Sources */,
 				A553303F2B65689700695436 /* RoomCryptoInfoView.swift in Sources */,
 				A53E91222A5623F9007B0196 /* ProfileSettingsView.swift in Sources */,
 				409F4315265DE0F400690A61 /* ImagePicker.swift in Sources */,
@@ -1478,7 +1490,7 @@
 				CODE_SIGN_ENTITLEMENTS = Circles/Circles.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 48;
 				DEVELOPMENT_ASSET_PATHS = "\"Circles/Preview Content\"";
 				DEVELOPMENT_TEAM = 2W7AC6T8T5;
 				ENABLE_PREVIEWS = YES;
@@ -1515,7 +1527,7 @@
 				CODE_SIGN_ENTITLEMENTS = Circles/Circles.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 48;
 				DEVELOPMENT_ASSET_PATHS = "\"Circles/Preview Content\"";
 				DEVELOPMENT_TEAM = 2W7AC6T8T5;
 				ENABLE_PREVIEWS = YES;
