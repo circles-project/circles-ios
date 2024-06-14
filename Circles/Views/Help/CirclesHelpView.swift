@@ -24,7 +24,7 @@ struct CirclesHelpView: View {
         """
     
     var body: some View {
-        VStack {
+        ScrollView {
             HStack {
                 BasicImage(name: "iStock-1356527683")
                 BasicImage(name: "iStock-1304744459")
@@ -34,6 +34,7 @@ struct CirclesHelpView: View {
             
             Markdown(helpTextMarkdown)
         }
+        .scrollIndicators(.hidden)
         .padding()
     }
 }

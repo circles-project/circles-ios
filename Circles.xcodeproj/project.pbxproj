@@ -70,6 +70,7 @@
 		40F906BB269DF96100287B27 /* MessageSheetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F906BA269DF96100287B27 /* MessageSheetType.swift */; };
 		42237CEF2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42237CEE2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift */; };
 		422C08F52C13530000ADE377 /* ButtonStyle+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422C08F42C13530000ADE377 /* ButtonStyle+Extensions.swift */; };
+		424CEE0C2C1B7AF9005D871C /* UIDevice+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424CEE0B2C1B7AF9005D871C /* UIDevice+Extensions.swift */; };
 		42A4CE432C17583A004792DC /* View+Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A4CE422C17583A004792DC /* View+Extentions.swift */; };
 		42CCE0C82C11306C001B19D2 /* ReactionsButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CCE0C72C11306C001B19D2 /* ReactionsButtonStyle.swift */; };
 		42CCE0CC2C122D7B001B19D2 /* ViewModifier+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CCE0CB2C122D7B001B19D2 /* ViewModifier+Extensions.swift */; };
@@ -326,6 +327,7 @@
 		40F906BA269DF96100287B27 /* MessageSheetType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSheetType.swift; sourceTree = "<group>"; };
 		42237CEE2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeactivateAccountCustomAlertView.swift; sourceTree = "<group>"; };
 		422C08F42C13530000ADE377 /* ButtonStyle+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ButtonStyle+Extensions.swift"; sourceTree = "<group>"; };
+		424CEE0B2C1B7AF9005D871C /* UIDevice+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Extensions.swift"; sourceTree = "<group>"; };
 		42A4CE422C17583A004792DC /* View+Extentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Extentions.swift"; sourceTree = "<group>"; };
 		42CCE0C72C11306C001B19D2 /* ReactionsButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionsButtonStyle.swift; sourceTree = "<group>"; };
 		42CCE0CB2C122D7B001B19D2 /* ViewModifier+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModifier+Extensions.swift"; sourceTree = "<group>"; };
@@ -832,6 +834,7 @@
 				422C08F42C13530000ADE377 /* ButtonStyle+Extensions.swift */,
 				42A4CE422C17583A004792DC /* View+Extentions.swift */,
 				42CCE0CB2C122D7B001B19D2 /* ViewModifier+Extensions.swift */,
+				424CEE0B2C1B7AF9005D871C /* UIDevice+Extensions.swift */,
 			);
 			path = "View+Extensions";
 			sourceTree = "<group>";
@@ -1279,6 +1282,7 @@
 				409F43BA265DE51C00690A61 /* RoomInviteSheet.swift in Sources */,
 				A52FEBFD2862521F00AE4E3A /* CirclesApplicationSession.swift in Sources */,
 				A53E91302A5C9DEE007B0196 /* IgnoredUsersView.swift in Sources */,
+				424CEE0C2C1B7AF9005D871C /* UIDevice+Extensions.swift in Sources */,
 				A553303F2B65689700695436 /* RoomCryptoInfoView.swift in Sources */,
 				A53E91222A5623F9007B0196 /* ProfileSettingsView.swift in Sources */,
 				409F4315265DE0F400690A61 /* ImagePicker.swift in Sources */,

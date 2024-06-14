@@ -98,7 +98,7 @@ struct SetupAddNewCircleSheet: View {
     }
 
     var body: some View {
-        VStack {
+        ScrollView {
             buttonBar
             
             mockup
@@ -146,6 +146,7 @@ struct SetupAddNewCircleSheet: View {
             
             Spacer()
         }
+        .scrollIndicators(.hidden)
         .padding()
     }
 }

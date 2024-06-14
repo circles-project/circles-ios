@@ -158,19 +158,20 @@ struct GroupsOverviewScreen: View {
             }
         }
         .sheet(isPresented: $showHelpText) {
-            VStack {
+            ScrollView {
                 BasicImage(name: "iStock-1176559812")
                 
                 Markdown(helpTextMarkdown)
-                
-                Button(action: {self.showHelpText = false}) {
-                    Label("Got it", systemImage: "hand.thumbsup.fill")
-                        .padding()
-                }
-                .buttonStyle(.bordered)
-                .padding()
             }
+            .scrollIndicators(.hidden)
             .padding()
+            
+            Button(action: {self.showHelpText = false}) {
+                Label("Got it", systemImage: "hand.thumbsup.fill")
+                    .padding()
+            }
+            .buttonStyle(BigBlueButtonStyle())
+            Spacer()
         }
     }
     
