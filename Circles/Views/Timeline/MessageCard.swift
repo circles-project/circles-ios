@@ -45,7 +45,7 @@ struct ImageContentView: View {
             if let imageContent = message.content as? Matrix.mImageContent {
                 //Spacer()
                 VStack(alignment: .center) {
-                    MessageThumbnail(message: message)
+                    MessageThumbnail(message: message, aspectRatio: .fill)
                         .background(
                             GeometryReader { proxy in
                                 Color.clear
@@ -142,8 +142,6 @@ struct MessageCard: MessageView {
                     
                 case M_IMAGE:
                     ImageContentView(message: current, screenWidth: screenWidth)
-                        .background(Color.green)
-                        .scaledToFill()
                         .clipShape(Rectangle())
                     
                 case M_VIDEO:

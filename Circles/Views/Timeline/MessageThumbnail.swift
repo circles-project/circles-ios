@@ -10,6 +10,7 @@ import Matrix
 
 struct MessageThumbnail: View {
     @ObservedObject var message: Matrix.Message
+    var aspectRatio: ContentMode = .fit
     
     var thumbnail: Image {
         Image(uiImage: message.thumbnail ?? UIImage())
@@ -19,7 +20,8 @@ struct MessageThumbnail: View {
         ZStack {
             thumbnail
                 .resizable()
-                .scaledToFill()
+                .aspectRatio(contentMode: aspectRatio)
+                //.clipShape(RoundedRectangle(cornerRadius: 6))
                 .foregroundColor(.gray)
         }
     }
