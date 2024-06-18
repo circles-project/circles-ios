@@ -37,8 +37,7 @@ struct TextContentView: View {
 
 struct ImageContentView: View {
     @ObservedObject var message: Matrix.Message
-    var screenWidth: CGFloat
-    @State var imageHeight: CGFloat = 500
+    @State var markdownHeight: CGFloat = 1000
     
     var body: some View {
         HStack {
@@ -46,20 +45,24 @@ struct ImageContentView: View {
                 //Spacer()
                 VStack(alignment: .center) {
                     MessageThumbnail(message: message, aspectRatio: .fill)
-                        .background(
-                            GeometryReader { proxy in
-                                Color.clear
-                                    .onAppear {
-                                        imageHeight = (proxy.size.height < 400 || proxy.size.height > 600) ? 500 : proxy.size.height
+                        .frame(maxHeight: 500)
+                    HStack {
+                        if let caption = imageContent.caption {
+                            let markdown = MarkdownContent(caption)
+                            Markdown(markdown)
+                                .background(
+                                    GeometryReader { proxy in
+                                        Color.clear
+                                            .onAppear {
+                                                markdownHeight = proxy.size.height
+                                            }
                                     }
-                            }
-                        )
-                        .frame(width: screenWidth, height: imageHeight)
-                    if let caption = imageContent.caption {
-                        let markdown = MarkdownContent(caption)
-                        Markdown(markdown)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                                )
+                        }
+                        Spacer()
                     }
+                    .frame(maxHeight: markdownHeight, alignment: .leading)
+                    .background(Color.background)
                 }
                 //Spacer()
             } else {
@@ -82,7 +85,6 @@ struct MessageCard: MessageView {
     @State var showAllReactions = false
     var iCanReact: Bool
     @State var showMessageDeleteConfirmation = false
-    @AppStorage("screenWidth") var screenWidth: Double = 0
     
     init(message: Matrix.Message, isLocalEcho: Bool = false, isThreaded: Bool = false) {
         self.message = message
@@ -141,7 +143,7 @@ struct MessageCard: MessageView {
                     }
                     
                 case M_IMAGE:
-                    ImageContentView(message: current, screenWidth: screenWidth)
+                    ImageContentView(message: current)
                         .clipShape(Rectangle())
                     
                 case M_VIDEO:
@@ -471,15 +473,6 @@ struct MessageCard: MessageView {
     var body: some View {
         //linkWrapper
         ZStack {
-            GeometryReader { geometryProxy in
-                Color.clear
-                    .onAppear {
-                        if screenWidth == 0 {
-                            screenWidth = geometryProxy.size.width
-                        }
-                    }
-            }
-            
             mainCard
                 .contextMenu {
                     MessageContextMenu(message: message,
