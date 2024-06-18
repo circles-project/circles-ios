@@ -19,8 +19,7 @@ struct MessageThumbnail: View {
         ZStack {
             thumbnail
                 .resizable()
-                .scaledToFit()
-                //.clipShape(RoundedRectangle(cornerRadius: 6))
+                .scaledToFill()
                 .foregroundColor(.gray)
         }
     }

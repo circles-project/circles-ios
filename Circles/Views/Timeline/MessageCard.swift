@@ -37,6 +37,8 @@ struct TextContentView: View {
 
 struct ImageContentView: View {
     @ObservedObject var message: Matrix.Message
+    var screenWidth: CGFloat
+    @State var imageHeight: CGFloat = 500
     
     var body: some View {
         HStack {
@@ -44,7 +46,15 @@ struct ImageContentView: View {
                 //Spacer()
                 VStack(alignment: .center) {
                     MessageThumbnail(message: message)
-                    
+                        .background(
+                            GeometryReader { proxy in
+                                Color.clear
+                                    .onAppear {
+                                        imageHeight = (proxy.size.height < 400 || proxy.size.height > 600) ? 500 : proxy.size.height
+                                    }
+                            }
+                        )
+                        .frame(width: screenWidth, height: imageHeight)
                     if let caption = imageContent.caption {
                         let markdown = MarkdownContent(caption)
                         Markdown(markdown)
@@ -72,6 +82,7 @@ struct MessageCard: MessageView {
     @State var showAllReactions = false
     var iCanReact: Bool
     @State var showMessageDeleteConfirmation = false
+    @AppStorage("screenWidth") var screenWidth: Double = 0
     
     init(message: Matrix.Message, isLocalEcho: Bool = false, isThreaded: Bool = false) {
         self.message = message
@@ -130,7 +141,10 @@ struct MessageCard: MessageView {
                     }
                     
                 case M_IMAGE:
-                    ImageContentView(message: current)
+                    ImageContentView(message: current, screenWidth: screenWidth)
+                        .background(Color.green)
+                        .scaledToFill()
+                        .clipShape(Rectangle())
                     
                 case M_VIDEO:
                     VideoContentView(message: current)
@@ -459,6 +473,15 @@ struct MessageCard: MessageView {
     var body: some View {
         //linkWrapper
         ZStack {
+            GeometryReader { geometryProxy in
+                Color.clear
+                    .onAppear {
+                        if screenWidth == 0 {
+                            screenWidth = geometryProxy.size.width
+                        }
+                    }
+            }
+            
             mainCard
                 .contextMenu {
                     MessageContextMenu(message: message,
