@@ -401,7 +401,8 @@ struct PostComposer: View {
             }
             
         case .newVideo(let movie, let thumbnail):
-            BasicImage(uiImage: thumbnail)
+            BasicImage(uiImage: thumbnail, aspectRation: .fill)
+                .frame(minWidth: 200, maxWidth: 800, minHeight: 200, maxHeight: 400)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
                 .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
                 .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
