@@ -374,11 +374,10 @@ struct PostComposer: View {
             
         case .newImage(let image):
             BasicImage(uiImage: image, aspectRation: .fill)
-                .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
-                .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
                 .frame(minWidth: 200, maxWidth: 800, minHeight: 200, maxHeight: 400)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
-                .background(Color.yellow)
+                .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
+                .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
 
         case .loadingVideo(let task):
             ZStack {
