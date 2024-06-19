@@ -26,6 +26,7 @@ struct ProfileSettingsView: View {
                     
                     PhotosPicker(selection: $newAvatarImageItem, matching: .images) {
                         UserAvatarView(user: session.me)
+                            .aspectRatio(contentMode: .fill)
                             .clipShape(Circle())
                             .frame(width: 80, height: 80)
                     }

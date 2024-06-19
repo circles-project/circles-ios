@@ -111,8 +111,9 @@ struct RoomMemberRow: View {
         VStack(alignment: .leading) {
             HStack {
                 UserAvatarView(user: user)
-                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                    .aspectRatio(contentMode: .fill)
                     .frame(width: 60, height: 60)
+                    .clipShape(RoundedRectangle(cornerRadius: 6))
                 VStack(alignment: .leading) {
                     UserNameView(user: user)
                     Text(user.userId.stringValue)
