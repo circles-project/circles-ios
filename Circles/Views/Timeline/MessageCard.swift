@@ -37,31 +37,22 @@ struct TextContentView: View {
 
 struct ImageContentView: View {
     @ObservedObject var message: Matrix.Message
-    @State var markdownHeight: CGFloat = 1000
-    
+    var mediaViewWidth: CGFloat
     var body: some View {
         HStack {
             if let imageContent = message.content as? Matrix.mImageContent {
                 //Spacer()
                 VStack(alignment: .center) {
-                    MessageThumbnail(message: message, aspectRatio: .fill)
-                        .frame(maxHeight: 500)
+                    MessageMediaThumbnail(message: message,
+                                          aspectRatio: .fill,
+                                          mediaViewWidth: mediaViewWidth)
                     HStack {
                         if let caption = imageContent.caption {
                             let markdown = MarkdownContent(caption)
                             Markdown(markdown)
-                                .background(
-                                    GeometryReader { proxy in
-                                        Color.clear
-                                            .onAppear {
-                                                markdownHeight = proxy.size.height
-                                            }
-                                    }
-                                )
                         }
                         Spacer()
                     }
-                    .frame(maxHeight: markdownHeight, alignment: .leading)
                     .background(Color.background)
                 }
                 //Spacer()
@@ -85,6 +76,7 @@ struct MessageCard: MessageView {
     @State var showAllReactions = false
     var iCanReact: Bool
     @State var showMessageDeleteConfirmation = false
+    @AppStorage("mediaViewWidth") var mediaViewWidth: Double = 0
     
     init(message: Matrix.Message, isLocalEcho: Bool = false, isThreaded: Bool = false) {
         self.message = message
@@ -143,7 +135,7 @@ struct MessageCard: MessageView {
                     }
                     
                 case M_IMAGE:
-                    ImageContentView(message: current)
+                    ImageContentView(message: current, mediaViewWidth: mediaViewWidth)
                         .clipShape(Rectangle())
                     
                 case M_VIDEO:
@@ -473,6 +465,14 @@ struct MessageCard: MessageView {
     var body: some View {
         //linkWrapper
         ZStack {
+            GeometryReader { geometry in
+                Color.clear
+                    .onAppear {
+                        if mediaViewWidth == 0 {
+                            mediaViewWidth = geometry.size.width
+                        }
+                    }
+            }
             mainCard
                 .contextMenu {
                     MessageContextMenu(message: message,
