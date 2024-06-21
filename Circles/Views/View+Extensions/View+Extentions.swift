@@ -11,25 +11,25 @@ struct BasicImage: View {
     var uiImage: UIImage? = nil
     var systemName: String? = nil
     var name: String? = nil
-    var aspectRation: ContentMode = .fit
+    var aspectRatio: ContentMode = .fit
     
     var body: some View {
         if let uiImage {
             Image(uiImage: uiImage)
                 .resizable()
-                .aspectRatio(contentMode: aspectRation)
+                .aspectRatio(contentMode: aspectRatio)
         } else if let systemName {
             Image(systemName: systemName)
                 .resizable()
-                .aspectRatio(contentMode: aspectRation)
+                .aspectRatio(contentMode: aspectRatio)
         } else if let name {
             Image(name)
                 .resizable()
-                .aspectRatio(contentMode: aspectRation)
+                .aspectRatio(contentMode: aspectRatio)
         } else {
             Image(systemName: "xmark.icloud.fill")
                 .resizable()
-                .aspectRatio(contentMode: aspectRation)
+                .aspectRatio(contentMode: aspectRatio)
         }
     }
 }

@@ -373,7 +373,7 @@ struct PostComposer: View {
             }
             
         case .newImage(let image):
-            BasicImage(uiImage: image, aspectRation: .fill)
+            BasicImage(uiImage: image, aspectRatio: .fill)
                 .frame(minWidth: 200, maxWidth: 800, minHeight: 200, maxHeight: 400)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
                 .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
@@ -401,7 +401,7 @@ struct PostComposer: View {
             }
             
         case .newVideo(let movie, let thumbnail):
-            BasicImage(uiImage: thumbnail, aspectRation: .fill)
+            BasicImage(uiImage: thumbnail, aspectRatio: .fill)
                 .frame(minWidth: 200, maxWidth: 800, minHeight: 200, maxHeight: 400)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
                 .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
