@@ -71,12 +71,6 @@ struct CircleSettingsView: View {
                         .badge(wall.roomId.stringValue)
                 }
                 
-                HStack {
-                    Text("Link")
-                    Spacer()
-                    ShareLink("Share", item: url)
-                }
-                
                 if let qr = qrCode(url: url) {
                     HStack {
                         Text("QR code")
@@ -93,6 +87,12 @@ struct CircleSettingsView: View {
                             RoomShareSheet(room: wall, url: url)
                         }
                     }
+                }
+                
+                HStack {
+                    Text("Link")
+                    Spacer()
+                    ShareLink("Share", item: url)
                 }
             }
         }

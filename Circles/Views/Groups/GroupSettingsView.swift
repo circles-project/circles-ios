@@ -102,13 +102,6 @@ struct GroupSettingsView: View {
            let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/group/\(room.roomId.stringValue)")
         {
             Section("Sharing") {
-                
-                 HStack {
-                     Text("Link")
-                     Spacer()
-                     ShareLink("Share", item: url)
-                 }
-                 
                  if let qr = qrCode(url: url) {
                      HStack {
                          Text("QR code")
@@ -126,6 +119,11 @@ struct GroupSettingsView: View {
                          }
                      }
                  }
+                HStack {
+                    Text("Link")
+                    Spacer()
+                    ShareLink("Share", item: url)
+                }
             }
         }
     }
