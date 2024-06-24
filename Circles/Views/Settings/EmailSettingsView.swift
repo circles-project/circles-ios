@@ -56,8 +56,24 @@ struct EmailSettingsView: View {
                 
                 if let emails = emails {
                     if !emails.isEmpty {
-                        ForEach(emails, id: \.self) { email in
+                        List(emails, id: \.self) { email in
                             Text(email)
+                                .swipeActions {
+                                    AsyncButton(action: {
+                                        // Call the API endpoint to remove this address
+                                        CirclesApp.logger.debug("Deleting email address \(email)")
+                                        try await session.deleteThreepid(medium: "email", address: email) { _,_ in
+                                            CirclesApp.logger.debug("Successfully deleted email address \(email)")
+                                            // Reset our list of addresses back to nil to force a reload
+                                            await MainActor.run {
+                                                self.emails = nil
+                                            }
+                                        }
+                                    }) {
+                                        Text("Delete")
+                                    }
+                                    .tint(.red)
+                                }
                         }
                     } else {
                         Text("No email addresses")
