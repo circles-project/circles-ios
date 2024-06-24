@@ -15,7 +15,20 @@ struct EmailSettingsView: View {
     @ViewBuilder
     var enrollEmailButton: some View {
         AsyncButton(action: {
-            try await session.updateAuth(filter: { $0.stages.contains(AUTH_TYPE_ENROLL_EMAIL_SUBMIT_TOKEN)})
+            await CirclesApp.logger.debug("Updating email addresses")
+            do {
+                try await session.updateAuth(filter: { $0.stages.contains(AUTH_TYPE_ENROLL_EMAIL_SUBMIT_TOKEN) } ) { _,_ in
+                    await CirclesApp.logger.debug("Successfully updated email addresses")
+                    await MainActor.run {
+                        self.emails = nil
+                    }
+                }
+                print("Back from updateAuth")
+            } catch {
+                await CirclesApp.logger.error("Failed to update email authentication")
+                return
+            }
+
         }) {
             //Text("Change Password")
             Label("Enroll new email address", systemImage: "envelope")
@@ -39,7 +52,7 @@ struct EmailSettingsView: View {
     
     var body: some View {
         Form {
-            Section("Email Addresses") {
+            Section("Verified Email Addresses") {
                 
                 if let emails = emails {
                     if !emails.isEmpty {
@@ -62,7 +75,7 @@ struct EmailSettingsView: View {
         .refreshable {
             await self.getThreepids()
         }
-
+        .navigationTitle("Email Settings")
     }
 }
 

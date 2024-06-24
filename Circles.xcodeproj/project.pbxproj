@@ -866,21 +866,21 @@
 			isa = PBXGroup;
 			children = (
 				A53E91312A5F152D007B0196 /* AcknowledgementsView.swift */,
-				A53E912B2A57416B007B0196 /* DeactivateAccountView.swift */,
 				42237CEE2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift */,
+				A53E912B2A57416B007B0196 /* DeactivateAccountView.swift */,
 				A5EE59C62A5F3A59007C24C7 /* DeviceDetailsView.swift */,
 				A5EE59C32A5F21C2007C24C7 /* DeviceInfoView.swift */,
 				A5EE59C22A5F21C2007C24C7 /* DevicesScreen.swift */,
+				A5119A422C20BE5E00E79E20 /* EmailSettingsView.swift */,
 				A53E912F2A5C9DEE007B0196 /* IgnoredUsersView.swift */,
 				A53E91292A573838007B0196 /* NotificationsSettingsView.swift */,
 				A53E91212A5623F9007B0196 /* ProfileSettingsView.swift */,
 				A53E91232A5624E5007B0196 /* SecuritySettingsView.swift */,
 				A52DF68729E732AC008860C3 /* SettingsScreen.swift */,
+				A5B74F432BC85B7600299D90 /* StorageSettingsView.swift */,
 				A562C0952B165E5C00522FCB /* SubscriptionSettingsView.swift */,
 				A53E91252A5710C5007B0196 /* UpdateDisplaynameView.swift */,
 				A53E91272A572E8D007B0196 /* UpdateStatusMessageView.swift */,
-				A5B74F432BC85B7600299D90 /* StorageSettingsView.swift */,
-				A5119A422C20BE5E00E79E20 /* EmailSettingsView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
