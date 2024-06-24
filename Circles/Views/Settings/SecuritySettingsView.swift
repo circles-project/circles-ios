@@ -51,17 +51,6 @@ struct SecuritySettingsView: View {
     }
     
     @ViewBuilder
-    var enrollEmailButton: some View {
-        AsyncButton(action: {
-            try await session.updateAuth(filter: { $0.stages.contains(AUTH_TYPE_ENROLL_EMAIL_SUBMIT_TOKEN)})
-        }) {
-            //Text("Change Password")
-            Label("Change Email Address", systemImage: "envelope")
-        }
-        .buttonStyle(.plain)
-    }
-    
-    @ViewBuilder
     var blurSettingForUnknownUserButton: some View {
         @AppStorage("blurUnknownUserPicture") var blurUnknownUserPicture = true
         
@@ -87,7 +76,9 @@ struct SecuritySettingsView: View {
 
                 passwordButton
 
-                enrollEmailButton
+                NavigationLink(destination: EmailSettingsView(session: session)) {
+                    Label("Email Addresses", systemImage: "envelope")
+                }
                 
                 blurSettingForUnknownUserButton
             }

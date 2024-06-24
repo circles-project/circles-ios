@@ -325,7 +325,7 @@ struct PostComposer: View {
                 }
             },
             label: {
-                Image(systemName: "photo.badge.plus.fill")
+                Image(systemName: "paperclip")
                     .scaleEffect(1.5)
             })
             .padding(1)
