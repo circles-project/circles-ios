@@ -33,7 +33,6 @@ struct CircleTimelineView: View {
     
     var toolbarMenu: some View {
         Menu {
-
             NavigationLink(destination: CircleSettingsView(space: space) ){
                 Label("Settings", systemImage: "gearshape.fill")
             }
@@ -47,7 +46,7 @@ struct CircleTimelineView: View {
             }
         }
         label: {
-            Label("Settings", systemImage: "gearshape")
+            Label("Settings", systemImage: "gearshape.fill")
         }
     }
 

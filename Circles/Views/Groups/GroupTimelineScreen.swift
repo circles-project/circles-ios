@@ -105,6 +105,7 @@ struct GroupTimelineScreen: View {
                                 RoomShareSheet(room: room, url: url)
                             }
                         }
+                        .padding([.top], -4)
                 }
                 
                 VStack {
