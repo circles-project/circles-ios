@@ -127,7 +127,8 @@ struct CircleTimeline: View {
                             RepliesView(room: message.room, parent: message)
                         }
                     }
-                    .padding([.top, .leading, .trailing], 3)
+                    .padding(.horizontal, 3)
+                    .padding(.vertical, 1)
                 }
                 .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
             
