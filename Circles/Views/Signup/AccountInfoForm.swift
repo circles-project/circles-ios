@@ -145,6 +145,7 @@ struct AccountInfoForm: View {
 
                 SecureField("Repeat Passphrase", text: $repeatPassword)
                     .textContentType(.newPassword)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
                     .frame(width: 300.0, height: 40.0)
             }
 

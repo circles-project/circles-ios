@@ -41,7 +41,7 @@ struct SignupStartForm: View {
                 }
                 .buttonStyle(BigBlueButtonStyle())
             } else {
-                Label("Subscriptionless signup is not available at this time.  Please try again later.", systemImage: SystemImages.exclamationmarkTriangle.rawValue)
+                Label("Subscriptionless signup is not available at this time. Please try again later.", systemImage: SystemImages.exclamationmarkTriangle.rawValue)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 20)
                 Button(action: {}) {
@@ -59,7 +59,7 @@ struct SignupStartForm: View {
                 $0.stages.contains(AUTH_TYPE_APPSTORE_SUBSCRIPTION)
             })
             if appleFlow == nil {
-                Label("New paid subscriptions are currently unavailable.  Please try again later.", systemImage: SystemImages.exclamationmarkTriangle.rawValue)
+                Label("New paid subscriptions are currently unavailable. Please try again later.", systemImage: SystemImages.exclamationmarkTriangle.rawValue)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 20)
             }

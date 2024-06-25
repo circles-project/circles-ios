@@ -106,6 +106,7 @@ struct SetupAvatarView: View {
 
             TextField("First Last", text: $newName, prompt: Text("Your name"))
                 .textContentType(.name)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
                 .autocorrectionDisabled()
                 .focused($inputFocused)
                 .textInputAutocapitalization(.words)
