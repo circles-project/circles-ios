@@ -22,7 +22,7 @@ struct ChangelogSheet: View {
         ScrollView {
             HStack {
                 Spacer()
-                Button("", systemImage: "xmark") {
+                Button("", systemImage: SystemImages.xmark.rawValue) {
                     showChangelog = false
                 }
                 .padding()

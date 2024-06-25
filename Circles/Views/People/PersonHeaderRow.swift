@@ -65,7 +65,7 @@ struct PersonHeaderRow: View {
             Spacer()
             
             /*
-            Image(systemName: "chevron.right")
+            Image(systemName: SystemImages.chevronRight.rawValue)
                 .padding(.trailing, 2)
                 .foregroundColor(.gray)
             */
@@ -75,7 +75,7 @@ struct PersonHeaderRow: View {
         .contextMenu {
             if profile.joinedMembers.contains(user.userId) {
                 AsyncButton(role: .destructive, action: {}) {
-                    Label("Remove connection", systemImage: "person.fill.xmark")
+                    Label("Remove connection", systemImage: SystemImages.personFillXmark.rawValue)
                 }
             } else {
                 AsyncButton(action: {
@@ -89,7 +89,7 @@ struct PersonHeaderRow: View {
                         self.showAlert = true
                     }
                 }) {
-                    Label("Invite to connect", systemImage: "link")
+                    Label("Invite to connect", systemImage: SystemImages.link.rawValue)
                 }
                 .alert(isPresented: $showAlert) {
                     Alert(title: Text(alertTitle),

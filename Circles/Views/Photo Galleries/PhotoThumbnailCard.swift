@@ -50,7 +50,7 @@ struct PhotoThumbnailCard: View {
             else {
                 VStack {
                     let bgColor = colorScheme == .dark ? Color.black : Color.white
-                    BasicImage(systemName: "lock.rectangle")
+                    BasicImage(systemName: SystemImages.lockRectangle.rawValue)
                         .foregroundColor(Color.gray)
                         .padding()
                     VStack {

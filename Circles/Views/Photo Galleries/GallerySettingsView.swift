@@ -150,7 +150,7 @@ struct GallerySettingsView: View {
                 Button(action: {
                     self.showInviteSheet = true
                 }) {
-                    Label("Invite new members", systemImage: "person.crop.circle.badge.plus")
+                    Label("Invite new members", systemImage: SystemImages.personCropCircleBadgePlus.rawValue)
                 }
                 .sheet(isPresented: $showInviteSheet) {
                     RoomInviteSheet(room: room)
@@ -181,7 +181,7 @@ struct GallerySettingsView: View {
                 Button(role: .destructive, action: {
                     self.showConfirmLeave = true
                 }) {
-                    Label("Leave gallery", systemImage: "xmark")
+                    Label("Leave gallery", systemImage: SystemImages.xmark.rawValue)
                         .foregroundColor(.red) // This is necessary because setting `role: .destructive` only changes the text color, not the icon 🙄
                 }
                 .confirmationDialog(

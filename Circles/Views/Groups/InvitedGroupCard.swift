@@ -83,7 +83,7 @@ struct InvitedGroupCard: View {
                     Spacer()
                     
                     NavigationLink(destination: InvitedGroupDetailView(room: room, user: user)) {
-                        Image(systemName: "ellipsis.circle")
+                        Image(systemName: SystemImages.ellipsisCircle.rawValue)
                             .imageScale(.large)
                             .padding(10)
                     }

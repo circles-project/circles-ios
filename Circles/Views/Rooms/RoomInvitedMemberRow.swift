@@ -34,7 +34,7 @@ struct RoomInvitedMemberRow: View {
                 // Cancel invite
                 self.showConfirmCancel = true
             }) {
-                Image(systemName: "trash")
+                Image(systemName: SystemImages.trash.rawValue)
             }
             .disabled(!room.iCanKick)
             .confirmationDialog(

@@ -40,8 +40,8 @@ struct RoomSecurityInfoSheet: View {
                 /*
                 ForEach(room.inboundOlmSessions) { inbound in
                     HStack(alignment: .top) {
-                        Image(systemName: "key.fill")
-                        //Image(systemName: "key")
+                        Image(systemName: SystemImages.keyFill.rawValue)
+                        //Image(systemName: SystemImages.key.rawValue)
                         //    .rotationEffect(Angle(degrees: 180.0))
                         VStack(alignment: .leading) {
                             Text("ID: \(inbound.id)")
@@ -58,8 +58,8 @@ struct RoomSecurityInfoSheet: View {
                 /*
                 ForEach(room.outboundOlmSessions, id: \.sessionId) { session in
                     HStack(alignment: .top) {
-                        Image(systemName: "key.fill")
-                        Image(systemName: "key")
+                        Image(systemName: SystemImages.keyFill.rawValue)
+                        Image(systemName: SystemImages.key.rawValue)
                             .rotationEffect(Angle(degrees: 180.0))
                         VStack(alignment: .leading) {
                             Text("ID: \(session.sessionId)")

@@ -168,7 +168,7 @@ struct GroupSettingsView: View {
                 Button(action: {
                     self.showInviteSheet = true
                 }) {
-                    Label("Invite new members", systemImage: "person.crop.circle.badge.plus")
+                    Label("Invite new members", systemImage: SystemImages.personCropCircleBadgePlus.rawValue)
                 }
                 .sheet(isPresented: $showInviteSheet) {
                     RoomInviteSheet(room: room)
@@ -205,7 +205,7 @@ struct GroupSettingsView: View {
                 Button(role: .destructive, action: {
                     self.showConfirmLeave = true
                 }) {
-                    Label("Leave group", systemImage: "xmark")
+                    Label("Leave group", systemImage: SystemImages.xmark.rawValue)
                         .foregroundColor(.red) // This is necessary because setting `role: .destructive` only changes the text color, not the icon 🙄
                 }
                 .confirmationDialog(
@@ -224,7 +224,7 @@ struct GroupSettingsView: View {
                             AsyncButton(role: .destructive, action: {
                                 try await room.close(kickEveryone: true)
                             }) {
-                                Label("Remove all members and delete the group", systemImage: "trash")
+                                Label("Remove all members and delete the group", systemImage: SystemImages.trash.rawValue)
                             }
                             
                         } else {

@@ -82,7 +82,7 @@ struct SecuritySettingsView: View {
         VStack {
             Form {
                 NavigationLink(destination: DevicesScreen(session: session)) {
-                    Label("Login Sessions", systemImage: "iphone")
+                    Label("Login Sessions", systemImage: SystemImages.iphone.rawValue)
                 }
 
                 passwordButton
