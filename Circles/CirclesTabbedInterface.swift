@@ -38,6 +38,7 @@ struct CirclesTabbedInterface: View {
     @AppStorage("debugMode") var debugMode: Bool = false
     @AppStorage(DEFAULTS_KEY_ENABLE_GALLERIES, store: .standard) var enableGalleries: Bool = false
     @AppStorage("changelogLastUpdate") var changelogLastUpdate: TimeInterval = 0
+    @AppStorage("mediaViewHeight") var mediaViewHeight: Double = 0
     @State var showChangelog = false
     var changelogFile = ChangelogFile()
     
@@ -128,7 +129,16 @@ struct CirclesTabbedInterface: View {
         .sheet(item: $session.viewState.knockRoomId) { roomId in
             ScanQrCodeAndKnockSheet(session: self.session.matrix, roomId: roomId)
         }
-
+        .background(
+            GeometryReader { geometry in
+                Color.clear
+                    .onAppear {
+                        if mediaViewHeight == 0 {
+                            mediaViewHeight = geometry.size.height
+                        }
+                    }
+            }
+        )
     }
 
     var body: some View {
