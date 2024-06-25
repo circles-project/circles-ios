@@ -21,7 +21,7 @@ struct FreeSubscriptionForm: View {
                         try? await signup.doFreeSubscriptionStage()
                     }
             } else {
-                Label("Error: Free subscriptions are only available at registration time", systemImage: "exclamationmark.triangle")
+                Label("Error: Free subscriptions are only available at registration time", systemImage: SystemImages.exclamationmarkTriangle.rawValue)
             }
             
             Spacer()

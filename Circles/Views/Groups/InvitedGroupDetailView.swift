@@ -121,7 +121,7 @@ struct InvitedGroupDetailView: View {
                     }
                     
                     AsyncButton(role: .destructive, action: {}) {
-                        Label("Ignore Invitation", systemImage: "xmark.bin")
+                        Label("Ignore Invitation", systemImage: SystemImages.xmarkBin.rawValue)
                             .padding()
                     }
                 } // end Vstack

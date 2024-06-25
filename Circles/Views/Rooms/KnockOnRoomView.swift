@@ -31,7 +31,7 @@ struct KnockOnRoomView: View {
                     .lineLimit(5)
                     .border(Color.gray)
                 
-                Label("Warning: Your message will not be encrypted, and is accessible by all current members", systemImage: "exclamationmark.shield")
+                Label("Warning: Your message will not be encrypted, and is accessible by all current members", systemImage: SystemImages.exclamationmarkShield.rawValue)
                     .foregroundColor(.orange)
             }
             

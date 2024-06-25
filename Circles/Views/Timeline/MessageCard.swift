@@ -189,12 +189,12 @@ struct MessageCard: MessageView {
             } else if current.type == M_ROOM_ENCRYPTED {
                 VStack {
                     let bgColor = colorScheme == .dark ? Color.black : Color.white
-                    BasicImage(systemName: "lock.rectangle")
+                    BasicImage(systemName: SystemImages.lockRectangle.rawValue)
                         .foregroundColor(Color.gray)
                         .frame(width: 240, height: 240)
                         .padding()
                     VStack {
-                        Label("Could not decrypt message", systemImage: "exclamationmark.triangle")
+                        Label("Could not decrypt message", systemImage: SystemImages.exclamationmarkTriangle.rawValue)
                             .font(.title2)
                             .fontWeight(.semibold)
                         if DebugModel.shared.debugMode {
@@ -226,7 +226,7 @@ struct MessageCard: MessageView {
     var avatarImage: Image {
         message.sender.avatar != nil
             ? Image(uiImage: message.sender.avatar!)
-            : Image(systemName: "person.fill")
+            : Image(systemName: SystemImages.personFill.rawValue)
         // FIXME We can do better here.
         //       Use the SF Symbols for the user's initial(s)
         //       e.g. Image(sysetmName: "a.circle.fill")
@@ -237,10 +237,10 @@ struct MessageCard: MessageView {
         if isLocalEcho {
             ProgressView()
         } else if message.isEncrypted {
-            Image(systemName: "lock.fill")
+            Image(systemName: SystemImages.lockFill.rawValue)
                 .foregroundColor(Color.blue)
         } else {
-            Image(systemName: "lock.slash.fill")
+            Image(systemName: SystemImages.lockSlashFill.rawValue)
                 .foregroundColor(Color.red)
         }
     }
@@ -250,15 +250,15 @@ struct MessageCard: MessageView {
             self.sheetType = .reactions
         }) {
             //Label("Like", systemImage: "heart")
-            Image(systemName: "heart")
+            Image(systemName: SystemImages.heart.rawValue)
         }
         .disabled(!iCanReact)
     }
 
     var replyButton: some View {
         NavigationLink(destination: PostComposerScreen(room: message.room, parentMessage: message)) {
-            //Label("Reply", systemImage: "bubble.right")
-            Image(systemName: "bubble.right")
+            //Label("Reply", systemImage: SystemImages.bubbleRight.rawValue)
+            Image(systemName: SystemImages.bubbleRight.rawValue)
         }
     }
 
@@ -269,8 +269,8 @@ struct MessageCard: MessageView {
                                showMessageDeleteConfirmation: $showMessageDeleteConfirmation)
         }
         label: {
-            //Label("More", systemImage: "ellipsis.circle")
-            Image(systemName: "ellipsis.circle")
+            //Label("More", systemImage: SystemImages.ellipsisCircle.rawValue)
+            Image(systemName: SystemImages.ellipsisCircle.rawValue)
         }
         .confirmationDialog("Delete Message", isPresented: $showMessageDeleteConfirmation, actions: {
             AsyncButton(role: .destructive, action: {

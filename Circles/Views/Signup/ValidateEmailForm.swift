@@ -59,7 +59,7 @@ struct ValidateEmailForm: View {
                     self.alertTitle = "Email code"
                     self.alertMessage = helpTextForEmailCode
                 }) {
-                    Image(systemName: "questionmark.circle")
+                    Image(systemName: SystemImages.questionmarkCircle.rawValue)
                 }
             }
             .frame(width: 300.0, height: 40.0)

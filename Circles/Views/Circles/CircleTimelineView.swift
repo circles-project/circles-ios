@@ -35,19 +35,19 @@ struct CircleTimelineView: View {
         Menu {
 
             NavigationLink(destination: CircleSettingsView(space: space) ){
-                Label("Settings", systemImage: "gearshape.fill")
+                Label("Settings", systemImage: SystemImages.gearFill.rawValue)
             }
             
             Button(action: {self.sheetType = .invite}) {
-                Label("Invite Followers", systemImage: "person.crop.circle.badge.plus")
+                Label("Invite Followers", systemImage: SystemImages.invitePerson.rawValue)
             }
             
             Button(action: {self.sheetType = .share}) {
-                Label("Share", systemImage: "square.and.arrow.up")
+                Label("Share", systemImage: SystemImages.squareAndArrowUp.rawValue)
             }
         }
         label: {
-            Label("Settings", systemImage: "gearshape.fill")
+            Label("Settings", systemImage: SystemImages.gearFill.rawValue)
         }
     }
 
@@ -110,7 +110,7 @@ struct CircleTimelineView: View {
                         HStack {
                             Spacer()
                             NavigationLink(destination: PostComposer(room: wall).navigationTitle("New Post")) {
-                                Image(systemName: "plus.bubble.fill")
+                                Image(systemName: SystemImages.plusBubbleFill.rawValue)
                                     .resizable()
                                     .scaledToFill()
                                     .frame(width: 50, height: 50)

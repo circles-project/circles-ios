@@ -43,23 +43,23 @@ struct PhotoGalleryView: View {
     var toolbarMenu: some View {
         Menu {
             NavigationLink(destination: GallerySettingsView(room: room, container: container)) {
-                Label("Settings", systemImage: "gearshape.fill")
+                Label("Settings", systemImage: SystemImages.gearFill.rawValue)
             }
             
             Button(action: { self.sheetType = .share }) {
-                Label("Share", systemImage: "square.and.arrow.up")
+                Label("Share", systemImage: SystemImages.squareAndArrowUp.rawValue)
             }
             
             if room.iCanInvite {
                 Button(action: {
                     self.sheetType = .invite
                 }) {
-                    Label("Invite", systemImage: "person.crop.circle.badge.plus")
+                    Label("Invite", systemImage: SystemImages.invitePerson.rawValue)
                 }
             }
         }
         label: {
-            Label("More", systemImage: "gearshape.fill")
+            Label("More", systemImage: SystemImages.gearFill.rawValue)
         }
     }
     
@@ -83,7 +83,7 @@ struct PhotoGalleryView: View {
 
                             if room.iCanSendEvent(type: M_ROOM_MESSAGE) {
                                 PhotosPicker(selection: $selectedItems) {
-                                    Image(systemName: "plus.circle.fill")
+                                    Image(systemName: SystemImages.plusCircleFill.rawValue)
                                         .resizable()
                                         .scaledToFill()
                                         .frame(width: 50, height: 50)

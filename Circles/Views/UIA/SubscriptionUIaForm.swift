@@ -85,7 +85,7 @@ struct SubscriptionUiaProductView: View {
     
     @ViewBuilder
     var checkBox: some View {
-        Text(Image(systemName: "checkmark"))
+        Text(Image(systemName: SystemImages.checkmark.rawValue))
             .bold()
             .padding()
             .frame(maxWidth: 95)

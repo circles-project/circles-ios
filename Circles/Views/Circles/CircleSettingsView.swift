@@ -131,7 +131,7 @@ struct CircleSettingsView: View {
                 Button(action: {
                     self.showInviteSheet = true
                 }) {
-                    Label("Invite more followers", systemImage: "person.crop.circle.badge.plus")
+                    Label("Invite more followers", systemImage: SystemImages.invitePerson.rawValue)
                 }
                 .sheet(isPresented: $showInviteSheet) {
                     RoomInviteSheet(room: wall, title: "Invite followers")

@@ -122,7 +122,7 @@ struct GroupCreationSheet: View {
             .overlay(alignment: .bottomTrailing) {
                 
                 PhotosPicker(selection: $selectedItem, matching: .images) {
-                    Image(systemName: "pencil.circle.fill")
+                    Image(systemName: SystemImages.pencilCircleFill.rawValue)
                         .symbolRenderingMode(.multicolor)
                         .font(.system(size: 30))
                         .foregroundColor(.accentColor)
