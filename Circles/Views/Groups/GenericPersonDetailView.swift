@@ -39,17 +39,17 @@ struct GenericPersonDetailView: View {
                 
 
                 Button(action: {}) {
-                    Label("Invite to connect", systemImage: "link")
+                    Label("Invite to connect", systemImage: SystemImages.link.rawValue)
                         .padding()
                 }
                 
                 Button(action: {}) {
-                    Label("Invite to follow me", systemImage: "person.line.dotted.person.fill")
+                    Label("Invite to follow me", systemImage: SystemImages.personLineDottedPersonFill.rawValue)
                         .padding()
                 }
                 
                 Button(role: .destructive, action: {}) {
-                    Label("Ignore this user", systemImage: "person.fill.xmark")
+                    Label("Ignore this user", systemImage: SystemImages.personFillXmark.rawValue)
                         .padding()
                 }
                 

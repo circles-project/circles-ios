@@ -60,13 +60,13 @@ struct PhotoDetailView: View {
                         let newScale = [self.magnifyBy * 0.75, 0.25].max() ?? 1.0
                         self.magnifyBy = newScale
                     }) {
-                        Image(systemName: "minus.magnifyingglass")
+                        Image(systemName: SystemImages.minusMagnifyingglass.rawValue)
                     }
                     Button(action: {
                         let newScale = [self.magnifyBy * 1.25, 4.0].min() ?? 1.0
                         self.magnifyBy = newScale
                     }) {
-                        Image(systemName: "plus.magnifyingglass")
+                        Image(systemName: SystemImages.plusMagnifyingglass.rawValue)
                     }
                     .padding(.trailing)
                 }

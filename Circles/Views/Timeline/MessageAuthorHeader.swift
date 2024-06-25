@@ -16,10 +16,10 @@ struct MessageAuthorHeader: View {
     @ViewBuilder
     var shield: some View {
         if user.isVerified {
-            Image(systemName: "checkmark.shield")
+            Image(systemName: SystemImages.checkmarkShield.rawValue)
                 .foregroundColor(Color.green)
         } else {
-            Image(systemName: "xmark.shield")
+            Image(systemName: SystemImages.xmarkShield.rawValue)
                 .foregroundColor(Color.red)
         }
     }
@@ -51,7 +51,7 @@ struct MessageAuthorHeader: View {
             Button(action: {
                 user.verify()
             }) {
-                Label("Verify User", systemImage: "checkmark.shield")
+                Label("Verify User", systemImage: SystemImages.checkmarkShield.rawValue))
             }
         }
         */

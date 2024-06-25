@@ -68,7 +68,7 @@ struct KnockingUserCard: View {
                                         try await room.ban(userId: user.userId, reason: "spam")
                                         try await room.session.sendReport(for: event.eventId, in: room.roomId, score: 50, reason: "spam")
                                     }) {
-                                        Label("Report spam", systemImage: "xmark.bin.fill")
+                                        Label("Report spam", systemImage: SystemImages.xmarkBin.rawValue)
                                     }
                                 }
             
@@ -76,14 +76,14 @@ struct KnockingUserCard: View {
                                     print("Rejecting knock from user \(user.userId.stringValue) with ban")
                                     try await room.ban(userId: user.userId)
                                 }) {
-                                    Label("Reject and block this user", systemImage: "person.fill.xmark")
+                                    Label("Reject and block this user", systemImage: SystemImages.personFillXmark.rawValue)
                                 }
             
                                 AsyncButton(role: .destructive, action: {
                                     print("Rejecting knock from user \(user.userId.stringValue) with kick")
                                     try await room.kick(userId: user.userId)
                                 }) {
-                                    Label("Reject request", systemImage: "person.fill.xmark")
+                                    Label("Reject request", systemImage: SystemImages.personFillXmark.rawValue)
                                 }
                             }
         )

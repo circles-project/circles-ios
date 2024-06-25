@@ -42,7 +42,7 @@ struct PhotosOverviewScreen: View {
             }
         }
         label: {
-            Label("More", systemImage: "ellipsis.circle")
+            Label("More", systemImage: SystemImages.ellipsisCircle.rawValue)
         }
     }
     
@@ -79,7 +79,7 @@ struct PhotosOverviewScreen: View {
                                     self.showConfirmLeave = true
                                     self.roomToLeave = room
                                 }) {
-                                    Label("Leave gallery", systemImage: "xmark.bin")
+                                    Label("Leave gallery", systemImage: SystemImages.xmarkBin.rawValue)
                                 }
                             }
                         }
@@ -110,7 +110,7 @@ struct PhotosOverviewScreen: View {
                                         self.showConfirmLeave = true
                                         self.roomToLeave = room
                                     }) {
-                                        Label("Leave gallery", systemImage: "xmark.bin")
+                                        Label("Leave gallery", systemImage: SystemImages.xmarkBin.rawValue)
                                     }
                                 }
                             }
@@ -143,7 +143,7 @@ struct PhotosOverviewScreen: View {
                     }
                 }
                 label: {
-                    Image(systemName: "plus.circle.fill")
+                    Image(systemName: SystemImages.plusCircleFill.rawValue)
                         .resizable()
                         .scaledToFill()
                         .frame(width: 50, height: 50)

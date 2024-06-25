@@ -161,7 +161,7 @@ struct UsersToInviteView: View {
                             let userId = user.userId
                             self.users.removeAll(where: {$0.userId == userId})
                         }) {
-                            Label(user.userId.stringValue, systemImage: "xmark")
+                            Label(user.userId.stringValue, systemImage: SystemImages.xmark.rawValue)
                                 .lineLimit(1)
                                 .font(.subheadline)
                         }
