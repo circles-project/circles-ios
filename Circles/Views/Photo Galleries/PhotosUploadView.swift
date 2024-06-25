@@ -33,7 +33,7 @@ struct PhotosUploadView: View {
                 Text("Done!")
                     .font(.headline)
                     .fontWeight(.bold)
-                Image(systemName: "checkmark.circle")
+                Image(systemName: SystemImages.checkmarkCircle.rawValue)
                     .resizable()
                     .frame(width: 80, height: 80, alignment: .center)
             } else {

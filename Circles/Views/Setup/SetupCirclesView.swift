@@ -53,7 +53,7 @@ struct SetupCirclesView: View {
                         Button(role: .destructive, action: {
                             circles.removeAll { $0.name == info.name }
                         }) {
-                            Image(systemName: "minus.circle.fill")
+                            Image(systemName: SystemImages.minusCircleFill.rawValue)
                         }
                     }
                 }
@@ -72,7 +72,7 @@ struct SetupCirclesView: View {
             
             Spacer()
 
-            Label("NOTE: Circle names and cover images are not encrypted", systemImage: "exclamationmark.shield")
+            Label("NOTE: Circle names and cover images are not encrypted", systemImage: SystemImages.exclamationmarkShield.rawValue)
                 .font(.headline)
                 .foregroundColor(.orange)
 

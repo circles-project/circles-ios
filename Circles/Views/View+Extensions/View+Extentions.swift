@@ -27,7 +27,7 @@ struct BasicImage: View {
                 .resizable()
                 .aspectRatio(contentMode: aspectRatio)
         } else {
-            Image(systemName: "xmark.icloud.fill")
+            Image(systemName: SystemImages.xmarkIcloudFill.rawValue)
                 .resizable()
                 .aspectRatio(contentMode: aspectRatio)
         }

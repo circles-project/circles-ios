@@ -37,7 +37,7 @@ struct MessageReportingSheet: View {
             Button(action: {
                 self.presentation.wrappedValue.dismiss()
             }) {
-                Label("Cancel", systemImage: "xmark")
+                Label("Cancel", systemImage: SystemImages.xmark.rawValue)
             }
             .padding(buttonPadding)
             Spacer()
@@ -46,7 +46,7 @@ struct MessageReportingSheet: View {
                 try await message.room.report(eventId: message.eventId, score: Int(reportedSeverity), reason: reasons.joined(separator: "; "))
                 self.presentation.wrappedValue.dismiss()
             }) {
-                Label("Submit Report", systemImage: "exclamationmark.shield")
+                Label("Submit Report", systemImage: SystemImages.exclamationmarkShield.rawValue)
             }
             .padding(buttonPadding)
         }
@@ -54,7 +54,7 @@ struct MessageReportingSheet: View {
     
     var introSection: some View {
         VStack {
-            Label("Reporting Inappropriate Content", systemImage: "exclamationmark.shield")
+            Label("Reporting Inappropriate Content", systemImage: SystemImages.exclamationmarkShield.rawValue)
                 .font(.title2)
                 //.fontWeight(.bold)
 
@@ -105,18 +105,18 @@ struct MessageReportingSheet: View {
                 ForEach(categories, id: \.self) { category in
                     HStack {
                         if selectedCategories.contains(category) {
-                            //Image(systemName: "checkmark.circle")
+                            //Image(systemName: SystemImages.checkmarkCircle.rawValue)
                             Button(action: {selectedCategories.remove(category)}) {
                                 //Text(category)
-                                Label(category, systemImage: "checkmark.circle")
+                                Label(category, systemImage: SystemImages.checkmarkCircle.rawValue)
                             }
                             .buttonStyle(PlainButtonStyle())
                         }
                         else {
-                            //Image(systemName: "circle")
+                            //Image(systemName: SystemImages.circle.rawValue)
                             Button(action: { selectedCategories.insert(category)}) {
                                 //Text(category)
-                                Label(category, systemImage: "circle")
+                                Label(category, systemImage: SystemImages.circle.rawValue)
                             }
                             .buttonStyle(PlainButtonStyle())
                         }

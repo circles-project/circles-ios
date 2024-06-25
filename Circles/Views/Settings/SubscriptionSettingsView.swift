@@ -101,7 +101,7 @@ struct SubscriptionSettingsProductView: View {
     
     @ViewBuilder
     private var checkBox: some View {
-        Text(Image(systemName: "checkmark"))
+        Text(Image(systemName: SystemImages.checkmark.rawValue))
             .bold()
             .padding()
             .frame(maxWidth: 95)

@@ -81,7 +81,7 @@ struct RoomMemberRow: View {
                             try await room.mute(userId: user.userId)
                         }) {
                             Text("Mute this user here")
-                            Image(systemName: "speaker.slash")
+                            Image(systemName: SystemImages.speakerSlash.rawValue)
                         }
                     }
                     
@@ -90,7 +90,7 @@ struct RoomMemberRow: View {
                             try await room.kick(userId: user.userId)
                         }) {
                             Text("Remove this user")
-                            Image(systemName: "person.fill.xmark")
+                            Image(systemName: SystemImages.personFillXmark.rawValue)
                         }
                     }
                     
@@ -99,7 +99,7 @@ struct RoomMemberRow: View {
                             try await room.ban(userId: user.userId)
                         }) {
                             Text("Ban this user forever")
-                            Image(systemName: "xmark.shield")
+                            Image(systemName: SystemImages.xmarkShield.rawValue)
                         }
                     }
                 }
@@ -111,9 +111,9 @@ struct RoomMemberRow: View {
         VStack(alignment: .leading) {
             HStack {
                 UserAvatarView(user: user)
+                    .clipShape(Circle())
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 60, height: 60)
-                    .clipShape(RoundedRectangle(cornerRadius: 6))
                 VStack(alignment: .leading) {
                     UserNameView(user: user)
                     Text(user.userId.stringValue)

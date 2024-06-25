@@ -76,7 +76,7 @@ struct MessageContextMenu: View {
                     Label("Ignore sender", systemImage: "person.crop.circle.badge.minus")
                 }
             } label: {
-                Label("Block", systemImage: "xmark.shield")
+                Label("Block", systemImage: SystemImages.xmarkShield.rawValue)
             }
             
             Button(action: {
@@ -85,7 +85,7 @@ struct MessageContextMenu: View {
                 self.sheetType = .reporting
             }) {
                 HStack {
-                    Image(systemName: "exclamationmark.shield")
+                    Image(systemName: SystemImages.exclamationmarkShield.rawValue)
                     Text("Report")
                 }
             }
@@ -134,7 +134,7 @@ struct MessageContextMenu: View {
             AsyncButton(action: {
                 self.showMessageDeleteConfirmation = true
             }) {
-                Label("Delete", systemImage: "trash")
+                Label("Delete", systemImage: SystemImages.trash.rawValue)
             }
         }
     }
