@@ -155,6 +155,7 @@ struct BsspekeEnrollOprfForm: View {
 
             SecureField("same passphrase as before", text: $repeatPassphrase, prompt: Text("Repeat passphrase"))
                 .textContentType(.newPassword)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
                 .focused($focus, equals: .repeatPassphrase)
                 .frame(width: 300.0, height: 40.0)
                 

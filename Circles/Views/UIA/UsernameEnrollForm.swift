@@ -31,6 +31,7 @@ struct UsernameEnrollForm: View {
 
             TextField("Username", text: $username, prompt: Text("username"))
                 .textContentType(.username)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
                 .focused($focus, equals: .username)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
