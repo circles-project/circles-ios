@@ -43,7 +43,7 @@ struct SettingsScreen: View {
                     }
                     
                     NavigationLink(destination: SecuritySettingsView(session: session.matrix)) {
-                        Label("Account Security", systemImage: "lock.fill")
+                        Label("Account Security", systemImage: SystemImages.lockFill.rawValue)
                     }
                     
                     if CIRCLES_DOMAINS.contains(session.matrix.creds.userId.domain) {
@@ -81,13 +81,13 @@ struct SettingsScreen: View {
                     Label {
                         Link("Circles iOS Privacy Policy", destination: URL(string: "https://circles.futo.org/privacy/ios/")!)
                     } icon: {
-                        Image(systemName: "link")
+                        Image(systemName: SystemImages.link.rawValue)
                     }
                     
                     Label {
                         Link("License Agreement", destination: URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!)
                     } icon: {
-                        Image(systemName: "link")
+                        Image(systemName: SystemImages.link.rawValue)
                     }
                 }
 
@@ -121,7 +121,7 @@ struct SettingsScreen: View {
                 }
                 */
                 
-                Section(header: Label("Danger Zone", systemImage: "exclamationmark.triangle")) {
+                Section(header: Label("Danger Zone", systemImage: SystemImages.exclamationmarkTriangle.rawValue)) {
                     
                     Button(action: {
                         self.showConfirmSwitch = true
@@ -166,7 +166,7 @@ struct SettingsScreen: View {
                     )
                     
                     NavigationLink(destination: DeactivateAccountView(store: store, session: session)) {
-                        Label("Deactivate Account", systemImage: "person.fill.xmark")
+                        Label("Deactivate Account", systemImage: SystemImages.personFillXmark.rawValue)
                     }
                 }
             }

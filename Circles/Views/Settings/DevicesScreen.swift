@@ -17,7 +17,7 @@ struct DevicesScreen: View {
         VStack(alignment: .leading, spacing: 15) {
             if let dev = session.device {
                 let myDeviceModel = UIDevice.current.model
-                let iconName = myDeviceModel.components(separatedBy: .whitespaces).first?.lowercased() ?? "desktopcomputer"
+                let iconName = myDeviceModel.components(separatedBy: .whitespaces).first?.lowercased() ?? SystemImages.desktopcomputer.rawValue
                 Label("This \(myDeviceModel)", systemImage: iconName)
                     .font(.headline)
 

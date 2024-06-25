@@ -29,7 +29,7 @@ struct UserAvatarView: View {
                     user.fetchAvatarImage()
                 }
         } else {
-            Image(systemName: "person.fill")
+            Image(systemName: SystemImages.personFill.rawValue)
 
                 .foregroundColor(defaultImageColor)
                 .onAppear {

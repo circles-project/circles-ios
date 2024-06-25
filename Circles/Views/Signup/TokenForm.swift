@@ -51,7 +51,7 @@ struct TokenForm: View {
                     self.alertTitle = "Signup Token"
                     self.alertMessage = helpTextForToken
                 }) {
-                    Image(systemName: "questionmark.circle")
+                    Image(systemName: SystemImages.questionmarkCircle.rawValue)
                 }
             }
             .frame(width: 300.0, height: 40.0)

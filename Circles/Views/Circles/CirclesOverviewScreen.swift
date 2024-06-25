@@ -39,11 +39,11 @@ struct CirclesOverviewScreen: View {
                 Label("Scan QR code", systemImage: "qrcode")
             }
             Button(action: {self.showHelpText = true }) {
-                Label("Help", systemImage: "questionmark.circle")
+                Label("Help", systemImage: SystemImages.questionmarkCircle.rawValue)
             }
         }
         label: {
-            Label("More", systemImage: "ellipsis.circle")
+            Label("More", systemImage: SystemImages.ellipsisCircle.rawValue)
         }
     }
     
@@ -86,7 +86,7 @@ struct CirclesOverviewScreen: View {
                                 self.circleToDelete = circle
                                 self.confirmDeleteCircle = true
                             }) {
-                                Label("Delete", systemImage: "xmark.circle")
+                                Label("Delete", systemImage: SystemImages.xmarkCircle.rawValue)
                             }
                         }
                          
@@ -122,7 +122,7 @@ struct CirclesOverviewScreen: View {
                     }
                 }
                 label: {
-                    Image(systemName: "plus.circle.fill")
+                    Image(systemName: SystemImages.plusCircleFill.rawValue)
                         .resizable()
                         .scaledToFill()
                         .frame(width: 50, height: 50)
@@ -159,7 +159,7 @@ struct CirclesOverviewScreen: View {
             AsyncButton(role: .destructive, action: {
                 try await deleteCircle(circle: circle)
             }) {
-                Label("Delete circle \"\(circle.name ?? "??")\"", systemImage: "xmark.bin")
+                Label("Delete circle \"\(circle.name ?? "??")\"", systemImage: SystemImages.xmarkBin.rawValue)
             }
         }
         .sheet(isPresented: $showHelpText) {

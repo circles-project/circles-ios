@@ -168,7 +168,7 @@ struct WelcomeScreen: View {
                                     let otherUserIds = previousUserIds.filter { $0 != userId }
                                     self.previousUserIds = otherUserIds
                                 }) {
-                                    Image(systemName: "xmark")
+                                    Image(systemName: SystemImages.xmark.rawValue)
                                 }
                             }
                             .padding()

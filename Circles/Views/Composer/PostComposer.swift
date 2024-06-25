@@ -325,7 +325,7 @@ struct PostComposer: View {
                 }
             },
             label: {
-                Image(systemName: "paperclip")
+                Image(systemName: SystemImages.paperclip.rawValue)
                     .scaleEffect(1.5)
             })
             .padding(1)
@@ -337,7 +337,7 @@ struct PostComposer: View {
                 self.presentation.wrappedValue.dismiss()
                 self.newMessageText = ""
             }) {
-                Label("Cancel", systemImage: "xmark")
+                Label("Cancel", systemImage: SystemImages.xmark.rawValue)
                     //.foregroundColor(.red)
                     .padding(.vertical, 2)
                     .padding(.horizontal, 5)
@@ -388,7 +388,7 @@ struct PostComposer: View {
                             task.cancel()
                             self.messageState = .text
                         }) {
-                            Image(systemName: "xmark.circle.fill")
+                            Image(systemName: SystemImages.xmarkCircleFill.rawValue)
                                 .symbolRenderingMode(.multicolor)
                                 .font(.system(size: 30))
                                 .foregroundColor(.red)
@@ -413,7 +413,7 @@ struct PostComposer: View {
                     .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
             } else {
                 ZStack {
-                    BasicImage(systemName: "photo.artframe")
+                    BasicImage(systemName: SystemImages.photoArtframe.rawValue)
                         .clipShape(RoundedRectangle(cornerRadius: 6))
                     
                     ProgressView()
@@ -448,7 +448,7 @@ struct PostComposer: View {
                     .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
             } else {
                 ZStack {
-                    BasicImage(systemName: "photo.artframe")
+                    BasicImage(systemName: SystemImages.photoArtframe.rawValue)
                         .clipShape(RoundedRectangle(cornerRadius: 6))
                     
                     ProgressView()

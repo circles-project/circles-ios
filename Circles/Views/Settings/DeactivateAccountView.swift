@@ -17,7 +17,7 @@ struct DeactivateAccountView: View {
         ZStack {
             VStack {
                 VStack {
-                    Label("Warning", systemImage: "exclamationmark.triangle")
+                    Label("Warning", systemImage: SystemImages.exclamationmarkTriangle.rawValue)
                         .font(.title)
                         .fontWeight(.bold)
                     Text("Deactivating an account is permanent, and cannot be undone.")
@@ -31,7 +31,7 @@ struct DeactivateAccountView: View {
                     Button(role: .destructive, action: {
                         showAlert = true
                     }) {
-                        Label("Deactivate my account", systemImage: "xmark.bin")
+                        Label("Deactivate my account", systemImage: SystemImages.xmarkBin.rawValue)
                     }
                     .buttonStyle(.bordered)
                 }
