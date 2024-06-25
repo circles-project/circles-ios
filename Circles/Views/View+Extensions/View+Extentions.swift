@@ -26,7 +26,7 @@ struct BasicImage: View {
                 .resizable()
                 .scaledToFit()
         } else {
-            Image(systemName: "xmark.icloud.fill")
+            Image(systemName: SystemImages.xmarkIcloudFill.rawValue)
                 .resizable()
                 .scaledToFit()
         }

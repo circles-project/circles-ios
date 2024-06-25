@@ -100,7 +100,7 @@ struct InvitedCircleCard: View {
                     Spacer()
                     
                     NavigationLink(destination: InvitedCircleDetailView(room: room, user: user)) {
-                        Image(systemName: "ellipsis.circle")
+                        Image(systemName: SystemImages.ellipsisCircle.rawValue)
                             .imageScale(.large)
                             .padding(10)
                     }

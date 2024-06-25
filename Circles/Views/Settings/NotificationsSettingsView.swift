@@ -90,7 +90,7 @@ struct NotificationsSettingsView: View {
                             Button(action: {
                                 UIApplication.shared.open(url)
                             }) {
-                                Label("Open System Settings app", systemImage: "gearshape.fill")
+                                Label("Open System Settings app", systemImage: SystemImages.gearshapeFill.rawValue)
                             }
                         }
                     }
