@@ -46,14 +46,14 @@ struct GroupTimelineScreen: View {
         Menu {
             
             NavigationLink(destination: GroupSettingsView(room: room, container: container)) {
-                Label("Settings", systemImage: SystemImages.gearFill.rawValue)
+                Label("Settings", systemImage: SystemImages.gearshapeFill.rawValue)
             }
             
             if room.iCanInvite {
                 Button(action: {
                     self.sheetType = .invite
                 }) {
-                    Label("Invite new members", systemImage: SystemImages.invitePerson.rawValue)
+                    Label("Invite new members", systemImage: SystemImages.personCropCircleBadgePlus.rawValue)
                 }
             }
             
@@ -65,7 +65,7 @@ struct GroupTimelineScreen: View {
             
         }
         label: {
-            Label("Settings", systemImage: SystemImages.gearFill.rawValue)
+            Label("Settings", systemImage: SystemImages.gearshapeFill.rawValue)
         }
     }
     

@@ -35,11 +35,11 @@ struct CircleTimelineView: View {
         Menu {
 
             NavigationLink(destination: CircleSettingsView(space: space) ){
-                Label("Settings", systemImage: SystemImages.gearFill.rawValue)
+                Label("Settings", systemImage: SystemImages.gearshapeFill.rawValue)
             }
             
             Button(action: {self.sheetType = .invite}) {
-                Label("Invite Followers", systemImage: SystemImages.invitePerson.rawValue)
+                Label("Invite Followers", systemImage: SystemImages.personCropCircleBadgePlus.rawValue)
             }
             
             Button(action: {self.sheetType = .share}) {
@@ -47,7 +47,7 @@ struct CircleTimelineView: View {
             }
         }
         label: {
-            Label("Settings", systemImage: SystemImages.gearFill.rawValue)
+            Label("Settings", systemImage: SystemImages.gearshapeFill.rawValue)
         }
     }
 

@@ -168,7 +168,7 @@ struct GroupSettingsView: View {
                 Button(action: {
                     self.showInviteSheet = true
                 }) {
-                    Label("Invite new members", systemImage: SystemImages.invitePerson.rawValue)
+                    Label("Invite new members", systemImage: SystemImages.personCropCircleBadgePlus.rawValue)
                 }
                 .sheet(isPresented: $showInviteSheet) {
                     RoomInviteSheet(room: room)
