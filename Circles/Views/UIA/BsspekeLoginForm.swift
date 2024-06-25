@@ -79,7 +79,8 @@ struct BsspekeLoginForm: View {
         VStack {
             Spacer()
             ProgressView {
-                Text("Verifying passphrase")
+                let text = DebugModel.shared.debugMode ? "Verifying passphrase" : "We are checking if this is really you" 
+                Text(text)
             }
             Spacer()
         }

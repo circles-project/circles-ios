@@ -15,7 +15,7 @@ struct ContentView: View {
     
     var errorView: some View {
         VStack {
-            Text("Something went wrong")
+            Text("Oh no! Something went wrong")
             AsyncButton(action: {
                 do {
                     try await self.store.disconnect()
@@ -33,7 +33,7 @@ struct ContentView: View {
         switch(store.state) {
             
         case .startingUp:
-            ProgressView("Loading Circles...")
+            ProgressView("Spinning up your Circles... Hang tight!")
                 .onAppear {
                     print("ContentView: Starting up")
                     Task {
@@ -61,9 +61,8 @@ struct ContentView: View {
         case .haveCreds(let creds, let key, let token):
             VStack {
                 Spacer()
-                
-                Text("Connecting as \(creds.userId.description)")
-                ProgressView()
+                let textInPorgressView = DebugModel.shared.debugMode ? "" : "Yeah! We found you and are rushing to let you in"
+                ProgressView(textInPorgressView)
                     .onAppear {
                         _ = Task {
                             do {
@@ -75,6 +74,8 @@ struct ContentView: View {
                             }
                         }
                     }
+                let text = DebugModel.shared.debugMode ? "Connecting as \(creds.userId.description)" : ""
+                Text(text)
                 
                 Spacer()
                 
@@ -93,7 +94,8 @@ struct ContentView: View {
             SecretStoragePasswordScreen(store: store, matrix: matrix, keyId: keyId, description: keyDescription)
             
         case .haveSecretStorageAndKey(let matrix):
-            ProgressView("Checking cross signing")
+            let text = DebugModel.shared.debugMode ? "Checking cross signing" : "Checking your security connections"
+            ProgressView(text)
                 .onAppear {
                     Task {
                         try await store.ensureCrossSigning()
@@ -101,7 +103,8 @@ struct ContentView: View {
                 }
             
         case .haveCrossSigning(let matrix):
-            ProgressView("Checking key backup")
+            let text = DebugModel.shared.debugMode ? "Checking key backup" : "Ensuring your keys are safe"
+            ProgressView(text)
                 .onAppear {
                     Task {
                         try await store.ensureKeyBackup()
@@ -109,7 +112,8 @@ struct ContentView: View {
                 }
             
         case .haveKeyBackup(let matrix):
-            ProgressView("Checking space hierarchy")
+            let text = DebugModel.shared.debugMode ? "Checking space hierarchy" : "Organizing your spaces"
+            ProgressView(text)
                 .onAppear {
                     Task {
                         try await store.checkForSpaceHierarchy()
@@ -120,7 +124,8 @@ struct ContentView: View {
             SetupScreen(store: store, matrix: matrix)
 
         case .haveSpaceHierarchy(let matrix, let config):
-            ProgressView("Loading Circles")
+            let text = DebugModel.shared.debugMode ? "Loading Circles" : "Just a moment, almost there—we promise!"
+            ProgressView(text)
                 .onAppear {
                     Task {
                         try await store.goOnline()

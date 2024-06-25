@@ -217,7 +217,7 @@ struct MessageCard: MessageView {
                      }
                  }
             } else {
-                Text("Something went wrong.  Circles failed to parse a message of type \"\(current.type)\".")
+                Text("Oh no! Something went wrong.  Circles failed to parse a message of type \"\(current.type)\".")
                     .foregroundColor(.red)
             }
         }
