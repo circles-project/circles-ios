@@ -80,6 +80,7 @@ struct WelcomeScreen: View {
                 .disableAutocorrection(true)
                 .focused($inputFocused)
                 .frame(width: 300.0, height: 40.0)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
 
             AsyncButton(action: {
                 if !username.isEmpty {
