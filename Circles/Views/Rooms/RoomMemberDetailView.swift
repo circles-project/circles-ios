@@ -305,7 +305,7 @@ struct RoomMemberDetailView: View {
                         HStack {
                             Text("Photo")
                             Spacer()
-                            BasicImage(uiImage: avatar)
+                            BasicImage(uiImage: avatar, aspectRatio: .fill)
                                 .frame(width: 80, height: 80)
                                 .clipShape(RoundedRectangle(cornerRadius: 4))
                         }
