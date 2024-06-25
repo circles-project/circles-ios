@@ -35,7 +35,7 @@ struct GallerySettingsView: View {
                 if room.iCanChangeState(type: M_ROOM_AVATAR) {
                     PhotosPicker(selection: $newAvatarImageItem, matching: .images) {
                         RoomAvatarView(room: room, avatarText: .none)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                            .clipShape(Circle())
                             .frame(width: 80, height: 80)
                     }
                     .buttonStyle(.plain)
@@ -51,7 +51,7 @@ struct GallerySettingsView: View {
                     }
                 } else {
                     RoomAvatarView(room: room, avatarText: .none)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .clipShape(Circle())
                         .frame(width: 80, height: 80)
                 }
             }
@@ -73,34 +73,32 @@ struct GallerySettingsView: View {
         Section("Sharing") {
             if let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/gallery/\(room.roomId.stringValue)")
             {
-                 HStack {
-                     Text("Link")
-                     Spacer()
-                     ShareLink("Share", item: url)
-                 }
-                 
-                 if let qr = qrCode(url: url) {
-                     HStack {
-                         Text("QR code")
-                         Spacer()
-                         Button(action: {
-                             showShareSheet = true
-                         }) {
-                             Image(uiImage: qr)
-                                 .resizable()
-                                 .scaledToFill()
-                                 .frame(width: 80, height: 80)
-                         }
-                         .sheet(isPresented: $showShareSheet) {
-                             RoomShareSheet(room: room, url: url)
-                         }
-                     }
-                 }
+                if let qr = qrCode(url: url) {
+                    HStack {
+                        Text("QR code")
+                        Spacer()
+                        Button(action: {
+                            showShareSheet = true
+                        }) {
+                            Image(uiImage: qr)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 80, height: 80)
+                        }
+                        .sheet(isPresented: $showShareSheet) {
+                            RoomShareSheet(room: room, url: url)
+                        }
+                    }
+                }
+                
+                HStack {
+                    Text("Link")
+                    Spacer()
+                    ShareLink("Share", item: url)
+                }
             }
         }
     }
-    
-
     
     var body: some View {
         Form {

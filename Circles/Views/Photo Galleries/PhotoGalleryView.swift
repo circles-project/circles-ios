@@ -43,7 +43,7 @@ struct PhotoGalleryView: View {
     var toolbarMenu: some View {
         Menu {
             NavigationLink(destination: GallerySettingsView(room: room, container: container)) {
-                Label("Settings", systemImage: "gearshape")
+                Label("Settings", systemImage: "gearshape.fill")
             }
             
             Button(action: { self.sheetType = .share }) {
@@ -54,12 +54,12 @@ struct PhotoGalleryView: View {
                 Button(action: {
                     self.sheetType = .invite
                 }) {
-                    Label("Invite", systemImage: "person.2.circle")
+                    Label("Invite", systemImage: "person.crop.circle.badge.plus")
                 }
             }
         }
         label: {
-            Label("More", systemImage: "ellipsis.circle")
+            Label("More", systemImage: "gearshape.fill")
         }
     }
     

@@ -46,7 +46,7 @@ struct GroupTimelineScreen: View {
         Menu {
             
             NavigationLink(destination: GroupSettingsView(room: room, container: container)) {
-                Label("Settings", systemImage: "gearshape")
+                Label("Settings", systemImage: "gearshape.fill")
             }
             
             if room.iCanInvite {

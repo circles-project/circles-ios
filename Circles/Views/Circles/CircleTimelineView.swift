@@ -47,7 +47,7 @@ struct CircleTimelineView: View {
             }
         }
         label: {
-            Label("Settings", systemImage: "gearshape")
+            Label("Settings", systemImage: "gearshape.fill")
         }
     }
 
