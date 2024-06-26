@@ -23,7 +23,6 @@ struct PhotoGalleryCard: View {
     
     var body: some View {
         ZStack {
-            
             RoomAvatarView(room: room, avatarText: .none)
                 .scaledToFill()
                 .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -46,12 +45,10 @@ struct PhotoGalleryCard: View {
                 */
     
             VStack {
-                
                 if room.creator != room.session.creds.userId {
                     let user = room.session.getUser(userId: room.creator)
                     HStack {
                         UserAvatarView(user: user)
-                            .clipShape(Circle())
                             .frame(width: 70, height: 70)
                         Text(user.displayName ?? user.userId.username)
                             .font(.title3)
@@ -79,7 +76,6 @@ struct PhotoGalleryCard: View {
                     Label("\(knockCount) requests for invitations", systemImage: "star.fill")
                             //.foregroundColor(.accentColor)
                 }
-
             }
             .foregroundColor(.white)
             .shadow(color: .black, radius: 5)

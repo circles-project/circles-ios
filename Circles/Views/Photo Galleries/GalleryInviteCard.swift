@@ -53,7 +53,6 @@ struct GalleryInviteCard: View {
             Spacer()
         }
         //.buttonStyle(.bordered)
-    
     }
     
     var body: some View {

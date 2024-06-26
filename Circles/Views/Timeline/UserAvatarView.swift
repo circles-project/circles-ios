@@ -22,6 +22,8 @@ struct UserAvatarView: View {
     var body: some View {
         if let avatar = user.avatar {
             BasicImage(uiImage: avatar)
+                .aspectRatio(contentMode: .fill)
+                .clipShape(Circle())
         }
         else if let jdenticon = user.jdenticon {
             BasicImage(uiImage: jdenticon)
@@ -30,7 +32,6 @@ struct UserAvatarView: View {
                 }
         } else {
             Image(systemName: SystemImages.personFill.rawValue)
-
                 .foregroundColor(defaultImageColor)
                 .onAppear {
                     user.fetchAvatarImage()

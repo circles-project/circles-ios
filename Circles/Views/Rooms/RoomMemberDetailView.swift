@@ -306,8 +306,9 @@ struct RoomMemberDetailView: View {
                             Text("Photo")
                             Spacer()
                             BasicImage(uiImage: avatar)
+                                .aspectRatio(contentMode: .fill)
+                                .clipShape(Circle())
                                 .frame(width: 80, height: 80)
-                                .clipShape(RoundedRectangle(cornerRadius: 4))
                         }
                     }
                     

@@ -35,8 +35,9 @@ struct FollowingTimelineDetailsView: View {
                         Text("Cover image")
                         Spacer()
                         RoomAvatarView(room: room, avatarText: .none)
-                            .frame(width: 120, height: 120)
-                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                            .frame(width: 80, height: 80)
+                            .aspectRatio(contentMode: .fill)
+                            .clipShape(Circle())
                         
                     }
                     

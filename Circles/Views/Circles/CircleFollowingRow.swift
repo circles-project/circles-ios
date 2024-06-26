@@ -20,7 +20,8 @@ struct CircleFollowingRow: View {
         NavigationLink(destination: FollowingTimelineDetailsView(room: room, user: user, circle: space)) {
             RoomAvatarView(room: room, avatarText: .none)
                 .frame(width: 40, height: 40)
-                .clipShape(RoundedRectangle(cornerRadius: 4))
+                .aspectRatio(contentMode: .fill)
+                .clipShape(Circle())
             
             VStack(alignment: .leading) {
                 Text("\(user.displayName ?? user.userId.username)")

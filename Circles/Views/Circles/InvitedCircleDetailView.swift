@@ -17,7 +17,6 @@ struct InvitedCircleDetailView: View {
     var body: some View {
         ScrollView {
             VStack {
-                
                 Text("You have been invited to:")
                     .padding()
                 
@@ -61,10 +60,7 @@ struct InvitedCircleDetailView: View {
                         Text("Invited by:")
                         VStack(alignment: .leading) {
                             UserAvatarView(user: user)
-                                .scaledToFit()
                                 .frame(width: 180, height: 180)
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
-
                             
                             Text("\(user.displayName ?? user.userId.username)")
                                 .font(.title2)

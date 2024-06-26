@@ -18,7 +18,6 @@ struct ProfileSettingsView: View {
     
     var body: some View {
         VStack {
-
             Form {
                 HStack {
                     Text("Profile picture")
@@ -26,7 +25,6 @@ struct ProfileSettingsView: View {
                     
                     PhotosPicker(selection: $newAvatarImageItem, matching: .images) {
                         UserAvatarView(user: session.me)
-                            .clipShape(Circle())
                             .frame(width: 80, height: 80)
                     }
                     .buttonStyle(.plain)

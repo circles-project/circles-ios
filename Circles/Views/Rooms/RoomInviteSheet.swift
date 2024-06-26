@@ -283,9 +283,6 @@ struct RoomInviteSheet: View {
                 self.showingKeyboard = true
             }
         }
-
- 
-
     }
 
     var body: some View {
