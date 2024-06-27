@@ -42,9 +42,8 @@ struct MessageMediaThumbnail: View {
             
             thumbnail
                 .resizable()
-                .aspectRatio(contentMode: aspectRatio)
-//                .scaledToFill()
                 .frame(width: CGFloat(mediaViewWidth), height: mediaHeightCalculation)
+                .aspectRatio(contentMode: aspectRatio)
                 .foregroundColor(.gray)
         }
     }

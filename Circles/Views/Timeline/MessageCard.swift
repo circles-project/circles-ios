@@ -50,8 +50,9 @@ struct ImageContentView: View {
                         if let caption = imageContent.caption {
                             let markdown = MarkdownContent(caption)
                             Markdown(markdown)
+                            
+                            Spacer()
                         }
-                        Spacer()
                     }
                     .background(Color.background)
                 }
@@ -136,7 +137,6 @@ struct MessageCard: MessageView {
                     
                 case M_IMAGE:
                     ImageContentView(message: current, mediaViewWidth: mediaViewWidth)
-                        .clipShape(Rectangle())
                     
                 case M_VIDEO:
                     VideoContentView(message: current)
