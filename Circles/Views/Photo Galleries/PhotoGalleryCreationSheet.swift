@@ -26,10 +26,10 @@ struct PhotoGalleryCreationSheet: View {
     @FocusState var inputFocused
     
     func create() async throws {
-        let roomId = try await self.container.createChild(name: self.galleryName,
-                                                          type: ROOM_TYPE_PHOTOS,
-                                                          encrypted: true,
-                                                          avatar: self.avatarImage)
+        let _ = try await self.container.createChild(name: self.galleryName,
+                                                     type: ROOM_TYPE_PHOTOS,
+                                                     encrypted: true,
+                                                     avatar: self.avatarImage)
 
         self.presentation.wrappedValue.dismiss()
     }

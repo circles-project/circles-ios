@@ -198,7 +198,7 @@ struct GalleryGridView: View {
             }
             .refreshable {
                 print("REFRESH\tGetting latest messages for room \(room.name ?? room.roomId.stringValue)")
-                if let msgs = try? await room.getMessages(forward: false) {
+                if let _ = try? await room.getMessages(forward: false) {
                     print("REFRESH\tGot response from server")
                 }
                 

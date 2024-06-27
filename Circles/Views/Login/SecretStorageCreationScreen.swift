@@ -27,7 +27,7 @@ struct SecretStorageCreationScreen: View {
             Label("Tip: If this is a new account, tap \"Set up secure storage\" to get started.", systemImage: "lightbulb.fill")
             
             AsyncButton(action: {
-                guard let secretStore = matrix.secretStore
+                guard let _ = matrix.secretStore
                 else {
                     print("No secret storage!")
                     return

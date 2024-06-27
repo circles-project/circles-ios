@@ -78,7 +78,7 @@ class ContainerRoom<T: Matrix.Room>: Matrix.SpaceRoom {
     }
     
     private func onLeaveChild(_ childRoomId: RoomId) async throws {
-        await MainActor.run {
+        _ = await MainActor.run {
             self.rooms.removeValue(forKey: childRoomId)
         }
         try await self.session.removeSpaceChild(childRoomId, from: self.roomId)
@@ -110,7 +110,7 @@ class ContainerRoom<T: Matrix.Room>: Matrix.SpaceRoom {
         if content.via?.first == nil {
             // We're removing an old child room from the space
             
-            await MainActor.run {
+            _ = await MainActor.run {
                 self.rooms.removeValue(forKey: childRoomId)
             }
             

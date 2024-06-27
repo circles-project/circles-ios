@@ -110,7 +110,7 @@ struct MessageContextMenu: View {
                 pasteboard.string = textContent.body
 
             case M_IMAGE:
-                guard let imageContent = content as? Matrix.mImageContent
+                guard let _ = content as? Matrix.mImageContent
                 else {
                     print("Failed to get content to copy m.image message \(message.eventId)")
                     return
