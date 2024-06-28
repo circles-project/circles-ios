@@ -12,6 +12,7 @@ import Matrix
 struct SignupStartForm: View {
     @ObservedObject var session: SignupSession
     var state: UIAA.SessionState
+    @State private var canNotRegisterFlow: Bool = false
     
     var body: some View {
         VStack {
@@ -31,10 +32,17 @@ struct SignupStartForm: View {
                             
                             if appleFlow != nil {
                                 await session.selectFlow(flow: appleFlow!)
+                            } else {
+                                canNotRegisterFlow = true
                             }
                         }
                     }
                 }
+            VStack {
+                Label("We apologize, but new accounts are not currently available on this server.  Please check back later.", systemImage: SystemImages.exclamationmarkTriangle.rawValue)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 20)
+            }.opacity(canNotRegisterFlow ? 1 : 0)
         }
     }
 }
