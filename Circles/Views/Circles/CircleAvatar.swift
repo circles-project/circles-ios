@@ -45,7 +45,7 @@ struct RoomCircleAvatar: View {
                     let color = Color.background.randomColor(from: room.roomId.stringValue)
                     
                     let userId = room.creator
-                    let _ = room.session.getUser(userId: userId)
+                    let _ = room.session.getUser(userId: userId) // let user
                     
                     Circle()
                         .foregroundColor(color)
