@@ -132,7 +132,7 @@ struct SetupAvatarView: View {
                     try await matrix.setMyDisplayName(name)
                 }
                 if let image = avatarImage {
-                    _ = try await matrix.setMyAvatarImage(image)
+                    try await matrix.setMyAvatarImage(image)
                 }
                 
                 stage = .circlesIntro

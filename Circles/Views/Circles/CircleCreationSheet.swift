@@ -52,7 +52,7 @@ struct CircleCreationSheet: View {
         // Add the circle as a child room of the container
         try await container.addChild(circleRoomId)
         
-        guard let _ = try await container.session.getRoom(roomId: circleRoomId, as: CircleSpace.self)
+        guard let _ = try await container.session.getRoom(roomId: circleRoomId, as: CircleSpace.self) // let circleRoom
         else {
             print("Failed to get new circle Space room for roomId \(circleRoomId)")
             return

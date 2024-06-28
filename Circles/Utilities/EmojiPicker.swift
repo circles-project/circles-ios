@@ -43,7 +43,7 @@ struct EmojiPicker: View {
                     let emojis = ["👍", "👎", "😀", "😢", "❤️", "🎉", "🔥"]
                     ForEach(emojis, id: \.self) { emoji in
                         AsyncButton(action: {
-                            guard let _ = try? await self.message.sendReaction(emoji)
+                            guard let _ = try? await self.message.sendReaction(emoji) // let reactionEventId
                             else {
                                 // FIXME: Set some error message
                                 return
@@ -81,7 +81,7 @@ struct EmojiPicker: View {
                         ForEach(reactions, id: \.self) { reaction in
                             //let reaction: String = emoji.char
                             AsyncButton(action: {
-                                guard let _ = try? await self.message.sendReaction(reaction)
+                                guard let _ = try? await self.message.sendReaction(reaction) // let reactionEventId
                                 else {
                                     // FIXME: Set some error message
                                     return

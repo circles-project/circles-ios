@@ -400,7 +400,7 @@ struct PostComposer: View {
                 ProgressView("Loading video...")
             }
             
-        case .newVideo(_, let thumbnail):
+        case .newVideo(_, let thumbnail): // (let movie, let thumbnail)
             BasicImage(uiImage: thumbnail, aspectRatio: .fill)
                 .frame(minWidth: 200, maxWidth: 800, minHeight: 200, maxHeight: 400)
                 .clipShape(RoundedRectangle(cornerRadius: 6))

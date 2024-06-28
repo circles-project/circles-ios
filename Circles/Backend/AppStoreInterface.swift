@@ -285,7 +285,7 @@ class AppStoreInterface: ObservableObject {
                     } else {
                         print("Found auto-renewable transaction \(transaction.id) for product \(transaction.productID) but it has no group id")
                     }
-                    let _ = transaction.originalID
+                    let _ = transaction.originalID // let otid
                 default:
                     break
                 }

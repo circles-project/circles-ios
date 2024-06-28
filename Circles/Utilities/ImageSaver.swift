@@ -17,7 +17,7 @@ class ImageSaver: NSObject {
     }
 
     @objc func saveError(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
-        if let _ = error {
+        if let _ = error { // let error
             print("Error: Save failed")
         } else {
             print("Save finished!")

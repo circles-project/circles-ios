@@ -73,7 +73,7 @@ public class CirclesStore: ObservableObject {
     
     private func dump(defaults: UserDefaults) {
         let dictionary = defaults.dictionaryRepresentation()
-        for (key, _) in dictionary {
+        for (key, _) in dictionary { // (key, value)
             logger.debug("DEFAULTS Found key \(key)")
         }
     }
@@ -341,7 +341,7 @@ public class CirclesStore: ObservableObject {
         
         switch ssss.state {
             
-        case .online(_):
+        case .online(_): // (let defaultKeyId)
             logger.debug("Matrix secret storage is online")
 
             // Ok great we are connected to the Matrix account, and we have a valid Secret Storage key
@@ -408,7 +408,7 @@ public class CirclesStore: ObservableObject {
     
     func addMissingKey(key: Matrix.SecretStorageKey) async throws {
         
-        guard case .needSecretStorageKey(let matrix, let needKeyId, _) = self.state
+        guard case .needSecretStorageKey(let matrix, let needKeyId, _) = self.state // (let matrix, let needKeyId, let description)
         else {
             logger.error("Can't finish connecting unless we're waiting on a secret storage key")
             throw CirclesError("Can't finish connecting unless we're waiting on a secret storage key")
@@ -429,7 +429,7 @@ public class CirclesStore: ObservableObject {
         // Add our new secret storage key
         try await ssss.addNewSecretStorageKey(key)
         
-        guard case .online(_) = ssss.state
+        guard case .online(_) = ssss.state // (let defaultKeyId)
         else {
             logger.error("Secret storage is still not online")
             throw CirclesError("Secret storage is still not online")
@@ -870,13 +870,13 @@ public class CirclesStore: ObservableObject {
                 self.state = .needCreds
             }
             
-        case .loggingInUIA(let loginSession, _):
+        case .loggingInUIA(let loginSession, _): // (let loginSession, let filter)
             try await loginSession.cancel()
             await MainActor.run {
                 self.state = .needCreds
             }
             
-        case .loggingInNonUIA(_):
+        case .loggingInNonUIA(_): // (let legacyLoginSessio)
             // There's really nothing to cancel
             await MainActor.run {
                 self.state = .needCreds
