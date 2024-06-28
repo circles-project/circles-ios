@@ -79,7 +79,7 @@ struct SettingsScreen: View {
                     }
                     
                     Label {
-                        Link("Circles iOS Privacy Policy", destination: URL(string: "https://circles.futo.org/privacy/ios/")!)
+                        Link("Circles iOS Privacy Policy", destination: URL(string: PRIVACY_POLICY_URL)!)
                     } icon: {
                         Image(systemName: SystemImages.link.rawValue)
                     }
