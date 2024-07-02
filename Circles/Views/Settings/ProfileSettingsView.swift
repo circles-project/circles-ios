@@ -15,10 +15,10 @@ struct ProfileSettingsView: View {
     
     @State var showPicker = false
     @State var newAvatarImageItem: PhotosPickerItem?
+    @State var isTapped: Bool = false
     
     var body: some View {
         VStack {
-
             Form {
                 HStack {
                     Text("Profile picture")
@@ -41,10 +41,31 @@ struct ProfileSettingsView: View {
                         }
                     }
                 }
+                .sheet(isPresented: $isTapped, content: {
+                    UpdateDisplaynameView(session: session)
+                })
                 
-                NavigationLink(destination: UpdateDisplaynameView(session: session)) {
-                    Text("Your name")
-                        .badge(session.me.displayName ?? "(none)")
+                if UIDevice.modelName.contains("iPad") {
+                    Button(action: {
+                        isTapped = true
+                    }) {
+                        HStack {
+                            Text("Your name")
+                                .foregroundStyle(Color.primary)
+                            Spacer()
+                            HStack {
+                                Text(abbreviate(session.me.displayName))
+                                Image(systemName: SystemImages.chevronRight.rawValue)
+                            }
+                            .foregroundStyle(Color.gray)
+                        }
+                        
+                    }
+                } else {
+                    NavigationLink(destination: UpdateDisplaynameView(session: session)) {
+                        Text("Your name")
+                            .badge(abbreviate(session.me.displayName))
+                    }
                 }
                 
                 Text("User ID")

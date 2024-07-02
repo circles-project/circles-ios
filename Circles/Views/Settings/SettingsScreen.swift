@@ -36,7 +36,6 @@ struct SettingsScreen: View {
     var body: some View {
         NavigationView {
             Form {
-
                 Section("General") {
                     NavigationLink(destination: ProfileSettingsView(session: session.matrix)) {
                         Label("Public Profile", systemImage: "person.circle.fill")
