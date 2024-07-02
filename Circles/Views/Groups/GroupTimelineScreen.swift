@@ -37,6 +37,7 @@ struct GroupTimelineScreen: View {
     @State private var showTopicPopover = false
 
     @State var nilParentMessage: Matrix.Message? = nil
+    @State var showNewPostInSheetStyle = false
     
     var timeline: some View {
         TimelineView<MessageCard>(room: room)
@@ -99,6 +100,7 @@ struct GroupTimelineScreen: View {
                                 RoomShareSheet(room: room, url: url)
                             }
                         }
+                        .padding([.top], -4)
                 }
                 
                 VStack {
@@ -106,7 +108,9 @@ struct GroupTimelineScreen: View {
                     HStack {
                         Spacer()
                         if room.iCanSendEvent(type: M_ROOM_MESSAGE) {
-                            NavigationLink(destination: PostComposer(room: room).navigationTitle("New Post")) {
+                            Button(action: {
+                                showNewPostInSheetStyle = true
+                            }) {
                                 Image(systemName: SystemImages.plusBubbleFill.rawValue)
                                     .resizable()
                                     .scaledToFill()
@@ -123,6 +127,11 @@ struct GroupTimelineScreen: View {
                 }
             }
             .navigationBarTitle(title, displayMode: .inline)
+            .sheet(isPresented: $showNewPostInSheetStyle) {
+                if room.iCanSendEvent(type: M_ROOM_MESSAGE) {
+                    PostComposer(room: room).navigationTitle("New Post")
+                }
+            }
         }
     }
 }
