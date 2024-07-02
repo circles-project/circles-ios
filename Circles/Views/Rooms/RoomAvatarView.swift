@@ -63,6 +63,7 @@ struct RoomAvatarView<Room>: View where Room: BasicRoomProtocol {
                                                .joined()
                             
                             Text(initials)
+                                .font(.title)
                                 .fontWeight(.bold)
                                 .foregroundColor(textColor)
                                 .position(x: location.x,

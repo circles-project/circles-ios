@@ -68,7 +68,6 @@ struct PeopleOverviewScreen: View {
     var body: some View {
         NavigationSplitView {
             VStack {
-                                
                 List(selection: $selected) {
                     Section("Me") {
                         NavigationLink(value: PeopleTabSection.me) {
