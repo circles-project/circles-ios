@@ -44,10 +44,10 @@ func b64decode(_ str: String) -> [UInt8]? {
     return array
 }
 
-func abbreviate(_ input: String?) -> String {
+func abbreviate(_ input: String?, textIfEmpty: String = "(none)") -> String {
     guard let string = input
     else {
-        return "(none)"
+        return textIfEmpty
     }
     
     if string.count < 23 {

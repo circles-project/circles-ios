@@ -34,7 +34,7 @@ struct SettingsScreen: View {
     
     
     var body: some View {
-        NavigationView {
+        NavigationSplitView {
             Form {
                 Section("General") {
                     NavigationLink(destination: ProfileSettingsView(session: session.matrix)) {
@@ -170,6 +170,8 @@ struct SettingsScreen: View {
                 }
             }
             .navigationTitle("Settings")
+        } detail: {
+            Text("Select a section to see more information")
         }
         .sheet(isPresented: $showChangelog) {
             ChangelogSheet(content: ChangelogFile().loadMarkdown(named: .fullList), title: .fullList, showChangelog: $showChangelog)

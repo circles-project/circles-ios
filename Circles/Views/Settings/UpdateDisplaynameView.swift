@@ -27,11 +27,10 @@ struct UpdateDisplaynameView: View {
     var body: some View {
         VStack(alignment: .center, spacing: 100) {
             //Text("Update displayname for user \(user.userId.stringValue)")
-            
             Spacer()
             
             HStack {
-                TextField(session.me.displayName ?? "", text: $newDisplayname, prompt: Text("Your name"))
+                TextField(abbreviate(session.me.displayName, textIfEmpty: ""), text: $newDisplayname, prompt: Text("Your name"))
                     .textContentType(.name)
                     .textFieldStyle(.roundedBorder)
                     .focused($focus, equals: .displayname)
@@ -39,6 +38,7 @@ struct UpdateDisplaynameView: View {
                     .onAppear {
                         self.focus = .displayname
                     }
+                
                 Button(action: {
                     self.newDisplayname = ""
                 }) {
