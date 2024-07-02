@@ -29,24 +29,25 @@ struct CircleTimelineView: View {
     @State var sheetType: CircleSheetType? = nil
     @State var showPhotosPicker: Bool = false
     @State var selectedItem: PhotosPickerItem?
+    @State var showNewPostInSheetStyle = false
     //@State var image: UIImage?
     
     var toolbarMenu: some View {
         Menu {
             NavigationLink(destination: CircleSettingsView(space: space) ){
-                Label("Settings", systemImage: "gearshape.fill")
+                Label("Settings", systemImage: SystemImages.gearshapeFill.rawValue)
             }
             
             Button(action: {self.sheetType = .invite}) {
-                Label("Invite Followers", systemImage: "person.crop.circle.badge.plus")
+                Label("Invite Followers", systemImage: SystemImages.personCropCircleBadgePlus.rawValue)
             }
             
             Button(action: {self.sheetType = .share}) {
-                Label("Share", systemImage: "square.and.arrow.up")
+                Label("Share", systemImage: SystemImages.squareAndArrowUp.rawValue)
             }
         }
         label: {
-            Label("Settings", systemImage: "gearshape.fill")
+            Label("Settings", systemImage: SystemImages.gearshapeFill.rawValue)
         }
     }
 
@@ -58,7 +59,6 @@ struct CircleTimelineView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                
                 let foo = self.stupidSwiftUiTrick
                 
                 CircleTimeline(space: space)
@@ -102,14 +102,21 @@ struct CircleTimelineView: View {
                             }
                         }
                     }
+                    .sheet(isPresented: $showNewPostInSheetStyle) {
+                        if let wall = space.wall {
+                            PostComposer(room: wall).navigationTitle("New Post")
+                        }
+                    }
                 
                 if let wall = space.wall {
                     VStack {
                         Spacer()
                         HStack {
                             Spacer()
-                            NavigationLink(destination: PostComposer(room: wall).navigationTitle("New Post")) {
-                                Image(systemName: "plus.bubble.fill")
+                            Button(action: {
+                                showNewPostInSheetStyle = true
+                            }) {
+                                Image(systemName: SystemImages.plusBubbleFill.rawValue)
                                     .resizable()
                                     .scaledToFill()
                                     .frame(width: 50, height: 50)

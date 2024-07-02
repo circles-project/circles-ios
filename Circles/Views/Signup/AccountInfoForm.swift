@@ -82,7 +82,7 @@ struct AccountInfoForm: View {
                         self.alertTitle = "Name"
                         self.alertMessage = helpTextForName
                     }) {
-                        Image(systemName: "questionmark.circle")
+                        Image(systemName: SystemImages.questionmarkCircle.rawValue)
                     }
                 }
                 .frame(width: 300.0, height: 40.0)
@@ -98,7 +98,7 @@ struct AccountInfoForm: View {
                         self.alertTitle = "Email Address"
                         self.alertMessage = helpTextForEmailAddress
                     }) {
-                        Image(systemName: "questionmark.circle")
+                        Image(systemName: SystemImages.questionmarkCircle.rawValue)
                     }
                 }
                 .frame(width: 300.0, height: 40.0)
@@ -123,7 +123,7 @@ struct AccountInfoForm: View {
                         self.alertTitle = "Username"
                         self.alertMessage = helpTextForUsername
                     }) {
-                        Image(systemName: "questionmark.circle")
+                        Image(systemName: SystemImages.questionmarkCircle.rawValue)
                     }
                 }
                 .frame(width: 300.0, height: 40.0)
@@ -138,13 +138,14 @@ struct AccountInfoForm: View {
                         self.alertTitle = "Passphrase"
                         self.alertMessage = helpTextForPassword
                     }) {
-                        Image(systemName: "questionmark.circle")
+                        Image(systemName: SystemImages.questionmarkCircle.rawValue)
                     }
                 }
                 .frame(width: 300.0, height: 40.0)
 
                 SecureField("Repeat Passphrase", text: $repeatPassword)
                     .textContentType(.newPassword)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
                     .frame(width: 300.0, height: 40.0)
             }
 

@@ -49,7 +49,7 @@ struct PersonsCircleRow: View {
 
             }
             
-            //Image(systemName: "chevron.right")
+            //Image(systemName: SystemImages.chevronRight.rawValue)
             
             Spacer()
 

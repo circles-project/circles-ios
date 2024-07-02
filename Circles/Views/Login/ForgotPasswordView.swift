@@ -66,6 +66,7 @@ struct ForgotPasswordView: View {
                 .disableAutocorrection(true)
                 .focused($inputFocused)
                 .frame(width: 300.0, height: 40.0)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
                 .onAppear {
                     self.inputFocused = true
                 }

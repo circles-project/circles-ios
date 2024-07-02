@@ -86,7 +86,7 @@ struct BsspekeEnrollOprfForm: View {
                 .font(.title2)
                 .fontWeight(.bold)
             
-            Label("NOTICE: If you forget your passphrase, you won't be able to access your posts or photos on a new device.", systemImage: "exclamationmark.triangle")
+            Label("NOTICE: If you forget your passphrase, you won't be able to access your posts or photos on a new device.", systemImage: SystemImages.exclamationmarkTriangle.rawValue)
                 .foregroundColor(.red)
                 .padding(.top)
                 .padding(.horizontal,5)
@@ -155,6 +155,7 @@ struct BsspekeEnrollOprfForm: View {
 
             SecureField("same passphrase as before", text: $repeatPassphrase, prompt: Text("Repeat passphrase"))
                 .textContentType(.newPassword)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
                 .focused($focus, equals: .repeatPassphrase)
                 .frame(width: 300.0, height: 40.0)
                 

@@ -27,6 +27,7 @@ struct SelfDetailView: View {
                     VStack(alignment: .center) {
                         let me = profile.session.me
                         UserAvatarView(user: me)
+                            .aspectRatio(contentMode: .fill)
                             .frame(width: 240, height: 240)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                         

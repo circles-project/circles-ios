@@ -51,7 +51,7 @@ struct PhotoContextMenu: View {
             AsyncButton(action: {
                 try await deleteAndPurge(message: message)
             }) {
-                Label("Delete", systemImage: "trash")
+                Label("Delete", systemImage: SystemImages.trash.rawValue)
             }
             .foregroundColor(.red)
         }

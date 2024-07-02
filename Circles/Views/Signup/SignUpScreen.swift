@@ -90,7 +90,7 @@ struct SignupScreen: View {
                     Text("Signup canceled")
                     
                 case .connected(let uiaaState):
-                    SignupStartForm(session: session, store: store, state: uiaaState)
+                    SignupStartForm(session: session, state: uiaaState)
                     
                 case .inProgress(let uiaaState, let stages):
                     UiaInProgressView(session: session, state: uiaaState, stages: stages)

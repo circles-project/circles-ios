@@ -22,43 +22,43 @@ struct DeviceInfoView: View {
             // This is us
             let model = UIDevice().model
             if model.contains("iPhone") {
-                return Image(systemName: "iphone")
+                return Image(systemName: SystemImages.iphone.rawValue)
             }
             else if model.contains("iPad") {
-                return Image(systemName: "ipad")
+                return Image(systemName: SystemImages.ipad.rawValue)
             }
             else {
-                return Image(systemName: "desktopcomputer")
+                return Image(systemName: SystemImages.desktopcomputer.rawValue)
             }
         }
         if let name = device.displayName {
             if name.contains("iPhone") {
-                return Image(systemName: "iphone")
+                return Image(systemName: SystemImages.iphone.rawValue)
             }
             else if name.contains("iPad") {
-                return Image(systemName: "ipad")
+                return Image(systemName: SystemImages.ipad.rawValue)
             }
             else {
-                return Image(systemName: "desktopcomputer")
+                return Image(systemName: SystemImages.desktopcomputer.rawValue)
             }
         }
         else {
-            return Image(systemName: "desktopcomputer")
+            return Image(systemName: SystemImages.desktopcomputer.rawValue)
         }
     }
     
     var verificationStatus: some View {
         HStack {
             if device.crossSigningTrusted || device.locallyTrusted {
-                Image(systemName: "checkmark.shield")
+                Image(systemName: SystemImages.checkmarkShield.rawValue)
                     .foregroundColor(Color.green)
                 Text("Verified")
             } else if device.isBlocked {
-                Image(systemName: "xmark.shield")
+                Image(systemName: SystemImages.xmarkShield.rawValue)
                     .foregroundColor(Color.red)
                 Text("Blocked")
             } else {
-                Image(systemName: "exclamationmark.shield")
+                Image(systemName: SystemImages.exclamationmarkShield.rawValue)
                     .foregroundColor(Color.orange)
                 Text("Unverified")
             }
@@ -100,7 +100,7 @@ struct DeviceInfoView: View {
                     AsyncButton(role: .destructive, action: {
                         //throw CirclesError("Not implemented")
                     }) {
-                        Label("Remove Session", systemImage: "xmark.circle")
+                        Label("Remove Session", systemImage: SystemImages.xmarkCircle.rawValue)
                     }
                 }
             } else {
@@ -123,7 +123,7 @@ struct DeviceInfoView: View {
                     // FIXME: Re-implement all this junk...
                     //device.verify()
                 }) {
-                    Label("Verify Session", systemImage: "checkmark.shield")
+                    Label("Verify Session", systemImage: SystemImages.checkmarkShield.rawValue)
                 }.disabled(true)
             }
         })

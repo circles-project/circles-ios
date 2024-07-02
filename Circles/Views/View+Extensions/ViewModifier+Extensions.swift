@@ -32,7 +32,7 @@ struct DeleteMediaOverlay: ViewModifier {
                     selectedItem = nil
                     messageState = .text
                 }) {
-                    Image(systemName: "x.circle.fill")
+                    Image(systemName: SystemImages.xCircleFill.rawValue)
                         .symbolRenderingMode(.multicolor)
                         .font(.system(size: 30))
                         .foregroundColor(.red)
@@ -52,7 +52,7 @@ struct ChangeMediaOverlay: ViewModifier {
         content
             .overlay(
                 PhotosPicker(selection: $selectedItem, matching: matching) {
-                    Image(systemName: "pencil.circle.fill")
+                    Image(systemName: SystemImages.pencilCircleFill.rawValue)
                         .symbolRenderingMode(.multicolor)
                         .font(.system(size: 30))
                         .foregroundColor(.accentColor)

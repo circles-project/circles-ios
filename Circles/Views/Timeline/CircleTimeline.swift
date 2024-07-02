@@ -33,7 +33,7 @@ struct CircleTimeline: View {
     var debugFooter: some View {
         VStack(alignment: .leading) {
             Button(action: {self.showDebug = false}) {
-                Label("Hide debug info", systemImage: "eye.slash")
+                Label("Hide debug info", systemImage: SystemImages.eyeSlash.rawValue)
             }
             Text("\(space.rooms.count) rooms in the Stream")
             let rooms: [Matrix.Room] = space.rooms.values.sorted { $0.timestamp < $1.timestamp }
@@ -205,7 +205,7 @@ struct CircleTimeline: View {
                     debugFooter
                 } else {
                     Button(action: {self.showDebug = true}) {
-                        Label("Show debug info", systemImage: "eye")
+                        Label("Show debug info", systemImage: SystemImages.eye.rawValue)
                             .font(.footnote)
                     }
                 }

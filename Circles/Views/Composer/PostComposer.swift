@@ -325,7 +325,7 @@ struct PostComposer: View {
                 }
             },
             label: {
-                Image(systemName: "photo.badge.plus.fill")
+                Image(systemName: SystemImages.paperclip.rawValue)
                     .scaleEffect(1.5)
             })
             .padding(1)
@@ -337,7 +337,7 @@ struct PostComposer: View {
                 self.presentation.wrappedValue.dismiss()
                 self.newMessageText = ""
             }) {
-                Label("Cancel", systemImage: "xmark")
+                Label("Cancel", systemImage: SystemImages.xmark.rawValue)
                     //.foregroundColor(.red)
                     .padding(.vertical, 2)
                     .padding(.horizontal, 5)
@@ -373,7 +373,8 @@ struct PostComposer: View {
             }
             
         case .newImage(let image):
-            BasicImage(uiImage: image)
+            BasicImage(uiImage: image, aspectRatio: .fill)
+                .frame(minWidth: 200, maxWidth: 800, minHeight: 200, maxHeight: 400)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
                 .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
                 .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
@@ -388,7 +389,7 @@ struct PostComposer: View {
                             task.cancel()
                             self.messageState = .text
                         }) {
-                            Image(systemName: "xmark.circle.fill")
+                            Image(systemName: SystemImages.xmarkCircleFill.rawValue)
                                 .symbolRenderingMode(.multicolor)
                                 .font(.system(size: 30))
                                 .foregroundColor(.red)
@@ -400,7 +401,8 @@ struct PostComposer: View {
             }
             
         case .newVideo(let movie, let thumbnail):
-            BasicImage(uiImage: thumbnail)
+            BasicImage(uiImage: thumbnail, aspectRatio: .fill)
+                .frame(minWidth: 200, maxWidth: 800, minHeight: 200, maxHeight: 400)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
                 .changeMediaOverlay(selectedItem: $selectedItem, matching: $newPickerFilter)
                 .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
@@ -413,7 +415,7 @@ struct PostComposer: View {
                     .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
             } else {
                 ZStack {
-                    BasicImage(systemName: "photo.artframe")
+                    BasicImage(systemName: SystemImages.photoArtframe.rawValue)
                         .clipShape(RoundedRectangle(cornerRadius: 6))
                     
                     ProgressView()
@@ -448,7 +450,7 @@ struct PostComposer: View {
                     .deleteMediaOverlay(selectedItem: $selectedItem, messageState: $messageState)
             } else {
                 ZStack {
-                    BasicImage(systemName: "photo.artframe")
+                    BasicImage(systemName: SystemImages.photoArtframe.rawValue)
                         .clipShape(RoundedRectangle(cornerRadius: 6))
                     
                     ProgressView()

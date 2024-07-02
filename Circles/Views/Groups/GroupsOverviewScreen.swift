@@ -101,7 +101,7 @@ struct GroupsOverviewScreen: View {
                     }
                 }
                 label: {
-                    Image(systemName: "plus.circle.fill")
+                    Image(systemName: SystemImages.plusCircleFill.rawValue)
                         .resizable()
                         .scaledToFill()
                         .frame(width: 50, height: 50)
@@ -139,11 +139,11 @@ struct GroupsOverviewScreen: View {
                     Button(action: {
                         self.showHelpText = true
                     }) {
-                        Label("Help", systemImage: "questionmark.circle")
+                        Label("Help", systemImage: SystemImages.questionmarkCircle.rawValue)
                     }
                 }
                 label: {
-                    Label("More", systemImage: "ellipsis.circle")
+                    Label("More", systemImage: SystemImages.ellipsisCircle.rawValue)
                 }
             }
         }

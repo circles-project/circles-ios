@@ -38,6 +38,7 @@ struct CirclesTabbedInterface: View {
     @AppStorage("debugMode") var debugMode: Bool = false
     @AppStorage(DEFAULTS_KEY_ENABLE_GALLERIES, store: .standard) var enableGalleries: Bool = false
     @AppStorage("changelogLastUpdate") var changelogLastUpdate: TimeInterval = 0
+    @AppStorage("mediaViewHeight") var mediaViewHeight: Double = 0
     @State var showChangelog = false
     var changelogFile = ChangelogFile()
     
@@ -68,7 +69,7 @@ struct CirclesTabbedInterface: View {
                     ChangelogSheet(content: changelogFile.loadMarkdown(named: .lastUpdates), showChangelog: $showChangelog)
                 }
                 .tabItem {
-                    Image(systemName: "circles.hexagonpath")
+                    Image(systemName: SystemImages.circlesHexagonpath.rawValue)
                     Text("Circles")
                 }
                 .tag(Tab.circles)
@@ -77,7 +78,7 @@ struct CirclesTabbedInterface: View {
                                  selected: $session.viewState.selectedGroupId)
                 .environmentObject(session)
                 .tabItem {
-                    Image(systemName: "person.2.square.stack")
+                    Image(systemName: SystemImages.person2SquareStack.rawValue)
                     Text("Groups")
                 }
                 .tag(Tab.groups)
@@ -88,7 +89,7 @@ struct CirclesTabbedInterface: View {
                                  groups: self.session.groups)
                 .environmentObject(session)
                 .tabItem {
-                    Image(systemName: "rectangle.stack.person.crop")
+                    Image(systemName: SystemImages.rectangleStackPersonCrop.rawValue)
                     Text("People")
                 }
                 .tag(Tab.people)
@@ -98,7 +99,7 @@ struct CirclesTabbedInterface: View {
                                      selected: $session.viewState.selectedGalleryId)
                     .environmentObject(session)
                     .tabItem {
-                        Image(systemName: "photo.fill.on.rectangle.fill")
+                        Image(systemName: SystemImages.photoFillOnRectangleFill.rawValue)
                         Text("Photos")
                     }
                     .tag(Tab.photos)
@@ -107,7 +108,7 @@ struct CirclesTabbedInterface: View {
             SettingsScreen(store: store, session: session)
                 .environmentObject(session)
                 .tabItem {
-                    Image(systemName: "gearshape")
+                    Image(systemName: SystemImages.gearshape.rawValue)
                     Text("Settings")
                 }
                 .tag(Tab.settings)
@@ -115,7 +116,7 @@ struct CirclesTabbedInterface: View {
             /*
             Text("Chat Screen")
                 .tabItem {
-                    Image(systemName: "bubble.left.and.bubble.right.fill")
+                    Image(systemName: SystemImages.bubbleLeftAndBubbleRightFill.rawValue)
                     //Text("Direct Messages")}
                     Text("Chat")
                 }
@@ -128,7 +129,16 @@ struct CirclesTabbedInterface: View {
         .sheet(item: $session.viewState.knockRoomId) { roomId in
             ScanQrCodeAndKnockSheet(session: self.session.matrix, roomId: roomId)
         }
-
+        .background(
+            GeometryReader { geometry in
+                Color.clear
+                    .onAppear {
+                        if mediaViewHeight == 0 {
+                            mediaViewHeight = geometry.size.height
+                        }
+                    }
+            }
+        )
     }
 
     var body: some View {

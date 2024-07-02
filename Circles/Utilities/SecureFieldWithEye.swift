@@ -19,7 +19,7 @@ struct SecureFieldWithEye: View {
                     .disableAutocorrection(true)
                     .autocapitalization(.none)
                 Button(action: {self.showText.toggle()}) {
-                    Image(systemName: "eye")
+                    Image(systemName: SystemImages.eye.rawValue)
                         .foregroundColor(Color.accentColor)
                 }
             } else {
@@ -27,7 +27,7 @@ struct SecureFieldWithEye: View {
                     .disableAutocorrection(true)
                     .autocapitalization(.none)
                 Button(action: {self.showText.toggle()}) {
-                    Image(systemName: "eye")
+                    Image(systemName: SystemImages.eye.rawValue)
                         .foregroundColor(.gray)
                 }
             }

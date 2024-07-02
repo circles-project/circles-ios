@@ -37,6 +37,7 @@ struct GroupTimelineScreen: View {
     @State private var showTopicPopover = false
 
     @State var nilParentMessage: Matrix.Message? = nil
+    @State var showNewPostInSheetStyle = false
     
     var timeline: some View {
         TimelineView<MessageCard>(room: room)
@@ -44,28 +45,27 @@ struct GroupTimelineScreen: View {
     
     var toolbarMenu: some View {
         Menu {
-            
             NavigationLink(destination: GroupSettingsView(room: room, container: container)) {
-                Label("Settings", systemImage: "gearshape")
+                Label("Settings", systemImage: SystemImages.gearshapeFill.rawValue)
             }
             
             if room.iCanInvite {
                 Button(action: {
                     self.sheetType = .invite
                 }) {
-                    Label("Invite new members", systemImage: "person.crop.circle.badge.plus")
+                    Label("Invite new members", systemImage: SystemImages.personCropCircleBadgePlus.rawValue)
                 }
             }
             
             Button(action: {
                 self.sheetType = .share
             }) {
-                Label("Share", systemImage: "square.and.arrow.up")
+                Label("Share", systemImage: SystemImages.squareAndArrowUp.rawValue)
             }
             
         }
         label: {
-            Label("Settings", systemImage: "gearshape.fill")
+            Label("Settings", systemImage: SystemImages.gearshapeFill.rawValue)
         }
     }
     
@@ -77,7 +77,6 @@ struct GroupTimelineScreen: View {
         
         NavigationStack {
             ZStack {
-                
                 VStack(alignment: .center) {
                     
                     /*
@@ -113,8 +112,10 @@ struct GroupTimelineScreen: View {
                     HStack {
                         Spacer()
                         if room.iCanSendEvent(type: M_ROOM_MESSAGE) {
-                            NavigationLink(destination: PostComposer(room: room).navigationTitle("New Post")) {
-                                Image(systemName: "plus.bubble.fill")
+                            Button(action: {
+                                showNewPostInSheetStyle = true
+                            }) {
+                                Image(systemName: SystemImages.plusBubbleFill.rawValue)
                                     .resizable()
                                     .scaledToFill()
                                     .frame(width: 50, height: 50)
@@ -130,6 +131,11 @@ struct GroupTimelineScreen: View {
                 }
             }
             .navigationBarTitle(title, displayMode: .inline)
+            .sheet(isPresented: $showNewPostInSheetStyle) {
+                if room.iCanSendEvent(type: M_ROOM_MESSAGE) {
+                    PostComposer(room: room).navigationTitle("New Post")
+                }
+            }
         }
     }
 }

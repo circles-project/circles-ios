@@ -93,7 +93,7 @@ struct RoomMemberDetailView: View {
                 }
             },
                                 message: { level in
-                Label("WARNING: You are about to change your own power level.  This cannot be undone.", systemImage: "exclamationmark.triangle")
+                Label("WARNING: You are about to change your own power level.  This cannot be undone.", systemImage: SystemImages.exclamationmarkTriangle.rawValue)
             } )
             
         }
@@ -112,7 +112,7 @@ struct RoomMemberDetailView: View {
                         Label {
                             Text("Remove from \(name)")
                         } icon: {
-                            Image(systemName: "minus.circle.fill")
+                            Image(systemName: SystemImages.minusCircleFill.rawValue)
                                 .foregroundColor(.red)
                         }
                             
@@ -120,7 +120,7 @@ struct RoomMemberDetailView: View {
                         Label {
                             Text("Remove this user")
                         } icon: {
-                            Image(systemName: "minus.circle.fill")
+                            Image(systemName: SystemImages.minusCircleFill.rawValue)
                                 .foregroundColor(.red)
                         }
                     }
@@ -145,7 +145,7 @@ struct RoomMemberDetailView: View {
                         Label {
                             Text("Ban from \(name)")
                         } icon: {
-                            Image(systemName: "xmark.circle.fill")
+                            Image(systemName: SystemImages.xmarkCircleFill.rawValue)
                                 .foregroundColor(.red)
                         }
                             
@@ -153,7 +153,7 @@ struct RoomMemberDetailView: View {
                         Label {
                             Text("Ban this user")
                         } icon: {
-                            Image(systemName: "xmark.circle.fill")
+                            Image(systemName: SystemImages.xmarkCircleFill.rawValue)
                                 .foregroundColor(.red)
                         }
                     }
@@ -190,7 +190,7 @@ struct RoomMemberDetailView: View {
             }
         } label:
         {
-            Label("Invite to follow me", systemImage: "person.line.dotted.person.fill")
+            Label("Invite to follow me", systemImage: SystemImages.personLineDottedPersonFill.rawValue)
         }
     }
     
@@ -305,7 +305,7 @@ struct RoomMemberDetailView: View {
                         HStack {
                             Text("Photo")
                             Spacer()
-                            BasicImage(uiImage: avatar)
+                            BasicImage(uiImage: avatar, aspectRatio: .fill)
                                 .frame(width: 80, height: 80)
                                 .clipShape(RoundedRectangle(cornerRadius: 4))
                         }

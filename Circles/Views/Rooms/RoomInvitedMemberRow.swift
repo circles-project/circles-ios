@@ -18,7 +18,8 @@ struct RoomInvitedMemberRow: View {
     var body: some View {
         HStack {
             UserAvatarView(user: user)
-                .clipShape(RoundedRectangle(cornerRadius: 6))
+                .clipShape(Circle())
+                .aspectRatio(contentMode: .fill)
                 .frame(width: 60, height: 60)
             VStack(alignment: .leading) {
                 UserNameView(user: user)
@@ -33,7 +34,7 @@ struct RoomInvitedMemberRow: View {
                 // Cancel invite
                 self.showConfirmCancel = true
             }) {
-                Image(systemName: "trash")
+                Image(systemName: SystemImages.trash.rawValue)
             }
             .disabled(!room.iCanKick)
             .confirmationDialog(
