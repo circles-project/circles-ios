@@ -40,7 +40,7 @@ struct SetupAvatarView: View {
 
             Spacer()
 
-            Text("Set up your profile")
+            Text("Set your name and profile photo")
                 .font(.title)
                 .fontWeight(.bold)
                 
@@ -104,17 +104,26 @@ struct SetupAvatarView: View {
             Label("NOTE: Profile photos are not encrypted", systemImage: SystemImages.exclamationmarkTriangle.rawValue)
                 .foregroundColor(.orange)
 
-            TextField("First Last", text: $newName, prompt: Text("Your name"))
-                .textContentType(.name)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .autocorrectionDisabled()
-                .focused($inputFocused)
-                .textInputAutocapitalization(.words)
-                .frame(width: 300)
-                .padding()
-                .onAppear {
-                    self.inputFocused = true
+            HStack {
+                TextField("First Last", text: $newName, prompt: Text("Your name"))
+                    .textContentType(.name)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .autocorrectionDisabled()
+                    .focused($inputFocused)
+                    .textInputAutocapitalization(.words)
+                    .frame(width: 300)
+                    .padding()
+                    .onAppear {
+                        self.inputFocused = true
+                    }
+                
+                Button(action: {
+                    self.newName = ""
+                }) {
+                    Image(systemName: SystemImages.xmark.rawValue)
+                        .foregroundColor(.gray)
                 }
+            }
                 /*
                 .task {
                     let userId = session.client.creds.userId
