@@ -22,19 +22,22 @@ struct UserAvatarView: View {
     var body: some View {
         if let avatar = user.avatar {
             BasicImage(uiImage: avatar)
-        }
-        else if let jdenticon = user.jdenticon {
-            BasicImage(uiImage: jdenticon)
-                .onAppear {
-                    user.fetchAvatarImage()
-                }
         } else {
-            Image(systemName: SystemImages.personFill.rawValue)
-
-                .foregroundColor(defaultImageColor)
-                .onAppear {
-                    user.fetchAvatarImage()
-                }
+            ZStack {
+                let color = Color.background.randomColor(from: user.userId.stringValue)
+                
+                Image("")
+                    .resizable()
+                    .background(color)
+                    .scaledToFit()
+                
+                let userIdCharacter = user.userId.stringValue.dropFirst().first?.uppercased()
+                
+                Text(String(user.displayName?.first?.uppercased() ?? userIdCharacter ?? "dmytro"))
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .foregroundColor(defaultImageColor)
+            }
         }
     }
 }
