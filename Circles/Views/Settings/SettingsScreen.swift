@@ -171,7 +171,7 @@ struct SettingsScreen: View {
             }
             .navigationTitle("Settings")
         } detail: {
-            Text("Select a section to see more information")
+            ProfileSettingsView(session: session.matrix)
         }
         .sheet(isPresented: $showChangelog) {
             ChangelogSheet(content: ChangelogFile().loadMarkdown(named: .fullList), title: .fullList, showChangelog: $showChangelog)

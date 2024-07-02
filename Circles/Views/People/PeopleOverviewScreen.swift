@@ -167,7 +167,7 @@ struct PeopleOverviewScreen: View {
                 case .friendsOfFriends:
                     FriendsOfFriendsView(profile: profile, people: people, friendsOfFriends: $friendsOfFriends)
                 default:
-                    Text("Select a section to see more information")
+                    SelfDetailView(profile: profile, circles: circles)
                 }
             }
         }
