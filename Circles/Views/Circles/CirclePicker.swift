@@ -32,7 +32,7 @@ struct CirclePicker: View {
                         }
                     }) {
                         HStack {
-                            Image(systemName: selected.contains(circle) ? "checkmark.circle" : "circle")
+                            Image(systemName: selected.contains(circle) ? SystemImages.checkmarkCircle.rawValue : SystemImages.circle.rawValue)
                                 .resizable()
                                 .frame(width: 25, height: 25)
                                 .foregroundColor(.gray)

@@ -29,7 +29,7 @@ struct SetupAvatarView: View {
         if let img = self.avatarImage {
             return Image(uiImage: img)
         } else {
-            return Image(systemName: "person.crop.square")
+            return Image(systemName: SystemImages.personCropSquare.rawValue)
         }
     }
 
@@ -75,7 +75,7 @@ struct SetupAvatarView: View {
                         }
                     }
                     label: {
-                        Image(systemName: "pencil.circle.fill")
+                        Image(systemName: SystemImages.pencilCircleFill.rawValue)
                             .symbolRenderingMode(.multicolor)
                             .font(.system(size: 30))
                             .foregroundColor(.accentColor)
@@ -101,7 +101,7 @@ struct SetupAvatarView: View {
                     }
                 }
             
-            Label("NOTE: Profile photos are not encrypted", systemImage: "exclamationmark.triangle")
+            Label("NOTE: Profile photos are not encrypted", systemImage: SystemImages.exclamationmarkTriangle.rawValue)
                 .foregroundColor(.orange)
 
             TextField("First Last", text: $newName, prompt: Text("Your name"))

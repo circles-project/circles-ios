@@ -75,7 +75,7 @@ struct GroupOverviewRow: View {
             Button(role: .destructive, action: {
                 self.showConfirmLeave = true
             }) {
-                Label("Leave group", systemImage: "xmark.bin")
+                Label("Leave group", systemImage: SystemImages.xmarkBin.rawValue)
             }
         }
         .confirmationDialog(Text("Confirm Leaving Group"),

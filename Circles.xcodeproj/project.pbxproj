@@ -10,7 +10,6 @@
 		4012C54926A752C400BB15E6 /* EmojiPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4012C54826A752C400BB15E6 /* EmojiPicker.swift */; };
 		403CEA9326E864160054DBF4 /* TermsOfServiceForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403CEA9226E864160054DBF4 /* TermsOfServiceForm.swift */; };
 		403CEA9526E865740054DBF4 /* TokenForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403CEA9426E865740054DBF4 /* TokenForm.swift */; };
-		403CEA9726E866B70054DBF4 /* ValidateEmailForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403CEA9626E866B70054DBF4 /* ValidateEmailForm.swift */; };
 		403CEA9926E868F30054DBF4 /* AccountInfoForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403CEA9826E868F30054DBF4 /* AccountInfoForm.swift */; };
 		403CEA9D26E86B920054DBF4 /* SetupAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403CEA9C26E86B920054DBF4 /* SetupAvatarView.swift */; };
 		403CEA9F26E86C7F0054DBF4 /* SetupCirclesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403CEA9E26E86C7F0054DBF4 /* SetupCirclesView.swift */; };
@@ -85,6 +84,7 @@
 		A509B89A28189E950053E5BC /* BlindSaltSpeke in Frameworks */ = {isa = PBXBuildFile; productRef = A509B89928189E950053E5BC /* BlindSaltSpeke */; };
 		A509B89C2818A1F80053E5BC /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A509B89B2818A1F80053E5BC /* Array+Extension.swift */; };
 		A509B89E2819B6C90053E5BC /* CirclesError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A509B89D2819B6C90053E5BC /* CirclesError.swift */; };
+		A5119A432C20BE5E00E79E20 /* EmailSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5119A422C20BE5E00E79E20 /* EmailSettingsView.swift */; };
 		A51503C42B75690700E1566E /* SaveImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51503C32B75690700E1566E /* SaveImage.swift */; };
 		A51503C62B756B7F00E1566E /* DeleteAndPurge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51503C52B756B7F00E1566E /* DeleteAndPurge.swift */; };
 		A51928B32BCDAE38005DCFF4 /* BannedRoomMemberRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51928B22BCDAE38005DCFF4 /* BannedRoomMemberRow.swift */; };
@@ -265,7 +265,6 @@
 		4012C54826A752C400BB15E6 /* EmojiPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiPicker.swift; sourceTree = "<group>"; };
 		403CEA9226E864160054DBF4 /* TermsOfServiceForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsOfServiceForm.swift; sourceTree = "<group>"; };
 		403CEA9426E865740054DBF4 /* TokenForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenForm.swift; sourceTree = "<group>"; };
-		403CEA9626E866B70054DBF4 /* ValidateEmailForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidateEmailForm.swift; sourceTree = "<group>"; };
 		403CEA9826E868F30054DBF4 /* AccountInfoForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountInfoForm.swift; sourceTree = "<group>"; };
 		403CEA9C26E86B920054DBF4 /* SetupAvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupAvatarView.swift; sourceTree = "<group>"; };
 		403CEA9E26E86C7F0054DBF4 /* SetupCirclesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupCirclesView.swift; sourceTree = "<group>"; };
@@ -342,6 +341,7 @@
 		A504DA7228120AF100EFF42E /* AsyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncButton.swift; sourceTree = "<group>"; };
 		A509B89B2818A1F80053E5BC /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
 		A509B89D2819B6C90053E5BC /* CirclesError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesError.swift; sourceTree = "<group>"; };
+		A5119A422C20BE5E00E79E20 /* EmailSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailSettingsView.swift; sourceTree = "<group>"; };
 		A51503C32B75690700E1566E /* SaveImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveImage.swift; sourceTree = "<group>"; };
 		A51503C52B756B7F00E1566E /* DeleteAndPurge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAndPurge.swift; sourceTree = "<group>"; };
 		A51928B22BCDAE38005DCFF4 /* BannedRoomMemberRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannedRoomMemberRow.swift; sourceTree = "<group>"; };
@@ -755,7 +755,6 @@
 				40E4D889268A76CF0055968A /* SignupScreen.swift */,
 				403CEAA026E90DE10054DBF4 /* SignupStartForm.swift */,
 				403CEA9426E865740054DBF4 /* TokenForm.swift */,
-				403CEA9626E866B70054DBF4 /* ValidateEmailForm.swift */,
 				A52ACB942A797FD3005D90C5 /* SignupFinishedView.swift */,
 			);
 			path = Signup;
@@ -864,20 +863,21 @@
 			isa = PBXGroup;
 			children = (
 				A53E91312A5F152D007B0196 /* AcknowledgementsView.swift */,
-				A53E912B2A57416B007B0196 /* DeactivateAccountView.swift */,
 				42237CEE2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift */,
+				A53E912B2A57416B007B0196 /* DeactivateAccountView.swift */,
 				A5EE59C62A5F3A59007C24C7 /* DeviceDetailsView.swift */,
 				A5EE59C32A5F21C2007C24C7 /* DeviceInfoView.swift */,
 				A5EE59C22A5F21C2007C24C7 /* DevicesScreen.swift */,
+				A5119A422C20BE5E00E79E20 /* EmailSettingsView.swift */,
 				A53E912F2A5C9DEE007B0196 /* IgnoredUsersView.swift */,
 				A53E91292A573838007B0196 /* NotificationsSettingsView.swift */,
 				A53E91212A5623F9007B0196 /* ProfileSettingsView.swift */,
 				A53E91232A5624E5007B0196 /* SecuritySettingsView.swift */,
 				A52DF68729E732AC008860C3 /* SettingsScreen.swift */,
+				A5B74F432BC85B7600299D90 /* StorageSettingsView.swift */,
 				A562C0952B165E5C00522FCB /* SubscriptionSettingsView.swift */,
 				A53E91252A5710C5007B0196 /* UpdateDisplaynameView.swift */,
 				A53E91272A572E8D007B0196 /* UpdateStatusMessageView.swift */,
-				A5B74F432BC85B7600299D90 /* StorageSettingsView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1258,6 +1258,7 @@
 				A55B8F1E2A8D761A00BAA1FD /* SecretStoragePasswordScreen.swift in Sources */,
 				40AEA6742678E24200C9CBD1 /* BlurHashDecode.swift in Sources */,
 				A520B6792A9410BE002D88C8 /* Movie.swift in Sources */,
+				A5119A432C20BE5E00E79E20 /* EmailSettingsView.swift in Sources */,
 				A5921EB72AFAD5E400C2331D /* CircleFollowingRow.swift in Sources */,
 				A57BD8442BD1996800EC07E9 /* FollowersView.swift in Sources */,
 				A56BE17B2AD6ED4000B15F51 /* ScanQrCodeAndKnockSheet.swift in Sources */,
@@ -1273,7 +1274,6 @@
 				A5921EB32AFAA83A00C2331D /* CircleSettingsView.swift in Sources */,
 				A56BE1742AD5CEFA00B15F51 /* RoomKnockDetailsView.swift in Sources */,
 				409F4343265DE17500690A61 /* GroupOverviewRow.swift in Sources */,
-				403CEA9726E866B70054DBF4 /* ValidateEmailForm.swift in Sources */,
 				A5B74F442BC85B7600299D90 /* StorageSettingsView.swift in Sources */,
 				A54A27862A81735F00858846 /* BsspekeLoginForm.swift in Sources */,
 				A5FA373E2C13925100AD5A58 /* ToastPresenter.swift in Sources */,

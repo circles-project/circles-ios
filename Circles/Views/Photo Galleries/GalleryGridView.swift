@@ -63,13 +63,13 @@ struct GalleryGridView: View {
                         Text("Room has \(messages.count) total messages")
                             .font(.caption)
                         Button(action: {self.debug = false}) {
-                            Label("Hide debug info", systemImage: "eye.slash")
+                            Label("Hide debug info", systemImage: SystemImages.eyeSlash.rawValue)
                         }
                         .font(.caption)
                     }
                     else {
                         Button(action: {self.debug = true}) {
-                            Label("Show debug info", systemImage: "eye")
+                            Label("Show debug info", systemImage: SystemImages.eye.rawValue)
                         }
                         .font(.caption)
                     }
