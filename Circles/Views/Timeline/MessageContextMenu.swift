@@ -16,7 +16,6 @@ struct MessageContextMenu: View {
     @Binding var showMessageDeleteConfirmation: Bool
 
     var body: some View {
-
         let current = message.replacement ?? message
         if let content = current.content as? Matrix.MessageContent,
            content.msgtype == M_IMAGE,
