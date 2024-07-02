@@ -89,7 +89,7 @@ struct TimelineView<V: MessageView>: View {
         }.sorted(by: {$0.timestamp > $1.timestamp})
             ScrollView {
                 LazyVStack(alignment: .center, spacing: 5) {
-                    dmytro//let messages = room.messages.sorted(by: {$0.timestamp > $1.timestamp})
+                    //let messages = room.messages.sorted(by: {$0.timestamp > $1.timestamp})
                     
                     if let msg = room.localEchoMessage {
                         V(message: msg, isLocalEcho: true, isThreaded: false)
