@@ -59,7 +59,7 @@ struct CircleTimelineView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                let foo = self.stupidSwiftUiTrick
+                let _ = self.stupidSwiftUiTrick // foo
                 
                 CircleTimeline(space: space)
                     .navigationBarTitle(space.name ?? "Circle", displayMode: .inline)

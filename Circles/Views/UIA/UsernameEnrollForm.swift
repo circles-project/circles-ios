@@ -52,7 +52,7 @@ struct UsernameEnrollForm: View {
                         self.alertMessage = "The requested username is not available.  Please try a different one."
                         self.showAlert = true
                     }
-                    print("SIGNUP/Username\tExisting username = \(session.realRequestDict["username"] as? String)")
+                    print("SIGNUP/Username\tExisting username = \(session.realRequestDict["username"] as? String ?? "Error")")
                 }
 
             }) {

@@ -45,7 +45,7 @@ struct RoomCircleAvatar: View {
                     let color = Color.background.randomColor(from: room.roomId.stringValue)
                     
                     let userId = room.creator
-                    let user = room.session.getUser(userId: userId)
+                    let _ = room.session.getUser(userId: userId) // let user
                     
                     Circle()
                         .foregroundColor(color)
@@ -151,7 +151,7 @@ struct CircleAvatar: View {
             }
             
             if !secondaryRooms.isEmpty {
-                ForEach(0 ..< n) { i in
+                ForEach(0 ..< n, id: \.self) { i in
                     let theirRoom = secondaryRooms[i]
                     //let p = positions[i]
                     let p = i

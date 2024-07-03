@@ -92,7 +92,7 @@ struct ContentView: View {
         case .needSecretStorageKey(let matrix, let keyId, let keyDescription):
             SecretStoragePasswordScreen(store: store, matrix: matrix, keyId: keyId, description: keyDescription)
             
-        case .haveSecretStorageAndKey(let matrix):
+        case .haveSecretStorageAndKey(_): // (let matrix)
             ProgressView("Checking cross signing")
                 .onAppear {
                     Task {
@@ -100,7 +100,7 @@ struct ContentView: View {
                     }
                 }
             
-        case .haveCrossSigning(let matrix):
+        case .haveCrossSigning(_): // (let matrix)
             ProgressView("Checking key backup")
                 .onAppear {
                     Task {
@@ -108,7 +108,7 @@ struct ContentView: View {
                     }
                 }
             
-        case .haveKeyBackup(let matrix):
+        case .haveKeyBackup(_): // (let matrix)
             ProgressView("Checking space hierarchy")
                 .onAppear {
                     Task {
@@ -119,7 +119,7 @@ struct ContentView: View {
         case .needSpaceHierarchy(let matrix):
             SetupScreen(store: store, matrix: matrix)
 
-        case .haveSpaceHierarchy(let matrix, let config):
+        case .haveSpaceHierarchy(_, _): // (let matrix, let config)
             ProgressView("Loading Circles")
                 .onAppear {
                     Task {

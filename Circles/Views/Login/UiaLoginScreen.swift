@@ -39,7 +39,7 @@ struct UiaLoginScreen: View {
                     }
             }
             
-        case .failed(let error):
+        case .failed(_): // let error
             VStack(spacing: 25) {
                 Label("Error", systemImage: SystemImages.exclamationmarkTriangle.rawValue)
                     .font(.title)

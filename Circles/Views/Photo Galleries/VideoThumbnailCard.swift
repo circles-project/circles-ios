@@ -41,7 +41,7 @@ struct VideoThumbnailCard: View {
                 } else {
                     Color.gray
                         .onAppear {
-                            let task = Task {
+                            let _ = Task {
                                 try await message.fetchThumbnail()
                             }
                         }
