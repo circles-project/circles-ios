@@ -40,7 +40,7 @@ struct SetupCirclesView: View {
             //let currentStage: SignupStage = .setupCircles
 
             Text("Create your circles")
-                .font(.title)
+                .font(.title2)
                 .fontWeight(.bold)
 
             List {

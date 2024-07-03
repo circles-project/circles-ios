@@ -41,7 +41,7 @@ struct SetupAvatarView: View {
             Spacer()
 
             Text("Set your name and profile photo")
-                .font(.title)
+                .font(.title2)
                 .fontWeight(.bold)
                 
             avatar

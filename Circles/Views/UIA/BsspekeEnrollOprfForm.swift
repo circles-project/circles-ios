@@ -94,26 +94,34 @@ struct BsspekeEnrollOprfForm: View {
             Spacer()
 
             VStack(alignment: .leading) {
-                SecureField("correct horse battery staple", text: $passphrase, prompt: Text("New passphrase"))
-                    .textContentType(.newPassword)
-                    .textFieldStyle(.roundedBorder)
-                    .focused($focus, equals: .inputPassphrase)
-                    .onChange(of: passphrase) { newPassword in
-                        if newPassword.isEmpty {
-                            score = 0.0
-                            color = .red
+                HStack {
+                    SecureField("correct horse battery staple", text: $passphrase, prompt: Text("New passphrase"))
+                        .textContentType(.newPassword)
+                        .textFieldStyle(.roundedBorder)
+                        .focused($focus, equals: .inputPassphrase)
+                        .onChange(of: passphrase) { newPassword in
+                            if newPassword.isEmpty {
+                                score = 0.0
+                                color = .red
+                            }
+                            else if let result = checker.passwordStrength(newPassword) {
+                                print("Password score: \(result.score)")
+                                score = Double(min(result.score, 4)) + 1
+                                color = colorForScore(score: Int(score))
+                            }
+                            else {
+                                score = 1.0
+                                color = .red
+                            }
                         }
-                        else if let result = checker.passwordStrength(newPassword) {
-                            print("Password score: \(result.score)")
-                            score = Double(min(result.score, 4)) + 1
-                            color = colorForScore(score: Int(score))
-                        }
-                        else {
-                            score = 1.0
-                            color = .red
-                        }
+                        //.frame(width: 350.0, height: 40.0)
+                    Button(action: {
+                        self.passphrase = ""
+                    }) {
+                        Image(systemName: SystemImages.xmark.rawValue)
+                            .foregroundColor(.gray)
                     }
-                    //.frame(width: 350.0, height: 40.0)
+                }
                 
                 ProgressView("Strength", value: 1.0 * self.score, total: 5.0)
                     .tint(self.color)
@@ -121,7 +129,6 @@ struct BsspekeEnrollOprfForm: View {
             }
             .frame(maxWidth: 550)
             .padding()
-
 
             Spacer()
 
@@ -153,13 +160,20 @@ struct BsspekeEnrollOprfForm: View {
             }
             Spacer()
 
-            SecureField("same passphrase as before", text: $repeatPassphrase, prompt: Text("Repeat passphrase"))
-                .textContentType(.newPassword)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .focused($focus, equals: .repeatPassphrase)
-                .frame(width: 300.0, height: 40.0)
+            HStack {
+                SecureField("same passphrase as before", text: $repeatPassphrase, prompt: Text("Repeat passphrase"))
+                    .textContentType(.newPassword)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .focused($focus, equals: .repeatPassphrase)
+                    .frame(width: 300.0, height: 40.0)
+                Button(action: {
+                    self.repeatPassphrase = ""
+                }) {
+                    Image(systemName: SystemImages.xmark.rawValue)
+                        .foregroundColor(.gray)
+                }
+            }
                 
-
             Spacer()
             
             Button(action: {
@@ -184,7 +198,7 @@ struct BsspekeEnrollOprfForm: View {
     
     @ViewBuilder
     var savePasswordView: some View {
-        VStack(spacing: 50) {
+        VStack(spacing: 20) {
             Text("Would you like to save your passphrase to iCloud Keychain?")
             
             AsyncButton(action: {
