@@ -33,9 +33,10 @@ struct UserAvatarView: View {
                 
                 let userIdCharacter = user.userId.stringValue.dropFirst().first?.uppercased()
                 
-                Text(String(user.displayName?.first?.uppercased() ?? userIdCharacter ?? "dmytro"))
+                Text(String(user.displayName?.first?.uppercased() ?? userIdCharacter ?? ""))
                     .fontWeight(.bold)
-                    .foregroundColor(defaultImageColor)
+                    .font(.title)
+                    .foregroundColor(.white)
             }
         }
     }

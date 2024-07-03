@@ -24,7 +24,7 @@ struct CircleOverviewCard: View {
         VStack(alignment: .leading) {
             HStack(alignment: .center) {
                 //CircleAvatar(space: space)
-                RoomAvatarView(room: space.wall ?? space, avatarText: .roomInitials)
+                RoomAvatarView(room: space.wall ?? space, avatarText: .oneLetter)
                     .clipShape(Circle())
                     .frame(width: 80, height: 80)
                 
