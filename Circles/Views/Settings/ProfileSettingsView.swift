@@ -18,7 +18,6 @@ struct ProfileSettingsView: View {
     
     var body: some View {
         VStack {
-
             Form {
                 HStack {
                     Text("Profile picture")
@@ -41,10 +40,9 @@ struct ProfileSettingsView: View {
                         }
                     }
                 }
-                
                 NavigationLink(destination: UpdateDisplaynameView(session: session)) {
                     Text("Your name")
-                        .badge(session.me.displayName ?? "(none)")
+                        .badge(abbreviate(session.me.displayName))
                 }
                 
                 Text("User ID")

@@ -68,7 +68,6 @@ struct PeopleOverviewScreen: View {
     var body: some View {
         NavigationSplitView {
             VStack {
-                                
                 List(selection: $selected) {
                     Section("Me") {
                         NavigationLink(value: PeopleTabSection.me) {
@@ -151,9 +150,6 @@ struct PeopleOverviewScreen: View {
                     ForEach(subsections) { subsection in
                         Text(subsection.rawValue)
                     }
-                    /*
-
-                     */
                 }
                 */
             }
@@ -171,7 +167,7 @@ struct PeopleOverviewScreen: View {
                 case .friendsOfFriends:
                     FriendsOfFriendsView(profile: profile, people: people, friendsOfFriends: $friendsOfFriends)
                 default:
-                    Text("default")
+                    SelfDetailView(profile: profile, circles: circles)
                 }
             }
         }

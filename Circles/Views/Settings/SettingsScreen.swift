@@ -34,9 +34,8 @@ struct SettingsScreen: View {
     
     
     var body: some View {
-        NavigationView {
+        NavigationSplitView {
             Form {
-
                 Section("General") {
                     NavigationLink(destination: ProfileSettingsView(session: session.matrix)) {
                         Label("Public Profile", systemImage: "person.circle.fill")
@@ -171,6 +170,8 @@ struct SettingsScreen: View {
                 }
             }
             .navigationTitle("Settings")
+        } detail: {
+            ProfileSettingsView(session: session.matrix)
         }
         .sheet(isPresented: $showChangelog) {
             ChangelogSheet(content: ChangelogFile().loadMarkdown(named: .fullList), title: .fullList, showChangelog: $showChangelog)
