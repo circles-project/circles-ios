@@ -22,6 +22,7 @@ struct RoomAvatarView<Room>: View where Room: BasicRoomProtocol {
     
     enum AvatarText: String {
         case none
+        case oneLetter
         case roomName
         case roomInitials
     }
@@ -67,6 +68,15 @@ struct RoomAvatarView<Room>: View where Room: BasicRoomProtocol {
                                 .foregroundColor(textColor)
                                 .position(x: location.x,
                                           y: location.y)
+                        }
+                        else if avatarText == .oneLetter {
+                            let firstLetter = name.first?.uppercased()
+                            
+                            Text(String(firstLetter ?? ""))
+                                .font(.title)
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                                .shadow(color: .black, radius: 5)
                         }
                         else {
                             Text(name)
