@@ -37,6 +37,7 @@ struct UserAvatarView: View {
                     .fontWeight(.bold)
                     .font(.title)
                     .foregroundColor(.white)
+                    .shadow(color: .black, radius: 5)
             }
         }
     }
