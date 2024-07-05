@@ -32,6 +32,8 @@ struct TextContentView: View {
     var body: some View {
         Markdown(markdown)
             .textSelection(.enabled)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .font(Font.custom("Inter", size: 14))
     }
 }
 
@@ -47,6 +49,9 @@ struct ImageContentView: View {
                         if let caption = imageContent.caption {
                             let markdown = MarkdownContent(caption)
                             Markdown(markdown)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .font(Font.custom("Inter", size: 14))
+
                             
                             Spacer()
                         }
@@ -79,6 +84,10 @@ struct MessageCard: MessageView {
     var iCanReact: Bool
     @State var showMessageDeleteConfirmation = false
     @AppStorage("mediaViewWidth") var mediaViewWidth: Double = 0
+    
+    let footerFont: Font = Font.custom("Inter", size: 14)
+                               .weight(.medium)
+    let footerForegroundColor = Color.secondary // FIXME: Should be "all colors grey 1000"
     
     init(message: Matrix.Message, isLocalEcho: Bool = false, isThreaded: Bool = false) {
         self.message = message
@@ -230,15 +239,6 @@ struct MessageCard: MessageView {
         }
     }
     
-    var avatarImage: Image {
-        message.sender.avatar != nil
-            ? Image(uiImage: message.sender.avatar!)
-            : Image(systemName: SystemImages.personFill.rawValue)
-        // FIXME We can do better here.
-        //       Use the SF Symbols for the user's initial(s)
-        //       e.g. Image(sysetmName: "a.circle.fill")
-    }
-    
     @ViewBuilder
     var shield: some View {
         if isLocalEcho {
@@ -253,19 +253,45 @@ struct MessageCard: MessageView {
     }
 
     var likeButton: some View {
-        Button(action: {
-            self.sheetType = .reactions
+        AsyncButton(action: {
+            // send ❤️ emoji reaction if we have not sent it yet
+            // Otherwise retract it
+            if let likers = message.reactions["❤️"],
+               likers.contains(message.room.session.creds.userId)
+            {
+                // Redact the previous reaction message
+                try await message.sendRemoveReaction("❤️")
+            } else {
+                // Send the reaction
+                try await message.sendReaction("❤️")
+            }
         }) {
-            //Label("Like", systemImage: "heart")
-            Image(systemName: SystemImages.heart.rawValue)
+            HStack(alignment: .center, spacing: 2) {
+                Image(systemName: SystemImages.heart.rawValue)
+                    .frame(width: 20, height: 20)
+                Text("\(message.reactions["❤️"]?.count ?? 0)")
+
+            }
+            .font(footerFont)
+            .foregroundColor(footerForegroundColor)
         }
         .disabled(!iCanReact)
     }
-
-    var replyButton: some View {
-        NavigationLink(destination: PostComposerScreen(room: message.room, parentMessage: message)) {
-            //Label("Reply", systemImage: SystemImages.bubbleRight.rawValue)
-            Image(systemName: SystemImages.bubbleRight.rawValue)
+    
+    @ViewBuilder
+    var commentsButton: some View {
+        Button(action: {
+            // show the thread view
+        }) {
+            HStack(alignment: .center, spacing: 5) {
+                Image(systemName: "bubble.left")
+                    .frame(width: 20, height: 20)
+                let count = message.replies.count
+                let units = count == 1 ? "comment" : "comments"
+                Text("\(count) \(units)")
+            }
+            .font(footerFont)
+            .foregroundColor(footerForegroundColor)
         }
     }
 
@@ -277,7 +303,8 @@ struct MessageCard: MessageView {
         }
         label: {
             //Label("More", systemImage: SystemImages.ellipsisCircle.rawValue)
-            Image(systemName: SystemImages.ellipsisCircle.rawValue)
+            Image(systemName: "ellipsis")
+                .frame(width: 15, height: 15)
         }
         .confirmationDialog("Delete Message", isPresented: $showMessageDeleteConfirmation, actions: {
             AsyncButton(role: .destructive, action: {
@@ -287,6 +314,8 @@ struct MessageCard: MessageView {
                 Text("Confirm deleting the message")
             }
         })
+        .font(footerFont)
+        .foregroundColor(footerForegroundColor)
     }
 
     var reactions: some View {
@@ -356,39 +385,26 @@ struct MessageCard: MessageView {
     }
     
     var footer: some View {
-        VStack(alignment: .leading) {
-            
-            //Divider()
 
-            HStack {
-                shield
-                //Spacer()
-                timestamp
-                Spacer()
+        HStack(alignment: .top) {
+            HStack(alignment: .top, spacing: 24) {
                 likeButton
+                
                 if message.relatedEventId == nil {
-                    replyButton
+                    commentsButton
                 }
-                menuButton
             }
-            .padding(.top, 3)
-            .padding(.horizontal, 3)
-            .font(.headline)
+            .padding(0)
+            .frame(width: 176, alignment: .topLeading)
             
-            let reactionsFooterAction = message.reactions.values.map {
-                !$0.isEmpty ? "show" : "hide"
-            }
-            if reactionsFooterAction.rawValue.contains("show")
-            {
-                Divider()
-
-                reactions
-            } else {
-                reactions.hidden()
-            }
-
+            Spacer()
+            
+            menuButton
         }
-        .padding(.bottom, 3)
+        .padding(.horizontal, 0)
+        .padding(.vertical, 4)
+        .frame(maxWidth: .infinity, alignment: .top)
+
     }
 
     var details: some View {

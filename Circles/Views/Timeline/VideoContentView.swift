@@ -83,6 +83,7 @@ struct VideoContentView: View {
                     let markdown = MarkdownContent(caption)
                     Markdown(markdown)
                         .frame(maxWidth: .infinity, alignment: .leading)
+                        .font(Font.custom("Inter", size: 14))
                 }
                 
                 switch status {
