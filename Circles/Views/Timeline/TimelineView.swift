@@ -144,6 +144,20 @@ struct TimelineView<V: MessageView>: View {
             print("REFRESH\tSleeping to let network requests come in")
             try? await Task.sleep(for: .seconds(1))
             
+            print("REFRESH\tUpdating un-decrypted messages")
+            var count = 0
+            for message in room.timeline.values {
+                if message.type == M_ROOM_ENCRYPTED {
+                    do {
+                        try await message.decrypt()
+                        count += 1
+                    } catch {
+                        print("Failed to decrypt message \(message.eventId) in room \(room.roomId)")
+                    }
+                }
+            }
+            print("REFRESH\tDecrypted \(count) messages in room \(room.roomId)")
+            
             print("REFRESH\tSending Combine update")
             await MainActor.run {
                 room.objectWillChange.send()
