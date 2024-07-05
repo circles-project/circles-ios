@@ -27,6 +27,25 @@ struct RoomAvatarView<Room>: View where Room: BasicRoomProtocol {
         case roomInitials
     }
     
+    var text: String? {
+        if let name = room.name {
+            switch avatarText {
+            case .none:
+                return nil
+            case .oneLetter:
+                return name.first?.uppercased() ?? ""
+            case .roomName:
+                return name
+            case .roomInitials:
+                return name.split(whereSeparator: { $0.isWhitespace })
+                           .compactMap({ $0.first?.uppercased() })
+                           .joined()
+            }
+        } else {
+            return nil
+        }
+    }
+    
     var body: some View {
         if let img = room.avatar {
             Image(uiImage: img)
@@ -56,38 +75,16 @@ struct RoomAvatarView<Room>: View where Room: BasicRoomProtocol {
                         //.padding(3)
 
                     if avatarText != .none,
-                       let name = room.name {
-                        if avatarText == .roomInitials {
-                            let location = CGPoint(x: 0.5 * geometry.size.width, y: 0.5 * geometry.size.height)
-                            let initials = name.split(whereSeparator: { $0.isWhitespace })
-                                               .compactMap({ $0.first?.uppercased() })
-                                               .joined()
-                            
-                            Text(initials)
-                                .fontWeight(.bold)
-                                .foregroundColor(textColor)
-                                .position(x: location.x,
-                                          y: location.y)
-                        }
-                        else if avatarText == .oneLetter {
-                            let firstLetter = name.first?.uppercased()
-                            
-                            Text(String(firstLetter ?? ""))
-                                .font(.title)
-                                .fontWeight(.bold)
-                                .foregroundColor(.white)
-                                .shadow(color: .black, radius: 5)
-                        }
-                        else {
-                            Text(name)
-                                .lineLimit(3)
-                                .multilineTextAlignment(.leading)
-                                .font(.title)
-                                .fontWeight(.bold)
-                                .foregroundColor(.white)
-                                .shadow(color: .black, radius: 5)
-                        }
+                       let text = self.text {
+                        Text(text)
+                            .lineLimit(3)
+                            .multilineTextAlignment(.leading)
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                            .shadow(color: .gray, radius: 3)
                     }
+
                 }
             }
         }
