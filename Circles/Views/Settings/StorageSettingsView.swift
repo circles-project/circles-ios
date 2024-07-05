@@ -24,51 +24,74 @@ struct StorageSettingsView: View {
         }
     }
     
-    func byteSize(_ numBytes: Int?) -> String {
-        guard let num = numBytes
-        else { return "???" }
+    func byteSize(_ numBytes: Int) -> String {
         
         let kb = 1024
         let mb = 1024*1024
         let gb = 1024*1024*1024
         let tb = 1024*1024*1024*1024
         
-        if num > tb {
-            let tbs = Double(num) / Double(tb)
+        if numBytes > tb {
+            let tbs = Double(numBytes) / Double(tb)
             return String(format: "%.1f TB", tbs)
-        } else if num > gb {
-            let gbs = Double(num) / Double(gb)
+        } else if numBytes > gb {
+            let gbs = Double(numBytes) / Double(gb)
             return String(format: "%.1f GB", gbs)
-        } else if num > mb {
-            let mbs = Double(num) / Double(mb)
+        } else if numBytes > mb {
+            let mbs = Double(numBytes) / Double(mb)
             return String(format: "%.1f MB", mbs)
-        } else if num > kb {
-            let kbs = Double(num) / Double(kb)
+        } else if numBytes > kb {
+            let kbs = Double(numBytes) / Double(kb)
             return String(format: "%.1f KB", kbs)
         } else {
-            return String(format: "%d B", num)
+            return String(format: "%d B", numBytes)
         }
     }
     
     var body: some View {
         Form {
-            if let usage = usageInfo {
+            if let usage = usageInfo,
+               (usage.storageUsed != nil || usage.storageFiles != nil)
+            {
                 Section("Current Usage") {
-                    Text("Storage used")
-                        .badge(byteSize(usage.storageUsed))
-                    Text("Files uploaded")
-                        .badge(byteSize(usage.storageFiles))
+                    if let storageUsed = usage.storageUsed {
+                        Text("Storage used")
+                            .badge(byteSize(storageUsed))
+                    }
+                    if let storageFiles = usage.storageFiles {
+                        Text("Files uploaded")
+                            .badge(byteSize(storageFiles))
+                    }
                 }
             }
             
-            if let config = configInfo {
+            if let config = configInfo,
+               (config.maxUploadSize != nil || config.storageSize != nil || config.maxFiles != nil)
+            {
                 Section("Storage Limits") {
-                    Text("Max file size")
-                        .badge(byteSize(config.maxUploadSize))
-                    Text("Available storage")
-                        .badge(byteSize(config.storageSize))
-                    Text("Max files allowed")
-                        .badge(byteSize(config.maxFiles))
+                    if let maxUploadSize = config.maxUploadSize {
+                        Text("Max file size")
+                            .badge(byteSize(maxUploadSize))
+                    }
+                    if let storageSize = config.storageSize {
+                        Text("Available storage")
+                            .badge(byteSize(storageSize))
+                    }
+                    if let maxFiles = config.maxFiles {
+                        Text("Max files allowed")
+                            .badge(byteSize(maxFiles))
+                    }
+                }
+            }
+            
+            if usageInfo == nil && configInfo == nil {
+                Section("No information available") {
+                    Text("Your server does not provide storage status")
+                    AsyncButton(action: {
+                        await self.refresh()
+                    }) {
+                        Text("Retry fetching storage status")
+                    }
                 }
             }
         }
