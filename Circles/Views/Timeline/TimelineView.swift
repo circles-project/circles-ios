@@ -134,8 +134,8 @@ struct TimelineView<V: MessageView>: View {
         }
         .refreshable {
             print("REFRESH\tGetting latest messages for room \(room.name ?? room.roomId.stringValue)")
-            if let _ = try? await room.getMessages(forward: false) { // let msgs
-                print("REFRESH\tGot response from server")
+            if let moreMessages: RoomMessagesResponseBody = try? await room.getMessages(forward: true) {
+                print("REFRESH\tGot \(moreMessages.chunk.count) more messages from server")
             }
             
             print("REFRESH\tUpdating room state")
