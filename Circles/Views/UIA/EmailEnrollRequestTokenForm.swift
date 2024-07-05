@@ -81,8 +81,8 @@ struct EmailEnrollRequestTokenForm: View {
                     .customEmailTextFieldStyle(contentType: .emailAddress, keyboardType: .emailAddress)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .focused($focus, equals: .email)
-                    //.focused($inputFocused)
-                    //.frame(width: 300.0, height: 40.0)
+                //.focused($inputFocused)
+                //.frame(width: 300.0, height: 40.0)
                     .onSubmit {
                         Task {
                             try await submit()
