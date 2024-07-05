@@ -78,6 +78,13 @@ struct VideoContentView: View {
     var body: some View {
         VStack {
             if let content = message.content as? Matrix.mVideoContent {
+                
+                if let caption = content.caption {
+                    let markdown = MarkdownContent(caption)
+                    Markdown(markdown)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                
                 switch status {
                 case .nothing:
                     ZStack(alignment: .center) {
@@ -169,12 +176,6 @@ struct VideoContentView: View {
                             .shadow(color: .white, radius: 10)
                     }
                 } // end switch
-                
-                if let caption = content.caption {
-                    let markdown = MarkdownContent(caption)
-                    Markdown(markdown)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
 
             } else {
                 EmptyView()

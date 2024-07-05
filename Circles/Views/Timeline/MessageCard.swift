@@ -43,9 +43,6 @@ struct ImageContentView: View {
             if let imageContent = message.content as? Matrix.mImageContent {
                 //Spacer()
                 VStack(alignment: .center) {
-                    MessageMediaThumbnail(message: message,
-                                          aspectRatio: .fill,
-                                          mediaViewWidth: mediaViewWidth)
                     HStack {
                         if let caption = imageContent.caption {
                             let markdown = MarkdownContent(caption)
@@ -55,6 +52,10 @@ struct ImageContentView: View {
                         }
                     }
                     .background(Color.background)
+                    
+                    MessageMediaThumbnail(message: message,
+                                          aspectRatio: .fill,
+                                          mediaViewWidth: mediaViewWidth)
                 }
                 //Spacer()
             } else {
