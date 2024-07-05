@@ -116,12 +116,10 @@ struct CircleTimelineView: View {
                             Button(action: {
                                 showNewPostInSheetStyle = true
                             }) {
-                                Image(systemName: SystemImages.plusBubbleFill.rawValue)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 50, height: 50)
-                                    .padding()
+                                Label("New post", systemImage: SystemImages.plusCircleFill.rawValue)
                             }
+                            .buttonStyle(PillButtonStyle())
+                            .padding(10)
                         }
                     }
                 }
