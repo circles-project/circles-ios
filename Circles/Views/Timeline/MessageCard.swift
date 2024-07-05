@@ -78,12 +78,14 @@ struct MessageCard: MessageView {
     var iCanReact: Bool
     @State var showMessageDeleteConfirmation = false
     @AppStorage("mediaViewWidth") var mediaViewWidth: Double = 0
+    var isMessageFromReply = false
     
-    init(message: Matrix.Message, isLocalEcho: Bool = false, isThreaded: Bool = false) {
+    init(message: Matrix.Message, isLocalEcho: Bool = false, isThreaded: Bool = false, isMessageFromReply: Bool = false) {
         self.message = message
         self.isLocalEcho = isLocalEcho
         self.isThreaded = isThreaded
         self.iCanReact = message.room.iCanSendEvent(type: M_REACTION)
+        self.isMessageFromReply = isMessageFromReply
     }
 
     func getCaption(body: String) -> String? {
@@ -136,7 +138,8 @@ struct MessageCard: MessageView {
                     }
                     
                 case M_IMAGE:
-                    ImageContentView(message: current, mediaViewWidth: mediaViewWidth)
+                    let newWidth = isMessageFromReply ? mediaViewWidth - 20 : mediaViewWidth
+                    ImageContentView(message: current, mediaViewWidth: newWidth)
                     
                 case M_VIDEO:
                     VideoContentView(message: current)

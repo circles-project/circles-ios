@@ -28,7 +28,7 @@ struct ThreadView<V: MessageView>: View {
         VStack {
             ScrollView {
                 ForEach(messages) { message in
-                    V(message: message, isLocalEcho: false, isThreaded: true)
+                    V(message: message, isLocalEcho: false, isThreaded: true, isMessageFromReply: false)
                 }
                 
                 if DebugModel.shared.debugMode {
