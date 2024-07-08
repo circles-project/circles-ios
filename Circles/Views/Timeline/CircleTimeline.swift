@@ -114,24 +114,29 @@ struct CircleTimeline: View {
             
             ScrollView {
                 LazyVStack(alignment: .center) {
+                    
+                    if let msg = space.wall?.localEchoMessage {
+                        MessageCard(message: msg, isLocalEcho: true, isThreaded: false)
+                            //.border(Color.red)
+                            .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
+                    }
+                    
                     ForEach(messages) { message in
-                        VStack(alignment: .leading) {
-                            HStack {
-                                if DebugModel.shared.debugMode && showDebug {
-                                    let index: Int = messages.firstIndex(of: message)!
-                                    Text("\(index)")
-                                }
-                                
-                                MessageCard(message: message)
+                        HStack {
+                            if DebugModel.shared.debugMode && showDebug {
+                                let index: Int = messages.firstIndex(of: message)!
+                                Text("\(index)")
                             }
-                            RepliesView(room: message.room, parent: message)
+                            
+                            MessageCard(message: message)
                         }
                     }
-                    .padding(.horizontal, 3)
-                    .padding(.vertical, 1)
+
                 }
                 .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
-            
+                .padding(.horizontal, 12)
+
+                
                 HStack(alignment: .bottom) {
                     Spacer()
                     if loading {
@@ -170,6 +175,8 @@ struct CircleTimeline: View {
                 }
                 .frame(minHeight: TIMELINE_BOTTOM_PADDING)
             }
+            .padding(0)
+            .background(Color.greyCool200)
             .onAppear {
                 _ = Task {
                     try await space.paginateEmptyTimelines(limit: 25)

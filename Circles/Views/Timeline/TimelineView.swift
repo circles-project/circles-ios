@@ -90,48 +90,40 @@ struct TimelineView<V: MessageView>: View {
         }.sorted(by: {$0.timestamp > $1.timestamp})
 
         ScrollView {
-            LazyVStack(alignment: .center, spacing: 5) {
+            LazyVStack(alignment: .center, spacing: 10) {
 
-                //let messages = room.messages.sorted(by: {$0.timestamp > $1.timestamp})
-                
-
-                    if let msg = room.localEchoMessage {
-                        V(message: msg, isLocalEcho: true, isThreaded: false)
-                            .border(Color.red)
-                            .padding([.top, .leading, .trailing], 3)
-                            .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
-                    }
+                if let msg = room.localEchoMessage {
+                    MessageCard(message: msg, isLocalEcho: true, isThreaded: false)
+                        //.border(Color.red)
+                        .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
+                }
                     
-                    ForEach(messages) { message in
-                        if message.type == M_ROOM_MESSAGE ||
-                            message.type == M_ROOM_ENCRYPTED ||
-                            message.type == ORG_MATRIX_MSC3381_POLL_START {
-                            
-                            VStack(alignment: .leading) {
-                                
-                                V(message: message, isLocalEcho: false, isThreaded: false)
-                                    .padding(.top, 5)
-
-                                RepliesView(room: room, parent: message)
-                                
-                            }
+                ForEach(messages) { message in
+                    if message.type == M_ROOM_MESSAGE ||
+                        message.type == M_ROOM_ENCRYPTED ||
+                        message.type == ORG_MATRIX_MSC3381_POLL_START {
+                                                    
+                        MessageCard(message: message, isLocalEcho: false, isThreaded: false)
                             .onAppear {
                                 message.loadReactions()
                             }
-                        } else if DebugModel.shared.debugMode && message.stateKey != nil {
-                            StateEventView(message: message)
-                        }
+                    } else if DebugModel.shared.debugMode && message.stateKey != nil {
+                        StateEventView(message: message)
                     }
-                    .padding([.leading, .trailing], 3)
-                    .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
+                }
 
-
-                    Spacer()
+                
+                Spacer()
                 
                 footer
                 
             }
+            .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
+            .padding(.horizontal, 12)
+
         }
+        .padding(0)
+        .background(Color.greyCool200)
         .refreshable {
             print("REFRESH\tGetting latest messages for room \(room.name ?? room.roomId.stringValue)")
             if let moreMessages: RoomMessagesResponseBody = try? await room.getMessages(forward: true) {

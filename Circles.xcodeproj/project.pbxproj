@@ -109,7 +109,7 @@
 		A52DF68529E72CC1008860C3 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68429E72CC1008860C3 /* Keychain.swift */; };
 		A52DF68829E732AC008860C3 /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68729E732AC008860C3 /* SettingsScreen.swift */; };
 		A52DF68A29E8868C008860C3 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68929E8868C008860C3 /* MessageView.swift */; };
-		A52DF69029E8AB52008860C3 /* Color+background.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68F29E8AB52008860C3 /* Color+background.swift */; };
+		A52DF69029E8AB52008860C3 /* Color+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68F29E8AB52008860C3 /* Color+extensions.swift */; };
 		A52FEBFD2862521F00AE4E3A /* CirclesApplicationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52FEBFC2862521F00AE4E3A /* CirclesApplicationSession.swift */; };
 		A534CC8D2B72EBEE008AFADA /* RoomDebugDetailsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A534CC8C2B72EBEE008AFADA /* RoomDebugDetailsSection.swift */; };
 		A53E2E722A74616400B75CDD /* RoomMemberRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53E2E712A74616400B75CDD /* RoomMemberRow.swift */; };
@@ -366,7 +366,7 @@
 		A52DF68429E72CC1008860C3 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		A52DF68729E732AC008860C3 /* SettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
 		A52DF68929E8868C008860C3 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
-		A52DF68F29E8AB52008860C3 /* Color+background.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+background.swift"; sourceTree = "<group>"; };
+		A52DF68F29E8AB52008860C3 /* Color+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+extensions.swift"; sourceTree = "<group>"; };
 		A52FEBFC2862521F00AE4E3A /* CirclesApplicationSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesApplicationSession.swift; sourceTree = "<group>"; };
 		A534CC8C2B72EBEE008AFADA /* RoomDebugDetailsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomDebugDetailsSection.swift; sourceTree = "<group>"; };
 		A53E2E712A74616400B75CDD /* RoomMemberRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomMemberRow.swift; sourceTree = "<group>"; };
@@ -599,7 +599,7 @@
 				A5E101F52814FABC000B2C42 /* BCrypt */,
 				40AEA6722678E24100C9CBD1 /* BlurHashDecode.swift */,
 				40AEA6732678E24200C9CBD1 /* BlurHashEncode.swift */,
-				A52DF68F29E8AB52008860C3 /* Color+background.swift */,
+				A52DF68F29E8AB52008860C3 /* Color+extensions.swift */,
 				4012C54826A752C400BB15E6 /* EmojiPicker.swift */,
 				A5A40B6229D46ABD009A17EE /* HtmlView.swift */,
 				409F4314265DE0F400690A61 /* ImageSaver.swift */,
@@ -1193,7 +1193,7 @@
 				A56BE17D2AD700E100B15F51 /* RoomShareSheet.swift in Sources */,
 				A521C3F52A6889C00051ED88 /* InvitedCircleDetailView.swift in Sources */,
 				409F43A8265DE43B00690A61 /* RoomSecurityInfoSheet.swift in Sources */,
-				A52DF69029E8AB52008860C3 /* Color+background.swift in Sources */,
+				A52DF69029E8AB52008860C3 /* Color+extensions.swift in Sources */,
 				A5D3C9C12A708F1300B41CC0 /* DBZxcvbn.m in Sources */,
 				A5D3C9C32A708F1300B41CC0 /* DBScorer.m in Sources */,
 				A55F367329EDB66300F46971 /* GalleryInviteCard.swift in Sources */,

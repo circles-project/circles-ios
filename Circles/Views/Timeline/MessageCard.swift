@@ -87,7 +87,8 @@ struct MessageCard: MessageView {
     
     let footerFont: Font = Font.custom("Inter", size: 14)
                                .weight(.medium)
-    let footerForegroundColor = Color.secondary // FIXME: Should be "all colors grey 1000"
+    let footerForegroundColor = Color.grey1000
+    let backgroundColor = Color.white
     
     init(message: Matrix.Message, isLocalEcho: Bool = false, isThreaded: Bool = false) {
         self.message = message
@@ -108,23 +109,43 @@ struct MessageCard: MessageView {
         return body
     }
     
-    var timestamp: some View {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
+    func relativeFormatted(date: Date) -> String {
         
+        let interval = Date().timeIntervalSince(date)
+        
+        if interval < 60 {
+            return "now"
+        } else if interval < 3600 {
+            let minutes = Int(interval) / 60
+            return "\(minutes)m"
+        } else if interval < 86400 {
+            let hours = Int(interval) / 3600
+            return "\(hours)h"
+        } else if interval < 604800 {
+            let days = Int(interval) / 86400
+            return "\(days)d"
+        } else if interval < 31449600 {
+            let weeks = Int(interval) / 604800
+            return "\(weeks)w"
+        } else {
+            let years = Int(interval) / 31449600
+            return "\(years)y"
+        }
+    }
+    
+    var timestamp: some View {
         // If the message has been edited/replaced, then we should show the new timestamp
         // Otherwise we should show the original timestamp
         let current = message.replacement ?? message
         
-        let edited: String = current.relationType == M_REPLACE ? "Edited " : ""
-        let formattedTimestampString: String = formatter.string(from: current.timestamp)
+        let formattedTimestampString = self.relativeFormatted(date: current.timestamp)
         
-        let text = edited + formattedTimestampString
+        let icon = message.replacement == nil ? SystemImages.clock : SystemImages.pencil
         
-        return Text(text)
-            .font(.footnote)
-            .foregroundColor(.gray)
+        return HStack(alignment: .center, spacing: 2) {
+            Text("\(Image(systemName: icon.rawValue))")
+            Text(formattedTimestampString)
+        }
     }
     
     var content: some View {
@@ -239,18 +260,6 @@ struct MessageCard: MessageView {
         }
     }
     
-    @ViewBuilder
-    var shield: some View {
-        if isLocalEcho {
-            ProgressView()
-        } else if message.isEncrypted {
-            Image(systemName: SystemImages.lockFill.rawValue)
-                .foregroundColor(Color.blue)
-        } else {
-            Image(systemName: SystemImages.lockSlashFill.rawValue)
-                .foregroundColor(Color.red)
-        }
-    }
 
     var likeButton: some View {
         AsyncButton(action: {
@@ -295,6 +304,41 @@ struct MessageCard: MessageView {
         }
     }
 
+    
+    @ViewBuilder
+    var header: some View {
+        HStack(alignment: .center, spacing: 8) {
+            UserAvatarView(user: message.sender)
+                .frame(width: 32, height: 32)
+                .clipShape(Circle())
+            VStack(alignment: .leading) {
+                UserNameView(user: message.sender)
+                    .font(
+                        Font.custom("Nunito", size: 14)
+                            .weight(.heavy)
+                    )
+                    .foregroundColor(.greyCool1100)
+                timestamp
+                    .font(
+                        Font.custom("Nunito", size: 12)
+                            .weight(.semibold)
+                    )
+                    .foregroundColor(.greyCool800)
+            }
+            .padding(.leading, 0)
+            .padding(.trailing, 8)
+
+            .padding(.vertical, 0)
+            
+            Spacer()
+            menuButton
+        }
+        .padding(.horizontal, 0)
+        .padding(.top, 0)
+        .padding(.bottom, 8)
+    }
+    
+    @ViewBuilder
     var menuButton: some View {
         Menu {
             MessageContextMenu(message: message,
@@ -304,7 +348,8 @@ struct MessageCard: MessageView {
         label: {
             //Label("More", systemImage: SystemImages.ellipsisCircle.rawValue)
             Image(systemName: "ellipsis")
-                .frame(width: 15, height: 15)
+                .frame(width: 18, height: 18)
+                .foregroundColor(.greyCool1000)
         }
         .confirmationDialog("Delete Message", isPresented: $showMessageDeleteConfirmation, actions: {
             AsyncButton(role: .destructive, action: {
@@ -314,8 +359,6 @@ struct MessageCard: MessageView {
                 Text("Confirm deleting the message")
             }
         })
-        .font(footerFont)
-        .foregroundColor(footerForegroundColor)
     }
 
     var reactions: some View {
@@ -398,8 +441,6 @@ struct MessageCard: MessageView {
             .frame(width: 176, alignment: .topLeading)
             
             Spacer()
-            
-            menuButton
         }
         .padding(.horizontal, 0)
         .padding(.vertical, 4)
@@ -427,12 +468,9 @@ struct MessageCard: MessageView {
     
     var mainCard: some View {
         
-        let shadowColor: Color = message.mentionsMe ? .accentColor : .gray
-        let shadowRaduis: CGFloat = message.mentionsMe ? 3 : 2
-        
         return VStack(alignment: .leading, spacing: 2) {
-            
-            MessageAuthorHeader(user: message.sender)
+
+            header
 
             if DebugModel.shared.debugMode && self.debug {
                 Text(message.eventId)
@@ -440,6 +478,7 @@ struct MessageCard: MessageView {
             }
 
             content
+                .padding(.bottom, 10)
             
             if DebugModel.shared.debugMode {
                 details
@@ -448,13 +487,9 @@ struct MessageCard: MessageView {
 
             footer
         }
-        .padding(.all, 3.0)
-        .background(
-            RoundedRectangle(cornerRadius: 4)
-                //.foregroundColor(.init(light: .white, dark: .black))
-                .foregroundColor(.background)
-                .shadow(color: shadowColor, radius: shadowRaduis, x: 0, y: 0)
-        )
+        .padding(16)
+        .background(self.backgroundColor)
+        .cornerRadius(12)
         .onAppear {
             if message.sender.userId != message.room.session.creds.userId {
                 print("Updating m.read for room \(message.roomId) to be \(message.eventId)")
