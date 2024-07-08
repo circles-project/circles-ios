@@ -27,6 +27,12 @@ struct MessageThumbnail: View {
     }
 }
 
+struct MediaSize {
+    let height: Double
+    let width: Double
+    let maxMediaHeight: Double
+}
+
 struct MessageMediaThumbnail: View {
     @ObservedObject var message: Matrix.Message
     var aspectRatio: ContentMode = .fit
@@ -36,60 +42,67 @@ struct MessageMediaThumbnail: View {
         Image(uiImage: message.thumbnail ?? UIImage())
     }
     
-    var body: some View {
-        ZStack {
-            let mediaHeightCalculation = MediaHeightCalculation(message: message, geoWidth: mediaViewWidth).height
-            
-            thumbnail
-                .resizable()
-                .frame(width: CGFloat(mediaViewWidth), height: mediaHeightCalculation)
-                .aspectRatio(contentMode: aspectRatio)
-                .foregroundColor(.gray)
-        }
-    }
-}
-
-@MainActor
-class MediaHeightCalculation: ObservableObject {
-    private var message: Matrix.Message
-    private var mediaViewWidth: Double
-    private var customRatio: Double = 0.0
-    @Published var height = 0.0
-    @AppStorage("mediaViewHeight") private var mediaViewHeight: Double = 0
-    
-    init(message: Matrix.Message,
-         geoWidth: CGFloat) {
-        self.message = message
-        self.mediaViewWidth = geoWidth
+    private func calculateAllowedSizeFor(_ nativeImage: Matrix.NativeImage?) -> MediaSize {
+        @AppStorage("mediaViewHeight") var mediaViewHeight: Double = 0
+        var customRatio: Double = 0.0
         
-        calculateMediaHeight()
-    }
-    
-    private func calculateMediaHeight() {
-        if let img = message.thumbnail {
+        if let img = nativeImage {
             let imageRatio = img.size.width / img.size.height
-            let minAllowedImageHeight: CGFloat = 140.0
             let maxAllowedImageHeight: CGFloat = mediaViewHeight - 180 // 180 = 90 tabbar and navigationbar; 60 header of the card; 30 extra space to show bottom;
             
             switch imageRatio {
-            case 0...0.5:
-                customRatio = 0.5
-            case 0.5...3:
-                customRatio = imageRatio
-            default:
-                customRatio = 3
+            case 0...0.5: customRatio = 0.5
+            case 0.5...3: customRatio = imageRatio
+            default:      customRatio = 3
             }
             
-            let customImageHeight = mediaViewWidth / customRatio
-            
-            switch customImageHeight {
-            case 0...minAllowedImageHeight:
-                height = minAllowedImageHeight
-            case minAllowedImageHeight...maxAllowedImageHeight:
-                height = customImageHeight
-            default:
-                height = maxAllowedImageHeight
+            return MediaSize(height: img.size.height * customRatio,
+                             width: img.size.width * customRatio,
+                             maxMediaHeight: maxAllowedImageHeight)
+        }
+        return MediaSize(height: 0, width: 0, maxMediaHeight: 0)
+    }
+    
+    private func getMediaSize(_ media: MediaSize) -> (width: Double, height: Double) {
+        var width = 0.0
+        var height = 0.0
+        
+        let mediaWidth = media.width
+        let mediaHeight = media.height
+        let maxMediaHeight = media.maxMediaHeight
+        
+        if mediaWidth > mediaViewWidth {
+            let ratio = mediaViewWidth / mediaWidth
+            if mediaHeight * ratio > maxMediaHeight {
+                height = maxMediaHeight
+            } else {
+                height = mediaHeight * ratio
             }
+            width = mediaViewWidth - 20
+        } else {
+            if mediaHeight > maxMediaHeight {
+                let ratio = maxMediaHeight / mediaHeight
+                height = maxMediaHeight
+                width = mediaWidth * ratio
+            } else {
+                height = mediaHeight
+                width = mediaWidth
+            }
+        }
+        
+        return (width: width, height: height)
+    }
+    
+    var body: some View {
+        ZStack {
+            let allowedMediaSize = calculateAllowedSizeFor(message.thumbnail) //MediaSizeCalculation(nativeImage: message.thumbnail)
+            
+            let mediaSize = getMediaSize(allowedMediaSize)
+            thumbnail
+                .resizable()
+                .frame(width: mediaSize.width, height: mediaSize.height)
+                .aspectRatio(contentMode: aspectRatio)
+                .foregroundColor(.gray)
         }
     }
 }
