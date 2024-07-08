@@ -93,7 +93,7 @@ struct TimelineView<V: MessageView>: View {
                 //let messages = room.messages.sorted(by: {$0.timestamp > $1.timestamp})
 
                     if let msg = room.localEchoMessage {
-                        V(message: msg, isLocalEcho: true, isThreaded: false, isMessageFromReply: false)
+                        V(message: msg, isLocalEcho: true, isThreaded: false)
                             .border(Color.red)
                             .padding([.top, .leading, .trailing], 3)
                             .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
@@ -105,7 +105,7 @@ struct TimelineView<V: MessageView>: View {
                             message.type == ORG_MATRIX_MSC3381_POLL_START {
                             
                             VStack(alignment: .leading) {
-                                V(message: message, isLocalEcho: false, isThreaded: false, isMessageFromReply: false)
+                                V(message: message, isLocalEcho: false, isThreaded: false)
                                     .padding(.top, 5)
 
                                 RepliesView(room: room, parent: message)
