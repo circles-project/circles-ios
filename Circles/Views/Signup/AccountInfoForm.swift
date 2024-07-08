@@ -143,10 +143,18 @@ struct AccountInfoForm: View {
                 }
                 .frame(width: 300.0, height: 40.0)
 
-                SecureField("Repeat Passphrase", text: $repeatPassword)
-                    .textContentType(.newPassword)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(width: 300.0, height: 40.0)
+                HStack {
+                    SecureField("Repeat Passphrase", text: $repeatPassword)
+                        .textContentType(.newPassword)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .frame(width: 300.0, height: 40.0)
+                    Button(action: {
+                        self.repeatPassword = ""
+                    }) {
+                        Image(systemName: SystemImages.xmark.rawValue)
+                            .foregroundColor(.gray)
+                    }
+                }
             }
 
             Spacer()

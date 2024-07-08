@@ -198,8 +198,6 @@ struct CircleTimeline: View {
                 }
             }
 
-
-
             if DebugModel.shared.debugMode {
                 if showDebug {
                     debugFooter
@@ -210,9 +208,7 @@ struct CircleTimeline: View {
                     }
                 }
             }
-
         }
-
     }
 }
 

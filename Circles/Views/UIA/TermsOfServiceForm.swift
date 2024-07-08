@@ -94,7 +94,6 @@ struct TermsOfServiceForm: View {
 
     var body: some View {
         VStack {
-
             Text("Review and accept terms")
                 .font(.title2)
                 .fontWeight(.bold)
