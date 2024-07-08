@@ -17,7 +17,6 @@ struct TimelineView<V: MessageView>: View {
     
     var footer: some View {
         VStack(alignment: .center) {
-           
             HStack(alignment: .bottom) {
                 Spacer()
                 if loading {
@@ -88,13 +87,10 @@ struct TimelineView<V: MessageView>: View {
             message.timestamp < cutoff &&
             !message.room.session.ignoredUserIds.contains(message.sender.userId)
         }.sorted(by: {$0.timestamp > $1.timestamp})
-
-        ScrollView {
-            LazyVStack(alignment: .center, spacing: 5) {
-
-                //let messages = room.messages.sorted(by: {$0.timestamp > $1.timestamp})
-                
-
+            ScrollView {
+                LazyVStack(alignment: .center, spacing: 5) {
+                    //let messages = room.messages.sorted(by: {$0.timestamp > $1.timestamp})
+                    
                     if let msg = room.localEchoMessage {
                         V(message: msg, isLocalEcho: true, isThreaded: false)
                             .border(Color.red)
@@ -108,12 +104,10 @@ struct TimelineView<V: MessageView>: View {
                             message.type == ORG_MATRIX_MSC3381_POLL_START {
                             
                             VStack(alignment: .leading) {
-                                
                                 V(message: message, isLocalEcho: false, isThreaded: false)
                                     .padding(.top, 5)
 
                                 RepliesView(room: room, parent: message)
-                                
                             }
                             .onAppear {
                                 message.loadReactions()
@@ -124,7 +118,6 @@ struct TimelineView<V: MessageView>: View {
                     }
                     .padding([.leading, .trailing], 3)
                     .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
-
 
                     Spacer()
                 
@@ -162,9 +155,7 @@ struct TimelineView<V: MessageView>: View {
             await MainActor.run {
                 room.objectWillChange.send()
             }
-            print("REFRESH\tDone")
         }
-
     }
 }
 

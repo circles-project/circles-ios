@@ -70,20 +70,29 @@ struct EmailLoginRequestTokenForm: View {
             }
             .padding(.leading)
             
-            TextField("you@example.com", text: $emailAddress, prompt: Text("Email address"))
-                .customEmailTextFieldStyle(contentType: .emailAddress, keyboardType: .emailAddress)
-                .focused($focus, equals: .email)
-                //.focused($inputFocused)
-                //.frame(width: 300.0, height: 40.0)
-                .onSubmit {
-                    Task {
-                        try await submit()
+            HStack {
+                TextField("you@example.com", text: $emailAddress, prompt: Text("Email address"))
+                    .customEmailTextFieldStyle(contentType: .emailAddress, keyboardType: .emailAddress)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .focused($focus, equals: .email)
+                    //.focused($inputFocused)
+                    //.frame(width: 300.0, height: 40.0)
+                    .onSubmit {
+                        Task {
+                            try await submit()
+                        }
                     }
+                    .onAppear {
+                        self.focus = .email
+                    }
+                    .padding()
+                Button(action: {
+                    self.emailAddress = ""
+                }) {
+                    Image(systemName: SystemImages.xmark.rawValue)
+                        .foregroundColor(.gray)
                 }
-                .onAppear {
-                    self.focus = .email
-                }
-                .padding()
+            }
             
             AsyncButton(action: submit) {
                 Text("Request Code")
