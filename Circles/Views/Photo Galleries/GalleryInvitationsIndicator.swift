@@ -27,7 +27,7 @@ struct GalleryInvitationsIndicator: View {
                             .fontWeight(.bold)
                             .padding()
                         Spacer()
-                        Image(systemName: "chevron.right")
+                        Image(systemName: SystemImages.chevronRight.rawValue)
                             .font(.system(size: 24))
                             .padding()
                     }

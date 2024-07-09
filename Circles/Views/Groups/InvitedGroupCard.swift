@@ -18,7 +18,7 @@ struct InvitedGroupCard: View {
     var body: some View {
         HStack(spacing: 1) {
             VStack {
-                RoomAvatarView(room: room, avatarText: .roomInitials)
+                RoomAvatarView(room: room, avatarText: .oneLetter)
                 //.overlay(Circle().stroke(Color.primary, lineWidth: 2))
                     .scaledToFill()
                     .frame(width: 80, height: 80)
@@ -83,7 +83,7 @@ struct InvitedGroupCard: View {
                     Spacer()
                     
                     NavigationLink(destination: InvitedGroupDetailView(room: room, user: user)) {
-                        Image(systemName: "ellipsis.circle")
+                        Image(systemName: SystemImages.ellipsisCircle.rawValue)
                             .imageScale(.large)
                             .padding(10)
                     }

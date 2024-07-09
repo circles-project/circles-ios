@@ -63,13 +63,13 @@ struct GalleryGridView: View {
                         Text("Room has \(messages.count) total messages")
                             .font(.caption)
                         Button(action: {self.debug = false}) {
-                            Label("Hide debug info", systemImage: "eye.slash")
+                            Label("Hide debug info", systemImage: SystemImages.eyeSlash.rawValue)
                         }
                         .font(.caption)
                     }
                     else {
                         Button(action: {self.debug = true}) {
-                            Label("Show debug info", systemImage: "eye")
+                            Label("Show debug info", systemImage: SystemImages.eye.rawValue)
                         }
                         .font(.caption)
                     }
@@ -198,7 +198,7 @@ struct GalleryGridView: View {
             }
             .refreshable {
                 print("REFRESH\tGetting latest messages for room \(room.name ?? room.roomId.stringValue)")
-                if let msgs = try? await room.getMessages(forward: false) {
+                if let _ = try? await room.getMessages(forward: false) { // let msgs
                     print("REFRESH\tGot response from server")
                 }
                 

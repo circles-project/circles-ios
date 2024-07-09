@@ -84,7 +84,6 @@ struct ContentView: View {
                 }
             }
             
-
         case .needSecretStorage(let matrix):
             SecretStorageCreationScreen(store: store, matrix: matrix)
             

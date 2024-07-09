@@ -29,19 +29,19 @@ struct SetupAvatarView: View {
         if let img = self.avatarImage {
             return Image(uiImage: img)
         } else {
-            return Image(systemName: "person.crop.square")
+            return Image(systemName: SystemImages.personCropSquare.rawValue)
         }
     }
 
     var body: some View {
-        let avatarSize: CGFloat = UIDevice.isPhoneSE ? 133 : 200
+        let avatarSize: CGFloat = UIDevice.isPhoneSE ? 133 : 160
         ScrollView {
             //let currentStage: SignupStage = .getAvatarImage
 
             Spacer()
 
-            Text("Set up your profile")
-                .font(.title)
+            Text("Set your name and profile photo")
+                .font(.title2)
                 .fontWeight(.bold)
                 
             avatar
@@ -75,7 +75,7 @@ struct SetupAvatarView: View {
                         }
                     }
                     label: {
-                        Image(systemName: "pencil.circle.fill")
+                        Image(systemName: SystemImages.pencilCircleFill.rawValue)
                             .symbolRenderingMode(.multicolor)
                             .font(.system(size: 30))
                             .foregroundColor(.accentColor)
@@ -101,19 +101,29 @@ struct SetupAvatarView: View {
                     }
                 }
             
-            Label("NOTE: Profile photos are not encrypted", systemImage: "exclamationmark.triangle")
+            Label("NOTE: Profile photos are not encrypted", systemImage: SystemImages.exclamationmarkTriangle.rawValue)
                 .foregroundColor(.orange)
 
-            TextField("First Last", text: $newName, prompt: Text("Your name"))
-                .textContentType(.name)
-                .autocorrectionDisabled()
-                .focused($inputFocused)
-                .textInputAutocapitalization(.words)
-                .frame(width: 300)
-                .padding()
-                .onAppear {
-                    self.inputFocused = true
+            HStack {
+                TextField("First Last", text: $newName, prompt: Text("Your name"))
+                    .textContentType(.name)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .autocorrectionDisabled()
+                    .focused($inputFocused)
+                    .textInputAutocapitalization(.words)
+                    .frame(width: 300)
+                    .padding()
+                    .onAppear {
+                        self.inputFocused = true
+                    }
+                
+                Button(action: {
+                    self.newName = ""
+                }) {
+                    Image(systemName: SystemImages.xmark.rawValue)
+                        .foregroundColor(.gray)
                 }
+            }
                 /*
                 .task {
                     let userId = session.client.creds.userId

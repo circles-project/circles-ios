@@ -38,7 +38,7 @@ struct DeviceDetailsView: View {
                     Button(action: {
                         //self.showRemoveDialog = true
                     }) {
-                        Label("Remove ", systemImage: "xmark.shield")
+                        Label("Remove ", systemImage: SystemImages.xmarkShield.rawValue)
                     }
                     .padding(3)
                     .foregroundColor(Color.red)
@@ -57,7 +57,7 @@ struct DeviceDetailsView: View {
                 // FIXME: Figure out what to do here
                 //device.verify()
             }) {
-                Label("Verify ", systemImage: "checkmark.shield")
+                Label("Verify ", systemImage: SystemImages.checkmarkShield.rawValue)
                     .padding(3)
                     .foregroundColor(Color.accentColor)
                     .overlay(RoundedRectangle(cornerRadius: 8)

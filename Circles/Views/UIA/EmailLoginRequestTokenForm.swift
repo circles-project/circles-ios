@@ -27,7 +27,7 @@ struct EmailLoginRequestTokenForm: View {
     var addressIsValid: Bool {
         // https://stackoverflow.com/questions/201323/how-can-i-validate-an-email-address-using-a-regular-expression
         let regex = #/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/#
-        guard let match = try? regex.wholeMatch(in: emailAddress)
+        guard let _ = try? regex.wholeMatch(in: emailAddress) // let match
         else {
             return false
         }
@@ -70,20 +70,28 @@ struct EmailLoginRequestTokenForm: View {
             }
             .padding(.leading)
             
-            TextField("you@example.com", text: $emailAddress, prompt: Text("Email address"))
-                .customEmailTextFieldStyle(contentType: .emailAddress, keyboardType: .emailAddress)
-                .focused($focus, equals: .email)
-                //.focused($inputFocused)
-                //.frame(width: 300.0, height: 40.0)
-                .onSubmit {
-                    Task {
-                        try await submit()
+            HStack {
+                TextField("you@example.com", text: $emailAddress, prompt: Text("Email address"))
+                    .customEmailTextFieldStyle(contentType: .emailAddress, keyboardType: .emailAddress)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .focused($focus, equals: .email)
+                    .frame(width: 300.0, height: 40.0)
+                    .onSubmit {
+                        Task {
+                            try await submit()
+                        }
                     }
+                    .onAppear {
+                        self.focus = .email
+                    }
+                    .padding()
+                Button(action: {
+                    self.emailAddress = ""
+                }) {
+                    Image(systemName: SystemImages.xmark.rawValue)
+                        .foregroundColor(.gray)
                 }
-                .onAppear {
-                    self.focus = .email
-                }
-                .padding()
+            }
             
             AsyncButton(action: submit) {
                 Text("Request Code")

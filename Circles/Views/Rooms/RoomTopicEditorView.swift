@@ -40,7 +40,7 @@ struct RoomTopicEditorView: View {
                 Button(action: {
                     self.newTopic = ""
                 }) {
-                    Image(systemName: "xmark")
+                    Image(systemName: SystemImages.xmark.rawValue)
                         .foregroundColor(.gray)
                 }
             }

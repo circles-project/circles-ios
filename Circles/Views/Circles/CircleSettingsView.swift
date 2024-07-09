@@ -60,21 +60,19 @@ struct CircleSettingsView: View {
                 Text("Space roomId")
                     .badge(space.roomId.stringValue)
             }
-            
-            if let wall = space.wall,
-               wall.joinRule == .knock,
-               let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/timeline/\(wall.roomId.stringValue)")
-            {
-                
+        }
+    }
+    
+    @ViewBuilder
+    var sharingSection: some View {
+        if let wall = space.wall,
+           wall.joinRule == .knock,
+           let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/timeline/\(wall.roomId.stringValue)")
+        {
+            Section("Sharing") {
                 if DebugModel.shared.debugMode {
                     Text("Wall roomId")
                         .badge(wall.roomId.stringValue)
-                }
-                
-                HStack {
-                    Text("Link")
-                    Spacer()
-                    ShareLink("Share", item: url)
                 }
                 
                 if let qr = qrCode(url: url) {
@@ -93,6 +91,12 @@ struct CircleSettingsView: View {
                             RoomShareSheet(room: wall, url: url)
                         }
                     }
+                }
+                
+                HStack {
+                    Text("Link")
+                    Spacer()
+                    ShareLink("Share", item: url)
                 }
             }
         }
@@ -127,7 +131,7 @@ struct CircleSettingsView: View {
                 Button(action: {
                     self.showInviteSheet = true
                 }) {
-                    Label("Invite more followers", systemImage: "person.badge.plus")
+                    Label("Invite more followers", systemImage: SystemImages.personCropCircleBadgePlus.rawValue)
                 }
                 .sheet(isPresented: $showInviteSheet) {
                     RoomInviteSheet(room: wall, title: "Invite followers")
@@ -163,6 +167,8 @@ struct CircleSettingsView: View {
         VStack {
             Form {
                 generalSection
+                
+                sharingSection
                 
                 followingSection
                 

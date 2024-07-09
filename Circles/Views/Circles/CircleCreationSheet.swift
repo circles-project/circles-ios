@@ -52,7 +52,7 @@ struct CircleCreationSheet: View {
         // Add the circle as a child room of the container
         try await container.addChild(circleRoomId)
         
-        guard let circleRoom = try await container.session.getRoom(roomId: circleRoomId, as: CircleSpace.self)
+        guard let _ = try await container.session.getRoom(roomId: circleRoomId, as: CircleSpace.self) // let circleRoom
         else {
             print("Failed to get new circle Space room for roomId \(circleRoomId)")
             return
@@ -101,7 +101,7 @@ struct CircleCreationSheet: View {
             //.overlay(Circle().stroke(Color.gray, lineWidth: 2))
             .overlay(alignment: .bottomTrailing) {
                 PhotosPicker(selection: $item, matching: .images) {
-                    Image(systemName: "pencil.circle.fill")
+                    Image(systemName: SystemImages.pencilCircleFill.rawValue)
                         .symbolRenderingMode(.multicolor)
                         .font(.system(size: 30))
                         .foregroundColor(.accentColor)

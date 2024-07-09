@@ -40,7 +40,7 @@ struct SetupCirclesView: View {
             //let currentStage: SignupStage = .setupCircles
 
             Text("Create your circles")
-                .font(.title)
+                .font(.title2)
                 .fontWeight(.bold)
 
             List {
@@ -53,7 +53,7 @@ struct SetupCirclesView: View {
                         Button(role: .destructive, action: {
                             circles.removeAll { $0.name == info.name }
                         }) {
-                            Image(systemName: "minus.circle.fill")
+                            Image(systemName: SystemImages.minusCircleFill.rawValue)
                         }
                     }
                 }
@@ -72,7 +72,7 @@ struct SetupCirclesView: View {
             
             Spacer()
 
-            Label("NOTE: Circle names and cover images are not encrypted", systemImage: "exclamationmark.shield")
+            Label("NOTE: Circle names and cover images are not encrypted", systemImage: SystemImages.exclamationmarkShield.rawValue)
                 .font(.headline)
                 .foregroundColor(.orange)
 
@@ -93,6 +93,7 @@ struct SetupCirclesView: View {
 
         }
         .padding()
+        .frame(maxWidth: 700)
         .onAppear {
             user.refreshProfile()
         }
@@ -114,6 +115,7 @@ struct SetupCirclesView: View {
                 }
                 .padding(20)
                 .background(in: RoundedRectangle(cornerRadius: 10))
+                .frame(maxWidth: 600)
             }
         }
     }

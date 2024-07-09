@@ -20,9 +20,7 @@ struct SetupCircleCard: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            
             HStack {
-                
                 ZStack {
                     Color.gray
                     
@@ -37,7 +35,7 @@ struct SetupCircleCard: View {
                 .foregroundColor(.gray)
                 .overlay(alignment: .bottomTrailing) {
                     PhotosPicker(selection: $selectedItem) {
-                        Image(systemName: "pencil.circle.fill")
+                        Image(systemName: SystemImages.pencilCircleFill.rawValue)
                             .symbolRenderingMode(.multicolor)
                             .font(.system(size: 30))
                             .foregroundColor(.accentColor)

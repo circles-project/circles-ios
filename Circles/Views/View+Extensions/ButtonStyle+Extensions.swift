@@ -19,6 +19,18 @@ struct BigBlueButtonStyle: ButtonStyle {
     }
 }
 
+struct PillButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .padding(.vertical, 5)
+            .padding(.horizontal, 10)
+            .foregroundColor(.white)
+            .background(configuration.isPressed ? Color.accentColor.opacity(0.8) : Color.accentColor)
+            .cornerRadius(16)
+            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+    }
+}
+
 struct ReactionsButtonStyle: ButtonStyle {
     var buttonColor: Color
     

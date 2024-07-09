@@ -23,24 +23,33 @@ struct UsernameEnrollForm: View {
     @FocusState var focus: FocusField?
     
     var body: some View {
-        VStack(alignment: .center, spacing: 40) {
+        VStack(alignment: .center, spacing: 20) {
             Spacer()
 
             Text("Choose a username")
                 .font(.title2)
+                .fontWeight(.bold)
 
-            TextField("Username", text: $username, prompt: Text("username"))
-                .textContentType(.username)
-                .focused($focus, equals: .username)
-                .autocapitalization(.none)
-                .disableAutocorrection(true)
-                .frame(width: 300.0, height: 40.0)
-                .onAppear {
-                    self.focus = .username
+            HStack {
+                TextField("Username", text: $username, prompt: Text("username"))
+                    .textContentType(.username)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .focused($focus, equals: .username)
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
+                    .frame(width: 300.0, height: 40.0)
+                    .onAppear {
+                        self.focus = .username
+                    }
+                Button(action: {
+                    self.username = ""
+                }) {
+                    Image(systemName: SystemImages.xmark.rawValue)
+                        .foregroundColor(.gray)
                 }
+            }
             
             AsyncButton(action: {
-                
                 do {
                     try await session.doUsernameStage(username: username)
                 } catch {
@@ -51,7 +60,7 @@ struct UsernameEnrollForm: View {
                         self.alertMessage = "The requested username is not available.  Please try a different one."
                         self.showAlert = true
                     }
-                    print("SIGNUP/Username\tExisting username = \(session.realRequestDict["username"] as? String)")
+                    print("SIGNUP/Username\tExisting username = \(session.realRequestDict["username"] as? String ?? "Error")")
                 }
 
             }) {

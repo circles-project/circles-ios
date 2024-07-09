@@ -27,7 +27,6 @@ func passwordResetFilter(flow: AuthFlow) -> Bool {
         CirclesApp.logger.debug("passwordResetFilter: Not UIA - mismatch")
         return false
     }
-    
 }
 
 struct ForgotPasswordView: View {
@@ -42,7 +41,6 @@ struct ForgotPasswordView: View {
     
     var body: some View {
         VStack {
-
             CirclesLogoView()
                 .frame(minWidth: 100,
                        idealWidth: 150,
@@ -55,20 +53,29 @@ struct ForgotPasswordView: View {
             Spacer()
             
             Text("Account Recovery")
-                .font(.title)
+                .font(.title2)
                 .fontWeight(.bold)
                 .padding()
 
             Text("Enter your username to begin")
             
-            TextField("@user:example.com", text: $username)
-                .autocapitalization(.none)
-                .disableAutocorrection(true)
-                .focused($inputFocused)
-                .frame(width: 300.0, height: 40.0)
-                .onAppear {
-                    self.inputFocused = true
+            HStack {
+                TextField("@user:example.com", text: $username)
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
+                    .focused($inputFocused)
+                    .frame(width: 300.0, height: 40.0)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .onAppear {
+                        self.inputFocused = true
+                    }
+                Button(action: {
+                    self.username = ""
+                }) {
+                    Image(systemName: SystemImages.xmark.rawValue)
+                        .foregroundColor(.gray)
                 }
+            }
             
             AsyncButton(action: {
                 if !username.isEmpty {

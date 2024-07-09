@@ -108,7 +108,7 @@ extension CirclesAppDelegate: UNUserNotificationCenterDelegate {
         print("DELEGATE:\twillPresent user notification")
         
         let info = notification.request.content.userInfo
-        guard let eventId = info["event_id"] as? EventId,
+        guard let _ = info["event_id"] as? EventId, // let eventId
               let roomIdString = notification.request.content.userInfo["room_id"] as? String,
               let roomId = RoomId(roomIdString)
         else {
@@ -150,7 +150,7 @@ extension CirclesAppDelegate: UNUserNotificationCenterDelegate {
         
         // FIXME: If the room is one of ours, then we should programmatically navigate to it
         let info = response.notification.request.content.userInfo
-        guard let eventId = info["event_id"] as? EventId,
+        guard let _ = info["event_id"] as? EventId, // let eventId
               let roomIdString = info["room_id"] as? String,
               let roomId = RoomId(roomIdString)
         else {

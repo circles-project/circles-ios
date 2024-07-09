@@ -27,7 +27,7 @@ struct VideoThumbnailCard: View {
                         .frame(width: width, height: height, alignment: .center)
                         .clipped()
 
-                    BasicImage(systemName: "play.circle")
+                    BasicImage(systemName: SystemImages.playCircle.rawValue)
                         .foregroundColor(.white)
                         .shadow(color: .black, radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
                         .frame(width: width/2, height: height/2)
@@ -41,7 +41,7 @@ struct VideoThumbnailCard: View {
                 } else {
                     Color.gray
                         .onAppear {
-                            let task = Task {
+                            let _ = Task {
                                 try await message.fetchThumbnail()
                             }
                         }
@@ -51,7 +51,7 @@ struct VideoThumbnailCard: View {
             else {
                 VStack {
                     let bgColor = colorScheme == .dark ? Color.black : Color.white
-                    BasicImage(systemName: "lock.rectangle")
+                    BasicImage(systemName: SystemImages.lockRectangle.rawValue)
                         .foregroundColor(Color.gray)
                         .padding()
                     VStack {

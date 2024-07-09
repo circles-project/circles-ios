@@ -36,7 +36,7 @@ struct IgnoredUsersView: View {
                             AsyncButton(action: {
                                 try await user.session.unignoreUser(userId: user.userId)
                             }) {
-                                Image(systemName: "trash")
+                                Image(systemName: SystemImages.trash.rawValue)
                                     .foregroundColor(.red)
                             }
                         }

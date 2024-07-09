@@ -35,6 +35,7 @@ struct BsspekeLoginForm: View {
             VStack {
                 SecureField("Passphrase", text: $passphrase, prompt: Text("Passphrase"))
                     .textContentType(.password)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
                     .focused($focus, equals: .passphrase)
                     .frame(width: 300.0, height: 40.0)
                     .onAppear {

@@ -87,7 +87,7 @@ struct VideoContentView: View {
                             AsyncButton(action: {
                                 try await download(content: content)
                             }) {
-                                BasicImage(systemName: "play.circle")
+                                BasicImage(systemName: SystemImages.playCircle.rawValue)
                                     .frame(width: 80, height: 80)
                                     .foregroundColor(.white)
                                     .shadow(color: .black, radius: 10)
@@ -138,7 +138,7 @@ struct VideoContentView: View {
                                         Button(action: {
                                             self.presentation.wrappedValue.dismiss()
                                         }) {
-                                            Image(systemName: "xmark")
+                                            Image(systemName: SystemImages.xmark.rawValue)
                                                 .foregroundColor(.white)
                                         }
                                         .buttonStyle(.plain)
@@ -164,7 +164,7 @@ struct VideoContentView: View {
                     ZStack {
                         MessageThumbnail(message: message)
 
-                        Label("Failed to load video", systemImage: "exclamationmark.triangle")
+                        Label("Failed to load video", systemImage: SystemImages.exclamationmarkTriangle.rawValue)
                             .foregroundColor(.red)
                             .shadow(color: .white, radius: 10)
                     }

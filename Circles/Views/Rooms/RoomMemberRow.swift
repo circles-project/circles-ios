@@ -43,7 +43,7 @@ struct RoomMemberRow: View {
         
         if room.iCanChangeState(type: M_ROOM_POWER_LEVELS) && iCanModerateThem {
             Menu("Set Access Level") {
-                ForEach(0 ..< roles.count) { index in
+                ForEach(0 ..< roles.count, id: \.self) { index in
                     AsyncButton(action: {
                         // Check yourself before you wreck yourself -- Are we setting our own power level here?
                         if user.userId == room.session.creds.userId {
@@ -81,7 +81,7 @@ struct RoomMemberRow: View {
                             try await room.mute(userId: user.userId)
                         }) {
                             Text("Mute this user here")
-                            Image(systemName: "speaker.slash")
+                            Image(systemName: SystemImages.speakerSlash.rawValue)
                         }
                     }
                     
@@ -90,7 +90,7 @@ struct RoomMemberRow: View {
                             try await room.kick(userId: user.userId)
                         }) {
                             Text("Remove this user")
-                            Image(systemName: "person.fill.xmark")
+                            Image(systemName: SystemImages.personFillXmark.rawValue)
                         }
                     }
                     
@@ -99,7 +99,7 @@ struct RoomMemberRow: View {
                             try await room.ban(userId: user.userId)
                         }) {
                             Text("Ban this user forever")
-                            Image(systemName: "xmark.shield")
+                            Image(systemName: SystemImages.xmarkShield.rawValue)
                         }
                     }
                 }
@@ -111,7 +111,8 @@ struct RoomMemberRow: View {
         VStack(alignment: .leading) {
             HStack {
                 UserAvatarView(user: user)
-                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                    .clipShape(Circle())
+                    .aspectRatio(contentMode: .fill)
                     .frame(width: 60, height: 60)
                 VStack(alignment: .leading) {
                     UserNameView(user: user)

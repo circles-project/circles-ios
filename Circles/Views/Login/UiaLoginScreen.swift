@@ -39,9 +39,9 @@ struct UiaLoginScreen: View {
                     }
             }
             
-        case .failed(let error):
+        case .failed(_): // let error
             VStack(spacing: 25) {
-                Label("Error", systemImage: "exclamationmark.triangle")
+                Label("Error", systemImage: SystemImages.exclamationmarkTriangle.rawValue)
                     .font(.title)
                     .fontWeight(.bold)
                 Text("The server rejected our request to log in.")
@@ -52,7 +52,7 @@ struct UiaLoginScreen: View {
         case .connected(let uiaaState):
             VStack {
                 if let msg = self.flowErrorMessage {
-                    Label("Error!", systemImage: "exclamationmark.triangle")
+                    Label("Error!", systemImage: SystemImages.exclamationmarkTriangle.rawValue)
                         .font(.title)
                         .fontWeight(.bold)
                     Text("\(msg)")

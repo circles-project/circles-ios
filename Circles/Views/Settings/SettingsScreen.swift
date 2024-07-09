@@ -34,16 +34,15 @@ struct SettingsScreen: View {
     
     
     var body: some View {
-        NavigationView {
+        NavigationSplitView {
             Form {
-
                 Section("General") {
                     NavigationLink(destination: ProfileSettingsView(session: session.matrix)) {
                         Label("Public Profile", systemImage: "person.circle.fill")
                     }
                     
                     NavigationLink(destination: SecuritySettingsView(session: session.matrix)) {
-                        Label("Account Security", systemImage: "lock.fill")
+                        Label("Account Security", systemImage: SystemImages.lockFill.rawValue)
                     }
                     
                     if CIRCLES_DOMAINS.contains(session.matrix.creds.userId.domain) {
@@ -79,15 +78,15 @@ struct SettingsScreen: View {
                     }
                     
                     Label {
-                        Link("Circles iOS Privacy Policy", destination: URL(string: "https://circles.futo.org/privacy/ios/")!)
+                        Link("Circles iOS Privacy Policy", destination: URL(string: PRIVACY_POLICY_URL)!)
                     } icon: {
-                        Image(systemName: "link")
+                        Image(systemName: SystemImages.link.rawValue)
                     }
                     
                     Label {
                         Link("License Agreement", destination: URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!)
                     } icon: {
-                        Image(systemName: "link")
+                        Image(systemName: SystemImages.link.rawValue)
                     }
                 }
 
@@ -121,7 +120,7 @@ struct SettingsScreen: View {
                 }
                 */
                 
-                Section(header: Label("Danger Zone", systemImage: "exclamationmark.triangle")) {
+                Section(header: Label("Danger Zone", systemImage: SystemImages.exclamationmarkTriangle.rawValue)) {
                     
                     Button(action: {
                         self.showConfirmSwitch = true
@@ -166,11 +165,13 @@ struct SettingsScreen: View {
                     )
                     
                     NavigationLink(destination: DeactivateAccountView(store: store, session: session)) {
-                        Label("Deactivate Account", systemImage: "person.fill.xmark")
+                        Label("Deactivate Account", systemImage: SystemImages.personFillXmark.rawValue)
                     }
                 }
             }
             .navigationTitle("Settings")
+        } detail: {
+            ProfileSettingsView(session: session.matrix)
         }
         .sheet(isPresented: $showChangelog) {
             ChangelogSheet(content: ChangelogFile().loadMarkdown(named: .fullList), title: .fullList, showChangelog: $showChangelog)

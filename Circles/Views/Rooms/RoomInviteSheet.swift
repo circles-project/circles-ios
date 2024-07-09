@@ -235,7 +235,7 @@ struct RoomInviteSheet: View {
                         Button(action: {
                             self.newUsers.remove(user)
                         }) {
-                            Label(user.userId.stringValue, systemImage: "xmark")
+                            Label(user.userId.stringValue, systemImage: SystemImages.xmark.rawValue)
                                 .lineLimit(1)
                                 .font(.subheadline)
                         }
