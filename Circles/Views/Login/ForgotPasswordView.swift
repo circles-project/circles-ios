@@ -59,23 +59,15 @@ struct ForgotPasswordView: View {
 
             Text("Enter your username to begin")
             
-            HStack {
-                TextField("@user:example.com", text: $username)
-                    .autocapitalization(.none)
-                    .disableAutocorrection(true)
-                    .focused($inputFocused)
-                    .frame(width: 300.0, height: 40.0)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .onAppear {
-                        self.inputFocused = true
-                    }
-                Button(action: {
-                    self.username = ""
-                }) {
-                    Image(systemName: SystemImages.xmark.rawValue)
-                        .foregroundColor(.gray)
+            TextField("@user:example.com", text: $username)
+                .autocapitalization(.none)
+                .disableAutocorrection(true)
+                .focused($inputFocused)
+                .frame(width: 300.0, height: 40.0)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .onAppear {
+                    self.inputFocused = true
                 }
-            }
             
             AsyncButton(action: {
                 if !username.isEmpty {
