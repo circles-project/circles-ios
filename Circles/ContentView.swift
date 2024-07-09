@@ -61,8 +61,8 @@ struct ContentView: View {
         case .haveCreds(let creds, let key, let token):
             VStack {
                 Spacer()
-                let textInPorgressView = DebugModel.shared.debugMode ? "" : "Yeah! We found you and are rushing to let you in"
-                ProgressView(textInPorgressView)
+                let text = "Connecting as \(creds.userId.description)"
+                ProgressView(text)
                     .onAppear {
                         _ = Task {
                             do {
@@ -74,8 +74,6 @@ struct ContentView: View {
                             }
                         }
                     }
-                let text = DebugModel.shared.debugMode ? "Connecting as \(creds.userId.description)" : ""
-                Text(text)
                 
                 Spacer()
                 
@@ -94,7 +92,7 @@ struct ContentView: View {
             SecretStoragePasswordScreen(store: store, matrix: matrix, keyId: keyId, description: keyDescription)
             
         case .haveSecretStorageAndKey(let matrix):
-            let text = DebugModel.shared.debugMode ? "Checking cross signing" : "Checking your security connections"
+            let text = "Verifying your device"
             ProgressView(text)
                 .onAppear {
                     Task {
@@ -103,7 +101,7 @@ struct ContentView: View {
                 }
             
         case .haveCrossSigning(let matrix):
-            let text = DebugModel.shared.debugMode ? "Checking key backup" : "Ensuring your keys are safe"
+            let text = "Recovering message history"
             ProgressView(text)
                 .onAppear {
                     Task {
@@ -112,7 +110,7 @@ struct ContentView: View {
                 }
             
         case .haveKeyBackup(let matrix):
-            let text = DebugModel.shared.debugMode ? "Checking space hierarchy" : "Organizing your spaces"
+            let text = "Loading your social connections"
             ProgressView(text)
                 .onAppear {
                     Task {
@@ -124,7 +122,7 @@ struct ContentView: View {
             SetupScreen(store: store, matrix: matrix)
 
         case .haveSpaceHierarchy(let matrix, let config):
-            let text = DebugModel.shared.debugMode ? "Loading Circles" : "Just a moment, almost there—we promise!"
+            let text = "Loading messages - Almost done!"
             ProgressView(text)
                 .onAppear {
                     Task {
