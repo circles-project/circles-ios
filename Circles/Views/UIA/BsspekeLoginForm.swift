@@ -79,9 +79,8 @@ struct BsspekeLoginForm: View {
     var verifyForm: some View {
         VStack {
             Spacer()
-            ProgressView {
-                Text("Verifying passphrase")
-            }
+            let text = "Verifying your passphrase"
+            ProgressView(text)
             Spacer()
         }
         .onAppear {
