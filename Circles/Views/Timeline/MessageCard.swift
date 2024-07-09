@@ -481,6 +481,9 @@ struct MessageCard: MessageView {
                 }
                 .sheet(item: $sheetType) { st in
                     switch(st) {
+                    case .edit:
+                        PostComposer(room: message.room, editing: message)
+                        
                     case .reactions:
                         EmojiPicker(message: message)
                         
