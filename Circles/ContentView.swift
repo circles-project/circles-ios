@@ -33,7 +33,7 @@ struct ContentView: View {
         switch(store.state) {
             
         case .startingUp:
-            ProgressView("Spinning up your Circles... Hang tight!")
+            ProgressView("Circles is starting up... Hang tight!")
                 .onAppear {
                     print("ContentView: Starting up")
                     Task {
@@ -101,7 +101,7 @@ struct ContentView: View {
                 }
             
         case .haveCrossSigning(let matrix):
-            let text = "Recovering message history"
+            let text = "Loading encryption keys"
             ProgressView(text)
                 .onAppear {
                     Task {
@@ -110,7 +110,7 @@ struct ContentView: View {
                 }
             
         case .haveKeyBackup(let matrix):
-            let text = "Loading your social connections"
+            let text = "Loading social connections"
             ProgressView(text)
                 .onAppear {
                     Task {
