@@ -34,7 +34,7 @@ struct SetupAvatarView: View {
     }
 
     var body: some View {
-        let avatarSize: CGFloat = UIDevice.isPhoneSE ? 133 : 200
+        let avatarSize: CGFloat = UIDevice.isPhoneSE ? 133 : 160
         ScrollView {
             //let currentStage: SignupStage = .getAvatarImage
 
