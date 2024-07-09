@@ -158,6 +158,7 @@ enum SystemImages: String {
     case circlesHexagonpath = "circles.hexagonpath"
     case gearshape = "gearshape"
     case heart = "heart"
+    case heartFill = "heart.fill"
     case lockSlashFill = "lock.slash.fill"
     case minusMagnifyingglass = "minus.magnifyingglass"
     case paperclip = "paperclip"

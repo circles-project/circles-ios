@@ -261,13 +261,16 @@ struct MessageCard: MessageView {
     }
     
 
+    @ViewBuilder
     var likeButton: some View {
+        
+        let likers = message.reactions["❤️"] ?? []
+        let iLikedThisMessage = likers.contains(message.room.session.creds.userId)
+        
         AsyncButton(action: {
             // send ❤️ emoji reaction if we have not sent it yet
             // Otherwise retract it
-            if let likers = message.reactions["❤️"],
-               likers.contains(message.room.session.creds.userId)
-            {
+            if iLikedThisMessage {
                 // Redact the previous reaction message
                 try await message.sendRemoveReaction("❤️")
             } else {
@@ -276,10 +279,10 @@ struct MessageCard: MessageView {
             }
         }) {
             HStack(alignment: .center, spacing: 2) {
-                Image(systemName: SystemImages.heart.rawValue)
+                let icon = iLikedThisMessage ? SystemImages.heartFill : SystemImages.heart
+                Image(systemName: icon.rawValue)
                     .frame(width: 20, height: 20)
                 Text("\(message.reactions["❤️"]?.count ?? 0)")
-
             }
             .font(footerFont)
             .foregroundColor(footerForegroundColor)
