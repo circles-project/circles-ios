@@ -475,6 +475,9 @@ struct MessageCard: MessageView {
                         if mediaViewWidth == 0 {
                             mediaViewWidth = geometry.size.width
                         }
+                        if UIDevice.isPhone {
+                            mediaViewWidth = UIScreen.main.bounds.width
+                        }
                     }
             }
             mainCard

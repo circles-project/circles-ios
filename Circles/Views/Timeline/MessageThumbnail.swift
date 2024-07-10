@@ -75,10 +75,11 @@ struct MessageMediaThumbnail: View {
             let ratio = mediaViewWidth / mediaWidth
             if mediaHeight * ratio > maxMediaHeight {
                 height = maxMediaHeight
+                width = maxMediaHeight * (mediaWidth / mediaHeight)
             } else {
                 height = mediaHeight * ratio
+                width = mediaViewWidth - 30
             }
-            width = mediaViewWidth - 20
         } else {
             if mediaHeight > maxMediaHeight {
                 let ratio = maxMediaHeight / mediaHeight
@@ -95,8 +96,7 @@ struct MessageMediaThumbnail: View {
     
     var body: some View {
         ZStack {
-            let allowedMediaSize = calculateAllowedSizeFor(message.thumbnail) //MediaSizeCalculation(nativeImage: message.thumbnail)
-            
+            let allowedMediaSize = calculateAllowedSizeFor(message.thumbnail)
             let mediaSize = getMediaSize(allowedMediaSize)
             thumbnail
                 .resizable()
