@@ -49,6 +49,7 @@ private struct KeyboardControllableTextField: UIViewRepresentable {
         textField.borderStyle = .roundedRect
         textField.returnKeyType = .done
         textField.placeholder = placeholder
+        textField.textContentType = .newPassword
         textField.addTarget(context.coordinator, action: #selector(Coordinator.textFieldDidChangeSelection(_:)), for: .editingChanged)
         return textField
     }
