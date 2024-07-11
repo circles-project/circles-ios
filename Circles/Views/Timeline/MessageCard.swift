@@ -223,7 +223,7 @@ struct MessageCard: MessageView {
                      }
                  }
             } else {
-                Text("Something went wrong.  Circles failed to parse a message of type \"\(current.type)\".")
+                Text("Oh no! Something went wrong.  Circles failed to parse a message of type \"\(current.type)\".")
                     .foregroundColor(.red)
             }
         }
@@ -481,6 +481,9 @@ struct MessageCard: MessageView {
                 }
                 .sheet(item: $sheetType) { st in
                     switch(st) {
+                    case .edit:
+                        PostComposer(room: message.room, editing: message)
+                        
                     case .reactions:
                         EmojiPicker(message: message)
                         
