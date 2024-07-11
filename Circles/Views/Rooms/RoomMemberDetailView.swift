@@ -175,17 +175,16 @@ struct RoomMemberDetailView: View {
     @ViewBuilder
     private var circlesMenu: some View {
         Menu {
-            let rooms = Array(session.circles.rooms.values) //.sorted { $0.timestamp < $1.timestamp }
-            ForEach(rooms) { space in
-                if let wall = space.wall,
-                   let name = space.name
+            let rooms = Array(session.timelines.rooms.values) //.sorted { $0.timestamp < $1.timestamp }
+            ForEach(rooms) { room in
+                if let name = room.name
                 {
                     Button(action: {
-                        inviteRoom = wall
+                        inviteRoom = room
                     }) {
                         Text(name)
                     }
-                    .disabled(wall.joinedMembers.contains(user.userId))
+                    .disabled(room.joinedMembers.contains(user.userId))
                 }
             }
         } label:

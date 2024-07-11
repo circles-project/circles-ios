@@ -9,23 +9,17 @@ import Foundation
 import os
 import Matrix
 
-class CircleSpace: ContainerRoom<Matrix.Room> {
+class TimelineSpace: ContainerRoom<Matrix.Room> {
     
-    var wall: Matrix.Room? {
-        self.rooms.values.first(where: {$0.creator == self.session.creds.userId})
+    var circles: [Matrix.Room] {
+        self.rooms.values.filter { room in
+            room.creator == self.creator
+        }
     }
     
-    var followers: [UserId] {
-        self.wall?.joinedMembers.filter( {
-            $0 != self.session.creds.userId // Not a "Yes, sir", not a follower...  Have a seat in the foyer.  Take a number.
-        }) ?? []
-    }
-    
-    var following: [UserId] {
-        self.rooms.values.compactMap {
-            $0.creator
-        }.filter {
-            $0 != self.session.creds.userId
+    var following: [Matrix.Room] {
+        self.rooms.values.filter { room in
+            room.creator != self.creator
         }
     }
     

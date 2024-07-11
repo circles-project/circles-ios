@@ -8,7 +8,7 @@
 import SwiftUI
 import PhotosUI
 import Matrix
-
+/*
 struct CircleSettingsView: View {
     @ObservedObject var space: CircleSpace
     
@@ -192,4 +192,4 @@ struct CircleSettingsView: View {
         .navigationTitle("Settings for \(space.name ?? "this circle")")
     }
 }
-
+*/

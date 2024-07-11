@@ -19,14 +19,14 @@ extension CirclesOverviewSheetType: Identifiable {
 }
 
 struct CirclesOverviewScreen: View {
-    @ObservedObject var container: ContainerRoom<CircleSpace>
+    @ObservedObject var container: TimelineSpace
     //@State var selectedSpace: CircleSpace?
     @Binding var selected: RoomId?
         
     @State private var sheetType: CirclesOverviewSheetType? = nil
     
     @State var confirmDeleteCircle = false
-    @State var circleToDelete: CircleSpace? = nil
+    @State var timelineToDelete: Matrix.Room? = nil
     
     @AppStorage("showCirclesHelpText") var showHelpText = false
     
@@ -47,15 +47,18 @@ struct CirclesOverviewScreen: View {
         }
     }
     
-    private func deleteCircle(circle: CircleSpace) async throws {
-        print("Removing circle \(circle.name ?? "??") (\(circle.roomId))")
-        print("Leaving \(circle.rooms.count) rooms that were in the circle")
-        for room in circle.rooms.values {
-            print("Leaving timeline room \(room.name ?? "??") (\(room.roomId))")
-            try await room.leave()
+    private func removeTimeline(room: Matrix.Room) async throws {
+        print("Removing timeline \(room.name ?? "??") (\(room.roomId))")
+
+        if room.creator == room.session.creds.userId {
+            print("Deleting timeline \(room.roomId)")
+            let roomId = room.roomId
+            try await room.close(reason: "Deleting this circle", kickEveryone: false)
+            try await container.removeChild(roomId)
+        } else {
+            print("Leaving timeline \(room.roomId)")
+            try await container.leaveChild(room.roomId)
         }
-        print("Leaving circle space \(circle.roomId)")
-        try await container.leaveChild(circle.roomId, reason: "Deleting circle")
     }
     
     @ViewBuilder
@@ -70,12 +73,14 @@ struct CirclesOverviewScreen: View {
                 }
                 
                 // Sort intro _reverse_ chronological order
-                let circles = container.rooms.values.sorted(by: { $0.timestamp > $1.timestamp })
+                let myCircles = container.rooms.values
+                    .filter({$0.creator == container.session.creds.userId})
+                    .sorted(by: { $0.timestamp > $1.timestamp })
                                 
                 List(selection: $selected) {
-                    ForEach(circles) { circle in
+                    ForEach(myCircles) { circle in
                         NavigationLink(value: circle.roomId) {
-                            CircleOverviewCard(space: circle)
+                            CircleOverviewCard(room: circle)
                                 .contentShape(Rectangle())
                                 //.padding(.top)
                         }
@@ -83,7 +88,7 @@ struct CirclesOverviewScreen: View {
                         .contextMenu {
                             Button(role: .destructive, action: {
                                 //try await deleteCircle(circle: circle)
-                                self.circleToDelete = circle
+                                self.timelineToDelete = circle
                                 self.confirmDeleteCircle = true
                             }) {
                                 Label("Delete", systemImage: SystemImages.xmarkCircle.rawValue)
@@ -155,9 +160,9 @@ struct CirclesOverviewScreen: View {
                 ScanQrCodeAndKnockSheet(session: container.session)
             }
         }
-        .confirmationDialog("Confirm deleting circle", isPresented: $confirmDeleteCircle, presenting: circleToDelete) { circle in
+        .confirmationDialog("Confirm deleting circle", isPresented: $confirmDeleteCircle, presenting: timelineToDelete) { circle in
             AsyncButton(role: .destructive, action: {
-                try await deleteCircle(circle: circle)
+                try await removeTimeline(room: circle)
             }) {
                 Label("Delete circle \"\(circle.name ?? "??")\"", systemImage: SystemImages.xmarkBin.rawValue)
             }
@@ -186,11 +191,11 @@ struct CirclesOverviewScreen: View {
                 }
         } detail: {
             if let roomId = selected,
-               let space = container.rooms[roomId]
+               let timeline = container.rooms[roomId]
             {
-                CircleTimelineView(space: space)
+                TimelineView<MessageCard>(room: timeline)
             } else {
-                Text("Select a circle to see the most recent posts")
+                UnifiedTimelineView(space: container)
             }
         }
     }

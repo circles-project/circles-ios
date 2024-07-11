@@ -11,7 +11,7 @@ import PhotosUI
 import Matrix
 
 struct CircleCreationSheet: View {
-    @ObservedObject var container: ContainerRoom<CircleSpace>
+    @ObservedObject var container: TimelineSpace
     @Environment(\.presentationMode) var presentation
     
     @State private var circleName: String = ""
@@ -30,37 +30,27 @@ struct CircleCreationSheet: View {
     @FocusState var inputFocused
     
     func create() async throws {
-        // NOTE: We must be careful here.
-        //       We only want the new circle to appear as one of our circles IFF it is fully-formed with a valid "wall" room.
-        //       Therefore we must create the "wall" room first, then create the space for the circle, then add the wall to the circle.
-        //       Only then can we add the circle to our container as one of our active circles.
+        
+        let session = container.session
         
         // First create the "wall" timeline room
-        let wallRoomId = try await container.session.createRoom(name: circleName, type: ROOM_TYPE_CIRCLE, encrypted: true)
+        let roomId = try await session.createRoom(name: circleName, type: ROOM_TYPE_CIRCLE, encrypted: true)
         if let image = avatarImage {
-            try await container.session.setAvatarImage(roomId: wallRoomId, image: image)
+            try await session.setAvatarImage(roomId: roomId, image: image)
         }
         
-        // Then create the Space for the circle
-        let circleRoomId = try await container.session.createRoom(name: circleName, type: M_SPACE, encrypted: false)
-        if let image = avatarImage {
-            try await container.session.setAvatarImage(roomId: circleRoomId, image: image)
-        }
+        // Add the wall as a child room of the container
+        try await container.addChild(roomId)
         
-        // Add the wall as a child room of the circle
-        try await container.session.addSpaceChild(wallRoomId, to: circleRoomId)
-        // Add the circle as a child room of the container
-        try await container.addChild(circleRoomId)
-        
-        guard let _ = try await container.session.getRoom(roomId: circleRoomId, as: CircleSpace.self) // let circleRoom
+        guard let _ = try await session.getRoom(roomId: roomId, as: Matrix.Room.self)
         else {
-            print("Failed to get new circle Space room for roomId \(circleRoomId)")
+            print("Failed to get new circle timeline room for roomId \(roomId)")
             return
         }
         
         // Invite our followers to join the room where we're going to post
         for user in users {
-            try await container.session.inviteUser(roomId: wallRoomId, userId: user.userId)
+            try await session.inviteUser(roomId: roomId, userId: user.userId)
         }
         
         self.presentation.wrappedValue.dismiss()

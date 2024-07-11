@@ -12,7 +12,7 @@ import Matrix
 struct PeopleOverviewScreen: View {
     @ObservedObject var people: ContainerRoom<Matrix.SpaceRoom>
     @ObservedObject var profile: ProfileSpace
-    @ObservedObject var circles: ContainerRoom<CircleSpace>
+    @ObservedObject var timelines: TimelineSpace
     @ObservedObject var groups: ContainerRoom<GroupRoom>
     
     @State var selectedUserId: UserId?
@@ -28,15 +28,10 @@ struct PeopleOverviewScreen: View {
         CirclesApp.logger.debug("Loading friends of friends")
         let myUserId = profile.session.creds.userId
         // First find all of the timeline rooms that I'm following
-        let timelines: Set<Matrix.Room> = circles.rooms.values.reduce([]) { (curr,circle) in
-            CirclesApp.logger.debug("Looking for followed timelines in circle \(circle.name ?? circle.roomId.stringValue)")
-            // Don't include my own timelines in the list
-            let followedRooms = circle.rooms.values.filter { $0.creator != myUserId }
-            return curr.union(followedRooms)
-        }
-        CirclesApp.logger.debug("Found \(timelines.count) timelines we are following")
+        let friendsTimelines = timelines.rooms.values.filter { $0.creator != myUserId }
+        CirclesApp.logger.debug("Found \(friendsTimelines.count) timelines we are following")
         
-        let userIds: Set<UserId> = timelines.reduce([]) { (curr,room) in
+        let userIds: Set<UserId> = friendsTimelines.reduce([]) { (curr,room) in
             let creator = room.creator
             let followers = room.joinedMembers.filter { $0 != creator && $0 != room.session.creds.userId }
             CirclesApp.logger.debug("Found \(followers.count) friends of a friend in room \(room.name ?? room.roomId.stringValue)")
@@ -89,14 +84,18 @@ struct PeopleOverviewScreen: View {
                         }
                     }
                     .onAppear {
-                        let followingUserIds: [UserId] = circles.rooms.values.reduce([], {(curr,room) in
-                            curr + room.following
+                        let followingUserIds: [UserId] = timelines.rooms.values.reduce([], {(curr,room) in
+                            if room.creator == timelines.session.creds.userId {
+                                return curr
+                            } else {
+                                return curr + [room.creator]
+                            }
                         })
                         let sortedUserIds: [UserId] = Set(followingUserIds).sorted {
                             $0.stringValue < $1.stringValue
                         }
                         following = sortedUserIds.compactMap { userId -> Matrix.User in
-                            circles.session.getUser(userId: userId)
+                            timelines.session.getUser(userId: userId)
                         }
                     }
                     
@@ -112,14 +111,16 @@ struct PeopleOverviewScreen: View {
                         }
                     }
                     .onAppear {
-                        let followersUserIds = circles.rooms.values.reduce([], {(curr,room) in
-                            curr + room.followers
+                        let myUserId = people.session.creds.userId
+                        let followersUserIds: Set<UserId> = timelines.circles.reduce([], {(curr,room) in
+                            curr.union(room.joinedMembers)
+                                .subtracting([myUserId])
                         })
                         let sortedUserIds: [UserId] = Set(followersUserIds).sorted {
                             $0.stringValue < $1.stringValue
                         }
                         followers = sortedUserIds.compactMap { userId -> Matrix.User in
-                            circles.session.getUser(userId: userId)
+                            timelines.session.getUser(userId: userId)
                         }
                     }
                     
@@ -159,7 +160,7 @@ struct PeopleOverviewScreen: View {
             NavigationStack {
                 switch selected {
                 case .me:
-                    SelfDetailView(profile: profile, circles: circles)
+                    SelfDetailView(profile: profile)
                 case .following:
                     FollowingView(profile: profile, following: $following)
                 case .followers:
@@ -167,7 +168,7 @@ struct PeopleOverviewScreen: View {
                 case .friendsOfFriends:
                     FriendsOfFriendsView(profile: profile, people: people, friendsOfFriends: $friendsOfFriends)
                 default:
-                    SelfDetailView(profile: profile, circles: circles)
+                    SelfDetailView(profile: profile)
                 }
             }
         }

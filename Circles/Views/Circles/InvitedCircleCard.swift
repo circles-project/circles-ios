@@ -11,7 +11,7 @@ import Matrix
 struct InvitedCircleCard: View {
     @ObservedObject var room: Matrix.InvitedRoom
     @ObservedObject var user: Matrix.User
-    @ObservedObject var container: ContainerRoom<CircleSpace>
+    @ObservedObject var container: ContainerRoom<Matrix.Room>
     
     @AppStorage("blurUnknownUserPicture") var blurUnknownUserPicture = true
     
@@ -83,8 +83,8 @@ struct InvitedCircleCard: View {
                     
                     Spacer()
                     
-                    Button(action: {
-                        self.showAcceptSheet = true
+                    AsyncButton(action: {
+                        try await room.accept()
                     }) {
                         //Label("Accept", systemImage: "hand.thumbsup.fill")
                         Text("Accept")
@@ -93,9 +93,7 @@ struct InvitedCircleCard: View {
                             .background(Color.accentColor)
                             .cornerRadius(6)
                     }
-                    .sheet(isPresented: $showAcceptSheet) {
-                        CircleAcceptInviteView(room: room, user: user, container: container)
-                    }
+
                     
                     Spacer()
                     
@@ -129,10 +127,10 @@ struct InvitedCircleCard: View {
             
             // Check to see if this is maybe a stale/stuck invitation
             print("INVITE Checking \(room.roomId) for stuck invitations")
-            let circles = container.rooms.values
-            if let existingCircle = circles.first(where: {$0.children.contains(room.roomId) || $0.rooms[room.roomId] != nil}) {
+            let timelines = container.rooms.values
+            if let existingTimeline = timelines.first(where: {$0.roomId == room.roomId}) {
                 // Somehow we've already joined this one
-                print("INVITE Room \(room.roomId) is already followed in circle \(existingCircle.name ?? existingCircle.roomId.stringValue)")
+                print("INVITE Timeline \(room.roomId) is already followed")
                 Task {
                     try await container.session.deleteInvitedRoom(roomId: room.roomId)
                 }

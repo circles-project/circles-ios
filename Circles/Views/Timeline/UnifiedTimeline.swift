@@ -10,14 +10,14 @@
 import SwiftUI
 import Matrix
 
-struct CircleTimeline: View {
-    @ObservedObject var space: CircleSpace
+struct UnifiedTimeline: View {
+    @ObservedObject var space: TimelineSpace
     private var formatter: DateFormatter
     @State private var showDebug = false
     @State private var loading = false
     private var cutoff: Date
 
-    init(space: CircleSpace) {
+    init(space: TimelineSpace) {
         self.space = space
         self.formatter = DateFormatter()
         formatter.dateStyle = .long
@@ -106,12 +106,6 @@ struct CircleTimeline: View {
         let messages: [Matrix.Message] = space.getCollatedTimeline(filter: self.filter).reversed()
         
         VStack(alignment: .leading) {
-            if let wall = space.wall,
-               wall.knockingMembers.count > 0
-            {
-                RoomKnockIndicator(room: wall)
-            }
-            
             ScrollView {
                 LazyVStack(alignment: .center) {
                     ForEach(messages) { message in
@@ -176,10 +170,6 @@ struct CircleTimeline: View {
                 }
             }
             .refreshable {
-                if let wall = space.wall {
-                    print("REFRESH\tUpdating Circle avatar image")
-                    wall.updateAvatarImage()
-                }
                 
                 async let results = space.rooms.values.map { room in
                     print("REFRESH\tLoading latest messages from \(room.name ?? room.roomId.stringValue)")

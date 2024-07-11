@@ -59,8 +59,8 @@ struct CirclesTabbedInterface: View {
     var tabview: some View {
         TabView(selection: $session.viewState.tab) {
             
-            CirclesOverviewScreen(container: self.session.circles,
-                                  selected: $session.viewState.selectedCircleId)
+            CirclesOverviewScreen(container: self.session.timelines,
+                                  selected: $session.viewState.selectedTimelineId)
                 .environmentObject(session)
                 .onAppear {
                     changelogFile.checkLastUpdates(for: .lastUpdates, showChangelog: &showChangelog, changelogLastUpdate: &changelogLastUpdate)
@@ -85,7 +85,7 @@ struct CirclesTabbedInterface: View {
             
             PeopleOverviewScreen(people: self.session.people,
                                  profile: self.session.profile,
-                                 circles: self.session.circles,
+                                 timelines: self.session.timelines,
                                  groups: self.session.groups)
                 .environmentObject(session)
                 .tabItem {

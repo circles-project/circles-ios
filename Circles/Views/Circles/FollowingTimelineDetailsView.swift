@@ -11,7 +11,7 @@ import Matrix
 struct FollowingTimelineDetailsView: View {
     @ObservedObject var room: Matrix.Room
     @ObservedObject var user: Matrix.User
-    @ObservedObject var circle: CircleSpace
+    @ObservedObject var container: ContainerRoom<Matrix.Room>
     
     @State var showConfirmUnfollow = false
 
@@ -90,7 +90,7 @@ struct FollowingTimelineDetailsView: View {
                         isPresented: $showConfirmUnfollow) {
                             AsyncButton(role: .destructive, action: {
                                 print("Un-following roomId = \(room.roomId)")
-                                try await circle.leaveChild(room.roomId)
+                                try await container.leaveChild(room.roomId)
                             }) {
                                 Text("Unfollow")
                             }

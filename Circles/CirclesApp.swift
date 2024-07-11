@@ -23,7 +23,8 @@ struct CirclesApp: App {
     
     init() {
         // We need to register all of our custom types with the Matrix library, so it can decode them for us
-        Matrix.registerAccountDataType(EVENT_TYPE_CIRCLES_CONFIG, CirclesConfigContent.self)
+        Matrix.registerAccountDataType(EVENT_TYPE_CIRCLES_CONFIG_V1, CirclesConfigContentV1.self)
+        Matrix.registerAccountDataType(EVENT_TYPE_CIRCLES_CONFIG_V2, CirclesConfigContentV2.self)
         
         print("CirclesApp: Done with init()")
     }

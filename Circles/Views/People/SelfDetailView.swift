@@ -13,7 +13,6 @@ import Matrix
 
 struct SelfDetailView: View {
     @ObservedObject var profile: ContainerRoom<Matrix.Room>
-    @ObservedObject var circles: ContainerRoom<CircleSpace>
     
     @State var showPicker = false
     @State var showConfirmRemove = false
