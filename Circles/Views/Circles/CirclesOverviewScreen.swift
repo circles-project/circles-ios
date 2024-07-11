@@ -61,6 +61,17 @@ struct CirclesOverviewScreen: View {
         }
     }
     
+    private func roomSortComparator(_ room0: Matrix.Room, _ room1: Matrix.Room) -> Bool {
+        let session = container.session
+        let user0 = session.getUser(userId: room0.creator)
+        let user1 = session.getUser(userId: room1.creator)
+        
+        let title0 = "\(user0.displayName ?? user0.userId.username) \(room0.name ?? "")"
+        let title1 = "\(user1.displayName ?? user1.userId.username) \(room1.name ?? "")"
+        
+        return title0 < title1
+    }
+    
     @ViewBuilder
     var baseLayer: some View {
         let invitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_CIRCLE }
@@ -72,29 +83,64 @@ struct CirclesOverviewScreen: View {
                     CircleInvitationsIndicator(session: container.session, container: container)
                 }
                 
+                let session = container.session
                 // Sort intro _reverse_ chronological order
-                let myCircles = container.rooms.values
-                    .filter({$0.creator == container.session.creds.userId})
-                    .sorted(by: { $0.timestamp > $1.timestamp })
+                let circles = container.circles.sorted(by: {
+                    roomSortComparator($0, $1)
+                })
+                let following = container.following.sorted(by: {
+                    roomSortComparator($0, $1)
+                })
                                 
                 List(selection: $selected) {
-                    ForEach(myCircles) { circle in
-                        NavigationLink(value: circle.roomId) {
-                            CircleOverviewCard(room: circle)
-                                .contentShape(Rectangle())
-                                //.padding(.top)
-                        }
-                        .buttonStyle(.plain)
-                        .contextMenu {
-                            Button(role: .destructive, action: {
-                                //try await deleteCircle(circle: circle)
-                                self.timelineToDelete = circle
-                                self.confirmDeleteCircle = true
-                            }) {
-                                Label("Delete", systemImage: SystemImages.xmarkCircle.rawValue)
+                    
+                    NavigationLink(value: container.roomId) {
+                        Text("All posts")
+                    }
+                    
+                    Section("My Circles") {
+                        ForEach(circles) { circle in
+                            NavigationLink(value: circle.roomId) {
+                               
+                                TimelineOverviewCard(room: circle, user: session.me)
+                                    .contentShape(Rectangle())
+                                    //.padding(.top)
+                            }
+                            .buttonStyle(.plain)
+                            .contextMenu {
+                                Button(role: .destructive, action: {
+                                    //try await deleteCircle(circle: circle)
+                                    self.timelineToDelete = circle
+                                    self.confirmDeleteCircle = true
+                                }) {
+                                    Label("Delete", systemImage: SystemImages.xmarkCircle.rawValue)
+                                }
                             }
                         }
-                         
+                    }
+                    
+                    if following.count > 0 {
+                        Section("Others I'm Following") {
+                            ForEach(following) { room in
+                                NavigationLink(value: room.roomId) {
+                                    let user = session.getUser(userId: room.creator)
+                                    TimelineOverviewCard(room: room, user: user)
+                                        .contentShape(Rectangle())
+                                    //.padding(.top)
+                                }
+                                .buttonStyle(.plain)
+                                .contextMenu {
+                                    Button(role: .destructive, action: {
+                                        //try await deleteCircle(circle: circle)
+                                        self.timelineToDelete = room
+                                        self.confirmDeleteCircle = true
+                                    }) {
+                                        Label("Delete", systemImage: SystemImages.xmarkCircle.rawValue)
+                                    }
+                                }
+                                
+                            }
+                        }
                     }
                 }
                 .listStyle(.plain)
@@ -193,7 +239,7 @@ struct CirclesOverviewScreen: View {
             if let roomId = selected,
                let timeline = container.rooms[roomId]
             {
-                TimelineView<MessageCard>(room: timeline)
+               SingleTimelineView(room: timeline)
             } else {
                 UnifiedTimelineView(space: container)
             }

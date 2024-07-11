@@ -13,7 +13,7 @@ struct SingleTimelineView: View {
     
     var body: some View {
         let user = room.session.getUser(userId: room.creator)
-        let title = "\(user.displayName ?? user.userId.stringValue): \(room.name ?? "Timeline")"
+        let title = "\(user.displayName ?? user.userId.stringValue) - \(room.name ?? "Timeline")"
         TimelineView<MessageCard>(room: room)
             .navigationTitle(title)
     }

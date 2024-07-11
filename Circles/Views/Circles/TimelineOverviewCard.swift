@@ -9,13 +9,15 @@
 import SwiftUI
 import Matrix
 
-struct CircleOverviewCard: View {
+struct TimelineOverviewCard: View {
     @ObservedObject var room: Matrix.Room
+    @ObservedObject var user: Matrix.User
 
     var formatter: RelativeDateTimeFormatter
     
-    init(room: Matrix.Room) {
+    init(room: Matrix.Room, user: Matrix.User) {
         self.room = room
+        self.user = user
         self.formatter = RelativeDateTimeFormatter()
         self.formatter.dateTimeStyle = .named
     }
@@ -30,7 +32,7 @@ struct CircleOverviewCard: View {
                 
                 VStack(alignment: .leading) {
                     HStack {
-                        Text(room.name ?? "(unnamed circle)")
+                        Text("\(user.displayName ?? user.userId.username) - \(room.name ?? "(unnamed circle)")")
                             .lineLimit(2)
                             .multilineTextAlignment(.leading)
                             .font(.title3)
@@ -39,6 +41,7 @@ struct CircleOverviewCard: View {
                             .minimumScaleFactor(0.8)
                         Spacer()
                     }
+
                     
                     VStack(alignment: .leading) {
                                                 

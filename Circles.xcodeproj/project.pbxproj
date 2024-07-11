@@ -31,7 +31,7 @@
 		409F4323265DE11900690A61 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4322265DE11900690A61 /* Constants.swift */; };
 		409F4326265DE12600690A61 /* CloudImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4325265DE12600690A61 /* CloudImagePicker.swift */; };
 		409F4332265DE15F00690A61 /* CircleCreationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F432B265DE15C00690A61 /* CircleCreationSheet.swift */; };
-		409F4334265DE15F00690A61 /* CircleOverviewCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F432D265DE15D00690A61 /* CircleOverviewCard.swift */; };
+		409F4334265DE15F00690A61 /* TimelineOverviewCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F432D265DE15D00690A61 /* TimelineOverviewCard.swift */; };
 		409F4335265DE15F00690A61 /* CirclePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F432E265DE15E00690A61 /* CirclePicker.swift */; };
 		409F4336265DE15F00690A61 /* UnifiedTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F432F265DE15E00690A61 /* UnifiedTimelineView.swift */; };
 		409F4337265DE15F00690A61 /* CirclesOverviewScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4330265DE15F00690A61 /* CirclesOverviewScreen.swift */; };
@@ -287,7 +287,7 @@
 		409F4322265DE11900690A61 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		409F4325265DE12600690A61 /* CloudImagePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudImagePicker.swift; sourceTree = "<group>"; };
 		409F432B265DE15C00690A61 /* CircleCreationSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleCreationSheet.swift; sourceTree = "<group>"; };
-		409F432D265DE15D00690A61 /* CircleOverviewCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleOverviewCard.swift; sourceTree = "<group>"; };
+		409F432D265DE15D00690A61 /* TimelineOverviewCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelineOverviewCard.swift; sourceTree = "<group>"; };
 		409F432E265DE15E00690A61 /* CirclePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CirclePicker.swift; sourceTree = "<group>"; };
 		409F432F265DE15E00690A61 /* UnifiedTimelineView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnifiedTimelineView.swift; sourceTree = "<group>"; };
 		409F4330265DE15F00690A61 /* CirclesOverviewScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CirclesOverviewScreen.swift; sourceTree = "<group>"; };
@@ -671,7 +671,7 @@
 				A5921EB62AFAD5E400C2331D /* CircleFollowingRow.swift */,
 				A521C3F62A68D9390051ED88 /* CircleInvitationsIndicator.swift */,
 				A5FB06E22A681079002C5B88 /* CircleInvitationsView.swift */,
-				409F432D265DE15D00690A61 /* CircleOverviewCard.swift */,
+				409F432D265DE15D00690A61 /* TimelineOverviewCard.swift */,
 				409F432E265DE15E00690A61 /* CirclePicker.swift */,
 				A5921EB22AFAA83A00C2331D /* CircleSettingsView.swift */,
 				409F4330265DE15F00690A61 /* CirclesOverviewScreen.swift */,
@@ -1204,7 +1204,7 @@
 				409F4377265DE25000690A61 /* PhotoGalleryView.swift in Sources */,
 				A51928B32BCDAE38005DCFF4 /* BannedRoomMemberRow.swift in Sources */,
 				403CEAA126E90DE10054DBF4 /* SignupStartForm.swift in Sources */,
-				409F4334265DE15F00690A61 /* CircleOverviewCard.swift in Sources */,
+				409F4334265DE15F00690A61 /* TimelineOverviewCard.swift in Sources */,
 				A56BE1762AD5D0E900B15F51 /* KnockingUserCard.swift in Sources */,
 				A562C0942B15287F00522FCB /* SubscriptionUIaForm.swift in Sources */,
 				403CEA9926E868F30054DBF4 /* AccountInfoForm.swift in Sources */,
