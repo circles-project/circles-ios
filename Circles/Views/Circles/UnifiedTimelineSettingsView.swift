@@ -45,7 +45,15 @@ struct UnifiedTimelineSettingsView: View {
                     let followerCount = Int.max(circle.joinedMembers.count - 1, 0)
                     Text("\(name) (\(followerCount) followers)")
                      */
-                    Text("\(circle.name ?? "???")")
+                    if let name = circle.name {
+                        NavigationLink(destination: SingleTimelineSettingsView(room: circle)) {
+                            HStack {
+                                RoomAvatarView(room: circle, avatarText: .none)
+                                    .frame(width: 40, height: 40)
+                                Text(name)
+                            }
+                        }
+                    }
                 }
             }
         }
