@@ -22,6 +22,9 @@ struct CirclesOverviewScreen: View {
     @ObservedObject var container: TimelineSpace
     //@State var selectedSpace: CircleSpace?
     @Binding var selected: RoomId?
+    
+    //@State private var columnVisibility = NavigationSplitViewVisibility.detailOnly // Apparently iPhone ignores this and just shows the master view by default. iPad respects it and thus looks ugly, because we set the timeline column width to fit next to the sidebar.  Ugh what a waste.
+    // @State private var preferredColumn = NavigationSplitViewColumn.detail       // We can upgrade to this once we drop support for iOS 16
         
     @State private var sheetType: CirclesOverviewSheetType? = nil
     
