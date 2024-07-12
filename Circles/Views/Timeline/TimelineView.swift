@@ -122,7 +122,6 @@ struct TimelineView<V: MessageView>: View {
                     Spacer()
                 
                 footer
-                
             }
         }
         .refreshable {
