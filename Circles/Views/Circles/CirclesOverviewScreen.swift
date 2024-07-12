@@ -98,9 +98,22 @@ struct CirclesOverviewScreen: View {
                 List(selection: $selected) {
                     
                     NavigationLink(value: container.roomId) {
-                        Text("All posts")
+                        HStack {
+                            CirclesLogoView()
+                                .clipShape(Circle())
+                                .frame(width: 60, height: 60)
+
+                            Text("All Posts")
+                                .lineLimit(2)
+                                .multilineTextAlignment(.leading)
+                                .font(.title3)
+                                .fontWeight(.bold)
+                                .foregroundColor(.primary)
+                                .minimumScaleFactor(0.8)
+                        }
                     }
-                    
+                    .buttonStyle(.plain)
+
                     Section("My Circles") {
                         ForEach(circles) { circle in
                             NavigationLink(value: circle.roomId) {

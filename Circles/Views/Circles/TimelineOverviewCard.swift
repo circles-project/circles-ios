@@ -28,7 +28,7 @@ struct TimelineOverviewCard: View {
                 //CircleAvatar(space: space)
                 RoomAvatarView(room: room, avatarText: .oneLetter)
                     .clipShape(Circle())
-                    .frame(width: 80, height: 80)
+                    .frame(width: 60, height: 60)
                 
                 VStack(alignment: .leading) {
                     HStack {
