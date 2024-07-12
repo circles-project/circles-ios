@@ -67,6 +67,13 @@ struct UnifiedTimelineComposerSheet: View {
                 }) {
                     Text("Create my first circle")
                 }
+                
+                Button(role: .destructive, action: {
+                    self.presentation.wrappedValue.dismiss()
+                }) {
+                    Text("Cancel")
+                }
+                .padding()
             }
         }
     }
