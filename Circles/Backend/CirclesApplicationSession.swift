@@ -448,6 +448,9 @@ class CirclesApplicationSession: ObservableObject {
         // Register ourself as the current singleton object
         Self.current = self
         
+        // Initialize the circles / timelines view to display the unified feed by default
+        self.viewState.selectedTimelineId = timelines.roomId
+        
         Task {
             logger.debug("Verifying Matrix Space relations")
             let rootRoomId = config.root
