@@ -182,6 +182,18 @@ public class CirclesStore: ObservableObject {
         let newTimelineSpaceId = try await matrix.createSpace(name: "Timelines")
         logger.debug("New Timelines space is \(newTimelineSpaceId)")
         for roomId in timelineRoomIds {
+            // Sanity check - Make sure that this is actually an org.futo.social.timeline room
+            guard let createContent = try? await matrix.getRoomState(roomId: roomId, eventType: M_ROOM_CREATE) as? RoomCreateContent
+            else {
+                logger.error("Failed to get room creation event for timeline room \(roomId)")
+                throw CirclesError("Failed to get room creation event")
+            }
+            guard createContent.type == ROOM_TYPE_CIRCLE
+            else {
+                logger.warning("Timeline room \(roomId) is not actually a timeline - its type is \(createContent.type ?? "none")")
+                continue
+            }
+            // All good - it's really a timeline room, so it's safe to add this to our Timelines space
             logger.debug("Adding timeline \(roomId) as child of the Timelines space")
             try await matrix.addSpaceChild(roomId, to: newTimelineSpaceId)
         }
