@@ -9,6 +9,55 @@
 import SwiftUI
 import Matrix
 
+private struct ReusableLoadingView: View {
+    let progressText: String
+    let task: () async throws -> Void
+    let cancelAction: (() async throws -> Void)?
+    
+    init(progressText: String, task: @escaping () async throws -> Void, cancelAction: (() async throws -> Void)? = nil) {
+        self.progressText = progressText
+        self.task = task
+        self.cancelAction = cancelAction
+    }
+    
+    var body: some View {
+        ZStack {
+            Color(.launch)
+                .edgesIgnoringSafeArea(.all)
+            VStack {
+                Spacer()
+                
+                BasicImage(name: SystemImages.launchCircleLogo.rawValue)
+                    .frame(width: 215, height: 79)
+                
+                ProgressView(progressText)
+                    .onAppear {
+                        Task {
+                            do {
+                                try await task()
+                            } catch {
+                                print("Task failed: \(error)")
+                            }
+                        }
+                    }
+                    .background(Color(.launch))
+                    .foregroundStyle(Color.white)
+                
+                Spacer()
+                
+                AsyncButton(role: .destructive, action: {
+                    if let cancelAction = cancelAction {
+                        try await cancelAction()
+                    }
+                }) {
+                    Text("Cancel")
+                }
+                .foregroundStyle(cancelAction == nil ? Color(.launch) : Color.red)
+            }
+        }
+    }
+}
+
 struct ContentView: View {
     @ObservedObject var store: CirclesStore
     @State var showUIA = false
@@ -29,18 +78,12 @@ struct ContentView: View {
     }
 
     var body: some View {
-
         switch(store.state) {
-            
         case .startingUp:
-            ProgressView("Loading Circles...")
-                .onAppear {
-                    print("ContentView: Starting up")
-                    Task {
-                        try await store.lookForCreds()
-                        print("ContentView: Back from lookForCreds()")
-                    }
-                }
+            ReusableLoadingView(progressText: "Loading Circles...") {
+                try await store.lookForCreds()
+                print("ContentView: Back from lookForCreds()")
+            }
             
         case .needCreds:
             WelcomeScreen(store: store)
@@ -59,33 +102,18 @@ struct ContentView: View {
             LegacyLoginScreen(session: legacyLoginSession, store: store)
             
         case .haveCreds(let creds, let key, let token):
-            VStack {
-                Spacer()
-                
-                Text("Connecting as \(creds.userId.description)")
-                ProgressView()
-                    .onAppear {
-                        _ = Task {
-                            do {
-                                try await store.connect(creds: creds, s4Key: key, token: token)
-                            } catch {
-                                print("connect() failed -- disconnecting instead")
-                                store.removeCredentials(for: creds.userId)
-                                try await store.disconnect()
-                            }
-                        }
-                    }
-                
-                Spacer()
-                
-                AsyncButton(role: .destructive, action: {
+            ReusableLoadingView(progressText: "Connecting as \(creds.userId.description)") {
+                do {
+                    try await store.connect(creds: creds, s4Key: key, token: token)
+                } catch {
+                    print("connect() failed -- disconnecting instead")
+                    store.removeCredentials(for: creds.userId)
                     try await store.disconnect()
-                }) {
-                    Text("Cancel")
                 }
+            } cancelAction: {
+                try await store.disconnect()
             }
             
-
         case .needSecretStorage(let matrix):
             SecretStorageCreationScreen(store: store, matrix: matrix)
             
@@ -93,39 +121,27 @@ struct ContentView: View {
             SecretStoragePasswordScreen(store: store, matrix: matrix, keyId: keyId, description: keyDescription)
             
         case .haveSecretStorageAndKey(_): // (let matrix)
-            ProgressView("Checking cross signing")
-                .onAppear {
-                    Task {
-                        try await store.ensureCrossSigning()
-                    }
-                }
+            ReusableLoadingView(progressText: "Checking cross signing") {
+                try await store.ensureCrossSigning()
+            }
             
         case .haveCrossSigning(_): // (let matrix)
-            ProgressView("Checking key backup")
-                .onAppear {
-                    Task {
-                        try await store.ensureKeyBackup()
-                    }
-                }
+            ReusableLoadingView(progressText: "Checking key backup") {
+                try await store.ensureKeyBackup()
+            }
             
         case .haveKeyBackup(_): // (let matrix)
-            ProgressView("Checking space hierarchy")
-                .onAppear {
-                    Task {
-                        try await store.checkForSpaceHierarchy()
-                    }
-                }
+            ReusableLoadingView(progressText: "Checking space hierarchy") {
+                try await store.checkForSpaceHierarchy()
+            }
             
         case .needSpaceHierarchy(let matrix):
             SetupScreen(store: store, matrix: matrix)
 
         case .haveSpaceHierarchy(_, _): // (let matrix, let config)
-            ProgressView("Loading Circles")
-                .onAppear {
-                    Task {
-                        try await store.goOnline()
-                    }
-                }
+            ReusableLoadingView(progressText: "Loading Circles") {
+                try await store.goOnline()
+            }
             
         case .online(let circlesSession):
             CirclesTabbedInterface(store: store, session: circlesSession, viewState: circlesSession.viewState)
@@ -136,7 +152,6 @@ struct ContentView: View {
             errorView
         }
     }
-
 }
 
 
