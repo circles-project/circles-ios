@@ -31,6 +31,7 @@ struct AccountInfoForm: View {
     @State var showAlert = false
     @State var alertTitle = ""
     @State var alertMessage = ""
+    var showPassword = false
 
     let helpTextForName = "Your name as you would like it to appear to others"
 
@@ -129,8 +130,11 @@ struct AccountInfoForm: View {
                 .frame(width: 300.0, height: 40.0)
 
                 HStack {
-                    SecureField("New Passphrase", text: $accountInfo.password)
-                        .textContentType(.newPassword)
+                    SecureFieldWithEye(label: "New Passphrase", isNewPassword: true,
+                                       text: $accountInfo.password, showText: showPassword)
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
+                        .frame(width: 300.0, height: 40.0)
                     Spacer()
                     Button(action: {
                         //showHelpItem = .password
@@ -143,18 +147,11 @@ struct AccountInfoForm: View {
                 }
                 .frame(width: 300.0, height: 40.0)
 
-                HStack {
-                    SecureField("Repeat Passphrase", text: $repeatPassword)
-                        .textContentType(.newPassword)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .frame(width: 300.0, height: 40.0)
-                    Button(action: {
-                        self.repeatPassword = ""
-                    }) {
-                        Image(systemName: SystemImages.xmark.rawValue)
-                            .foregroundColor(.gray)
-                    }
-                }
+                SecureFieldWithEye(label: "Repeat Passphrase", isNewPassword: true,
+                                   text: $repeatPassword, showText: showPassword)
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
+                    .frame(width: 300.0, height: 40.0)
             }
 
             Spacer()

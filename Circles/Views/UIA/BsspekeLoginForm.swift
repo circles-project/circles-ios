@@ -15,11 +15,7 @@ struct BsspekeLoginForm: View {
 
     @State var passphrase: String = ""
     @State var failed = false
-    
-    enum FocusField {
-        case passphrase
-    }
-    @FocusState var focus: FocusField?
+    var showPassword = false
 
     @ViewBuilder
     var oprfForm: some View {
@@ -33,10 +29,9 @@ struct BsspekeLoginForm: View {
             Spacer()
             
             VStack {
-                SecureField("Passphrase", text: $passphrase, prompt: Text("Passphrase"))
-                    .textContentType(.password)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .focused($focus, equals: .passphrase)
+                SecureFieldWithEye(label: "Passphrase", text: $passphrase, showText: showPassword)
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
                     .frame(width: 300.0, height: 40.0)
                     .onAppear {
                         if let userId = session.userId {
@@ -103,9 +98,6 @@ struct BsspekeLoginForm: View {
             verifyForm
         } else {
             oprfForm
-                .onAppear {
-                    self.focus = .passphrase
-                }
         }
     }
 }

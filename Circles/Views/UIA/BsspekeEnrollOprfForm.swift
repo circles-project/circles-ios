@@ -32,12 +32,7 @@ struct BsspekeEnrollOprfForm: View {
     }
     @State var screen: Screen = .enterPassword
     //@State var showRepeat = false
-    
-    enum FocusField {
-        case inputPassphrase
-        case repeatPassphrase
-    }
-    @FocusState var focus: FocusField?
+    var showPassword = false
     
     private func getUserId() -> UserId? {
         if let userId = session.creds?.userId {
@@ -94,33 +89,25 @@ struct BsspekeEnrollOprfForm: View {
             Spacer()
 
             VStack(alignment: .leading) {
-                HStack {
-                    SecureField("correct horse battery staple", text: $passphrase, prompt: Text("New passphrase"))
-                        .textContentType(.newPassword)
-                        .textFieldStyle(.roundedBorder)
-                        .focused($focus, equals: .inputPassphrase)
-                        .onChange(of: passphrase) { newPassword in
-                            if newPassword.isEmpty {
-                                score = 0.0
-                                color = .red
-                            }
-                            else if let result = checker.passwordStrength(newPassword) {
-                                print("Password score: \(result.score)")
-                                score = Double(min(result.score, 4)) + 1
-                                color = colorForScore(score: Int(score))
-                            }
-                            else {
-                                score = 1.0
-                                color = .red
-                            }
+                SecureFieldWithEye(label: "New Passphrase", isNewPassword: true,
+                                   text: $passphrase, showText: showPassword)
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
+                    .onChange(of: passphrase) { newPassword in
+                        if newPassword.isEmpty {
+                            score = 0.0
+                            color = .red
+                        }
+                        else if let result = checker.passwordStrength(newPassword) {
+                            print("Password score: \(result.score)")
+                            score = Double(min(result.score, 4)) + 1
+                            color = colorForScore(score: Int(score))
+                        }
+                        else {
+                            score = 1.0
+                            color = .red
                         }
                         //.frame(width: 350.0, height: 40.0)
-                    Button(action: {
-                        self.passphrase = ""
-                    }) {
-                        Image(systemName: SystemImages.xmark.rawValue)
-                            .foregroundColor(.gray)
-                    }
                 }
                 
                 ProgressView("Strength", value: 1.0 * self.score, total: 5.0)
@@ -159,21 +146,11 @@ struct BsspekeEnrollOprfForm: View {
                 Label("Choose a different passphrase", systemImage: "arrowshape.turn.up.backward.fill")
             }
             Spacer()
-
-            HStack {
-                SecureField("same passphrase as before", text: $repeatPassphrase, prompt: Text("Repeat passphrase"))
-                    .textContentType(.newPassword)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .focused($focus, equals: .repeatPassphrase)
-                    .frame(width: 300.0, height: 40.0)
-                Button(action: {
-                    self.repeatPassphrase = ""
-                }) {
-                    Image(systemName: SystemImages.xmark.rawValue)
-                        .foregroundColor(.gray)
-                }
-            }
-                
+            SecureFieldWithEye(label: "Repeat passphrase", isNewPassword: true,
+                               text: $repeatPassphrase, showText: showPassword)
+                .autocapitalization(.none)
+                .disableAutocorrection(true)
+                .frame(width: 300.0, height: 40.0)
             Spacer()
             
             Button(action: {
@@ -225,14 +202,8 @@ struct BsspekeEnrollOprfForm: View {
             switch screen {
             case .enterPassword:
                 enterPasswordView
-                    .onAppear {
-                        self.focus = .inputPassphrase
-                    }
             case .repeatPassword:
                 repeatPasswordView
-                    .onAppear {
-                        self.focus = .repeatPassphrase
-                    }
             case .savePassword:
                 savePasswordView
             }

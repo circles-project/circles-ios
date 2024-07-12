@@ -76,28 +76,20 @@ struct EmailEnrollRequestTokenForm: View {
             Text(.init(markdown))
                 .padding(.vertical)
                   
-            HStack {
-                TextField("you@example.com", text: $address, prompt: Text("Email address"))
-                    .customEmailTextFieldStyle(contentType: .emailAddress, keyboardType: .emailAddress)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .focused($focus, equals: .email)
-                    .frame(width: 300.0, height: 40.0)
-                    .onSubmit {
-                        Task {
-                            try await submit()
-                        }
+            TextField("you@example.com", text: $address, prompt: Text("Email address"))
+                .customEmailTextFieldStyle(contentType: .emailAddress, keyboardType: .emailAddress)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .focused($focus, equals: .email)
+                .frame(width: 300.0, height: 40.0)
+                .onSubmit {
+                    Task {
+                        try await submit()
                     }
-                    .onAppear {
-                        self.focus = .email
-                    }
-                    .padding()
-                Button(action: {
-                    self.address = ""
-                }) {
-                    Image(systemName: SystemImages.xmark.rawValue)
-                        .foregroundColor(.gray)
                 }
-            }
+                .onAppear {
+                    self.focus = .email
+                }
+                .padding()
 
             Spacer()
             
