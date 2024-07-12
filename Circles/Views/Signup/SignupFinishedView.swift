@@ -15,7 +15,6 @@ struct SignupFinishedView: View {
 
     var body: some View {
         VStack {
-            
             CirclesLogoView()
                 .frame(minWidth: 100,
                        idealWidth: 150,
@@ -26,7 +25,8 @@ struct SignupFinishedView: View {
                        alignment: .center)
                         
             Text("Successfully signed up!")
-                .font(.headline)
+                .font(.title2)
+                .fontWeight(.bold)
                 .padding(.top)
 
             VStack {
@@ -35,7 +35,7 @@ struct SignupFinishedView: View {
                     .padding(.leading)
                     .padding(.top)
             }
-            .padding(.vertical, 40)
+            .padding(.vertical, 20)
             
             Text("Your user ID works like a username or an email address. Friends will need your user ID in order to invite you to follow them.")
 
@@ -51,7 +51,6 @@ struct SignupFinishedView: View {
                 Text("Next: Set up your account")
             }
             .buttonStyle(BigBlueButtonStyle())
-            
         }
         .padding()
     }

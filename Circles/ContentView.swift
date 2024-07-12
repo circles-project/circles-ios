@@ -15,7 +15,7 @@ struct ContentView: View {
     
     var errorView: some View {
         VStack {
-            Text("Something went wrong")
+            Text("Oh no! Something went wrong")
             AsyncButton(action: {
                 do {
                     try await self.store.disconnect()
@@ -33,7 +33,7 @@ struct ContentView: View {
         switch(store.state) {
             
         case .startingUp:
-            ProgressView("Loading Circles...")
+            ProgressView("Circles is starting up... Hang tight!")
                 .onAppear {
                     print("ContentView: Starting up")
                     Task {
@@ -61,9 +61,8 @@ struct ContentView: View {
         case .haveCreds(let creds, let key, let token):
             VStack {
                 Spacer()
-                
-                Text("Connecting as \(creds.userId.description)")
-                ProgressView()
+                let text = "Connecting as \(creds.userId.description)"
+                ProgressView(text)
                     .onAppear {
                         _ = Task {
                             do {
@@ -85,31 +84,33 @@ struct ContentView: View {
                 }
             }
             
-
         case .needSecretStorage(let matrix):
             SecretStorageCreationScreen(store: store, matrix: matrix)
             
         case .needSecretStorageKey(let matrix, let keyId, let keyDescription):
             SecretStoragePasswordScreen(store: store, matrix: matrix, keyId: keyId, description: keyDescription)
             
-        case .haveSecretStorageAndKey(_): // (let matrix)
-            ProgressView("Checking cross signing")
+        case .haveSecretStorageAndKey(let matrix):
+            let text = "Verifying your device"
+            ProgressView(text)
                 .onAppear {
                     Task {
                         try await store.ensureCrossSigning()
                     }
                 }
             
-        case .haveCrossSigning(_): // (let matrix)
-            ProgressView("Checking key backup")
+        case .haveCrossSigning(let matrix):
+            let text = "Loading encryption keys"
+            ProgressView(text)
                 .onAppear {
                     Task {
                         try await store.ensureKeyBackup()
                     }
                 }
             
-        case .haveKeyBackup(_): // (let matrix)
-            ProgressView("Checking space hierarchy")
+        case .haveKeyBackup(let matrix):
+            let text = "Loading social connections"
+            ProgressView(text)
                 .onAppear {
                     Task {
                         try await store.checkForSpaceHierarchy()
@@ -119,8 +120,9 @@ struct ContentView: View {
         case .needSpaceHierarchy(let matrix):
             SetupScreen(store: store, matrix: matrix)
 
-        case .haveSpaceHierarchy(_, _): // (let matrix, let config)
-            ProgressView("Loading Circles")
+        case .haveSpaceHierarchy(let matrix, let config):
+            let text = "Loading messages - Almost done!"
+            ProgressView(text)
                 .onAppear {
                     Task {
                         try await store.goOnline()

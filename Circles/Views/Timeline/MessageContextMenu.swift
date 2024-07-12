@@ -16,7 +16,6 @@ struct MessageContextMenu: View {
     @Binding var showMessageDeleteConfirmation: Bool
 
     var body: some View {
-
         let current = message.replacement ?? message
         if let content = current.content as? Matrix.MessageContent,
            content.msgtype == M_IMAGE,
@@ -125,8 +124,11 @@ struct MessageContextMenu: View {
         }
         
         if message.sender.userId == message.room.session.creds.userId {
-            NavigationLink(destination: PostComposerScreen(room: message.room, editingMessage: message)) {
+            Button(action: {
+                sheetType = .edit
+            }) {
                 Label("Edit", systemImage: "pencil")
+
             }
         }
         

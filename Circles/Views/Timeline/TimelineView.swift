@@ -87,11 +87,10 @@ struct TimelineView<V: MessageView>: View {
             message.timestamp < cutoff &&
             !message.room.session.ignoredUserIds.contains(message.sender.userId)
         }.sorted(by: {$0.timestamp > $1.timestamp})
-
-        ScrollView {
-            LazyVStack(alignment: .center, spacing: 5) {
-                //let messages = room.messages.sorted(by: {$0.timestamp > $1.timestamp})
-
+            ScrollView {
+                LazyVStack(alignment: .center, spacing: 5) {
+                    //let messages = room.messages.sorted(by: {$0.timestamp > $1.timestamp})
+                    
                     if let msg = room.localEchoMessage {
                         V(message: msg, isLocalEcho: true, isThreaded: false)
                             .border(Color.red)
@@ -127,8 +126,8 @@ struct TimelineView<V: MessageView>: View {
         }
         .refreshable {
             print("REFRESH\tGetting latest messages for room \(room.name ?? room.roomId.stringValue)")
-            if let _ = try? await room.getMessages(forward: false) { // let msgs
-                print("REFRESH\tGot response from server")
+            if let moreMessages: RoomMessagesResponseBody = try? await room.getMessages(forward: true) {
+                print("REFRESH\tGot \(moreMessages.chunk.count) more messages from server")
             }
             
             print("REFRESH\tUpdating room state")
@@ -137,11 +136,24 @@ struct TimelineView<V: MessageView>: View {
             print("REFRESH\tSleeping to let network requests come in")
             try? await Task.sleep(for: .seconds(1))
             
+            print("REFRESH\tUpdating un-decrypted messages")
+            var count = 0
+            for message in room.timeline.values {
+                if message.type == M_ROOM_ENCRYPTED {
+                    do {
+                        try await message.decrypt()
+                        count += 1
+                    } catch {
+                        print("Failed to decrypt message \(message.eventId) in room \(room.roomId)")
+                    }
+                }
+            }
+            print("REFRESH\tDecrypted \(count) messages in room \(room.roomId)")
+            
             print("REFRESH\tSending Combine update")
             await MainActor.run {
                 room.objectWillChange.send()
             }
-            print("REFRESH\tDone")
         }
     }
 }
