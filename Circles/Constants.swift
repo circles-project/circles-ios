@@ -154,6 +154,8 @@ enum SystemImages: String {
     case bubbleRight = "bubble.right"
     case circle = "circle"
     case circlesHexagonpath = "circles.hexagonpath"
+    case eyeFill = "eye.fill"
+    case eyeSlashFill = "eye.slash.fill"
     case gearshape = "gearshape"
     case heart = "heart"
     case lockSlashFill = "lock.slash.fill"

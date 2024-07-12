@@ -140,7 +140,8 @@ struct MessageCard: MessageView {
                     }
                     
                 case M_IMAGE:
-                    ImageContentView(message: current, mediaViewWidth: mediaViewWidth)
+                    let newWidth = isThreaded ? mediaViewWidth - 20 : mediaViewWidth
+                    ImageContentView(message: current, mediaViewWidth: newWidth)
                     
                 case M_VIDEO:
                     VideoContentView(message: current)

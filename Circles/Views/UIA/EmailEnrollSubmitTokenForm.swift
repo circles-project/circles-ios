@@ -36,22 +36,14 @@ struct EmailEnrollSubmitTokenForm: View {
             }
             Spacer()
             VStack {
-                HStack {
-                    TextField("123456", text: $token, prompt: Text("6-Digit Code"))
-                        .customEmailTextFieldStyle(contentType: .oneTimeCode, keyboardType: .numberPad)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .focused($focus, equals: .token)
-                        .frame(width: 300.0, height: 40.0)
-                        .onAppear {
-                            self.focus = .token
-                        }
-                    Button(action: {
-                        self.token = ""
-                    }) {
-                        Image(systemName: SystemImages.xmark.rawValue)
-                            .foregroundColor(.gray)
+                TextField("123456", text: $token, prompt: Text("6-Digit Code"))
+                    .customEmailTextFieldStyle(contentType: .oneTimeCode, keyboardType: .numberPad)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .focused($focus, equals: .token)
+                    .frame(width: 300.0, height: 40.0)
+                    .onAppear {
+                        self.focus = .token
                     }
-                }
                
                 AsyncButton(action: {
                     do {
