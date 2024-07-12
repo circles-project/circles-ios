@@ -130,7 +130,8 @@ struct AccountInfoForm: View {
                 .frame(width: 300.0, height: 40.0)
 
                 HStack {
-                    SecureFieldWithEye(label: "New Passphrase", text: $accountInfo.password, showText: showPassword)
+                    SecureFieldWithEye(label: "New Passphrase", isNewPassword: true,
+                                       text: $accountInfo.password, showText: showPassword)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
                         .frame(width: 300.0, height: 40.0)
@@ -146,7 +147,8 @@ struct AccountInfoForm: View {
                 }
                 .frame(width: 300.0, height: 40.0)
 
-                SecureFieldWithEye(label: "Repeat Passphrase", text: $repeatPassword, showText: showPassword)
+                SecureFieldWithEye(label: "Repeat Passphrase", isNewPassword: true,
+                                   text: $repeatPassword, showText: showPassword)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
                     .frame(width: 300.0, height: 40.0)

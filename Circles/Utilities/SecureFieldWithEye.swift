@@ -12,6 +12,7 @@ private struct KeyboardControllableTextField: UIViewRepresentable {
     @Binding var isFirstResponder: Bool
     var isSecure: Bool
     var placeholder: String
+    var isNewPassword: Bool = false
     
     class Coordinator: NSObject, UITextFieldDelegate {
         var parent: KeyboardControllableTextField
@@ -49,7 +50,7 @@ private struct KeyboardControllableTextField: UIViewRepresentable {
         textField.borderStyle = .roundedRect
         textField.returnKeyType = .done
         textField.placeholder = placeholder
-        textField.textContentType = .newPassword
+        textField.textContentType = isNewPassword ? .newPassword : .password
         textField.addTarget(context.coordinator, action: #selector(Coordinator.textFieldDidChangeSelection(_:)), for: .editingChanged)
         return textField
     }
@@ -69,6 +70,7 @@ private struct KeyboardControllableTextField: UIViewRepresentable {
 
 struct SecureFieldWithEye: View {
     let label: String
+    var isNewPassword: Bool = false
     @Binding var text: String
     @State var showText: Bool = false
     @State private var isSecure: Bool = true
@@ -76,7 +78,11 @@ struct SecureFieldWithEye: View {
 
     var body: some View {
         HStack {
-            KeyboardControllableTextField(text: $text, isFirstResponder: $isFirstResponder, isSecure: isSecure, placeholder: label)
+            KeyboardControllableTextField(text: $text,
+                                          isFirstResponder: $isFirstResponder,
+                                          isSecure: isSecure,
+                                          placeholder: label,
+                                          isNewPassword: isNewPassword)
             
             Button(action: {
                 isSecure.toggle()
