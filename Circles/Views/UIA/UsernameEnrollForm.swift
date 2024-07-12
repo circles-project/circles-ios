@@ -30,24 +30,16 @@ struct UsernameEnrollForm: View {
                 .font(.title2)
                 .fontWeight(.bold)
 
-            HStack {
-                TextField("Username", text: $username, prompt: Text("username"))
-                    .textContentType(.username)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .focused($focus, equals: .username)
-                    .autocapitalization(.none)
-                    .disableAutocorrection(true)
-                    .frame(width: 300.0, height: 40.0)
-                    .onAppear {
-                        self.focus = .username
-                    }
-                Button(action: {
-                    self.username = ""
-                }) {
-                    Image(systemName: SystemImages.xmark.rawValue)
-                        .foregroundColor(.gray)
+            TextField("Username", text: $username, prompt: Text("username"))
+                .textContentType(.username)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .focused($focus, equals: .username)
+                .autocapitalization(.none)
+                .disableAutocorrection(true)
+                .frame(width: 300.0, height: 40.0)
+                .onAppear {
+                    self.focus = .username
                 }
-            }
             
             AsyncButton(action: {
                 do {
