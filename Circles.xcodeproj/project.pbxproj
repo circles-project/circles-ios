@@ -156,6 +156,7 @@
 		A562C0962B165E5C00522FCB /* SubscriptionSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A562C0952B165E5C00522FCB /* SubscriptionSettingsView.swift */; };
 		A562C0982B16981C00522FCB /* AppStoreInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = A562C0972B16981C00522FCB /* AppStoreInterface.swift */; };
 		A562F9AB2B6AEDF90008D96A /* LegacyPasswordUiaForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A562F9AA2B6AEDF90008D96A /* LegacyPasswordUiaForm.swift */; };
+		A5634FCC2C41DF4A00D60DFB /* UnifiedTimelineComposerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5634FCB2C41DF4900D60DFB /* UnifiedTimelineComposerSheet.swift */; };
 		A565935F2AEAC4920003C244 /* QR.swift in Sources */ = {isa = PBXBuildFile; fileRef = A565935E2AEAC4920003C244 /* QR.swift */; };
 		A56593612AEBE5D30003C244 /* Room+URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56593602AEBE5D30003C244 /* Room+URL.swift */; };
 		A56593632AF17EF90003C244 /* LegacyLoginScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56593622AF17EF90003C244 /* LegacyLoginScreen.swift */; };
@@ -409,6 +410,7 @@
 		A562C0952B165E5C00522FCB /* SubscriptionSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionSettingsView.swift; sourceTree = "<group>"; };
 		A562C0972B16981C00522FCB /* AppStoreInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreInterface.swift; sourceTree = "<group>"; };
 		A562F9AA2B6AEDF90008D96A /* LegacyPasswordUiaForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyPasswordUiaForm.swift; sourceTree = "<group>"; };
+		A5634FCB2C41DF4900D60DFB /* UnifiedTimelineComposerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnifiedTimelineComposerSheet.swift; sourceTree = "<group>"; };
 		A565935E2AEAC4920003C244 /* QR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QR.swift; sourceTree = "<group>"; };
 		A56593602AEBE5D30003C244 /* Room+URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Room+URL.swift"; sourceTree = "<group>"; };
 		A56593622AF17EF90003C244 /* LegacyLoginScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyLoginScreen.swift; sourceTree = "<group>"; };
@@ -683,6 +685,7 @@
 				A51928B62BCDBD8E005DCFF4 /* CircleRenameView.swift */,
 				424CEE062C1A2B08005D871C /* ChangelogSheet.swift */,
 				A56012192C403A0200D43866 /* UnifiedTimelineSettingsView.swift */,
+				A5634FCB2C41DF4900D60DFB /* UnifiedTimelineComposerSheet.swift */,
 			);
 			path = Circles;
 			sourceTree = "<group>";
@@ -1162,6 +1165,7 @@
 				409F4326265DE12600690A61 /* CloudImagePicker.swift in Sources */,
 				A54A27882A843BB200858846 /* GroupInvitationsIndicator.swift in Sources */,
 				A5A7E228282B06FD001A528D /* ApplicationState.swift in Sources */,
+				A5634FCC2C41DF4A00D60DFB /* UnifiedTimelineComposerSheet.swift in Sources */,
 				A562C0982B16981C00522FCB /* AppStoreInterface.swift in Sources */,
 				A5BB4EF12BD02D26001FD0D8 /* VideoDetailView.swift in Sources */,
 				409F4340265DE17500690A61 /* GroupCreationSheet.swift in Sources */,

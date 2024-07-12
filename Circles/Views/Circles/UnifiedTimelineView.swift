@@ -72,7 +72,7 @@ struct UnifiedTimelineView: View {
                         print("DEBUGUI\tStreamTimeline disappeared for Circle \(space.roomId)")
                     }
                     .sheet(isPresented: $showNewPostInSheetStyle) {
-                        Text("Pick a circle to post")
+                        UnifiedTimelineComposerSheet(timelines: space)
                     }
                 
                 let circles = space.circles
