@@ -17,24 +17,13 @@ struct GalleryThumbnail: View {
             if let img = message.thumbnail {
                 Image(uiImage: img)
                     .resizable()
-                    //.scaledToFill()
-                    //.clipShape(RoundedRectangle(cornerRadius: 10))
-                    //.frame(width: 100, height: 100)
             }
             else {
                 ProgressView()
                     .scaleEffect(2.0)
-                    //.frame(width: 100, height: 100)
-
             }
-            /*
-            RoundedRectangle(cornerRadius: 10)
-                .foregroundColor(.blue)
-            */
+
         }
-        //.frame(width: 90, height: 90)
-        //.border(Color.blue, width: 1)
-        //.padding()
         .onAppear {
             if message.thumbnail == nil,
                let content = message.content as? Matrix.MessageContent,
@@ -117,9 +106,7 @@ struct GalleryPicker: View {
                         }) {
                             GalleryThumbnail(message: message)
                         }
-                        //.border(Color.red, width: 1)
                         .frame(width: 100, height: 100)
-                        //.border(Color.green, width: 1)
                         
                     }
                 }.padding(.all, 10)
@@ -128,7 +115,6 @@ struct GalleryPicker: View {
                     Spacer()
                     if loading {
                         ProgressView("Loading...")
-                        //.progressViewStyle(LinearProgressViewStyle())
                     }
                     else if room.canPaginate {
                         AsyncButton(action: {
@@ -225,7 +211,6 @@ struct CloudImagePicker: View {
                         //GalleryCard(room: room)
                         
                         RoomAvatarView(room: room, avatarText: .roomName)
-                            .scaledToFill()
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
                     //.frame(width: 300, height: 225)

@@ -55,7 +55,7 @@ struct EmailLoginSubmitTokenForm: View {
                 }) {
                     Text("Submit")
                 }
-                .buttonStyle(BigBlueButtonStyle())
+                .buttonStyle(BigRoundedButtonStyle())
                 .disabled(!tokenIsValid)
                 .alert(isPresented: $showAlert) {
                     Alert(title: Text(self.alertTitle),

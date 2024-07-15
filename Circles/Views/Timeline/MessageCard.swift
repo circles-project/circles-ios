@@ -249,7 +249,7 @@ struct MessageCard: MessageView {
             ProgressView()
         } else if message.isEncrypted {
             Image(systemName: SystemImages.lockFill.rawValue)
-                .foregroundColor(Color.blue)
+                .foregroundColor(Color.accentColor)
         } else {
             Image(systemName: SystemImages.lockSlashFill.rawValue)
                 .foregroundColor(Color.red)
@@ -324,7 +324,7 @@ struct MessageCard: MessageView {
                             }) {
                                 Text("\(emoji) \(count)")
                             }
-                            .buttonStyle(ReactionsButtonStyle(buttonColor: .blue))
+                            .buttonStyle(ReactionsButtonStyle(buttonColor: .accentColor))
                         } else {
                             AsyncButton(action: {
                                 // We have not sent this reaction yet..  Send it

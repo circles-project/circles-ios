@@ -31,7 +31,7 @@ struct TermsOfServicePolicySheet: View {
                     }) {
                         Text("Got it")
                     }
-                    .buttonStyle(BigBlueButtonStyle())
+                    .buttonStyle(BigRoundedButtonStyle())
                 }
                 .padding()
             } else {
@@ -108,6 +108,7 @@ struct TermsOfServiceForm: View {
             Toggle(isOn: $accept) {
                 Text("I accept these terms")
             }
+            .tint(.orange)
             .padding(.horizontal, 5)
             .frame(width: 300)
             .padding(.vertical)
@@ -127,7 +128,7 @@ struct TermsOfServiceForm: View {
             }) {
                 Text("Accept and Continue")
             }
-            .buttonStyle(BigBlueButtonStyle())
+            .buttonStyle(BigRoundedButtonStyle())
             .disabled(accept == false)
 
             Spacer()

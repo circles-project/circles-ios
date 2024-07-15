@@ -19,7 +19,6 @@ struct GroupOverviewRow: View {
         HStack(alignment: .top) {
             RoomAvatarView(room: room, avatarText: .oneLetter)
                 .frame(width: 80, height: 80)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
                 .padding(.leading, 5)
             
             VStack(alignment: .leading) {
@@ -45,7 +44,7 @@ struct GroupOverviewRow: View {
                     
                     let knockCount = room.knockingMembers.count
                     if room.iCanInvite && room.iCanKick && knockCount > 0 {
-                        let color = Color(light: .blue, dark: .white)
+                        let color = Color(light: .accentColor, dark: .white)
                         Label("\(knockCount) request(s) for invitation", systemImage: "star.fill")
                             .foregroundColor(color)
                     }

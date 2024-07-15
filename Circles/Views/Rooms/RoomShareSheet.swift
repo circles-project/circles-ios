@@ -32,7 +32,6 @@ struct RoomShareSheet: View {
             
             HStack {
                 RoomAvatarView(room: room, avatarText: .oneLetter)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
                     .frame(width: 120, height: 120)
                     .padding()
                 
