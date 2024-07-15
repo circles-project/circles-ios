@@ -52,7 +52,7 @@ struct BsspekeLoginForm: View {
                 }) {
                     Text("Submit")
                 }
-                .buttonStyle(BigBlueButtonStyle())
+                .buttonStyle(BigRoundedButtonStyle())
                 .disabled(passphrase.isEmpty)
                 .alert(isPresented: $failed) {
                     Alert(title: Text("Incorrect Passphrase"),

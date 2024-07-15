@@ -141,7 +141,7 @@ struct SetupAddNewCircleSheet: View {
             }) {
                 Text("Add circle \"\(circleName.isEmpty ? "New Circle" : circleName)\"")
             }
-            .buttonStyle(BigBlueButtonStyle())
+            .buttonStyle(BigRoundedButtonStyle())
             .disabled(circleName.isEmpty)
             
             Spacer()

@@ -50,7 +50,7 @@ struct SignupFinishedView: View {
             }) {
                 Text("Next: Set up your account")
             }
-            .buttonStyle(BigBlueButtonStyle())
+            .buttonStyle(BigRoundedButtonStyle())
         }
         .padding()
     }

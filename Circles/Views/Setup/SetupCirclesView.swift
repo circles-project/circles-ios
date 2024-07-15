@@ -88,7 +88,7 @@ struct SetupCirclesView: View {
             }) {
                 Text("Next")
             }
-            .buttonStyle(BigBlueButtonStyle())
+            .buttonStyle(BigRoundedButtonStyle())
             .disabled(circles.isEmpty)
 
         }

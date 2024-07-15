@@ -68,7 +68,7 @@ struct SecretStoragePasswordScreen: View {
             }) {
                 Text("Submit")
             }
-            .buttonStyle(BigBlueButtonStyle())
+            .buttonStyle(BigRoundedButtonStyle())
             
             Button(action: {
                 self.useRawKey = true
@@ -111,7 +111,7 @@ struct SecretStoragePasswordScreen: View {
             }) {
                 Text("Submit")
             }
-            .buttonStyle(BigBlueButtonStyle())
+            .buttonStyle(BigRoundedButtonStyle())
             .disabled(base58Key.isEmpty)
             
             Button(action: {
@@ -150,7 +150,7 @@ struct SecretStoragePasswordScreen: View {
             }) {
                 Text("Cancel")
             }
-            .buttonStyle(BigBlueButtonStyle())
+            .buttonStyle(BigRoundedButtonStyle())
             .alert(self.alertTitle,
                    isPresented: $showAlert,
                    actions: {

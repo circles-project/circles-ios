@@ -74,6 +74,7 @@ struct CircleAcceptInviteView: View {
                             Text("Invite this user to follow me")
                         }
                     }
+                    .tint(.orange)
                     .frame(maxWidth: 300)
                     .padding()
                 }

@@ -124,7 +124,7 @@ struct PhotoGalleryCreationSheet: View {
             }) {
                 Text("Create gallery \(galleryName)")
             }
-            .buttonStyle(BigBlueButtonStyle())
+            .buttonStyle(BigRoundedButtonStyle())
             .disabled(galleryName.isEmpty)
             
             Spacer()

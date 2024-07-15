@@ -58,7 +58,7 @@ struct UsernameEnrollForm: View {
             }) {
                 Text("Submit")
             }
-            .buttonStyle(BigBlueButtonStyle())
+            .buttonStyle(BigRoundedButtonStyle())
             .alert(isPresented: $showAlert) {
                 Alert(title: Text(alertTitle),
                       message: Text(alertMessage),
