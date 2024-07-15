@@ -236,7 +236,6 @@ struct PostComposer: View {
                     let newEventId = try await room.sendText(text: self.newMessageText)
                     print("COMPOSER\tSent m.text with eventId = \(newEventId)")
                 }
-                
                 self.presentation.wrappedValue.dismiss()
             }
             
@@ -345,7 +344,6 @@ struct PostComposer: View {
             .buttonStyle(.bordered)
             .disabled(self.messageState.isLoading)
             .padding(3)
-
         }
         .padding(.leading)
     }
@@ -536,7 +534,6 @@ struct PostComposer: View {
 
             ZStack {
                 VStack(alignment: .center, spacing: 2) {
-                    
                     thumbnail
                     
                     TextEditor(text: $newMessageText)
