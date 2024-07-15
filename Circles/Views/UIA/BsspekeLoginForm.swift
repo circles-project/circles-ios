@@ -11,7 +11,7 @@ import KeychainAccess
 
 struct BsspekeLoginForm: View {
     var session: UIAuthSession
-    var stage: String
+    @State var stage: String
 
     @State var passphrase: String = ""
     @State var failed = false
@@ -49,6 +49,9 @@ struct BsspekeLoginForm: View {
                 AsyncButton(action: {
                     print("Doing BS-SPEKE OPRF stage for UIA")
                     try await session.doBSSpekeLoginOprfStage(password: passphrase)
+                    await MainActor.run {
+                        self.stage = AUTH_TYPE_LOGIN_BSSPEKE_VERIFY
+                    }
                 }) {
                     Text("Submit")
                 }
@@ -86,6 +89,7 @@ struct BsspekeLoginForm: View {
                 } catch {
                     await MainActor.run {
                         self.failed = true
+                        self.stage = AUTH_TYPE_LOGIN_BSSPEKE_OPRF
                     }
                 }
             }
