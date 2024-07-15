@@ -32,8 +32,7 @@ struct PersonDetailView: View {
             VStack {
                 UserAvatarView(user: user)
                     .frame(width: 160, height: 160, alignment: .center)
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                //.padding(.leading)
+//                    .padding(.leading)
                 Text(user.displayName ?? "")
                     .font(.title)
                     .fontWeight(.bold)
@@ -52,7 +51,6 @@ struct PersonDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-
                 header
 
                 //status
@@ -60,7 +58,6 @@ struct PersonDetailView: View {
                 Divider()
             
                 MutualFriendsSection(user: user, profile: myProfileRoom)
-            
             }
         }
         .padding()

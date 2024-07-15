@@ -225,7 +225,6 @@ struct CloudImagePicker: View {
                         //GalleryCard(room: room)
                         
                         RoomAvatarView(room: room, avatarText: .roomName)
-                            .scaledToFill()
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
                     //.frame(width: 300, height: 225)

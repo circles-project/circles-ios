@@ -22,7 +22,6 @@ struct PeopleInvitationsView: View {
                     HStack(alignment: .top) {
                         UserAvatarView(user: user)
                             .frame(width: 120, height: 120)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
                         
                         VStack(alignment: .leading, spacing: 5) {
                             Text(invite.name ?? user.displayName ?? "??")
