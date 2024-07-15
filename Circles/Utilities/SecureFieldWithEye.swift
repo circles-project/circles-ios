@@ -83,6 +83,7 @@ struct SecureFieldWithEye: View {
                                           isSecure: isSecure,
                                           placeholder: label,
                                           isNewPassword: isNewPassword)
+            .frame(height: 40)
             
             Button(action: {
                 isSecure.toggle()
