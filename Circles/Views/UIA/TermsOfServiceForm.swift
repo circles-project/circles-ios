@@ -108,6 +108,7 @@ struct TermsOfServiceForm: View {
             Toggle(isOn: $accept) {
                 Text("I accept these terms")
             }
+            .tint(.orange)
             .padding(.horizontal, 5)
             .frame(width: 300)
             .padding(.vertical)
