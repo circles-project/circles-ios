@@ -18,7 +18,7 @@ struct FollowingView: View {
                 ForEach(following) { user in
                     NavigationLink(destination: PersonDetailView(user: user, myProfileRoom: profile)) {
                         PersonHeaderRow(user: user, profile: profile)
-                            .contentShape(Rectangle())
+                            .contentShape(Circle())
                     }
                     .buttonStyle(.plain)
                     Divider()

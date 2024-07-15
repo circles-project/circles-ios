@@ -15,8 +15,6 @@ struct GenericPersonDetailView: View {
         HStack {
             UserAvatarView(user: user)
                 .frame(width: 160, height: 160, alignment: .center)
-                .clipShape(RoundedRectangle(cornerRadius: 40))
-                //.padding(.leading)
             VStack(alignment: .leading) {
                 Text(user.displayName ?? "")
                     .font(.title)
@@ -30,13 +28,11 @@ struct GenericPersonDetailView: View {
     var body: some View {
         VStack {
             ScrollView {
-                
                 header
                 
                 //status
                 
                 Divider()
-                
 
                 Button(action: {}) {
                     Label("Invite to connect", systemImage: SystemImages.link.rawValue)
@@ -52,7 +48,6 @@ struct GenericPersonDetailView: View {
                     Label("Ignore this user", systemImage: SystemImages.personFillXmark.rawValue)
                         .padding()
                 }
-                
             }
         }
         .padding()

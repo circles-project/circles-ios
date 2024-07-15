@@ -58,8 +58,6 @@ struct GroupSettingsView: View {
                 if room.iCanChangeState(type: M_ROOM_AVATAR) {
                     PhotosPicker(selection: $newAvatarImageItem, matching: .images) {
                         RoomAvatarView(room: room, avatarText: .none)
-                            .aspectRatio(contentMode: .fill)
-                            .clipShape(Circle())
                             .frame(width: 80, height: 80)
                     }
                     .buttonStyle(.plain)
@@ -75,8 +73,6 @@ struct GroupSettingsView: View {
                     }
                 } else {
                     RoomAvatarView(room: room, avatarText: .none)
-                        .aspectRatio(contentMode: .fill)
-                        .clipShape(Circle())
                         .frame(width: 80, height: 80)
                 }
             }
