@@ -158,6 +158,7 @@ enum SystemImages: String {
     case eyeSlashFill = "eye.slash.fill"
     case gearshape = "gearshape"
     case heart = "heart"
+    case launchLogoPurple = "launch-logo-purple"
     case lockSlashFill = "lock.slash.fill"
     case minusMagnifyingglass = "minus.magnifyingglass"
     case paperclip = "paperclip"
