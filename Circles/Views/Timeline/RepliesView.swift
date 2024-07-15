@@ -51,7 +51,7 @@ struct RepliesView: View {
                     }
                 } else {
                     ForEach(messages) { message in
-                        MessageCard(message: message)
+                        MessageCard(message: message, isThreaded: true)
                     }
                     HStack {
                         Spacer()

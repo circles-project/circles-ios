@@ -44,7 +44,7 @@ open class BCrypt {
             throw Exception.RandomDeviceFault
         }
         let size = MemoryLayout<T>.size * count
-        var buf = UnsafeMutablePointer<T>.allocate(capacity: size)
+        let buf = UnsafeMutablePointer<T>.allocate(capacity: size)
         defer { buf.deallocate() }
         guard size == fread(buf, MemoryLayout<T>.size, count, frandom) else {
             throw Exception.RandomAllocationFault

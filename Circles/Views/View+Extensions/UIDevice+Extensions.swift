@@ -13,6 +13,10 @@ public extension UIDevice {
         return modelName.contains("iPhone SE")
     }()
     
+    static let isPhone: Bool = {
+        return modelName.contains("iPhone")
+    }()
+    
     static let modelName: String = {
         var systemInfo = utsname()
         uname(&systemInfo)

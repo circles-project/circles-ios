@@ -94,7 +94,6 @@ struct TermsOfServiceForm: View {
 
     var body: some View {
         VStack {
-
             Text("Review and accept terms")
                 .font(.title2)
                 .fontWeight(.bold)
@@ -120,7 +119,7 @@ struct TermsOfServiceForm: View {
                 } catch {
                     // Tell the user that we hit an error
                     print("SIGNUP/TERMS\tTerms stage failed")
-                    self.alertTitle = "Something went wrong"
+                    self.alertTitle = "Oh no! Something went wrong"
                     self.alertMessage = "Failed to complete Terms of Service stage"
                     self.showAlert = true
                 }

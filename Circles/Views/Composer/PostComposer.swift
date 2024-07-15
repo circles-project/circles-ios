@@ -149,7 +149,6 @@ struct PostComposer: View {
                 print("COMPOSER\tText is: \(self.newMessageText)")
             }
         } else {
-            
             if let parentMessage = parent {
                 self.relatesTo = mRelatesTo(relType: M_THREAD, eventId: parentMessage.eventId)
             } else {
@@ -187,7 +186,6 @@ struct PostComposer: View {
         let (mainData, thumbnailData) = try await downloadImageData(content: oldContent)
         
         if room.isEncrypted {
-            
             let mainFile: Matrix.mEncryptedFile = try await room.session.encryptAndUploadData(plaintext: mainData, contentType: oldContent.info.mimetype)
             print("COMPOSER\tRe-uploaded encrypted image to new URL \(mainFile.url)")
             var thumbnailFile: Matrix.mEncryptedFile?
@@ -205,7 +203,6 @@ struct PostComposer: View {
             return eventId
             
         } else { // Not encrypted
-            
             let mainUrl = try await room.session.uploadData(data: mainData, contentType: oldContent.info.mimetype)
             var thumbnailUrl: MXC?
             if let thumbData = thumbnailData,
@@ -219,16 +216,12 @@ struct PostComposer: View {
             
             let eventId = try await room.sendMessage(content: newContent)
             return eventId
-            
         }
     }
     
-    
     private func send() async throws {
         // Post the message
-        
         switch(self.messageState) {
-            
         case .text:
             if self.newMessageText.isEmpty {
                 await ToastPresenter.shared.showToast(message: "You can not send an empty post")
@@ -262,10 +255,8 @@ struct PostComposer: View {
             }
             self.presentation.wrappedValue.dismiss()
             
-            
         case .loadingVideo:
             print("COMPOSER\tError: Can't send until the video is done loading")
-            
             
         case .newVideo(let movie, let thumbnail):
             let caption: String? = !self.newMessageText.isEmpty ? self.newMessageText : nil
@@ -295,7 +286,6 @@ struct PostComposer: View {
             let eventId = try await self.room.sendMessage(content: newContent)
             print("COMPOSER\tSent edited m.video with new eventId = \(eventId)")
             self.presentation.wrappedValue.dismiss()
-            
         }
     }
         
@@ -329,7 +319,6 @@ struct PostComposer: View {
                     .scaleEffect(1.5)
             })
             .padding(1)
-
             
             Spacer()
             Button(role: .destructive, action: {
@@ -364,7 +353,6 @@ struct PostComposer: View {
     @ViewBuilder
     var thumbnail: some View {
         switch(messageState) {
-            
         case .text:
             if DebugModel.shared.debugMode {
                 Text("Editing")
@@ -400,7 +388,7 @@ struct PostComposer: View {
                 ProgressView("Loading video...")
             }
             
-        case .newVideo(let movie, let thumbnail):
+        case .newVideo(_, let thumbnail): // (let movie, let thumbnail)
             BasicImage(uiImage: thumbnail, aspectRatio: .fill)
                 .frame(minWidth: 200, maxWidth: 800, minHeight: 200, maxHeight: 400)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
@@ -521,7 +509,6 @@ struct PostComposer: View {
                                     }
                                 }
                             }
-
                         } else {
                             print("PICKER Failed to get a new video")
                             if !Task.isCancelled {
@@ -609,9 +596,7 @@ struct PostComposer: View {
                   message: Text(alertMessage),
                   dismissButton: .default(Text("OK")))
         }
-
     }
-    
 }
 
 /*

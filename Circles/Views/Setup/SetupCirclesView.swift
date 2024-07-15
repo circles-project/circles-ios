@@ -40,7 +40,7 @@ struct SetupCirclesView: View {
             //let currentStage: SignupStage = .setupCircles
 
             Text("Create your circles")
-                .font(.title)
+                .font(.title2)
                 .fontWeight(.bold)
 
             List {
@@ -93,6 +93,7 @@ struct SetupCirclesView: View {
 
         }
         .padding()
+        .frame(maxWidth: 700)
         .onAppear {
             user.refreshProfile()
         }
@@ -114,6 +115,7 @@ struct SetupCirclesView: View {
                 }
                 .padding(20)
                 .background(in: RoundedRectangle(cornerRadius: 10))
+                .frame(maxWidth: 600)
             }
         }
     }

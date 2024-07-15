@@ -39,7 +39,7 @@ struct UiaLoginScreen: View {
                     }
             }
             
-        case .failed(let error):
+        case .failed(_): // let error
             VStack(spacing: 25) {
                 Label("Error", systemImage: SystemImages.exclamationmarkTriangle.rawValue)
                     .font(.title)
@@ -80,13 +80,13 @@ struct UiaLoginScreen: View {
                 Spacer()
                 
                 if let creds = try? JSONDecoder().decode(Matrix.Credentials.self, from: data) {
-                    Text("Success!")
                     ProgressView()
                         .onAppear {
                             // Add our user id to the list, for easy login in the future
                             let allUserIds: Set<UserId> = Set(previousUserIds).union([creds.userId])
                             previousUserIds = allUserIds.sorted { $0.stringValue < $1.stringValue }
                         }
+                    Text("Success!")
                 } else {
                     Text("Login success, but there was a problem...")
                 }
@@ -96,7 +96,7 @@ struct UiaLoginScreen: View {
         default:
             VStack {
                 Spacer()
-                Text("Something went wrong")
+                Text("Oh, no! Something went wrong")
                 Spacer()
             }
         }

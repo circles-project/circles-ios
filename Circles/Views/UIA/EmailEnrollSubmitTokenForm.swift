@@ -38,11 +38,13 @@ struct EmailEnrollSubmitTokenForm: View {
             VStack {
                 TextField("123456", text: $token, prompt: Text("6-Digit Code"))
                     .customEmailTextFieldStyle(contentType: .oneTimeCode, keyboardType: .numberPad)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
                     .focused($focus, equals: .token)
                     .frame(width: 300.0, height: 40.0)
                     .onAppear {
                         self.focus = .token
                     }
+               
                 AsyncButton(action: {
                     do {
                         try await session.doEmailEnrollSubmitTokenStage(token: token, secret: secret)

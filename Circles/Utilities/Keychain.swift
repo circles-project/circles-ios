@@ -18,7 +18,7 @@ enum KeychainError: Error {
 
 // https://developer.apple.com/documentation/security/keychain_services/keychain_items/adding_a_password_to_the_keychain
 func savePassword(userId: UserId, password: String) throws {
-    var query: [String: Any] = [
+    let query: [String: Any] = [
         kSecClass as String: kSecClassInternetPassword,
         kSecAttrAccount as String: "\(userId)",
         kSecAttrServer as String: userId.domain,
@@ -32,7 +32,7 @@ func savePassword(userId: UserId, password: String) throws {
 }
 
 func saveAccessToken(creds: Matrix.Credentials) throws {
-    var query: [String: Any] = [
+    let query: [String: Any] = [
         kSecClass as String: kSecClassInternetPassword,
         kSecAttrAccount as String: "\(creds.userId)::\(creds.deviceId)",
         kSecAttrServer as String: creds.userId.domain,

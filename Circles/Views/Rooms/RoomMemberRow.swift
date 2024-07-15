@@ -43,7 +43,7 @@ struct RoomMemberRow: View {
         
         if room.iCanChangeState(type: M_ROOM_POWER_LEVELS) && iCanModerateThem {
             Menu("Set Access Level") {
-                ForEach(0 ..< roles.count) { index in
+                ForEach(0 ..< roles.count, id: \.self) { index in
                     AsyncButton(action: {
                         // Check yourself before you wreck yourself -- Are we setting our own power level here?
                         if user.userId == room.session.creds.userId {

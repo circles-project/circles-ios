@@ -37,6 +37,7 @@ struct GroupTimelineScreen: View {
     @State private var showTopicPopover = false
 
     @State var nilParentMessage: Matrix.Message? = nil
+    @State var showNewPostInSheetStyle = false
     
     var timeline: some View {
         TimelineView<MessageCard>(room: room)
@@ -44,7 +45,6 @@ struct GroupTimelineScreen: View {
     
     var toolbarMenu: some View {
         Menu {
-            
             NavigationLink(destination: GroupSettingsView(room: room, container: container)) {
                 Label("Settings", systemImage: SystemImages.gearshapeFill.rawValue)
             }
@@ -62,7 +62,6 @@ struct GroupTimelineScreen: View {
             }) {
                 Label("Share", systemImage: SystemImages.squareAndArrowUp.rawValue)
             }
-            
         }
         label: {
             Label("Settings", systemImage: SystemImages.gearshapeFill.rawValue)
@@ -74,12 +73,9 @@ struct GroupTimelineScreen: View {
     }
     
     var body: some View {
-        
         NavigationStack {
             ZStack {
-                
                 VStack(alignment: .center) {
-                    
                     /*
                      VStack(alignment: .leading) {
                      Text("Debug Info")
@@ -96,7 +92,6 @@ struct GroupTimelineScreen: View {
                     timeline
                         .sheet(item: $sheetType) { st in
                             switch(st) {
-                                
                             case .invite:
                                 RoomInviteSheet(room: room, title: "Invite new members to \(room.name ?? "(unnamed group)")")
                                 
@@ -105,6 +100,7 @@ struct GroupTimelineScreen: View {
                                 RoomShareSheet(room: room, url: url)
                             }
                         }
+                        .padding([.top], -4)
                 }
                 
                 VStack {
@@ -112,13 +108,13 @@ struct GroupTimelineScreen: View {
                     HStack {
                         Spacer()
                         if room.iCanSendEvent(type: M_ROOM_MESSAGE) {
-                            NavigationLink(destination: PostComposer(room: room).navigationTitle("New Post")) {
-                                Image(systemName: SystemImages.plusBubbleFill.rawValue)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 50, height: 50)
-                                    .padding()
+                            Button(action: {
+                                showNewPostInSheetStyle = true
+                            }) {
+                                Label("New post", systemImage: SystemImages.plusCircleFill.rawValue)
                             }
+                            .buttonStyle(PillButtonStyle())
+                            .padding(10)
                         }
                     }
                 }
@@ -129,6 +125,11 @@ struct GroupTimelineScreen: View {
                 }
             }
             .navigationBarTitle(title, displayMode: .inline)
+            .sheet(isPresented: $showNewPostInSheetStyle) {
+                if room.iCanSendEvent(type: M_ROOM_MESSAGE) {
+                    PostComposer(room: room).navigationTitle("New Post")
+                }
+            }
         }
     }
 }

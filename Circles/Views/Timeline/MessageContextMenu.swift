@@ -16,7 +16,6 @@ struct MessageContextMenu: View {
     @Binding var showMessageDeleteConfirmation: Bool
 
     var body: some View {
-
         let current = message.replacement ?? message
         if let content = current.content as? Matrix.MessageContent,
            content.msgtype == M_IMAGE,
@@ -110,7 +109,7 @@ struct MessageContextMenu: View {
                 pasteboard.string = textContent.body
 
             case M_IMAGE:
-                guard let imageContent = content as? Matrix.mImageContent
+                guard let _ = content as? Matrix.mImageContent // let imageContent
                 else {
                     print("Failed to get content to copy m.image message \(message.eventId)")
                     return
@@ -125,8 +124,11 @@ struct MessageContextMenu: View {
         }
         
         if message.sender.userId == message.room.session.creds.userId {
-            NavigationLink(destination: PostComposerScreen(room: message.room, editingMessage: message)) {
+            Button(action: {
+                sheetType = .edit
+            }) {
                 Label("Edit", systemImage: "pencil")
+
             }
         }
         

@@ -29,11 +29,11 @@ struct CircleTimelineView: View {
     @State var sheetType: CircleSheetType? = nil
     @State var showPhotosPicker: Bool = false
     @State var selectedItem: PhotosPickerItem?
+    @State var showNewPostInSheetStyle = false
     //@State var image: UIImage?
     
     var toolbarMenu: some View {
         Menu {
-
             NavigationLink(destination: CircleSettingsView(space: space) ){
                 Label("Settings", systemImage: SystemImages.gearshapeFill.rawValue)
             }
@@ -59,8 +59,7 @@ struct CircleTimelineView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                
-                let foo = self.stupidSwiftUiTrick
+                let _ = self.stupidSwiftUiTrick // foo
                 
                 CircleTimeline(space: space)
                     .navigationBarTitle(space.name ?? "Circle", displayMode: .inline)
@@ -103,19 +102,24 @@ struct CircleTimelineView: View {
                             }
                         }
                     }
+                    .sheet(isPresented: $showNewPostInSheetStyle) {
+                        if let wall = space.wall {
+                            PostComposer(room: wall).navigationTitle("New Post")
+                        }
+                    }
                 
                 if let wall = space.wall {
                     VStack {
                         Spacer()
                         HStack {
                             Spacer()
-                            NavigationLink(destination: PostComposer(room: wall).navigationTitle("New Post")) {
-                                Image(systemName: SystemImages.plusBubbleFill.rawValue)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 50, height: 50)
-                                    .padding()
+                            Button(action: {
+                                showNewPostInSheetStyle = true
+                            }) {
+                                Label("New post", systemImage: SystemImages.plusCircleFill.rawValue)
                             }
+                            .buttonStyle(PillButtonStyle())
+                            .padding(10)
                         }
                     }
                 }

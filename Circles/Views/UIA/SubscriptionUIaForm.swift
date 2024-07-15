@@ -132,7 +132,7 @@ struct SubscriptionUiaProductView: View {
         .task {
             
             if let entitlement = await product.currentEntitlement,
-               let transaction = try? store.checkVerified(entitlement) {
+               let _ = try? store.checkVerified(entitlement) { // let transaction
                 await MainActor.run {
                     purchased = true
                 }

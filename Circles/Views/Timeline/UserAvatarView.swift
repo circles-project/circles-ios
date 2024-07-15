@@ -24,18 +24,23 @@ struct UserAvatarView: View {
             BasicImage(uiImage: avatar)
                 .aspectRatio(contentMode: .fill)
                 .clipShape(Circle())
-        }
-        else if let jdenticon = user.jdenticon {
-            BasicImage(uiImage: jdenticon)
-                .onAppear {
-                    user.fetchAvatarImage()
-                }
         } else {
-            Image(systemName: SystemImages.personFill.rawValue)
-                .foregroundColor(defaultImageColor)
-                .onAppear {
-                    user.fetchAvatarImage()
-                }
+            ZStack {
+                let color = Color.background.randomColor(from: user.userId.stringValue)
+                
+                Image("")
+                    .resizable()
+                    .background(color)
+                    .scaledToFit()
+                
+                let userIdCharacter = user.userId.stringValue.dropFirst().first?.uppercased()
+                
+                Text(String(user.displayName?.first?.uppercased() ?? userIdCharacter ?? ""))
+                    .fontWeight(.bold)
+                    .font(.title)
+                    .foregroundColor(.white)
+                    .shadow(color: .gray, radius: 2)
+            }
         }
     }
 }
