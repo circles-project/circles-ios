@@ -23,11 +23,12 @@ struct UsernameEnrollForm: View {
     @FocusState var focus: FocusField?
     
     var body: some View {
-        VStack(alignment: .center, spacing: 40) {
+        VStack(alignment: .center, spacing: 20) {
             Spacer()
 
             Text("Choose a username")
                 .font(.title2)
+                .fontWeight(.bold)
 
             TextField("Username", text: $username, prompt: Text("username"))
                 .textContentType(.username)
@@ -41,7 +42,6 @@ struct UsernameEnrollForm: View {
                 }
             
             AsyncButton(action: {
-                
                 do {
                     try await session.doUsernameStage(username: username)
                 } catch {

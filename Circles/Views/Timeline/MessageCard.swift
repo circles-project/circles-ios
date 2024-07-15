@@ -43,9 +43,13 @@ struct ImageContentView: View {
             if let imageContent = message.content as? Matrix.mImageContent {
                 //Spacer()
                 VStack(alignment: .center) {
-                    MessageMediaThumbnail(message: message,
-                                          aspectRatio: .fill,
-                                          mediaViewWidth: mediaViewWidth)
+                    HStack {
+                        Spacer()
+                        MessageMediaThumbnail(message: message,
+                                              aspectRatio: .fill,
+                                              mediaViewWidth: mediaViewWidth)
+                        Spacer()
+                    }
                     HStack {
                         if let caption = imageContent.caption {
                             let markdown = MarkdownContent(caption)
@@ -136,7 +140,8 @@ struct MessageCard: MessageView {
                     }
                     
                 case M_IMAGE:
-                    ImageContentView(message: current, mediaViewWidth: mediaViewWidth)
+                    let newWidth = isThreaded ? mediaViewWidth - 20 : mediaViewWidth
+                    ImageContentView(message: current, mediaViewWidth: newWidth)
                     
                 case M_VIDEO:
                     VideoContentView(message: current)
@@ -223,7 +228,7 @@ struct MessageCard: MessageView {
                      }
                  }
             } else {
-                Text("Something went wrong.  Circles failed to parse a message of type \"\(current.type)\".")
+                Text("Oh no! Something went wrong.  Circles failed to parse a message of type \"\(current.type)\".")
                     .foregroundColor(.red)
             }
         }
@@ -471,6 +476,9 @@ struct MessageCard: MessageView {
                         if mediaViewWidth == 0 {
                             mediaViewWidth = geometry.size.width
                         }
+                        if UIDevice.isPhone {
+                            mediaViewWidth = UIScreen.main.bounds.width
+                        }
                     }
             }
             mainCard
@@ -481,6 +489,9 @@ struct MessageCard: MessageView {
                 }
                 .sheet(item: $sheetType) { st in
                     switch(st) {
+                    case .edit:
+                        PostComposer(room: message.room, editing: message)
+                        
                     case .reactions:
                         EmojiPicker(message: message)
                         

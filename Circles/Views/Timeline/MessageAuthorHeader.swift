@@ -27,9 +27,7 @@ struct MessageAuthorHeader: View {
     var body: some View {
         HStack(alignment: .top) {
             UserAvatarView(user: user)
-                .scaledToFill()
                 .frame(width: 45, height: 45)
-                .clipShape(RoundedRectangle(cornerRadius: 4))
             
             VStack(alignment: .leading) {
                 Text(user.displayName ?? user.userId.username)
@@ -44,7 +42,6 @@ struct MessageAuthorHeader: View {
                     .lineLimit(1)
                     //.padding(.leading, 1)
             }
-            
         }
         /*
         .contextMenu {

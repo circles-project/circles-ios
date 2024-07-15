@@ -72,9 +72,9 @@ struct EmailLoginRequestTokenForm: View {
             
             TextField("you@example.com", text: $emailAddress, prompt: Text("Email address"))
                 .customEmailTextFieldStyle(contentType: .emailAddress, keyboardType: .emailAddress)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
                 .focused($focus, equals: .email)
-                //.focused($inputFocused)
-                //.frame(width: 300.0, height: 40.0)
+                .frame(width: 300.0, height: 40.0)
                 .onSubmit {
                     Task {
                         try await submit()

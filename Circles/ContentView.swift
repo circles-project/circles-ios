@@ -64,7 +64,7 @@ struct ContentView: View {
     
     var errorView: some View {
         VStack {
-            Text("Something went wrong")
+            Text("Oh no! Something went wrong")
             AsyncButton(action: {
                 do {
                     try await self.store.disconnect()
@@ -80,7 +80,7 @@ struct ContentView: View {
     var body: some View {
         switch(store.state) {
         case .startingUp:
-            ReusableLoadingView(progressText: "Loading Circles...") {
+            ReusableLoadingView(progressText: "Circles is starting up... Hang tight!") {
                 try await store.lookForCreds()
                 print("ContentView: Back from lookForCreds()")
             }
@@ -120,26 +120,26 @@ struct ContentView: View {
         case .needSecretStorageKey(let matrix, let keyId, let keyDescription):
             SecretStoragePasswordScreen(store: store, matrix: matrix, keyId: keyId, description: keyDescription)
             
-        case .haveSecretStorageAndKey(_): // (let matrix)
-            ReusableLoadingView(progressText: "Checking cross signing") {
+        case .haveSecretStorageAndKey(let matrix):
+            ReusableLoadingView(progressText: "Verifying your device") {
                 try await store.ensureCrossSigning()
             }
             
-        case .haveCrossSigning(_): // (let matrix)
-            ReusableLoadingView(progressText: "Checking key backup") {
+        case .haveCrossSigning(let matrix):
+            ReusableLoadingView(progressText: "Loading encryption keys") {
                 try await store.ensureKeyBackup()
             }
             
-        case .haveKeyBackup(_): // (let matrix)
-            ReusableLoadingView(progressText: "Checking space hierarchy") {
+        case .haveKeyBackup(let matrix):
+            ReusableLoadingView(progressText: "Loading social connections") {
                 try await store.checkForSpaceHierarchy()
             }
             
         case .needSpaceHierarchy(let matrix):
             SetupScreen(store: store, matrix: matrix)
 
-        case .haveSpaceHierarchy(_, _): // (let matrix, let config)
-            ReusableLoadingView(progressText: "Loading Circles") {
+        case .haveSpaceHierarchy(let matrix, let config):
+            ReusableLoadingView(progressText: "Loading messages - Almost done!") {
                 try await store.goOnline()
             }
             

@@ -45,11 +45,13 @@ struct SettingsScreen: View {
                         Label("Account Security", systemImage: SystemImages.lockFill.rawValue)
                     }
                     
+                    /*
                     if CIRCLES_DOMAINS.contains(session.matrix.creds.userId.domain) {
                         NavigationLink(destination: SubscriptionSettingsView(store: store.appStore)) {
                             Label("Subscription Status", systemImage: "folder.badge.person.crop")
                         }
                     }
+                    */
                     
                     NavigationLink(destination: StorageSettingsView(session: session.matrix)) {
                         Label("Storage", systemImage: "folder.fill")
