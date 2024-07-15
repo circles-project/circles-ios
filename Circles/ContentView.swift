@@ -22,13 +22,13 @@ private struct ReusableLoadingView: View {
     
     var body: some View {
         ZStack {
-            Color(.launch)
+            Color(.login)
                 .edgesIgnoringSafeArea(.all)
             VStack {
                 Spacer()
                 
-                BasicImage(name: SystemImages.launchCircleLogo.rawValue)
-                    .frame(width: 215, height: 79)
+                BasicImage(name: SystemImages.launchLogoPurple.rawValue)
+                    .frame(width: 171, height: 79)
                 
                 ProgressView(progressText)
                     .onAppear {
@@ -40,8 +40,8 @@ private struct ReusableLoadingView: View {
                             }
                         }
                     }
-                    .background(Color(.launch))
-                    .foregroundStyle(Color.white)
+                    .background(Color(.login))
+                    .foregroundStyle(Color.black)
                 
                 Spacer()
                 
@@ -52,7 +52,7 @@ private struct ReusableLoadingView: View {
                 }) {
                     Text("Cancel")
                 }
-                .foregroundStyle(cancelAction == nil ? Color(.launch) : Color.red)
+                .foregroundStyle(cancelAction == nil ? Color(.login) : Color.red)
             }
         }
     }
