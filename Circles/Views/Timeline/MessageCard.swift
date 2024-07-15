@@ -367,7 +367,7 @@ struct MessageCard: MessageView {
                 timestamp
                 Spacer()
                 likeButton
-                if message.relatedEventId == nil && !isThreaded {
+                if !isThreaded {
                     replyButton
                 }
                 menuButton
