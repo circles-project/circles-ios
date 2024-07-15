@@ -35,10 +35,7 @@ struct FollowingTimelineDetailsView: View {
                         Text("Cover image")
                         Spacer()
                         RoomAvatarView(room: room, avatarText: .none)
-                            .frame(width: 80, height: 80)
-                            .aspectRatio(contentMode: .fill)
-                            .clipShape(Circle())
-                        
+                            .frame(width: 80, height: 80)                        
                     }
                     
                     if room.joinRule == .knock,

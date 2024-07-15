@@ -38,7 +38,6 @@ struct CirclePicker: View {
                                 .foregroundColor(.gray)
 
                             RoomAvatarView(room: circle.wall ?? circle, avatarText: .none)
-                                .clipShape(Circle())
                                 .frame(width: 50, height: 50)
                             Text(circle.name ?? "unnamed")
                                 //.fontWeight(.bold)

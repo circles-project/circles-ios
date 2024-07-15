@@ -22,9 +22,7 @@ struct InvitedGroupDetailView: View {
   
                 // Don't show the big image if there's not really an image to show
                 RoomAvatarView(room: room, avatarText: .oneLetter)
-                    .clipShape(Circle())
                     .overlay(Circle().stroke(Color.primary, lineWidth: 2))
-                    .scaledToFit()
                     .frame(width: 240, height: 240)
                     //.padding(-50)
                 

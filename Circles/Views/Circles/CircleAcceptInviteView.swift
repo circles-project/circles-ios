@@ -27,7 +27,6 @@ struct CircleAcceptInviteView: View {
                 
                 HStack(alignment: .center) {
                     RoomAvatarView(room: room, avatarText: .none)
-                        .clipShape(Circle())
                         .frame(width: 65, height: 65)
                     VStack(alignment: .leading) {
                         Text(room.name ?? "")

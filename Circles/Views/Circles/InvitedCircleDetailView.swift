@@ -21,9 +21,7 @@ struct InvitedCircleDetailView: View {
                     .padding()
                 
                 RoomAvatarView(room: room, avatarText: .none)
-                    .clipShape(Circle())
                     .overlay(Circle().stroke(Color.primary, lineWidth: 2))
-                    .scaledToFit()
                     .frame(width: 240, height: 240)
                     //.padding(-50)
                 

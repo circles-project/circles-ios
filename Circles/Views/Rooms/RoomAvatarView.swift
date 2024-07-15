@@ -51,8 +51,8 @@ struct RoomAvatarView<Room>: View where Room: BasicRoomProtocol {
             Image(uiImage: img)
                 .renderingMode(.original)
                 .resizable()
-                .scaledToFill()
-                //.clipShape(RoundedRectangle(cornerRadius: 6))
+                .aspectRatio(contentMode: .fill)
+                .clipShape(Circle())
                 .onAppear {
                     // Fetch the avatar from the url
                     room.updateAvatarImage()
@@ -66,8 +66,8 @@ struct RoomAvatarView<Room>: View where Room: BasicRoomProtocol {
 
                     RoundedRectangle(cornerSize: CGSize())
                         .foregroundColor(color)
-                        .scaledToFill()
-                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                        .aspectRatio(contentMode: .fill)
+                        .clipShape(Circle())
                         .onAppear {
                             // Fetch the avatar from the url
                             room.updateAvatarImage()

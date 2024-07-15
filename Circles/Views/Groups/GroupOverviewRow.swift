@@ -19,8 +19,6 @@ struct GroupOverviewRow: View {
         HStack(alignment: .top) {
             RoomAvatarView(room: room, avatarText: .oneLetter)
                 .frame(width: 80, height: 80)
-                .aspectRatio(contentMode: .fill)
-                .clipShape(Circle())
                 .padding(.leading, 5)
             
             VStack(alignment: .leading) {

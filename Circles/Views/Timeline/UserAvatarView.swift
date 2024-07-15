@@ -31,7 +31,8 @@ struct UserAvatarView: View {
                 Image("")
                     .resizable()
                     .background(color)
-                    .scaledToFit()
+                    .aspectRatio(contentMode: .fit)
+                    .clipShape(Circle())
                 
                 let userIdCharacter = user.userId.stringValue.dropFirst().first?.uppercased()
                 

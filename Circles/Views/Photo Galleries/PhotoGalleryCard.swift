@@ -24,8 +24,7 @@ struct PhotoGalleryCard: View {
     var body: some View {
         ZStack {
             RoomAvatarView(room: room, avatarText: .none)
-                .scaledToFill()
-                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .frame(width: 300, height: 300)
                 /*
                 .onAppear {
                     // Dirty nasty hack to test how/when SwiftUI is updating our Views
