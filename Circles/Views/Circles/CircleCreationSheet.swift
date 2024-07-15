@@ -165,7 +165,7 @@ struct CircleCreationSheet: View {
             }) {
                 Text("Create circle")
             }
-            .buttonStyle(BigBlueButtonStyle())
+            .buttonStyle(BigRoundedButtonStyle())
             .disabled(circleName.isEmpty)
             
             Spacer()

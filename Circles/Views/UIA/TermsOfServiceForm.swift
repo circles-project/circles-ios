@@ -31,7 +31,7 @@ struct TermsOfServicePolicySheet: View {
                     }) {
                         Text("Got it")
                     }
-                    .buttonStyle(BigBlueButtonStyle())
+                    .buttonStyle(BigRoundedButtonStyle())
                 }
                 .padding()
             } else {
@@ -127,7 +127,7 @@ struct TermsOfServiceForm: View {
             }) {
                 Text("Accept and Continue")
             }
-            .buttonStyle(BigBlueButtonStyle())
+            .buttonStyle(BigRoundedButtonStyle())
             .disabled(accept == false)
 
             Spacer()

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct BigBlueButtonStyle: ButtonStyle {
+struct BigRoundedButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .padding()

@@ -148,7 +148,7 @@ struct SetupAvatarView: View {
             }) {
                 Text("Next")
             }
-            .buttonStyle(BigBlueButtonStyle())
+            .buttonStyle(BigRoundedButtonStyle())
             .disabled(newName.isEmpty)
             .padding()
 
