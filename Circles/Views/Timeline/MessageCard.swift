@@ -313,7 +313,6 @@ struct MessageCard: MessageView {
             
             ScrollView(.horizontal) {
                 HStack(spacing: 10) {
-                    
                     ForEach(reactionCounts, id: \.key) { emoji, count in
                         let userId = message.room.session.creds.userId
                         let users = message.reactions[emoji] ?? []
@@ -361,16 +360,14 @@ struct MessageCard: MessageView {
     
     var footer: some View {
         VStack(alignment: .leading) {
-            
             //Divider()
-
             HStack {
                 shield
                 //Spacer()
                 timestamp
                 Spacer()
                 likeButton
-                if message.relatedEventId == nil {
+                if message.relatedEventId == nil && !isThreaded {
                     replyButton
                 }
                 menuButton
@@ -390,7 +387,6 @@ struct MessageCard: MessageView {
             } else {
                 reactions.hidden()
             }
-
         }
         .padding(.bottom, 3)
     }
@@ -414,12 +410,10 @@ struct MessageCard: MessageView {
     }
     
     var mainCard: some View {
-        
         let shadowColor: Color = message.mentionsMe ? .accentColor : .gray
         let shadowRaduis: CGFloat = message.mentionsMe ? 3 : 2
         
         return VStack(alignment: .leading, spacing: 2) {
-            
             MessageAuthorHeader(user: message.sender)
 
             if DebugModel.shared.debugMode && self.debug {
@@ -451,7 +445,6 @@ struct MessageCard: MessageView {
                 }
             }
         }
-
     }
     
     var linkWrapper: some View {

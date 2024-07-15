@@ -14,12 +14,14 @@ struct PostComposerScreen: View {
     var editingMessage: Matrix.Message?
     @State var isPresented = true
     @State var title: String
+    var isThreaded = false
     
     init(room: Matrix.Room, parentMessage: Matrix.Message? = nil, editingMessage: Matrix.Message? = nil, isPresented: Bool = true) {
         self.room = room
         self.parentMessage = parentMessage
         self.editingMessage = editingMessage
         self.isPresented = isPresented
+        self.isThreaded = false
         
         switch (parentMessage,editingMessage) {
         case (.none, .none):
@@ -28,6 +30,7 @@ struct PostComposerScreen: View {
             self.title = "Edit Post"
         case (.some, .none):
             self.title = "New Reply"
+            self.isThreaded = true
         case (.some, .some):
             self.title = "Edit Reply"
         }
@@ -38,7 +41,7 @@ struct PostComposerScreen: View {
         VStack {
             ScrollView {
                 if let parent = parentMessage {
-                    MessageCard(message: parent)
+                    MessageCard(message: parent, isThreaded: isThreaded)
                         .padding(3)
                         .padding(.bottom, 5)
                 }
