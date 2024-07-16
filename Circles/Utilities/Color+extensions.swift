@@ -101,11 +101,55 @@ extension Color {
     static let success1100 = Color(hex: "#1E351B")
     static let success1200 = Color(hex: "#111E0F")
     
-    static let greyCool200 = Color(red: 0.94, green: 0.95, blue: 0.95)
-    static let greyCool600 = Color(hex: "#a8abb4")
-    static let greyCool800: Color = Color(red: 0.41, green: 0.47, blue: 0.56)
-    static let greyCool1000: Color = Color(red: 0.24, green: 0.28, blue: 0.34)
-    static let greyCool1100 = Color(red: 0.16, green: 0.19, blue: 0.23)
+    // From the color sheets in Figma
+    static let greyCool100 = Color(
+        light: Color(red: 0.97, green: 0.97, blue: 0.98),
+        dark: Color(red: 0.04, green: 0.04, blue: 0.04)
+    )
+    static let greyCool200 = Color(
+        light: Color(red: 0.94, green: 0.95, blue: 0.95),
+        dark: Color(red: 0.07, green: 0.07, blue: 0.08)
+    )
+    static let greyCool300 = Color(
+        light: Color(red: 0.91, green: 0.92, blue: 0.93),
+        dark: Color(red: 0.09, green: 0.1, blue: 0.11)
+    )
+    static let greyCool400 = Color(
+        light: Color(red: 0.88, green: 0.88, blue: 0.89),
+        dark: Color(red: 0.12, green: 0.13, blue: 0.15)
+    )
+    static let greyCool500 = Color(
+        light: Color(red: 0.76, green: 0.78, blue: 0.80),
+        dark: Color(red: 0.2, green: 0.21, blue: 0.24)
+    )
+    static let greyCool600 = Color(
+        light: Color(red: 0.66, green: 0.67, blue: 0.71),
+        dark: Color(red: 0.27, green: 0.28, blue: 0.32)
+    )
+    static let greyCool700 = Color(
+        light: Color(red: 0.55, green: 0.57, blue: 0.61),
+        dark: Color(red: 0.35, green: 0.36, blue: 0.41)
+    )
+    static let greyCool800 = Color(
+        light: Color(red: 0.41, green: 0.47, blue: 0.56),
+        dark: Color(red: 0.43, green: 0.45, blue: 0.51)
+    )
+    static let greyCool900 = Color(
+        light: Color(red: 0.35, green: 0.37, blue: 0.42),
+        dark: Color(red: 0.54, green: 0.56, blue: 0.60)
+    )
+    static let greyCool1000 = Color(
+        light: Color(red: 0.24, green: 0.28, blue: 0.34),
+        dark: Color(red: 0.66, green: 0.67, blue: 0.71)
+    )
+    static let greyCool1100 = Color(
+        light: Color(red: 0.16, green: 0.19, blue: 0.23),
+        dark: Color(red: 0.8, green: 0.8, blue: 0.82)
+    )
+    static let greyCool1200 = Color(
+        light: Color(red: 0.10, green: 0.11, blue: 0.12),
+        dark: Color(red: 0.91, green: 0.91, blue: 0.92)
+    )
 
     init(hex: String) {
         let scanner = Scanner(string: hex)
