@@ -287,36 +287,58 @@ struct PostComposer: View {
             self.presentation.wrappedValue.dismiss()
         }
     }
+    
+    var oldMessageType: String? {
+        switch messageState {
+        case .text:
+            return nil
+        case .newImage(let uIImage):
+            return nil
+        case .newVideo(let movie, let uIImage):
+            return nil
+        case .loadingVideo(let task):
+            return nil
+        case .oldImage(let mImageContent, let uIImage):
+            return M_IMAGE
+        case .oldVideo(let mVideoContent, let uIImage):
+            return M_VIDEO
+        }
+    }
         
     var buttonBar: some View {
         HStack(spacing: 5.0) {
             Menu(content: {
-                Button(action: {
-                    self.newPickerFilter = .videos
-                    self.showNewPicker = true
-                    self.selectedItem = nil
-                }) {
-                    Label("Upload a video", systemImage: "film")
+                if editing == nil || oldMessageType == M_VIDEO {
+                    Button(action: {
+                        self.newPickerFilter = .videos
+                        self.showNewPicker = true
+                        self.selectedItem = nil
+                    }) {
+                        Label("Choose Video", systemImage: "film")
+                    }
                 }
-                Button(action: {
-                    self.newPickerFilter = .images
-                    self.showNewPicker = true
-                    self.selectedItem = nil
-                }) {
-                    Label("Upload a photo", systemImage: "photo.fill")
-                }
-                Button(action: {
-                    //self.imageSourceType = .camera
-                    //self.showPicker = true
-                    self.showPickerOfType = .camera
-                }) {
-                    Label("Take a new photo", systemImage: "camera.fill")
+                if editing == nil || oldMessageType == M_IMAGE {
+                    Button(action: {
+                        self.newPickerFilter = .images
+                        self.showNewPicker = true
+                        self.selectedItem = nil
+                    }) {
+                        Label("Choose Photo", systemImage: "photo.fill")
+                    }
+                    Button(action: {
+                        //self.imageSourceType = .camera
+                        //self.showPicker = true
+                        self.showPickerOfType = .camera
+                    }) {
+                        Label("New Photo", systemImage: "camera.fill")
+                    }
                 }
             },
             label: {
                 Image(systemName: SystemImages.paperclip.rawValue)
                     .scaleEffect(1.5)
             })
+            .disabled(oldMessageType == M_TEXT)
             .padding(1)
             
             Spacer()
