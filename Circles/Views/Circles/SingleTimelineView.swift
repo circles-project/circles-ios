@@ -106,6 +106,7 @@ struct SingleTimelineView: View {
         .sheet(isPresented: $showNewPostInSheetStyle) {
             PostComposer(room: room).navigationTitle("New Post")
         }
+        .background(Color.greyCool200)
 
     }
 }

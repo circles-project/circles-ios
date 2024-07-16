@@ -171,6 +171,7 @@
 		A57BD8442BD1996800EC07E9 /* FollowersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A57BD8432BD1996800EC07E9 /* FollowersView.swift */; };
 		A57BD8462BD19C1000EC07E9 /* FriendsOfFriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A57BD8452BD19C1000EC07E9 /* FriendsOfFriendsView.swift */; };
 		A57BD8482BD1A6A300EC07E9 /* FollowingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A57BD8472BD1A6A300EC07E9 /* FollowingView.swift */; };
+		A58E21782C46F344005FF66B /* RelativeTimestampFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A58E21772C46F344005FF66B /* RelativeTimestampFormatter.swift */; };
 		A5921EB32AFAA83A00C2331D /* SingleTimelineSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5921EB22AFAA83A00C2331D /* SingleTimelineSettingsView.swift */; };
 		A5921EB72AFAD5E400C2331D /* CircleFollowingRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5921EB62AFAD5E400C2331D /* CircleFollowingRow.swift */; };
 		A5921EB92AFAD7F000C2331D /* RoomInvitedMemberRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5921EB82AFAD7F000C2331D /* RoomInvitedMemberRow.swift */; };
@@ -425,6 +426,7 @@
 		A57BD8432BD1996800EC07E9 /* FollowersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowersView.swift; sourceTree = "<group>"; };
 		A57BD8452BD19C1000EC07E9 /* FriendsOfFriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsOfFriendsView.swift; sourceTree = "<group>"; };
 		A57BD8472BD1A6A300EC07E9 /* FollowingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowingView.swift; sourceTree = "<group>"; };
+		A58E21772C46F344005FF66B /* RelativeTimestampFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelativeTimestampFormatter.swift; sourceTree = "<group>"; };
 		A5921EB22AFAA83A00C2331D /* SingleTimelineSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleTimelineSettingsView.swift; sourceTree = "<group>"; };
 		A5921EB62AFAD5E400C2331D /* CircleFollowingRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleFollowingRow.swift; sourceTree = "<group>"; };
 		A5921EB82AFAD7F000C2331D /* RoomInvitedMemberRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomInvitedMemberRow.swift; sourceTree = "<group>"; };
@@ -616,6 +618,7 @@
 				A51503C52B756B7F00E1566E /* DeleteAndPurge.swift */,
 				A5DDA6A42B98F8B900BD8A1D /* Data+hex.swift */,
 				A5FA373D2C13925100AD5A58 /* ToastPresenter.swift */,
+				A58E21772C46F344005FF66B /* RelativeTimestampFormatter.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -1238,6 +1241,7 @@
 				A5D353B12BB1C5EE003AA02A /* ForgotPasswordView.swift in Sources */,
 				42DC60522C0CE636000F1BE8 /* DebugMode.swift in Sources */,
 				409F438C265DE2C200690A61 /* UnifiedTimeline.swift in Sources */,
+				A58E21782C46F344005FF66B /* RelativeTimestampFormatter.swift in Sources */,
 				409F4337265DE15F00690A61 /* CirclesOverviewScreen.swift in Sources */,
 				42237CEF2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift in Sources */,
 				A5A40B6329D46ABD009A17EE /* HtmlView.swift in Sources */,

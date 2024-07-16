@@ -119,18 +119,19 @@ struct GroupTimelineScreen: View {
                     }
                 }
             }
-            .toolbar {
-                ToolbarItemGroup(placement: .automatic) {
-                    toolbarMenu
-                }
-            }
-            .navigationBarTitle(title, displayMode: .inline)
-            .sheet(isPresented: $showNewPostInSheetStyle) {
-                if room.iCanSendEvent(type: M_ROOM_MESSAGE) {
-                    PostComposer(room: room).navigationTitle("New Post")
-                }
+        }
+        .toolbar {
+            ToolbarItemGroup(placement: .automatic) {
+                toolbarMenu
             }
         }
+        .navigationBarTitle(title, displayMode: .inline)
+        .sheet(isPresented: $showNewPostInSheetStyle) {
+            if room.iCanSendEvent(type: M_ROOM_MESSAGE) {
+                PostComposer(room: room).navigationTitle("New Post")
+            }
+        }
+        .background(Color.greyCool200)
     }
 }
 

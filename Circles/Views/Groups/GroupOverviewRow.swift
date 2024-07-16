@@ -16,7 +16,7 @@ struct GroupOverviewRow: View {
     @State var showConfirmLeave = false
 
     var body: some View {
-        HStack(alignment: .top) {
+        HStack(alignment: .center) {
             RoomAvatarView(room: room, avatarText: .oneLetter)
                 .frame(width: 80, height: 80)
                 .padding(.leading, 5)
@@ -28,10 +28,11 @@ struct GroupOverviewRow: View {
                         .multilineTextAlignment(.leading)
                         .font(.title2)
                         .fontWeight(.bold)
-                        .foregroundColor(.primary)
+                        .foregroundColor(.greyCool1000)
                         .minimumScaleFactor(0.8)
                     Spacer()
                 }
+                .padding(.bottom, 4)
 
                 VStack(alignment: .leading) {
                     if DebugModel.shared.debugMode {
@@ -40,30 +41,35 @@ struct GroupOverviewRow: View {
                             .foregroundColor(.red)
                     }
                     
-                    Text("\(room.joinedMembers.count) member(s)")
-                    
+                    HStack(spacing: 12  ) {
+                        HStack(spacing: 2) {
+                            Text("\(Image(systemName: "person.2"))")
+                            Text("\(room.joinedMembers.count)")
+                        }
+                        
+                        if room.unread > 0 {
+                            HStack(spacing: 2) {
+                                Text("\(Image(systemName: "circle.fill"))")
+                                Text("\(room.unread)")
+                            }
+                        } else {
+                            let formattedTimestamp = RelativeTimestampFormatter.format(date: room.timestamp)
+                            HStack(spacing: 2) {
+                                Text("\(Image(systemName: "clock"))")
+                                Text(formattedTimestamp)
+                            }
+                        }
+                    }
+                                        
                     let knockCount = room.knockingMembers.count
                     if room.iCanInvite && room.iCanKick && knockCount > 0 {
                         let color = Color(light: .accentColor, dark: .white)
                         Label("\(knockCount) request(s) for invitation", systemImage: "star.fill")
                             .foregroundColor(color)
                     }
-                    
-                    if room.unread > 0 {
-                        Text("\(room.unread) unread posts")
-                            .fontWeight(.bold)
-                    } else {
-                        let age = Date().timeIntervalSince(room.timestamp)
-                        if age < 2 * 60.0 {
-                            Text("Updated just now")
-                        } else {
-                            Text("Last updated \(room.timestamp, formatter: RelativeDateTimeFormatter())")
-                        }
-                    }
                 }
                 .font(.footnote)
-                .foregroundColor(.gray)
-                .padding(.leading, 8)
+                .foregroundColor(.greyCool800)
             }
             .padding(.top, 5)
         }

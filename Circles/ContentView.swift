@@ -147,6 +147,7 @@ struct ContentView: View {
             CirclesTabbedInterface(store: store, session: circlesSession, viewState: circlesSession.viewState)
                 .environmentObject(circlesSession)
                 .environmentObject(store.appStore)
+                .background(Color.greyCool200)
             
         case .error(_):
             errorView

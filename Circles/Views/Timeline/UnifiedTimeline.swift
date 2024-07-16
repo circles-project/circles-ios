@@ -108,13 +108,6 @@ struct UnifiedTimeline: View {
         VStack(alignment: .leading) {
             ScrollView {
                 LazyVStack(alignment: .center) {
-                    
-                    if let msg = space.wall?.localEchoMessage {
-                        MessageCard(message: msg, isLocalEcho: true, isThreaded: false)
-                            //.border(Color.red)
-                            .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
-                    }
-                    
                     ForEach(messages) { message in
                         HStack {
                             if DebugModel.shared.debugMode && showDebug {

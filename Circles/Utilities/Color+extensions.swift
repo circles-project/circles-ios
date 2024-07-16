@@ -102,6 +102,7 @@ extension Color {
     static let success1200 = Color(hex: "#111E0F")
     
     static let greyCool200 = Color(red: 0.94, green: 0.95, blue: 0.95)
+    static let greyCool600 = Color(hex: "#a8abb4")
     static let greyCool800: Color = Color(red: 0.41, green: 0.47, blue: 0.56)
     static let greyCool1000: Color = Color(red: 0.24, green: 0.28, blue: 0.34)
     static let greyCool1100 = Color(red: 0.16, green: 0.19, blue: 0.23)

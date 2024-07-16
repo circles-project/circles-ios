@@ -113,36 +113,12 @@ struct MessageCard: MessageView {
         return body
     }
     
-    func relativeFormatted(date: Date) -> String {
-        
-        let interval = Date().timeIntervalSince(date)
-        
-        if interval < 60 {
-            return "now"
-        } else if interval < 3600 {
-            let minutes = Int(interval) / 60
-            return "\(minutes)m"
-        } else if interval < 86400 {
-            let hours = Int(interval) / 3600
-            return "\(hours)h"
-        } else if interval < 604800 {
-            let days = Int(interval) / 86400
-            return "\(days)d"
-        } else if interval < 31449600 {
-            let weeks = Int(interval) / 604800
-            return "\(weeks)w"
-        } else {
-            let years = Int(interval) / 31449600
-            return "\(years)y"
-        }
-    }
-    
     var timestamp: some View {
         // If the message has been edited/replaced, then we should show the new timestamp
         // Otherwise we should show the original timestamp
         let current = message.replacement ?? message
         
-        let formattedTimestampString = self.relativeFormatted(date: current.timestamp)
+        let formattedTimestampString = RelativeTimestampFormatter.format(date: current.timestamp)
         
         let icon = message.replacement == nil ? SystemImages.clock : SystemImages.pencil
         
