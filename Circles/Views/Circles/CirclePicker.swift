@@ -12,14 +12,16 @@ import Matrix
 struct CirclePicker: View {
     //@ObservedObject var container: ContainerRoom<CircleSpace>
     @EnvironmentObject var appSession: CirclesApplicationSession
-    @Binding var selected: Set<CircleSpace>
+    @Binding var selected: Set<Matrix.Room>
     
     var body: some View {
         ScrollView {
             VStack(spacing: 5) {
-                let container = appSession.circles
+                let container = appSession.timelines
                 //List {
-                let rooms = container.rooms.values.sorted { $0.timestamp < $1.timestamp }
+                let rooms = container.rooms.values
+                    .filter({$0.creator == container.session.creds.userId})
+                    .sorted { $0.timestamp < $1.timestamp }
                 
                 ForEach(rooms) { circle in
                     //Text(circle.roomId.stringValue)
@@ -37,7 +39,8 @@ struct CirclePicker: View {
                                 .frame(width: 25, height: 25)
                                 .foregroundColor(.gray)
 
-                            RoomAvatarView(room: circle.wall ?? circle, avatarText: .none)
+                            RoomAvatarView(room: circle, avatarText: .none)
+                                .clipShape(Circle())
                                 .frame(width: 50, height: 50)
                             Text(circle.name ?? "unnamed")
                                 //.fontWeight(.bold)

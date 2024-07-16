@@ -12,7 +12,7 @@ struct InviteToFollowMeView: View {
     var user: Matrix.User
     @Environment(\.presentationMode) var presentation
     
-    @State var selected: Set<CircleSpace> = []
+    @State var selected: Set<Matrix.Room> = []
     
     var body: some View {
         ScrollView {
@@ -28,15 +28,11 @@ struct InviteToFollowMeView: View {
                     .padding()
                 
                 AsyncButton(action: {
-                    for space in selected {
-                        if let wall = space.wall {
-                            if wall.invitedMembers.contains(user.userId) {
-                                print("User \(user.userId) is already following us in circle \(space.name ?? wall.name ?? space.roomId.stringValue)")
-                            } else {
-                                try await wall.invite(userId: user.userId)
-                            }
+                    for room in selected {
+                        if room.invitedMembers.contains(user.userId) {
+                            print("User \(user.userId) is already following us in circle \(room.name ?? room.roomId.stringValue)")
                         } else {
-                            print("No 'wall' timeline room for circle \(space.name ?? space.roomId.stringValue)")
+                            try await room.invite(userId: user.userId)
                         }
                     }
                 }) {

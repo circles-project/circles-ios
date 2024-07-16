@@ -33,15 +33,10 @@ struct KnockingUserCard: View {
     }
     
     var commonTimelines: Set<Matrix.Room> {
-        let circles = appSession.circles.rooms.values
-        var common = Set<Matrix.Room>()
-        for circle in circles {
-            let matches = circle.rooms.values.filter {
-                $0.creator != $0.session.creds.userId && $0.joinedMembers.contains(user.userId)
-            }
-            common.formUnion(matches)
+        let common = appSession.timelines.rooms.values.filter {
+            $0.creator != $0.session.creds.userId && $0.joinedMembers.contains(user.userId)
         }
-        return common
+        return Set(common)
     }
     
     var commonContacts: Set<Matrix.Room> {

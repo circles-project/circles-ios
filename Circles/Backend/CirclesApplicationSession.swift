@@ -27,9 +27,9 @@ class CirclesApplicationSession: ObservableObject {
     var matrix: Matrix.Session
 
     // IDEA: We could store any Circles-specific configuration info in our account data in the root "Circles" space room
-    var config: CirclesConfigContent
+    var config: CirclesConfigContentV2
     
-    var circles: ContainerRoom<CircleSpace>     // Our top-level circles space contains the spaces for each of our circles
+    var timelines: TimelineSpace   // Our top-level timelines space contains the spaces for each of our timelines
     var groups: ContainerRoom<GroupRoom>        // Groups space contains the individual rooms for each of our groups
     var galleries: ContainerRoom<GalleryRoom>   // Galleries space contains the individual rooms for each of our galleries
     var people: ContainerRoom<PersonRoom>       // People space contains the space rooms for each of our contacts
@@ -49,7 +49,7 @@ class CirclesApplicationSession: ObservableObject {
         @Published var knockRoomId: RoomId?
         
         @Published var selectedGroupId: RoomId?
-        @Published var selectedCircleId: RoomId?
+        @Published var selectedTimelineId: RoomId?
         @Published var selectedGalleryId: RoomId?
         
         @MainActor
@@ -58,7 +58,7 @@ class CirclesApplicationSession: ObservableObject {
             switch tab {
             case .circles:
                 self.tab = .circles
-                self.selectedCircleId = selected
+                self.selectedTimelineId = selected
             case .people:
                 self.tab = .people
                 // FIXME: Set a selected profile roomId
@@ -90,14 +90,14 @@ class CirclesApplicationSession: ObservableObject {
         if self.people.rooms[roomId] != nil {
             return true
         }
-        if self.circles.rooms.values.contains(where: { space in
-            space.roomId == roomId || space.rooms[roomId] != nil
+        if self.timelines.rooms.values.contains(where: { room in
+            room.roomId == roomId
         }) {
             return true
         }
         
         // Not a content room. Maybe it's a space in our hierarchy?
-        if self.groups.roomId == roomId || self.galleries.roomId == roomId || self.people.roomId == roomId || self.circles.roomId == roomId || self.config.root == roomId {
+        if self.groups.roomId == roomId || self.galleries.roomId == roomId || self.people.roomId == roomId || self.timelines.roomId == roomId || self.config.root == roomId {
             return true
         }
         
@@ -147,11 +147,11 @@ class CirclesApplicationSession: ObservableObject {
             print("DEEPLINK Url is for a circle timeline")
             
             // Do we have a Circle space that contains the given room?
-            if let matchingSpace = self.circles.rooms[roomId] {
-                print("DEEPLINKS CIRCLES Setting selected circle to \(matchingSpace.name ?? matchingSpace.roomId.stringValue)")
+            if let matchingTimeline = self.timelines.rooms[roomId] {
+                print("DEEPLINKS TIMELINES Setting selected timeline to \(matchingTimeline.name ?? matchingTimeline.roomId.stringValue)")
                 print("DEEPLINK Setting tab to Circles")
                 self.viewState.tab = .circles
-                self.viewState.selectedCircleId = matchingSpace.roomId
+                self.viewState.selectedTimelineId = matchingTimeline.roomId
                 return
             } else {
                 print("DEEPLINKS CIRCLES Room \(roomId) is not one of ours")
@@ -211,9 +211,9 @@ class CirclesApplicationSession: ObservableObject {
             
             case ROOM_TYPE_CIRCLE:
                 print("NAVIGATE Room looks like a circle timeline")
-                if let circle = self.circles.rooms[roomId] {
-                    print("NAVIGATE Navigating to circle \(circle.name ?? circle.roomId.stringValue)")
-                    await self.viewState.navigate(tab: .circles, selected: circle.roomId)
+                if let timeline = self.timelines.rooms[roomId] {
+                    print("NAVIGATE Navigating to timeline \(timeline.name ?? timeline.roomId.stringValue)")
+                    await self.viewState.navigate(tab: .circles, selected: timeline.roomId)
                     return
                 } else {
                     print("NAVIGATE Circle timeline room is not part of our hierarchy")
@@ -387,7 +387,7 @@ class CirclesApplicationSession: ObservableObject {
 
     }
     
-    init(store: CirclesStore, matrix: Matrix.Session, config: CirclesConfigContent) async throws {
+    init(store: CirclesStore, matrix: Matrix.Session, config: CirclesConfigContentV2) async throws {
         let logger = Logger(subsystem: "Circles", category: "Session")
         self.logger = logger
         self.store = store
@@ -408,37 +408,25 @@ class CirclesApplicationSession: ObservableObject {
         logger.debug("\(groupsTime, privacy: .public) sec to load Groups space")
         
         logger.debug("Loading Galleries space")
-        let galleriesStart = Date()
         guard let galleries = try await matrix.getRoom(roomId: config.galleries, as: ContainerRoom<GalleryRoom>.self)
         else {
             logger.error("Failed to load Galleries space")
             throw CirclesError("Failed to load Galleries space")
         }
-        let galleriesEnd = Date()
-        let galleriesTime = galleriesEnd.timeIntervalSince(galleriesStart)
-        logger.debug("\(galleriesTime, privacy: .public) sec to load Galleries space")
         
-        logger.debug("Loading Circles space")
-        let circlesStart = Date()
-        guard let circles = try await matrix.getRoom(roomId: config.circles, as: ContainerRoom<CircleSpace>.self)
+        logger.debug("Loading Timelines space")
+        guard let timelines = try await matrix.getRoom(roomId: config.timelines, as: TimelineSpace.self)
         else {
-            logger.error("Failed to load Circles space")
-            throw CirclesError("Failed to load Circles space")
+            logger.error("Failed to load Timelines space")
+            throw CirclesError("Failed to load Timelines space")
         }
-        let circlesEnd = Date()
-        let circlesTime = circlesEnd.timeIntervalSince(circlesStart)
-        logger.debug("\(circlesTime, privacy: .public) sec to load Circles space")
         
         logger.debug("Loading People space")
-        let peopleStart = Date()
         guard let people = try await matrix.getRoom(roomId: config.people, as: ContainerRoom<PersonRoom>.self)
         else {
             logger.error("Failed to load People space")
             throw CirclesError("Failed to load People space")
         }
-        let peopleEnd = Date()
-        let peopleTime = peopleEnd.timeIntervalSince(peopleStart)
-        logger.debug("\(peopleTime, privacy: .public) sec to load People space")
         
         logger.debug("Loading Profile space")
         let profileStart = Date()
@@ -453,12 +441,15 @@ class CirclesApplicationSession: ObservableObject {
                 
         self.groups = groups
         self.galleries = galleries
-        self.circles = circles
+        self.timelines = timelines
         self.people = people
         self.profile = profile
         
         // Register ourself as the current singleton object
         Self.current = self
+        
+        // Initialize the circles / timelines view to display the unified feed by default
+        self.viewState.selectedTimelineId = timelines.roomId
         
         Task {
             logger.debug("Verifying Matrix Space relations")
@@ -484,9 +475,9 @@ class CirclesApplicationSession: ObservableObject {
                 try await matrix.addSpaceParent(rootRoomId, to: galleries.roomId, canonical: true)
             }
             
-            if !circles.parents.contains(rootRoomId) {
+            if !timelines.parents.contains(rootRoomId) {
                 logger.debug("Adding space parent for Circles space")
-                try await matrix.addSpaceParent(rootRoomId, to: circles.roomId, canonical: true)
+                try await matrix.addSpaceParent(rootRoomId, to: timelines.roomId, canonical: true)
             }
             
             if !people.parents.contains(rootRoomId) {
@@ -496,19 +487,13 @@ class CirclesApplicationSession: ObservableObject {
             
             // Don't add the parent space event to the profile space -- We don't want others to see it
             
-            let spaceChildRoomIds = [groups.roomId, galleries.roomId, circles.roomId, people.roomId, profile.roomId]
+            let spaceChildRoomIds = [groups.roomId, galleries.roomId, timelines.roomId, people.roomId, profile.roomId]
             
             for childRoomId in spaceChildRoomIds {
                 if !root.children.contains(childRoomId) {
                     logger.debug("Adding child space \(childRoomId, privacy: .public) to Circles root space")
                     try await root.addChild(childRoomId)
                 }
-            }
-            
-            // Remove the Shared Circles / My Profile space from My Circles if it's there
-            if circles.children.contains(profile.roomId) {
-                logger.debug("Removing Shared Circles / Profile space from My Circles")
-                try await circles.removeChild(profile.roomId)
             }
             
             logger.debug("Done verifying space relations")

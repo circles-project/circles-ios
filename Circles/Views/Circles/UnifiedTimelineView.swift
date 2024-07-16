@@ -8,6 +8,7 @@
 
 import SwiftUI
 import PhotosUI
+import Matrix
 
 enum CircleSheetType: String {
     //case settings
@@ -21,8 +22,8 @@ extension CircleSheetType: Identifiable {
     var id: String { rawValue }
 }
 
-struct CircleTimelineView: View {
-    @ObservedObject var space: CircleSpace
+struct UnifiedTimelineView: View {
+    @ObservedObject var space: TimelineSpace
     @Environment(\.presentationMode) var presentation
     
     //@State var showComposer = false
@@ -34,16 +35,12 @@ struct CircleTimelineView: View {
     
     var toolbarMenu: some View {
         Menu {
-            NavigationLink(destination: CircleSettingsView(space: space) ){
+            NavigationLink(destination: UnifiedTimelineSettingsView(space: space)){
                 Label("Settings", systemImage: SystemImages.gearshapeFill.rawValue)
             }
             
             Button(action: {self.sheetType = .invite}) {
                 Label("Invite Followers", systemImage: SystemImages.personCropCircleBadgePlus.rawValue)
-            }
-            
-            Button(action: {self.sheetType = .share}) {
-                Label("Share", systemImage: SystemImages.squareAndArrowUp.rawValue)
             }
         }
         label: {
@@ -61,8 +58,8 @@ struct CircleTimelineView: View {
             ZStack {
                 let _ = self.stupidSwiftUiTrick // foo
                 
-                CircleTimeline(space: space)
-                    .navigationBarTitle(space.name ?? "Circle", displayMode: .inline)
+                UnifiedTimeline(space: space)
+                    .navigationBarTitle("All Posts", displayMode: .inline)
                     .toolbar {
                         ToolbarItemGroup(placement: .automatic) {
                             toolbarMenu
@@ -74,41 +71,12 @@ struct CircleTimelineView: View {
                     .onDisappear {
                         print("DEBUGUI\tStreamTimeline disappeared for Circle \(space.roomId)")
                     }
-                    .photosPicker(isPresented: $showPhotosPicker, selection: $selectedItem, matching: .images)
-                    .onChange(of: selectedItem) { newItem in
-                        Task {
-                            if let room = self.space.wall,
-                               let data = try? await newItem?.loadTransferable(type: Data.self),
-                               let img = UIImage(data: data)
-                            {
-                                try await room.setAvatarImage(image: img)
-                            }
-                        }
-                    }
-                    .sheet(item: $sheetType) { st in
-                        switch(st) {
-
-                        case .invite:
-                            RoomInviteSheet(room: space.wall!)
-                            
-                        case .share:
-                            if let wall = space.wall,
-                               let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/timeline/\(wall.roomId.stringValue)")
-                            {
-                                RoomShareSheet(room: wall, url: url)
-                            } else {
-                                Text("Error: Unable to generate QR code")
-                                    .foregroundColor(.red)
-                            }
-                        }
-                    }
                     .sheet(isPresented: $showNewPostInSheetStyle) {
-                        if let wall = space.wall {
-                            PostComposer(room: wall).navigationTitle("New Post")
-                        }
+                        UnifiedTimelineComposerSheet(timelines: space)
                     }
                 
-                if let wall = space.wall {
+                let circles = space.circles
+                if circles.count > 0 {
                     VStack {
                         Spacer()
                         HStack {

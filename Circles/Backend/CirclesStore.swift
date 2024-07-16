@@ -35,7 +35,7 @@ public class CirclesStore: ObservableObject {
         case haveCrossSigning(Matrix.Session)
         case haveKeyBackup(Matrix.Session)
         case needSpaceHierarchy(Matrix.Session)
-        case haveSpaceHierarchy(Matrix.Session, CirclesConfigContent)
+        case haveSpaceHierarchy(Matrix.Session, CirclesConfigContentV2)
         case online(CirclesApplicationSession)
     }
     @Published var state: State
@@ -163,116 +163,75 @@ public class CirclesStore: ObservableObject {
         try await keyStore.saveKey(key: key, keyId: keyId)
     }
     
+    // MARK: Upgrade Old Config
+    private func upgradeConfigV1toV2(_ old: CirclesConfigContentV1, matrix: Matrix.Session) async throws -> CirclesConfigContentV2 {
+        logger.debug("Upgrading old config v1 to new config v2")
+        var timelineRoomIds: [RoomId] = []
+        let oldCirclesRoomId = old.circles
+        logger.debug("Found old circles space \(oldCirclesRoomId)")
+        let circleRoomIds = try await matrix.getSpaceChildren(oldCirclesRoomId)
+        logger.debug("Found \(circleRoomIds.count) circles in the space")
+        
+        for circleRoomId in circleRoomIds {
+            let roomIds = try await matrix.getSpaceChildren(circleRoomId)
+            logger.debug("Found \(roomIds.count) timelines for circle \(circleRoomId)")
+            timelineRoomIds.append(contentsOf: roomIds)
+        }
+        
+        logger.debug("Creating new 'Timelines' space")
+        let newTimelineSpaceId = try await matrix.createSpace(name: "Timelines")
+        logger.debug("New Timelines space is \(newTimelineSpaceId)")
+        for roomId in timelineRoomIds {
+            // Sanity check - Make sure that this is actually an org.futo.social.timeline room
+            guard let createContent = try? await matrix.getRoomState(roomId: roomId, eventType: M_ROOM_CREATE) as? RoomCreateContent
+            else {
+                logger.error("Failed to get room creation event for timeline room \(roomId)")
+                throw CirclesError("Failed to get room creation event")
+            }
+            guard createContent.type == ROOM_TYPE_CIRCLE
+            else {
+                logger.warning("Timeline room \(roomId) is not actually a timeline - its type is \(createContent.type ?? "none")")
+                continue
+            }
+            // All good - it's really a timeline room, so it's safe to add this to our Timelines space
+            logger.debug("Adding timeline \(roomId) as child of the Timelines space")
+            try await matrix.addSpaceChild(roomId, to: newTimelineSpaceId)
+        }
+        logger.debug("Adding new Timelines space as a child of our root space")
+        try await matrix.addSpaceChild(newTimelineSpaceId, to: old.root)
+        logger.debug("Adding root space as the parent of Timelines space")
+        try await matrix.addSpaceParent(old.root, to: newTimelineSpaceId, canonical: true)
+        
+        logger.debug("Upgrade success!")
+        return CirclesConfigContentV2(root: old.root,
+                                      groups: old.groups,
+                                      galleries: old.galleries,
+                                      people: old.people,
+                                      profile: old.profile,
+                                      timelines: newTimelineSpaceId)
+    }
+    
     // MARK: Load Config
     
-    private func loadConfig(matrix: Matrix.Session) async throws -> CirclesConfigContent? {
+    private func loadConfig(matrix: Matrix.Session) async throws -> CirclesConfigContentV2? {
         Matrix.logger.debug("Loading Circles configuration")
         // Easy mode: Do we have our config saved in the Account Data?
-        if let config = try await matrix.getAccountData(for: EVENT_TYPE_CIRCLES_CONFIG, of: CirclesConfigContent.self) {
+        if let config = try await matrix.getAccountData(for: EVENT_TYPE_CIRCLES_CONFIG_V2, of: CirclesConfigContentV2.self) {
             Matrix.logger.debug("Found Circles config in the account data")
             return config
         }
         
-        Matrix.logger.debug("No Circles config in account data.  Looking for rooms based on tags...")
-        
-        // Not so easy mode: Do we have a room with our special tag?
-        var tags = [RoomId: [String]]()
-        let roomIds = try await matrix.getJoinedRoomIds()
-        for roomId in roomIds {
-            tags[roomId] = try await matrix.getTags(roomId: roomId)
-            Matrix.logger.debug("\(roomId): \(tags[roomId]?.joined(separator: " ") ?? "(none)")")
+        if let oldConfig = try await matrix.getAccountData(for: EVENT_TYPE_CIRCLES_CONFIG_V1, of: CirclesConfigContentV1.self) {
+            Matrix.logger.debug("Found old config in the account data")
+            let config = try await upgradeConfigV1toV2(oldConfig, matrix: matrix)
+            Matrix.logger.debug("Upgraded old config to v2")
+            try await matrix.putAccountData(config, for: EVENT_TYPE_CIRCLES_CONFIG_V2)
+            Matrix.logger.debug("Saved new config v2")
+            return config
         }
         
-        guard let rootId: RoomId = roomIds.filter({
-            if let t = tags[$0] {
-                return t.contains(ROOM_TAG_CIRCLES_SPACE_ROOT)
-            } else {
-                return false
-            }
-        }).first
-        else {
-            Matrix.logger.error("Couldn't find Circles space root")
-            throw CirclesError("Failed to find Circles space root")
-        }
-        Matrix.logger.debug("Found Circles space root \(rootId)")
-        
-        let childRoomIds = try await matrix.getSpaceChildren(rootId)
-        
-        guard let circlesId: RoomId = childRoomIds.filter({
-                if let t = tags[$0] {
-                    return t.contains(ROOM_TAG_MY_CIRCLES)
-                } else {
-                    return false
-                }
-            }).first
-        else {
-            Matrix.logger.error("Failed to find circles space")
-            throw CirclesError("Failed to find circles space")
-        }
-        Matrix.logger.debug("Found circles space \(circlesId)")
-                    
-        guard let groupsId: RoomId = childRoomIds.filter({
-                if let t = tags[$0] {
-                    return t.contains(ROOM_TAG_MY_GROUPS)
-                } else {
-                    return false
-                }
-            }).first
-        else {
-            Matrix.logger.error("Failed to find groups space")
-            throw CirclesError("Failed to find groups space")
-        }
-        Matrix.logger.debug("Found groups space \(groupsId)")
-        
-        guard let photosId: RoomId = childRoomIds.filter({
-                if let t = tags[$0] {
-                    return t.contains(ROOM_TAG_MY_PHOTOS)
-                } else {
-                    return false
-                }
-            }).first
-        else {
-            Matrix.logger.error("Failed to find photos space")
-            throw CirclesError("Failed to find photos space")
-        }
-        Matrix.logger.debug("Found photos space \(photosId)")
-        
-        // People and Profile space are a bit different - They might not exist in previous Circles Android versions
-        // So if we don't find them, it's ok.  Just create them now.
-        
-        func getSpaceId(tag: String, name: String) async throws -> RoomId {
-            if let existingProfileSpaceId = childRoomIds.filter({
-                    if let t = tags[$0] {
-                        return t.contains(tag)
-                    } else {
-                        return false
-                    }
-            }).first {
-                Matrix.logger.debug("Found space \(existingProfileSpaceId) with tag \(tag)")
-                return existingProfileSpaceId
-            }
-            else {
-                let newProfileSpaceId = try await matrix.createSpace(name: name)
-                try await matrix.addTag(roomId: newProfileSpaceId, tag: tag)
-                try await matrix.addSpaceChild(newProfileSpaceId, to: rootId)
-                return newProfileSpaceId
-            }
-        }
-        
-        let displayName = try await matrix.getDisplayName(userId: matrix.creds.userId) ?? matrix.creds.userId.stringValue
-        let profileId = try await getSpaceId(tag: ROOM_TAG_MY_PROFILE, name: displayName)
-        let peopleId = try await getSpaceId(tag: ROOM_TAG_MY_PEOPLE, name: "My People")
-        
-        let config = CirclesConfigContent(root: rootId,
-                                          circles: circlesId,
-                                          groups: groupsId,
-                                          galleries: photosId,
-                                          people: peopleId,
-                                          profile: profileId)
-        // Also save this config for future use
-        try await matrix.putAccountData(config, for: EVENT_TYPE_CIRCLES_CONFIG)
-        
-        return config
+        Matrix.logger.error("Failed to load circles config")
+        throw CirclesError("Failed to load circles config")
     }
     
     func lookForCreds() async throws {
@@ -484,7 +443,7 @@ public class CirclesStore: ObservableObject {
             throw CirclesError("Don't check for space hierarchy before key backup")
         }
 
-        if let config = try? await matrix.getAccountData(for: EVENT_TYPE_CIRCLES_CONFIG, of: CirclesConfigContent.self) {
+        if let config = try? await loadConfig(matrix: matrix) {
             logger.debug("Found space hierarchy with root at \(config.root.stringValue)")
             await MainActor.run {
                 self.state = .haveSpaceHierarchy(matrix, config)
@@ -540,8 +499,8 @@ public class CirclesStore: ObservableObject {
         onProgress?(1, total, "Creating Matrix Spaces")
 
         try await Task.sleep(for: .milliseconds(sleepMS))
-        let myCircles = try await matrix.createSpace(name: "My Circles")
-        logger.debug("Created My Circles space \(myCircles)")
+        let timelines = try await matrix.createSpace(name: "Timelines")
+        logger.debug("Created My Circles space \(timelines)")
         onProgress?(2, total, "Creating Matrix Spaces")
 
         try await Task.sleep(for: .milliseconds(sleepMS))
@@ -568,34 +527,24 @@ public class CirclesStore: ObservableObject {
         onProgress?(6, total, "Initializing Spaces")
         try await Task.sleep(for: .milliseconds(sleepMS))
         // Space child relations
-        try await matrix.addSpaceChild(myCircles, to: topLevelSpace)
+        try await matrix.addSpaceChild(timelines, to: topLevelSpace)
         try await matrix.addSpaceChild(myGroups, to: topLevelSpace)
         try await matrix.addSpaceChild(myGalleries, to: topLevelSpace)
         try await matrix.addSpaceChild(myPeople, to: topLevelSpace)
         try await matrix.addSpaceChild(myProfile, to: topLevelSpace)
         // Space parent relations
-        try await matrix.addSpaceParent(topLevelSpace, to: myCircles, canonical: true)
+        try await matrix.addSpaceParent(topLevelSpace, to: timelines, canonical: true)
         try await matrix.addSpaceParent(topLevelSpace, to: myGroups, canonical: true)
         try await matrix.addSpaceParent(topLevelSpace, to: myGalleries, canonical: true)
         try await matrix.addSpaceParent(topLevelSpace, to: myPeople, canonical: true)
         // Don't add the parent event to the profile space, because we will share that one with others and we don't need them to know our private room id for the top-level space
         // It's not a big deal but this is probably safer...  otherwise the user might somehow be tricked into accepting a knock for the top-level space
         
-        logger.debug("- Adding tags to spaces")
-        onProgress?(7, total, "Tagging Spaces")
-        try await Task.sleep(for: .milliseconds(sleepMS))
-        try await matrix.addTag(roomId: topLevelSpace, tag: ROOM_TAG_CIRCLES_SPACE_ROOT)
-        try await matrix.addTag(roomId: myCircles, tag: ROOM_TAG_MY_CIRCLES)
-        try await matrix.addTag(roomId: myGroups, tag: ROOM_TAG_MY_GROUPS)
-        try await matrix.addTag(roomId: myGalleries, tag: ROOM_TAG_MY_PHOTOS)
-        try await matrix.addTag(roomId: myPeople, tag: ROOM_TAG_MY_PEOPLE)
-        try await matrix.addTag(roomId: myProfile, tag: ROOM_TAG_MY_PROFILE)
-        
         logger.debug("- Uploading Circles config to account data")
         onProgress?(8, total, "Saving configuration")
         try await Task.sleep(for: .milliseconds(sleepMS))
-        let config = CirclesConfigContent(root: topLevelSpace, circles: myCircles, groups: myGroups, galleries: myGalleries, people: myPeople, profile: myProfile)
-        try await matrix.putAccountData(config, for: EVENT_TYPE_CIRCLES_CONFIG)
+        let config = CirclesConfigContentV2(root: topLevelSpace, groups: myGroups, galleries: myGalleries, people: myPeople, profile: myProfile, timelines: timelines)
+        try await matrix.putAccountData(config, for: EVENT_TYPE_CIRCLES_CONFIG_V2)
         
         var count = 9
         for circle in circles {
@@ -603,13 +552,11 @@ public class CirclesStore: ObservableObject {
             //status = "Creating circle \"\(circle.name)\""
             onProgress?(count, total, "Creating circle \"\(circle.name)\"")
             try await Task.sleep(for: .milliseconds(sleepMS))
-            let circleRoomId = try await matrix.createSpace(name: circle.name)
             let wallRoomId = try await matrix.createRoom(name: circle.name, type: ROOM_TYPE_CIRCLE, joinRule: .knock)
             if let image = circle.avatar {
                 try await matrix.setAvatarImage(roomId: wallRoomId, image: image)
             }
-            try await matrix.addSpaceChild(wallRoomId, to: circleRoomId)
-            try await matrix.addSpaceChild(circleRoomId, to: myCircles)
+            try await matrix.addSpaceChild(wallRoomId, to: timelines)
             count += 1
         }
         
@@ -624,7 +571,7 @@ public class CirclesStore: ObservableObject {
     }
     
     // MARK: Add config
-    func addConfig(config: CirclesConfigContent) async throws {
+    func addConfig(config: CirclesConfigContentV2) async throws {
         guard case .needSpaceHierarchy(let matrix) = state else {
             logger.error("Can't add circles config until we're ready")
             throw CirclesError("Invalid state transition")
