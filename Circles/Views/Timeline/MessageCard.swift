@@ -285,8 +285,10 @@ struct MessageCard: MessageView {
         }) {
             HStack(alignment: .center, spacing: 2) {
                 let icon = iLikedThisMessage ? SystemImages.heartFill : SystemImages.heart
+                let color = iLikedThisMessage ? Color.accentColor : Color.primary
                 Image(systemName: icon.rawValue)
                     .frame(width: 20, height: 20)
+                    .foregroundColor(color)
                 Text("\(message.reactions["❤️"]?.count ?? 0)")
             }
             .font(footerFont)
