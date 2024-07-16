@@ -47,8 +47,6 @@ struct CirclePicker: View {
                             Spacer()
                         }
                         .padding()
-                        //.foregroundColor(Color.white)
-                        //.background(Color.blue)
                     }
                     .buttonStyle(.plain)
                 }

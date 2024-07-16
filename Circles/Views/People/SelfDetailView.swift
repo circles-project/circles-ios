@@ -20,7 +20,6 @@ struct SelfDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-
                 HStack {
                     Spacer()
                     VStack(alignment: .center) {
@@ -28,7 +27,6 @@ struct SelfDetailView: View {
                         UserAvatarView(user: me)
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 240, height: 240)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
                         
                         Text(me.displayName ?? me.userId.username)
                             .font(.title)
@@ -40,10 +38,8 @@ struct SelfDetailView: View {
                     }
                     Spacer()
                 }
-
             }
             .padding()
-
         }
         .navigationTitle(Text("Me"))
     }

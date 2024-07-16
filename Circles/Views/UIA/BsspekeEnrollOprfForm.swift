@@ -124,7 +124,7 @@ struct BsspekeEnrollOprfForm: View {
             }) {
                 Text("Next")
             }
-            .buttonStyle(BigBlueButtonStyle())
+            .buttonStyle(BigRoundedButtonStyle())
             .disabled(passphrase.isEmpty || score < MINIMUM_PASSWORD_ZXCVBN_SCORE)
         }
     }
@@ -158,7 +158,7 @@ struct BsspekeEnrollOprfForm: View {
             }) {
                 Text("Submit")
             }
-            .buttonStyle(BigBlueButtonStyle())
+            .buttonStyle(BigRoundedButtonStyle())
             .disabled(passphrase.isEmpty || passphrase != repeatPassphrase || score < MINIMUM_PASSWORD_ZXCVBN_SCORE)
         }
         .padding()
@@ -184,14 +184,14 @@ struct BsspekeEnrollOprfForm: View {
             }) {
                 Text("Save passphrase")
             }
-            .buttonStyle(BigBlueButtonStyle())
+            .buttonStyle(BigRoundedButtonStyle())
             
             AsyncButton(action: {
                 try await submit()
             }) {
                 Text("Don't save my passphrase")
             }
-            .buttonStyle(BigBlueButtonStyle())
+            .buttonStyle(BigRoundedButtonStyle())
         }
         .padding(.top)
 

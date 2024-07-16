@@ -25,9 +25,7 @@ struct InvitedCircleCard: View {
                 RoomAvatarView(room: room, avatarText: .none)
                 //.overlay(Circle().stroke(Color.primary, lineWidth: 2))
                     .blur(radius: blurUnknownUserPicture ? blur : 0)
-                    .clipShape(Circle())
                     .frame(width: 80, height: 80)
-                    .scaledToFit()
                     .onTapGesture {
                         if blur >= 5 {
                             blur -= 5

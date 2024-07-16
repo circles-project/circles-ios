@@ -38,7 +38,7 @@ struct PostComposerScreen: View {
         VStack {
             ScrollView {
                 if let parent = parentMessage {
-                    MessageCard(message: parent)
+                    MessageCard(message: parent, isThreaded: true)
                         .padding(3)
                         .padding(.bottom, 5)
                 }

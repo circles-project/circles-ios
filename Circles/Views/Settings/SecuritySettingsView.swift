@@ -63,6 +63,7 @@ struct SecuritySettingsView: View {
                         .foregroundColor(.gray)
                 }
             }
+            .tint(.orange)
         }
     }
     

@@ -45,11 +45,13 @@ struct SettingsScreen: View {
                         Label("Account Security", systemImage: SystemImages.lockFill.rawValue)
                     }
                     
+                    /*
                     if CIRCLES_DOMAINS.contains(session.matrix.creds.userId.domain) {
                         NavigationLink(destination: SubscriptionSettingsView(store: store.appStore)) {
                             Label("Subscription Status", systemImage: "folder.badge.person.crop")
                         }
                     }
+                    */
                     
                     NavigationLink(destination: StorageSettingsView(session: session.matrix)) {
                         Label("Storage", systemImage: "folder.fill")
@@ -94,6 +96,8 @@ struct SettingsScreen: View {
                     Toggle(isOn: $enableGalleries) {
                         Label("Enable photo galleries", systemImage: "photo.fill")
                     }
+                    .tint(.orange)
+
                     Button("Show list of changes", systemImage: "newspaper.fill") {
                         showChangelog = true
                     }
@@ -104,10 +108,13 @@ struct SettingsScreen: View {
                         Toggle(isOn: $developerMode) {
                             Label("Developer Mode", systemImage: "wrench.and.screwdriver.fill")
                         }
+                        .tint(.orange)
+
                         
                         Toggle(isOn: DebugModel.shared.$debugMode) {
                             Label("Debug Mode", systemImage: "ladybug.fill")
                         }
+                        .tint(.orange)
                     }
                 }
                 

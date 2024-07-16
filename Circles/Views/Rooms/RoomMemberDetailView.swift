@@ -264,7 +264,7 @@ struct RoomMemberDetailView: View {
     
     @ViewBuilder
     private var setIgnoreButton: some View {
-        let buttonColor: Color = isUserIgnored ? .blue : .red
+        let buttonColor: Color = isUserIgnored ? .accentColor : .red
         let buttonImage = isUserIgnored ? "speaker.fill" : "speaker.slash.fill"
         let confirmationMessage = isUserIgnored ? "Confirm unignoring" : "Confirm ignoring"
         let ignoreMessage = isUserIgnored ? "Unignore" : "Ignore"
@@ -306,7 +306,7 @@ struct RoomMemberDetailView: View {
                             Spacer()
                             BasicImage(uiImage: avatar, aspectRatio: .fill)
                                 .frame(width: 80, height: 80)
-                                .clipShape(RoundedRectangle(cornerRadius: 4))
+                                .clipShape(Circle())
                         }
                     }
                     

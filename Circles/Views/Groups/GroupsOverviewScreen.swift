@@ -170,7 +170,7 @@ struct GroupsOverviewScreen: View {
                 Label("Got it", systemImage: "hand.thumbsup.fill")
                     .padding()
             }
-            .buttonStyle(BigBlueButtonStyle())
+            .buttonStyle(BigRoundedButtonStyle())
             Spacer()
         }
     }

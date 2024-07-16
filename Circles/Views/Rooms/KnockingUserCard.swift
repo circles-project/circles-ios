@@ -119,7 +119,6 @@ struct KnockingUserCard: View {
                     }
                     .foregroundColor(.gray)
                     .padding(.leading)
-
                 }
             }
             

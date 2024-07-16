@@ -73,6 +73,7 @@
 		424CEE092C1B6099005D871C /* CHANGELOG_LastUpdates.md in Resources */ = {isa = PBXBuildFile; fileRef = 424CEE082C1B6098005D871C /* CHANGELOG_LastUpdates.md */; };
 		424CEE0C2C1B7AF9005D871C /* UIDevice+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424CEE0B2C1B7AF9005D871C /* UIDevice+Extensions.swift */; };
 		42A4CE432C17583A004792DC /* View+Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A4CE422C17583A004792DC /* View+Extentions.swift */; };
+		42CC08352C38839B00A2587B /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 42CC08342C38839B00A2587B /* Launch Screen.storyboard */; };
 		42CCE0CC2C122D7B001B19D2 /* ViewModifier+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CCE0CB2C122D7B001B19D2 /* ViewModifier+Extensions.swift */; };
 		42DC602B2C07B628000F1BE8 /* LikedEmojiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DC602A2C07B627000F1BE8 /* LikedEmojiView.swift */; };
 		42DC60502C094A8C000F1BE8 /* JDStatusBarNotification in Frameworks */ = {isa = PBXBuildFile; productRef = 42DC604F2C094A8C000F1BE8 /* JDStatusBarNotification */; };
@@ -330,6 +331,7 @@
 		424CEE082C1B6098005D871C /* CHANGELOG_LastUpdates.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG_LastUpdates.md; sourceTree = "<group>"; };
 		424CEE0B2C1B7AF9005D871C /* UIDevice+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Extensions.swift"; sourceTree = "<group>"; };
 		42A4CE422C17583A004792DC /* View+Extentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Extentions.swift"; sourceTree = "<group>"; };
+		42CC08342C38839B00A2587B /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		42CCE0CB2C122D7B001B19D2 /* ViewModifier+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModifier+Extensions.swift"; sourceTree = "<group>"; };
 		42DC602A2C07B627000F1BE8 /* LikedEmojiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikedEmojiView.swift; sourceTree = "<group>"; };
 		42DC60512C0CE636000F1BE8 /* DebugMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugMode.swift; sourceTree = "<group>"; };
@@ -559,6 +561,7 @@
 			children = (
 				A540001D2BAB4D25008193E1 /* PrivacyInfo.xcprivacy */,
 				405F8E682698E8620057E970 /* Circles.entitlements */,
+				42CC08342C38839B00A2587B /* Launch Screen.storyboard */,
 				404C72D9265DDF35000473DF /* Info.plist */,
 				404C72D0265DDF35000473DF /* CirclesApp.swift */,
 				A509B89D2819B6C90053E5BC /* CirclesError.swift */,
@@ -669,23 +672,23 @@
 		409F4328265DE13B00690A61 /* Circles */ = {
 			isa = PBXGroup;
 			children = (
+				424CEE062C1A2B08005D871C /* ChangelogSheet.swift */,
 				409F432B265DE15C00690A61 /* CircleCreationSheet.swift */,
 				A5921EB62AFAD5E400C2331D /* CircleFollowingRow.swift */,
 				A521C3F62A68D9390051ED88 /* CircleInvitationsIndicator.swift */,
 				A5FB06E22A681079002C5B88 /* CircleInvitationsView.swift */,
-				409F432D265DE15D00690A61 /* TimelineOverviewCard.swift */,
 				409F432E265DE15E00690A61 /* CirclePicker.swift */,
-				A5921EB22AFAA83A00C2331D /* SingleTimelineSettingsView.swift */,
+				A51928B62BCDBD8E005DCFF4 /* CircleRenameView.swift */,
 				409F4330265DE15F00690A61 /* CirclesOverviewScreen.swift */,
-				409F432F265DE15E00690A61 /* UnifiedTimelineView.swift */,
+				A51ABE692B2B7E2000039276 /* FollowingTimelineDetailsView.swift */,
 				A5FB06E42A6814A8002C5B88 /* InvitedCircleCard.swift */,
 				A521C3F42A6889C00051ED88 /* InvitedCircleDetailView.swift */,
-				A51ABE692B2B7E2000039276 /* FollowingTimelineDetailsView.swift */,
+				A5921EB22AFAA83A00C2331D /* SingleTimelineSettingsView.swift */,
 				A5FB4B152BC9C71C00253A22 /* SingleTimelineView.swift */,
-				A51928B62BCDBD8E005DCFF4 /* CircleRenameView.swift */,
-				424CEE062C1A2B08005D871C /* ChangelogSheet.swift */,
-				A56012192C403A0200D43866 /* UnifiedTimelineSettingsView.swift */,
+				409F432D265DE15D00690A61 /* TimelineOverviewCard.swift */,
 				A5634FCB2C41DF4900D60DFB /* UnifiedTimelineComposerSheet.swift */,
+				A56012192C403A0200D43866 /* UnifiedTimelineSettingsView.swift */,
+				409F432F265DE15E00690A61 /* UnifiedTimelineView.swift */,
 			);
 			path = Circles;
 			sourceTree = "<group>";
@@ -1107,6 +1110,7 @@
 				424CEE092C1B6099005D871C /* CHANGELOG_LastUpdates.md in Resources */,
 				A5D3C9BE2A708F1300B41CC0 /* adjacency_graphs.json in Resources */,
 				404C72D5265DDF35000473DF /* Assets.xcassets in Resources */,
+				42CC08352C38839B00A2587B /* Launch Screen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

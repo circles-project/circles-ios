@@ -43,6 +43,7 @@ struct NotificationsSettingsView: View {
                         }
                     }
                 }
+                .tint(.orange)
             
             Toggle("For new posts", isOn: $notifyOnMessage)
                 .onChange(of: notifyOnMessage) { value in
@@ -62,6 +63,7 @@ struct NotificationsSettingsView: View {
                         }
                     }
                 }
+                .tint(.orange)
         }
     }
     

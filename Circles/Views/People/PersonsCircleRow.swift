@@ -31,7 +31,6 @@ struct PersonsCircleRow: View {
             let frameSize: CGFloat = 40
             
             RoomAvatarView(room: room, avatarText: .none)
-                .clipShape(Circle())
                 .frame(width: frameSize, height: frameSize)
                 .clipped()
 

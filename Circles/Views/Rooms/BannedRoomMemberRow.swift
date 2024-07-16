@@ -17,7 +17,6 @@ struct BannedRoomMemberRow: View {
     var body: some View {
         HStack {
             UserAvatarView(user: user)
-                .clipShape(RoundedRectangle(cornerRadius: 6))
                 .frame(width: 60, height: 60)
             VStack(alignment: .leading) {
                 UserNameView(user: user)
