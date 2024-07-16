@@ -91,8 +91,7 @@ struct MessageCard: MessageView {
     
     let footerFont: Font = Font.custom("Inter", size: 14)
                                .weight(.medium)
-    let footerForegroundColor = Color.grey1000
-    let backgroundColor = Color.white
+    let footerForegroundColor = Color.greyCool1000
     
     init(message: Matrix.Message, isLocalEcho: Bool = false, isThreaded: Bool = false) {
         self.message = message
@@ -206,7 +205,6 @@ struct MessageCard: MessageView {
                 
             } else if current.type == M_ROOM_ENCRYPTED {
                 VStack {
-                    let bgColor = colorScheme == .dark ? Color.black : Color.white
                     BasicImage(systemName: SystemImages.lockRectangle.rawValue)
                         .foregroundColor(Color.gray)
                         .frame(width: 240, height: 240)
@@ -223,7 +221,7 @@ struct MessageCard: MessageView {
                     .multilineTextAlignment(.center)
                     .foregroundColor(.gray)
                     .background(
-                        bgColor
+                        Color.greyCool400
                             .opacity(0.5)
                     )
                     .padding(.bottom, 2)
@@ -474,7 +472,7 @@ struct MessageCard: MessageView {
             footer
         }
         .padding(16)
-        .background(self.backgroundColor)
+        .background(colorScheme == .dark ? Color.black : Color.white)
         .cornerRadius(12)
         .onAppear {
             if message.sender.userId != message.room.session.creds.userId {
