@@ -102,7 +102,7 @@ struct SingleTimelineView: View {
                 toolbarMenu
             }
         }
-        .navigationTitle(title)
+        .navigationBarTitle(title, displayMode: .inline)
         .sheet(isPresented: $showNewPostInSheetStyle) {
             PostComposer(room: room).navigationTitle("New Post")
         }
