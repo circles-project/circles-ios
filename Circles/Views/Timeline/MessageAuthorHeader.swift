@@ -15,7 +15,6 @@ struct MessageAuthorHeader: View {
     var body: some View {
         HStack(alignment: .center) {
             UserAvatarView(user: user)
-                .scaledToFill()
                 .frame(width: 45, height: 45)
             
             Text(user.displayName ?? user.userId.username)

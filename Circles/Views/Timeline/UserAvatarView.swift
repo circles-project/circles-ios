@@ -22,6 +22,8 @@ struct UserAvatarView: View {
     var body: some View {
         if let avatar = user.avatar {
             BasicImage(uiImage: avatar)
+                .aspectRatio(contentMode: .fill)
+                .clipShape(Circle())
         } else {
             ZStack {
                 let color = Color.background.randomColor(from: user.userId.stringValue)
@@ -29,7 +31,8 @@ struct UserAvatarView: View {
                 Image("")
                     .resizable()
                     .background(color)
-                    .scaledToFit()
+                    .aspectRatio(contentMode: .fit)
+                    .clipShape(Circle())
                 
                 let userIdCharacter = user.userId.stringValue.dropFirst().first?.uppercased()
                 

@@ -171,7 +171,7 @@ struct GroupCreationSheet: View {
             {
                 Text("Create group")
             }
-            .buttonStyle(BigBlueButtonStyle())
+            .buttonStyle(BigRoundedButtonStyle())
             .disabled(groupName.isEmpty)
             
             Spacer()

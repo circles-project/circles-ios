@@ -17,7 +17,6 @@ struct TimelineView<V: MessageView>: View {
     
     var footer: some View {
         VStack(alignment: .center) {
-           
             HStack(alignment: .bottom) {
                 Spacer()
                 if loading {
@@ -111,12 +110,10 @@ struct TimelineView<V: MessageView>: View {
                         StateEventView(message: message)
                     }
                 }
-
                 
                 Spacer()
                 
                 footer
-                
             }
             .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
             .padding(.horizontal, 12)
@@ -154,9 +151,7 @@ struct TimelineView<V: MessageView>: View {
             await MainActor.run {
                 room.objectWillChange.send()
             }
-            print("REFRESH\tDone")
         }
-
     }
 }
 

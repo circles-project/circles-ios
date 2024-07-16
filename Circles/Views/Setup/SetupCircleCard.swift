@@ -20,9 +20,7 @@ struct SetupCircleCard: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            
             HStack {
-                
                 ZStack {
                     Color.gray
                     

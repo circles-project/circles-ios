@@ -53,17 +53,14 @@ struct GalleryInviteCard: View {
             Spacer()
         }
         //.buttonStyle(.bordered)
-    
     }
     
     var body: some View {
         VStack(alignment: .leading) {
                 
             RoomAvatarView(room: room, avatarText: .roomName)
-                .scaledToFill()
                 .frame(maxWidth: 400, maxHeight: 400)
                 .blur(radius: roomAvatarBlur)
-                .clipShape(RoundedRectangle(cornerRadius: 6))
                 .onTapGesture {
                     if roomAvatarBlur >= 5 {
                         roomAvatarBlur -= 5

@@ -124,7 +124,6 @@ struct RoomSecurityInfoSheet: View {
 
             }
             
-            
             Spacer()
             
         }

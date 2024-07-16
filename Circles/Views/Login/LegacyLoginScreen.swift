@@ -58,7 +58,7 @@ struct LegacyLoginScreen: View {
             }) {
                 Text("Log In")
             }
-            .buttonStyle(BigBlueButtonStyle())
+            .buttonStyle(BigRoundedButtonStyle())
             
             Spacer()
 

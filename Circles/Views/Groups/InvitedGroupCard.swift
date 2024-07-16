@@ -20,10 +20,8 @@ struct InvitedGroupCard: View {
             VStack {
                 RoomAvatarView(room: room, avatarText: .oneLetter)
                 //.overlay(Circle().stroke(Color.primary, lineWidth: 2))
-                    .scaledToFill()
                     .frame(width: 80, height: 80)
                     .blur(radius: blurUnknownUserPicture ? blur : 0)
-                    .clipShape(RoundedRectangle(cornerRadius: 6))
                     .onTapGesture {
                         if blur >= 5 {
                             blur -= 5

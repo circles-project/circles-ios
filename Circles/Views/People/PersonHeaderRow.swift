@@ -46,9 +46,7 @@ struct PersonHeaderRow: View {
     var body: some View {
         HStack(alignment: .center) {
             UserAvatarView(user: user)
-                .scaledToFill()
                 .frame(width: 70, height:70)
-                .clipShape(RoundedRectangle(cornerRadius: 7))
             
             VStack(alignment: .leading) {
                 Text(displayName)

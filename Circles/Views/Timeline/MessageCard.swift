@@ -46,6 +46,14 @@ struct ImageContentView: View {
                 //Spacer()
                 VStack(alignment: .center) {
                     HStack {
+                        Spacer()
+                        MessageMediaThumbnail(message: message,
+                                              aspectRatio: .fill,
+                                              mediaViewWidth: mediaViewWidth)
+                        Spacer()
+                    }
+                    
+                    HStack {
                         if let caption = imageContent.caption {
                             let markdown = MarkdownContent(caption)
                             Markdown(markdown)
@@ -57,10 +65,6 @@ struct ImageContentView: View {
                         }
                     }
                     .background(Color.background)
-                    
-                    MessageMediaThumbnail(message: message,
-                                          aspectRatio: .fill,
-                                          mediaViewWidth: mediaViewWidth)
                 }
                 //Spacer()
             } else {
@@ -167,7 +171,8 @@ struct MessageCard: MessageView {
                     }
                     
                 case M_IMAGE:
-                    ImageContentView(message: current, mediaViewWidth: mediaViewWidth)
+                    let newWidth = isThreaded ? mediaViewWidth - 20 : mediaViewWidth
+                    ImageContentView(message: current, mediaViewWidth: newWidth)
                     
                 case M_VIDEO:
                     VideoContentView(message: current)
@@ -254,7 +259,7 @@ struct MessageCard: MessageView {
                      }
                  }
             } else {
-                Text("Something went wrong.  Circles failed to parse a message of type \"\(current.type)\".")
+                Text("Oh no! Something went wrong.  Circles failed to parse a message of type \"\(current.type)\".")
                     .foregroundColor(.red)
             }
         }
@@ -384,7 +389,6 @@ struct MessageCard: MessageView {
             
             ScrollView(.horizontal) {
                 HStack(spacing: 10) {
-                    
                     ForEach(reactionCounts, id: \.key) { emoji, count in
                         let userId = message.room.session.creds.userId
                         let users = message.reactions[emoji] ?? []
@@ -396,7 +400,7 @@ struct MessageCard: MessageView {
                             }) {
                                 Text("\(emoji) \(count)")
                             }
-                            .buttonStyle(ReactionsButtonStyle(buttonColor: .blue))
+                            .buttonStyle(ReactionsButtonStyle(buttonColor: .accentColor))
                         } else {
                             AsyncButton(action: {
                                 // We have not sent this reaction yet..  Send it
@@ -436,7 +440,7 @@ struct MessageCard: MessageView {
             HStack(alignment: .top, spacing: 24) {
                 likeButton
                 
-                if message.relatedEventId == nil {
+                if !isThreaded {
                     commentsButton
                 }
             }
@@ -468,10 +472,11 @@ struct MessageCard: MessageView {
             }
         }
     }
-    
+
+    @ViewBuilder
     var mainCard: some View {
         
-        return VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .leading, spacing: 2) {
 
             header
 
@@ -501,7 +506,6 @@ struct MessageCard: MessageView {
                 }
             }
         }
-
     }
     
     var linkWrapper: some View {
@@ -526,6 +530,9 @@ struct MessageCard: MessageView {
                         if mediaViewWidth == 0 {
                             mediaViewWidth = geometry.size.width
                         }
+                        if UIDevice.isPhone {
+                            mediaViewWidth = UIScreen.main.bounds.width
+                        }
                     }
             }
             mainCard
@@ -536,6 +543,9 @@ struct MessageCard: MessageView {
                 }
                 .sheet(item: $sheetType) { st in
                     switch(st) {
+                    case .edit:
+                        PostComposer(room: message.room, editing: message)
+                        
                     case .reactions:
                         EmojiPicker(message: message)
                         

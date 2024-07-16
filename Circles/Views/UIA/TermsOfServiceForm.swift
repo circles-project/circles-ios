@@ -31,7 +31,7 @@ struct TermsOfServicePolicySheet: View {
                     }) {
                         Text("Got it")
                     }
-                    .buttonStyle(BigBlueButtonStyle())
+                    .buttonStyle(BigRoundedButtonStyle())
                 }
                 .padding()
             } else {
@@ -94,7 +94,6 @@ struct TermsOfServiceForm: View {
 
     var body: some View {
         VStack {
-
             Text("Review and accept terms")
                 .font(.title2)
                 .fontWeight(.bold)
@@ -109,6 +108,8 @@ struct TermsOfServiceForm: View {
             Toggle(isOn: $accept) {
                 Text("I accept these terms")
             }
+            .tint(.orange)
+            .padding(.horizontal, 5)
             .frame(width: 300)
             .padding(.vertical)
             
@@ -120,14 +121,14 @@ struct TermsOfServiceForm: View {
                 } catch {
                     // Tell the user that we hit an error
                     print("SIGNUP/TERMS\tTerms stage failed")
-                    self.alertTitle = "Something went wrong"
+                    self.alertTitle = "Oh no! Something went wrong"
                     self.alertMessage = "Failed to complete Terms of Service stage"
                     self.showAlert = true
                 }
             }) {
                 Text("Accept and Continue")
             }
-            .buttonStyle(BigBlueButtonStyle())
+            .buttonStyle(BigRoundedButtonStyle())
             .disabled(accept == false)
 
             Spacer()
