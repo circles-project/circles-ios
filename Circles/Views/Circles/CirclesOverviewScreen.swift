@@ -113,6 +113,7 @@ struct CirclesOverviewScreen: View {
                         }
                     }
                     .buttonStyle(.plain)
+                    .listRowBackground(selected == container.roomId ? Color.accentColor.opacity(0.20) : Color.greyCool200)
 
                     Section("My Circles") {
                         ForEach(circles) { circle in
@@ -132,6 +133,7 @@ struct CirclesOverviewScreen: View {
                                     Label("Delete", systemImage: SystemImages.xmarkCircle.rawValue)
                                 }
                             }
+                            .listRowBackground(selected == circle.roomId ? Color.accentColor.opacity(0.20) : Color.greyCool200)
                         }
                     }
                     
@@ -154,13 +156,12 @@ struct CirclesOverviewScreen: View {
                                         Label("Delete", systemImage: SystemImages.xmarkCircle.rawValue)
                                     }
                                 }
-                                
+                                .listRowBackground(selected == room.roomId ? Color.accentColor.opacity(0.20) : Color.greyCool200)
                             }
                         }
                     }
                 }
                 .listStyle(.plain)
-                .accentColor(.secondaryBackground)
             }
         }
         else {
@@ -251,6 +252,7 @@ struct CirclesOverviewScreen: View {
                         container.objectWillChange.send()
                     }
                 }
+                .background(Color.greyCool200)
         } detail: {
             if let roomId = selected,
                let timeline = container.rooms[roomId]

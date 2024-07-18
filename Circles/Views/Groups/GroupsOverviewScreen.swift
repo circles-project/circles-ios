@@ -63,7 +63,6 @@ struct GroupsOverviewScreen: View {
                     }
                 }
                 .listStyle(.plain)
-                //.accentColor(.secondaryBackground)
             }
         }
         else {
