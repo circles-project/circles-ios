@@ -210,6 +210,11 @@ struct CirclesOverviewScreen: View {
         }
         .padding(.top)
         .navigationBarTitle("Circles", displayMode: .inline)
+        .refreshable {
+            await MainActor.run {
+                container.objectWillChange.send()
+            }
+        }
         .toolbar {
             ToolbarItemGroup(placement: .automatic) {
                 toolbarMenu
@@ -247,11 +252,6 @@ struct CirclesOverviewScreen: View {
     var body: some View {
         NavigationSplitView {
             master
-                .refreshable {
-                    await MainActor.run {
-                        container.objectWillChange.send()
-                    }
-                }
                 .background(Color.greyCool200)
         } detail: {
             if let roomId = selected,
