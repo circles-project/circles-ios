@@ -68,6 +68,10 @@ struct ImageContentView: View {
     }
 }
 
+class MessageCardViewModel: ObservableObject {
+    @Published var showReactionSheet = false // stupid hack that I used to fix a bug with the sheet that sometimes doesn't appear for posts located further down (after scrolling)
+}
+
 struct MessageCard: MessageView {
     @ObservedObject var message: Matrix.Message
     var isLocalEcho = false
@@ -79,6 +83,7 @@ struct MessageCard: MessageView {
     private let debug = false
     @State var sheetType: MessageSheetType? = nil
     @State var showAllReactions = false
+    @StateObject private var viewModel = MessageCardViewModel()
     var iCanReact: Bool
     @State var showMessageDeleteConfirmation = false
     @AppStorage("mediaViewWidth") var mediaViewWidth: Double = 0
@@ -258,7 +263,7 @@ struct MessageCard: MessageView {
 
     var likeButton: some View {
         Button(action: {
-            self.sheetType = .reactions
+            viewModel.showReactionSheet = true
         }) {
             //Label("Like", systemImage: "heart")
             Image(systemName: SystemImages.heart.rawValue)
@@ -485,15 +490,15 @@ struct MessageCard: MessageView {
                     case .edit:
                         PostComposer(room: message.room, editing: message)
                         
-                    case .reactions:
-                        EmojiPicker(message: message)
-                        
                     case .reporting:
                         MessageReportingSheet(message: message)
                         
                     case .liked:
                         LikedEmojiView(message: message, emojiUsersListModel: emojiUsersListModel)
                     }
+                }
+                .sheet(isPresented: $viewModel.showReactionSheet) {
+                    EmojiPicker(message: message)
                 }
         }
     }
