@@ -1,19 +1,15 @@
-# v1.0.5
-* Add "What's new in Circles" pop-up to show changes for each new version
-* Remove the toggle that asks about receiving project updates via email
-* Bugfix: Errors when requesting a new email code during signup
-* Remove the "connections" feature
-* Hide photo galleries tab by default (see the Advanced section under Settings to re-enable them)
-* Prevent posting an empty message
-* Simplify UI for choosing media to post
-* Add "toasts" to show errors and other feedback
-* Clean up the display of reactions on posts
-* Bugfix: Avoid creating broken half-created circles
-* Add detailed reactions view to show who sent which emoji
-* Improved onboarding flow
-* Add settings to blur/unb lur image of unknown user
-* Bugfix: "Load more" button always appears on the circle timeline
-* Add dehydrated devices to improve reliability of E2E encryption
-* Add new "Invite to follow me" on the People tab
-* When following a new friend in a circle, offer to invite the friend to follow you back
-* Clean up various parts of the user interface 
+# v1.0.6
+* Improved email address management
+* Show the composer in a modal "sheet" instead of in the main navigation stack
+* Remove jdenticon icons; Use flat colors instead for avatar placeholders
+* Try to decrypt any un-decrypted messages when refreshing a timeline
+* Update the link to our privacy policy
+* Various UI cleanup
+* Enable showing the contents of password fields
+* Bugfix: Make images display nicely regardless of their original size
+* Disable subscription settings even in debug mode
+* All avatar images are now circular
+* New prettier loading screens
+* New color scheme
+* Bugfix: Make the reactions button more reliable
+* Various performance improvements, code cleanup, and minor bug fixes

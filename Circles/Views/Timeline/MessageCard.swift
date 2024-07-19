@@ -74,6 +74,10 @@ struct ImageContentView: View {
     }
 }
 
+class MessageCardViewModel: ObservableObject {
+    @Published var showRepliesSheet = false // stupid hack that I used to fix a bug with the sheet that sometimes doesn't appear for posts located further down (after scrolling)
+}
+
 struct MessageCard: MessageView {
     @ObservedObject var message: Matrix.Message
     var isLocalEcho = false
@@ -85,6 +89,7 @@ struct MessageCard: MessageView {
     private let debug = false
     @State var sheetType: MessageSheetType? = nil
     @State var showAllReactions = false
+    @StateObject private var viewModel = MessageCardViewModel()
     var iCanReact: Bool
     @State var showMessageDeleteConfirmation = false
     @AppStorage("mediaViewWidth") var mediaViewWidth: Double = 0
@@ -275,6 +280,7 @@ struct MessageCard: MessageView {
     var commentsButton: some View {
         Button(action: {
             // show the thread view
+            self.viewModel.showRepliesSheet = true
         }) {
             HStack(alignment: .center, spacing: 5) {
                 Image(systemName: "bubble.left")
@@ -343,71 +349,6 @@ struct MessageCard: MessageView {
                 Text("Confirm deleting the message")
             }
         })
-    }
-
-    var reactions: some View {
-        VStack {
-            //Spacer()
-            let allReactionCounts = self.message.reactions
-                .mapValues { userIds in
-                    userIds.filter {
-                        !self.message.room.session.ignoredUserIds.contains($0)
-                    }
-                    .count
-                }
-                .filter { (key,value) in
-                    value > 0
-                }
-                .sorted(by: >)
-            
-            let limit = 3
-            let reactionCounts = showAllReactions ? allReactionCounts : Array(allReactionCounts.prefix(limit))
-            
-            ScrollView(.horizontal) {
-                HStack(spacing: 10) {
-                    ForEach(reactionCounts, id: \.key) { emoji, count in
-                        let userId = message.room.session.creds.userId
-                        let users = message.reactions[emoji] ?? []
-                        
-                        if users.contains(userId) {
-                            AsyncButton(action: {
-                                // We already sent this reaction...  So redact it
-                                try await message.sendRemoveReaction(emoji)
-                            }) {
-                                Text("\(emoji) \(count)")
-                            }
-                            .buttonStyle(ReactionsButtonStyle(buttonColor: .accentColor))
-                        } else {
-                            AsyncButton(action: {
-                                // We have not sent this reaction yet..  Send it
-                                try await message.sendReaction(emoji)
-                            }) {
-                                Text("\(emoji) \(count)")
-                            }
-                            .disabled(!iCanReact)
-                            .buttonStyle(ReactionsButtonStyle(buttonColor: Color(UIColor.systemGray5)))
-                        }
-                    }
-                    
-                    if allReactionCounts.count > limit {
-                        if !showAllReactions {
-                            Button(action: {self.showAllReactions = true}) {
-                                Text("(more)")
-                                    .font(.subheadline)
-                            }
-                        } else {
-                            Button(action: {self.showAllReactions = false}) {
-                                Text("(less)")
-                                    .font(.subheadline)
-                            }
-                        }
-                    }
-                }
-            }
-            .scrollIndicators(.hidden)
-        }
-        .foregroundColor(.secondary)
-        //.padding(2)
     }
     
     var footer: some View {
@@ -522,15 +463,16 @@ struct MessageCard: MessageView {
                     case .edit:
                         PostComposer(room: message.room, editing: message)
                         
-                    case .reactions:
-                        EmojiPicker(message: message)
-                        
                     case .reporting:
                         MessageReportingSheet(message: message)
                         
                     case .liked:
                         LikedEmojiView(message: message, emojiUsersListModel: emojiUsersListModel)
                     }
+                }
+                .sheet(isPresented: $viewModel.showRepliesSheet) {
+                    RepliesView(room: message.room, parent: message)
+                        .presentationDetents([.medium, .large])
                 }
         }
     }
