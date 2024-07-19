@@ -54,10 +54,11 @@ struct CommentsView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 4) {
                     ForEach(messages) { message in
-                        MessageCard(message: message, isThreaded: true)
+                        CommentCard(message: message)
                     }
                 }
             }
+            .padding(16)
 
             Divider()
             

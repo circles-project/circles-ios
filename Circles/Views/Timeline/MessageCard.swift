@@ -33,7 +33,6 @@ struct TextContentView: View {
         Markdown(markdown)
             .textSelection(.enabled)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .font(Font.custom("Inter", size: 14))
     }
 }
 
@@ -143,6 +142,7 @@ struct MessageCard: MessageView {
                 case M_TEXT:
                     if let textContent = content as? Matrix.mTextContent {
                         TextContentView(textContent.body)
+                            .font(Font.custom("Inter", size: 14))
                             .padding(.horizontal, 3)
                             .padding(.vertical, 5)
                     }
