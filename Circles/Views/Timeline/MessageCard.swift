@@ -33,7 +33,6 @@ struct TextContentView: View {
         Markdown(markdown)
             .textSelection(.enabled)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .font(Font.custom("Inter", size: 14))
     }
 }
 
@@ -75,7 +74,7 @@ struct ImageContentView: View {
 }
 
 class MessageCardViewModel: ObservableObject {
-    @Published var showRepliesSheet = false // stupid hack that I used to fix a bug with the sheet that sometimes doesn't appear for posts located further down (after scrolling)
+    @Published var showCommentsSheet = false // stupid hack that I used to fix a bug with the sheet that sometimes doesn't appear for posts located further down (after scrolling)
 }
 
 struct MessageCard: MessageView {
@@ -143,6 +142,7 @@ struct MessageCard: MessageView {
                 case M_TEXT:
                     if let textContent = content as? Matrix.mTextContent {
                         TextContentView(textContent.body)
+                            .font(Font.custom("Inter", size: 14))
                             .padding(.horizontal, 3)
                             .padding(.vertical, 5)
                     }
@@ -244,43 +244,11 @@ struct MessageCard: MessageView {
         }
     }
     
-
-    @ViewBuilder
-    var likeButton: some View {
-        
-        let likers = message.reactions["❤️"] ?? []
-        let iLikedThisMessage = likers.contains(message.room.session.creds.userId)
-        
-        AsyncButton(action: {
-            // send ❤️ emoji reaction if we have not sent it yet
-            // Otherwise retract it
-            if iLikedThisMessage {
-                // Redact the previous reaction message
-                try await message.sendRemoveReaction("❤️")
-            } else {
-                // Send the reaction
-                try await message.sendReaction("❤️")
-            }
-        }) {
-            HStack(alignment: .center, spacing: 2) {
-                let icon = iLikedThisMessage ? SystemImages.heartFill : SystemImages.heart
-                let color = iLikedThisMessage ? Color.accentColor : Color.primary
-                Image(systemName: icon.rawValue)
-                    .frame(width: 20, height: 20)
-                    .foregroundColor(color)
-                Text("\(message.reactions["❤️"]?.count ?? 0)")
-            }
-            .font(footerFont)
-            .foregroundColor(footerForegroundColor)
-        }
-        .disabled(!iCanReact)
-    }
-    
     @ViewBuilder
     var commentsButton: some View {
         Button(action: {
             // show the thread view
-            self.viewModel.showRepliesSheet = true
+            self.viewModel.showCommentsSheet = true
         }) {
             HStack(alignment: .center, spacing: 5) {
                 Image(systemName: "bubble.left")
@@ -355,7 +323,7 @@ struct MessageCard: MessageView {
 
         HStack(alignment: .top) {
             HStack(alignment: .top, spacing: 24) {
-                likeButton
+                LikeButton(message: message)
                 
                 if !isThreaded {
                     commentsButton
@@ -470,8 +438,8 @@ struct MessageCard: MessageView {
                         LikedEmojiView(message: message, emojiUsersListModel: emojiUsersListModel)
                     }
                 }
-                .sheet(isPresented: $viewModel.showRepliesSheet) {
-                    RepliesView(room: message.room, parent: message)
+                .sheet(isPresented: $viewModel.showCommentsSheet) {
+                    CommentsView(room: message.room, parent: message)
                         .presentationDetents([.medium, .large])
                 }
         }
