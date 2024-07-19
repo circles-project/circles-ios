@@ -173,6 +173,7 @@
 		A57BD8482BD1A6A300EC07E9 /* FollowingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A57BD8472BD1A6A300EC07E9 /* FollowingView.swift */; };
 		A58E21782C46F344005FF66B /* RelativeTimestampFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A58E21772C46F344005FF66B /* RelativeTimestampFormatter.swift */; };
 		A58E217A2C4AC3CA005FF66B /* CommentCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A58E21792C4AC3CA005FF66B /* CommentCard.swift */; };
+		A58E217C2C4AD2FA005FF66B /* LikeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A58E217B2C4AD2FA005FF66B /* LikeButton.swift */; };
 		A5921EB32AFAA83A00C2331D /* SingleTimelineSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5921EB22AFAA83A00C2331D /* SingleTimelineSettingsView.swift */; };
 		A5921EB72AFAD5E400C2331D /* CircleFollowingRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5921EB62AFAD5E400C2331D /* CircleFollowingRow.swift */; };
 		A5921EB92AFAD7F000C2331D /* RoomInvitedMemberRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5921EB82AFAD7F000C2331D /* RoomInvitedMemberRow.swift */; };
@@ -429,6 +430,7 @@
 		A57BD8472BD1A6A300EC07E9 /* FollowingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowingView.swift; sourceTree = "<group>"; };
 		A58E21772C46F344005FF66B /* RelativeTimestampFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelativeTimestampFormatter.swift; sourceTree = "<group>"; };
 		A58E21792C4AC3CA005FF66B /* CommentCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCard.swift; sourceTree = "<group>"; };
+		A58E217B2C4AD2FA005FF66B /* LikeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeButton.swift; sourceTree = "<group>"; };
 		A5921EB22AFAA83A00C2331D /* SingleTimelineSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleTimelineSettingsView.swift; sourceTree = "<group>"; };
 		A5921EB62AFAD5E400C2331D /* CircleFollowingRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleFollowingRow.swift; sourceTree = "<group>"; };
 		A5921EB82AFAD7F000C2331D /* RoomInvitedMemberRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomInvitedMemberRow.swift; sourceTree = "<group>"; };
@@ -783,6 +785,7 @@
 				A5487EC62ADC81E500FA16B5 /* UserNameView.swift */,
 				A5BB4EF22BD02FD7001FD0D8 /* VideoContentView.swift */,
 				A58E21792C4AC3CA005FF66B /* CommentCard.swift */,
+				A58E217B2C4AD2FA005FF66B /* LikeButton.swift */,
 			);
 			path = Timeline;
 			sourceTree = "<group>";
@@ -1252,6 +1255,7 @@
 				A562C0922B0BEC2000522FCB /* UsersToInviteView.swift in Sources */,
 				409F4336265DE15F00690A61 /* UnifiedTimelineView.swift in Sources */,
 				A52ACB8F2A786974005D90C5 /* PersonDetailView.swift in Sources */,
+				A58E217C2C4AD2FA005FF66B /* LikeButton.swift in Sources */,
 				A56593612AEBE5D30003C244 /* Room+URL.swift in Sources */,
 				A54A83112C08D0F000CE4000 /* SetupAddNewCircleSheet.swift in Sources */,
 				409F4370265DE24000690A61 /* PersonHeaderRow.swift in Sources */,

@@ -133,6 +133,7 @@ enum SystemImages: String {
     case lockRectangle = "lock.rectangle"
     case minusCircleFill = "minus.circle.fill"
     case paperplaneCircleFill = "paperplane.circle.fill"
+    case paperplaneFill = "paperplane.fill"
     case pencil = "pencil"
     case pencilCircleFill = "pencil.circle.fill"
     case personCropCircleBadgePlus = "person.crop.circle.badge.plus"

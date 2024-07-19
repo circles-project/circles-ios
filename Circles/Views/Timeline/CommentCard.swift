@@ -79,10 +79,7 @@ struct CommentCard: View {
                     
                     Spacer()
                     
-                    AsyncButton(action: {}) {
-                        Image(systemName: SystemImages.heart.rawValue)
-                            .frame(width: 18, height: 18)
-                    }
+                    LikeButton(message: message)
                 }
             }
             
