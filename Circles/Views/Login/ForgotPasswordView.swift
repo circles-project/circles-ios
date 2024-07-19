@@ -27,7 +27,6 @@ func passwordResetFilter(flow: AuthFlow) -> Bool {
         CirclesApp.logger.debug("passwordResetFilter: Not UIA - mismatch")
         return false
     }
-    
 }
 
 struct ForgotPasswordView: View {
@@ -42,7 +41,6 @@ struct ForgotPasswordView: View {
     
     var body: some View {
         VStack {
-
             CirclesLogoView()
                 .frame(minWidth: 100,
                        idealWidth: 150,
@@ -55,7 +53,7 @@ struct ForgotPasswordView: View {
             Spacer()
             
             Text("Account Recovery")
-                .font(.title)
+                .font(.title2)
                 .fontWeight(.bold)
                 .padding()
 
@@ -88,7 +86,7 @@ struct ForgotPasswordView: View {
             }) {
                 Text("Reset Password and Log In")
             }
-            .buttonStyle(BigBlueButtonStyle())
+            .buttonStyle(BigRoundedButtonStyle())
             .confirmationDialog("It looks like maybe you mis-typed your username",
                                 isPresented: $showSuggestion,
                                 presenting: suggestedUserId,

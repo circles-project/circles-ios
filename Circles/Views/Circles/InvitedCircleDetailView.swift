@@ -17,14 +17,11 @@ struct InvitedCircleDetailView: View {
     var body: some View {
         ScrollView {
             VStack {
-                
                 Text("You have been invited to:")
                     .padding()
                 
                 RoomAvatarView(room: room, avatarText: .none)
-                    .clipShape(Circle())
                     .overlay(Circle().stroke(Color.primary, lineWidth: 2))
-                    .scaledToFit()
                     .frame(width: 240, height: 240)
                     //.padding(-50)
                 
@@ -61,10 +58,7 @@ struct InvitedCircleDetailView: View {
                         Text("Invited by:")
                         VStack(alignment: .leading) {
                             UserAvatarView(user: user)
-                                .scaledToFit()
                                 .frame(width: 180, height: 180)
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
-
                             
                             Text("\(user.displayName ?? user.userId.username)")
                                 .font(.title2)

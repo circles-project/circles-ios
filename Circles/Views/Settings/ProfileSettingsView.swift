@@ -18,7 +18,6 @@ struct ProfileSettingsView: View {
     
     var body: some View {
         VStack {
-
             Form {
                 HStack {
                     Text("Profile picture")
@@ -26,8 +25,6 @@ struct ProfileSettingsView: View {
                     
                     PhotosPicker(selection: $newAvatarImageItem, matching: .images) {
                         UserAvatarView(user: session.me)
-                            .aspectRatio(contentMode: .fill)
-                            .clipShape(Circle())
                             .frame(width: 80, height: 80)
                     }
                     .buttonStyle(.plain)
@@ -41,10 +38,9 @@ struct ProfileSettingsView: View {
                         }
                     }
                 }
-                
                 NavigationLink(destination: UpdateDisplaynameView(session: session)) {
                     Text("Your name")
-                        .badge(session.me.displayName ?? "(none)")
+                        .badge(abbreviate(session.me.displayName))
                 }
                 
                 Text("User ID")

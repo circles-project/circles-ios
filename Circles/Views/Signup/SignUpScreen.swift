@@ -83,7 +83,7 @@ struct SignupScreen: View {
                 case .notConnected:
                     notConnectedView
                     
-                case .failed(let error):
+                case .failed(_): // let error
                     Text("Signup failed")
                     
                 case .canceled:
@@ -95,7 +95,7 @@ struct SignupScreen: View {
                 case .inProgress(let uiaaState, let stages):
                     UiaInProgressView(session: session, state: uiaaState, stages: stages)
                     
-                case .finished(let data):
+                case .finished(_): // let data
                     Text("Signup was successful!")
                 }
             }

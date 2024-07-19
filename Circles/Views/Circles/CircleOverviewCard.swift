@@ -23,10 +23,8 @@ struct CircleOverviewCard: View {
     var body: some View {
         VStack(alignment: .leading) {
             HStack(alignment: .center) {
-                
                 //CircleAvatar(space: space)
-                RoomAvatarView(room: space.wall ?? space, avatarText: .none)
-                    .clipShape(Circle())
+                RoomAvatarView(room: space.wall ?? space, avatarText: .oneLetter)
                     .frame(width: 80, height: 80)
                 
                 VStack(alignment: .leading) {
@@ -62,7 +60,7 @@ struct CircleOverviewCard: View {
                         if let wall = space.wall {
                             let knockCount = wall.knockingMembers.count
                             if knockCount > 0 {
-                                let color = Color(light: .blue, dark: .white)
+                                let color = Color(light: .accentColor, dark: .white)
                                 Label("\(knockCount) requests for invitations", systemImage: "star.fill")
                                     .foregroundColor(color)
                             }

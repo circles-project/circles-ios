@@ -59,7 +59,7 @@ struct CircleTimelineView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                let foo = self.stupidSwiftUiTrick
+                let _ = self.stupidSwiftUiTrick // foo
                 
                 CircleTimeline(space: space)
                     .navigationBarTitle(space.name ?? "Circle", displayMode: .inline)
@@ -116,12 +116,10 @@ struct CircleTimelineView: View {
                             Button(action: {
                                 showNewPostInSheetStyle = true
                             }) {
-                                Image(systemName: SystemImages.plusBubbleFill.rawValue)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 50, height: 50)
-                                    .padding()
+                                Label("New post", systemImage: SystemImages.plusCircleFill.rawValue)
                             }
+                            .buttonStyle(PillButtonStyle())
+                            .padding(10)
                         }
                     }
                 }

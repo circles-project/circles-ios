@@ -138,7 +138,6 @@ class NotificationService: UNNotificationServiceExtension {
         }
         logger.debug("Copied request content")
         
-        
         guard let eventId = request.content.userInfo["event_id"] as? EventId,
               let roomIdString = request.content.userInfo["room_id"] as? String,
               let roomId = RoomId(roomIdString)
@@ -158,7 +157,6 @@ class NotificationService: UNNotificationServiceExtension {
         logger.debug("Got creds for user id \(creds.userId.stringValue)")
         
         self.task = Task {
-            
             guard let defaults = UserDefaults(suiteName: CIRCLES_APP_GROUP_NAME)
             else {
                 logger.error("Failed to get defaults for Circles app group")
@@ -167,7 +165,6 @@ class NotificationService: UNNotificationServiceExtension {
             }
             
             let client = try await Matrix.Client(creds: creds, defaults: defaults)
-            
             
             guard let event = try? await client.getEvent(eventId, in: roomId)
             else {
@@ -201,7 +198,6 @@ class NotificationService: UNNotificationServiceExtension {
             switch roomType {
 
             case ROOM_TYPE_CIRCLE:
-                
                 if let roomName = roomDisplayName {
                     bestAttemptContent.body = "Posted to \(roomName)"
                 } else if createContent.creator == event.sender {

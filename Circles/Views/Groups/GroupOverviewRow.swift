@@ -17,9 +17,8 @@ struct GroupOverviewRow: View {
 
     var body: some View {
         HStack(alignment: .top) {
-            RoomAvatarView(room: room, avatarText: .roomInitials)
+            RoomAvatarView(room: room, avatarText: .oneLetter)
                 .frame(width: 80, height: 80)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
                 .padding(.leading, 5)
             
             VStack(alignment: .leading) {
@@ -35,7 +34,6 @@ struct GroupOverviewRow: View {
                 }
 
                 VStack(alignment: .leading) {
-                    
                     if DebugModel.shared.debugMode {
                         Text(room.roomId.stringValue)
                             .font(.subheadline)
@@ -43,11 +41,10 @@ struct GroupOverviewRow: View {
                     }
                     
                     Text("\(room.joinedMembers.count) member(s)")
-
                     
                     let knockCount = room.knockingMembers.count
                     if room.iCanInvite && room.iCanKick && knockCount > 0 {
-                        let color = Color(light: .blue, dark: .white)
+                        let color = Color(light: .accentColor, dark: .white)
                         Label("\(knockCount) request(s) for invitation", systemImage: "star.fill")
                             .foregroundColor(color)
                     }
@@ -63,7 +60,6 @@ struct GroupOverviewRow: View {
                             Text("Last updated \(room.timestamp, formatter: RelativeDateTimeFormatter())")
                         }
                     }
-
                 }
                 .font(.footnote)
                 .foregroundColor(.gray)

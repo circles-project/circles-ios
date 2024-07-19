@@ -102,7 +102,7 @@ class CirclesApplicationSession: ObservableObject {
         }
         
         // Maybe it's a room that we've been invited to, but we are not yet a member?
-        if let invitedRoom = self.matrix.invitations[roomId] {
+        if let _ = self.matrix.invitations[roomId] { // let invitedRoom
             return true
         }
         
@@ -133,7 +133,7 @@ class CirclesApplicationSession: ObservableObject {
             return
         }
         
-        guard let room = self.matrix.rooms[roomId]
+        guard let _ = self.matrix.rooms[roomId] // let room
         else {
             print("DEEPLINK Not in room \(roomId) -- Knocking on it")
             self.viewState.knockRoomId = roomId
@@ -165,7 +165,7 @@ class CirclesApplicationSession: ObservableObject {
         
         case "group":
             print("DEEPLINK Url is for a group")
-            if let matchingGroup = self.groups.rooms[roomId] {
+            if let _ = self.groups.rooms[roomId] { // let matchingGroup
                 print("DEEPLINK Setting tab to Groups")
                 self.viewState.tab = .groups
                 self.viewState.selectedGroupId = roomId
@@ -178,7 +178,7 @@ class CirclesApplicationSession: ObservableObject {
             print("DEEPLINK Url is for a photo gallery")
             let enableGalleries = UserDefaults.standard.bool(forKey: DEFAULTS_KEY_ENABLE_GALLERIES)
             if enableGalleries {
-                if let matchingGallery = self.galleries.rooms[roomId] {
+                if let _ = self.galleries.rooms[roomId] { // let matchingGallery
                     print("DEEPLINK Setting tab to Photos")
                     self.viewState.tab = .photos
                     self.viewState.selectedGalleryId = roomId
@@ -220,7 +220,7 @@ class CirclesApplicationSession: ObservableObject {
                 }
                 
             case "m.space":
-                if let profile = self.people.rooms[roomId] {
+                if let _ = self.people.rooms[roomId] { // let profile
                     await self.viewState.navigate(tab: .people, selected: roomId)
                     return
                 } else {
@@ -238,7 +238,7 @@ class CirclesApplicationSession: ObservableObject {
                 }
                 
             case ROOM_TYPE_PHOTOS:
-                if let gallery = self.galleries.rooms[roomId] {
+                if let _ = self.galleries.rooms[roomId] { // let gallery
                     await self.viewState.navigate(tab: .photos, selected: roomId)
                     return
                 } else {

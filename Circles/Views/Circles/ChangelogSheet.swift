@@ -44,7 +44,7 @@ struct ChangelogSheet: View {
             Button("Got it") {
                 showChangelog = false
             }
-            .buttonStyle(BigBlueButtonStyle())
+            .buttonStyle(BigRoundedButtonStyle())
         }
         .navigationTitle("Markdown Content")
     }

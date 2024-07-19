@@ -260,7 +260,7 @@ struct RoomInviteSheet: View {
                     }) {
                         Label("Send \(newUsers.count) Invitation(s)", systemImage: "paperplane")
                     }
-                    .buttonStyle(BigBlueButtonStyle())
+                    .buttonStyle(BigRoundedButtonStyle())
                     .disabled(pending || newUsers.isEmpty)
                     .padding(5)
                     
@@ -283,9 +283,6 @@ struct RoomInviteSheet: View {
                 self.showingKeyboard = true
             }
         }
-
- 
-
     }
 
     var body: some View {

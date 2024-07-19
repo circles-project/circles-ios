@@ -22,8 +22,28 @@ struct RoomAvatarView<Room>: View where Room: BasicRoomProtocol {
     
     enum AvatarText: String {
         case none
+        case oneLetter
         case roomName
         case roomInitials
+    }
+    
+    var text: String? {
+        if let name = room.name {
+            switch avatarText {
+            case .none:
+                return nil
+            case .oneLetter:
+                return name.first?.uppercased() ?? ""
+            case .roomName:
+                return name
+            case .roomInitials:
+                return name.split(whereSeparator: { $0.isWhitespace })
+                           .compactMap({ $0.first?.uppercased() })
+                           .joined()
+            }
+        } else {
+            return nil
+        }
     }
     
     var body: some View {
@@ -31,8 +51,8 @@ struct RoomAvatarView<Room>: View where Room: BasicRoomProtocol {
             Image(uiImage: img)
                 .renderingMode(.original)
                 .resizable()
-                .scaledToFill()
-                //.clipShape(RoundedRectangle(cornerRadius: 6))
+                .aspectRatio(contentMode: .fill)
+                .clipShape(Circle())
                 .onAppear {
                     // Fetch the avatar from the url
                     room.updateAvatarImage()
@@ -46,8 +66,8 @@ struct RoomAvatarView<Room>: View where Room: BasicRoomProtocol {
 
                     RoundedRectangle(cornerSize: CGSize())
                         .foregroundColor(color)
-                        .scaledToFill()
-                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                        .aspectRatio(contentMode: .fill)
+                        .clipShape(Circle())
                         .onAppear {
                             // Fetch the avatar from the url
                             room.updateAvatarImage()
@@ -55,29 +75,16 @@ struct RoomAvatarView<Room>: View where Room: BasicRoomProtocol {
                         //.padding(3)
 
                     if avatarText != .none,
-                       let name = room.name {
-                        if avatarText == .roomInitials {
-                            let location = CGPoint(x: 0.5 * geometry.size.width, y: 0.5 * geometry.size.height)
-                            let initials = name.split(whereSeparator: { $0.isWhitespace })
-                                               .compactMap({ $0.first?.uppercased() })
-                                               .joined()
-                            
-                            Text(initials)
-                                .fontWeight(.bold)
-                                .foregroundColor(textColor)
-                                .position(x: location.x,
-                                          y: location.y)
-                        }
-                        else {
-                            Text(name)
-                                .lineLimit(3)
-                                .multilineTextAlignment(.leading)
-                                .font(.title)
-                                .fontWeight(.bold)
-                                .foregroundColor(.white)
-                                .shadow(color: .black, radius: 5)
-                        }
+                       let text = self.text {
+                        Text(text)
+                            .lineLimit(3)
+                            .multilineTextAlignment(.leading)
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                            .shadow(color: .gray, radius: 3)
                     }
+
                 }
             }
         }

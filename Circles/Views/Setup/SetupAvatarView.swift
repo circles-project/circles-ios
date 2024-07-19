@@ -34,14 +34,14 @@ struct SetupAvatarView: View {
     }
 
     var body: some View {
-        let avatarSize: CGFloat = UIDevice.isPhoneSE ? 133 : 200
+        let avatarSize: CGFloat = UIDevice.isPhoneSE ? 133 : 160
         ScrollView {
             //let currentStage: SignupStage = .getAvatarImage
 
             Spacer()
 
-            Text("Set up your profile")
-                .font(.title)
+            Text("Set your name and profile photo")
+                .font(.title2)
                 .fontWeight(.bold)
                 
             avatar
@@ -104,17 +104,26 @@ struct SetupAvatarView: View {
             Label("NOTE: Profile photos are not encrypted", systemImage: SystemImages.exclamationmarkTriangle.rawValue)
                 .foregroundColor(.orange)
 
-            TextField("First Last", text: $newName, prompt: Text("Your name"))
-                .textContentType(.name)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .autocorrectionDisabled()
-                .focused($inputFocused)
-                .textInputAutocapitalization(.words)
-                .frame(width: 300)
-                .padding()
-                .onAppear {
-                    self.inputFocused = true
+            HStack {
+                TextField("First Last", text: $newName, prompt: Text("Your name"))
+                    .textContentType(.name)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .autocorrectionDisabled()
+                    .focused($inputFocused)
+                    .textInputAutocapitalization(.words)
+                    .frame(width: 300)
+                    .padding()
+                    .onAppear {
+                        self.inputFocused = true
+                    }
+                
+                Button(action: {
+                    self.newName = ""
+                }) {
+                    Image(systemName: SystemImages.xmark.rawValue)
+                        .foregroundColor(.gray)
                 }
+            }
                 /*
                 .task {
                     let userId = session.client.creds.userId
@@ -139,7 +148,7 @@ struct SetupAvatarView: View {
             }) {
                 Text("Next")
             }
-            .buttonStyle(BigBlueButtonStyle())
+            .buttonStyle(BigRoundedButtonStyle())
             .disabled(newName.isEmpty)
             .padding()
 

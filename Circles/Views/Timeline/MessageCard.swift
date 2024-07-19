@@ -43,9 +43,13 @@ struct ImageContentView: View {
             if let imageContent = message.content as? Matrix.mImageContent {
                 //Spacer()
                 VStack(alignment: .center) {
-                    MessageMediaThumbnail(message: message,
-                                          aspectRatio: .fill,
-                                          mediaViewWidth: mediaViewWidth)
+                    HStack {
+                        Spacer()
+                        MessageMediaThumbnail(message: message,
+                                              aspectRatio: .fill,
+                                              mediaViewWidth: mediaViewWidth)
+                        Spacer()
+                    }
                     HStack {
                         if let caption = imageContent.caption {
                             let markdown = MarkdownContent(caption)
@@ -64,6 +68,10 @@ struct ImageContentView: View {
     }
 }
 
+class MessageCardViewModel: ObservableObject {
+    @Published var showReactionSheet = false // stupid hack that I used to fix a bug with the sheet that sometimes doesn't appear for posts located further down (after scrolling)
+}
+
 struct MessageCard: MessageView {
     @ObservedObject var message: Matrix.Message
     var isLocalEcho = false
@@ -75,6 +83,7 @@ struct MessageCard: MessageView {
     private let debug = false
     @State var sheetType: MessageSheetType? = nil
     @State var showAllReactions = false
+    @StateObject private var viewModel = MessageCardViewModel()
     var iCanReact: Bool
     @State var showMessageDeleteConfirmation = false
     @AppStorage("mediaViewWidth") var mediaViewWidth: Double = 0
@@ -136,7 +145,8 @@ struct MessageCard: MessageView {
                     }
                     
                 case M_IMAGE:
-                    ImageContentView(message: current, mediaViewWidth: mediaViewWidth)
+                    let newWidth = isThreaded ? mediaViewWidth - 20 : mediaViewWidth
+                    ImageContentView(message: current, mediaViewWidth: newWidth)
                     
                 case M_VIDEO:
                     VideoContentView(message: current)
@@ -244,7 +254,7 @@ struct MessageCard: MessageView {
             ProgressView()
         } else if message.isEncrypted {
             Image(systemName: SystemImages.lockFill.rawValue)
-                .foregroundColor(Color.blue)
+                .foregroundColor(Color.accentColor)
         } else {
             Image(systemName: SystemImages.lockSlashFill.rawValue)
                 .foregroundColor(Color.red)
@@ -253,7 +263,7 @@ struct MessageCard: MessageView {
 
     var likeButton: some View {
         Button(action: {
-            self.sheetType = .reactions
+            viewModel.showReactionSheet = true
         }) {
             //Label("Like", systemImage: "heart")
             Image(systemName: SystemImages.heart.rawValue)
@@ -308,7 +318,6 @@ struct MessageCard: MessageView {
             
             ScrollView(.horizontal) {
                 HStack(spacing: 10) {
-                    
                     ForEach(reactionCounts, id: \.key) { emoji, count in
                         let userId = message.room.session.creds.userId
                         let users = message.reactions[emoji] ?? []
@@ -320,7 +329,7 @@ struct MessageCard: MessageView {
                             }) {
                                 Text("\(emoji) \(count)")
                             }
-                            .buttonStyle(ReactionsButtonStyle(buttonColor: .blue))
+                            .buttonStyle(ReactionsButtonStyle(buttonColor: .accentColor))
                         } else {
                             AsyncButton(action: {
                                 // We have not sent this reaction yet..  Send it
@@ -356,16 +365,14 @@ struct MessageCard: MessageView {
     
     var footer: some View {
         VStack(alignment: .leading) {
-            
             //Divider()
-
             HStack {
                 shield
                 //Spacer()
                 timestamp
                 Spacer()
                 likeButton
-                if message.relatedEventId == nil {
+                if !isThreaded {
                     replyButton
                 }
                 menuButton
@@ -385,7 +392,6 @@ struct MessageCard: MessageView {
             } else {
                 reactions.hidden()
             }
-
         }
         .padding(.bottom, 3)
     }
@@ -409,12 +415,10 @@ struct MessageCard: MessageView {
     }
     
     var mainCard: some View {
-        
         let shadowColor: Color = message.mentionsMe ? .accentColor : .gray
         let shadowRaduis: CGFloat = message.mentionsMe ? 3 : 2
         
         return VStack(alignment: .leading, spacing: 2) {
-            
             MessageAuthorHeader(user: message.sender)
 
             if DebugModel.shared.debugMode && self.debug {
@@ -446,7 +450,6 @@ struct MessageCard: MessageView {
                 }
             }
         }
-
     }
     
     var linkWrapper: some View {
@@ -471,6 +474,9 @@ struct MessageCard: MessageView {
                         if mediaViewWidth == 0 {
                             mediaViewWidth = geometry.size.width
                         }
+                        if UIDevice.isPhone {
+                            mediaViewWidth = UIScreen.main.bounds.width
+                        }
                     }
             }
             mainCard
@@ -481,8 +487,8 @@ struct MessageCard: MessageView {
                 }
                 .sheet(item: $sheetType) { st in
                     switch(st) {
-                    case .reactions:
-                        EmojiPicker(message: message)
+                    case .edit:
+                        PostComposer(room: message.room, editing: message)
                         
                     case .reporting:
                         MessageReportingSheet(message: message)
@@ -490,6 +496,9 @@ struct MessageCard: MessageView {
                     case .liked:
                         LikedEmojiView(message: message, emojiUsersListModel: emojiUsersListModel)
                     }
+                }
+                .sheet(isPresented: $viewModel.showReactionSheet) {
+                    EmojiPicker(message: message)
                 }
         }
     }

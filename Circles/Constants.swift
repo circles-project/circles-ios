@@ -68,7 +68,7 @@ let PUSH_GATEWAY_HOSTNAME = "sygnal.\(usDomain)"
 let ORG_FUTO_BCRYPT_SHA2 = "org.futo.bcrypt-sha2"
 let ORG_FUTO_BSSPEKE_ECC = "org.futo.bsspeke-ecc"
 
-let PRIVACY_POLICY_URL = "https://circles.futo.org/privacy/app/index.html"
+let PRIVACY_POLICY_URL = "https://circles.futo.org/privacy/ios"
 
 let CIRCLES_APP_GROUP_NAME = "group.2W7AC6T8T5.org.futo.circles"
 
@@ -154,8 +154,11 @@ enum SystemImages: String {
     case bubbleRight = "bubble.right"
     case circle = "circle"
     case circlesHexagonpath = "circles.hexagonpath"
+    case eyeFill = "eye.fill"
+    case eyeSlashFill = "eye.slash.fill"
     case gearshape = "gearshape"
     case heart = "heart"
+    case launchLogoPurple = "launch-logo-purple"
     case lockSlashFill = "lock.slash.fill"
     case minusMagnifyingglass = "minus.magnifyingglass"
     case paperclip = "paperclip"

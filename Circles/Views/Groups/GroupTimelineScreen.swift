@@ -62,7 +62,6 @@ struct GroupTimelineScreen: View {
             }) {
                 Label("Share", systemImage: SystemImages.squareAndArrowUp.rawValue)
             }
-            
         }
         label: {
             Label("Settings", systemImage: SystemImages.gearshapeFill.rawValue)
@@ -74,11 +73,9 @@ struct GroupTimelineScreen: View {
     }
     
     var body: some View {
-        
         NavigationStack {
             ZStack {
                 VStack(alignment: .center) {
-                    
                     /*
                      VStack(alignment: .leading) {
                      Text("Debug Info")
@@ -95,7 +92,6 @@ struct GroupTimelineScreen: View {
                     timeline
                         .sheet(item: $sheetType) { st in
                             switch(st) {
-                                
                             case .invite:
                                 RoomInviteSheet(room: room, title: "Invite new members to \(room.name ?? "(unnamed group)")")
                                 
@@ -115,12 +111,10 @@ struct GroupTimelineScreen: View {
                             Button(action: {
                                 showNewPostInSheetStyle = true
                             }) {
-                                Image(systemName: SystemImages.plusBubbleFill.rawValue)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 50, height: 50)
-                                    .padding()
+                                Label("New post", systemImage: SystemImages.plusCircleFill.rawValue)
                             }
+                            .buttonStyle(PillButtonStyle())
+                            .padding(10)
                         }
                     }
                 }
