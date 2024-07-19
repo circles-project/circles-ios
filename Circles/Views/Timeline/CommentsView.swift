@@ -1,5 +1,5 @@
 //
-//  RepliesView.swift
+//  CommentsView.swift (previously RepliesView.swift)
 //  Circles
 //
 //  Created by Charles Wright on 6/15/21.
@@ -8,7 +8,7 @@
 import SwiftUI
 import Matrix
 
-struct RepliesView: View {
+struct CommentsView: View {
     var room: Matrix.Room
     @ObservedObject var parent: Matrix.Message
     @State var newMessageText = ""
@@ -22,7 +22,7 @@ struct RepliesView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .center, spacing: 0) {
             let now = Date()
             let cutoff = now.addingTimeInterval(300.0)
             let allMessages = parent.replies.values
@@ -34,14 +34,28 @@ struct RepliesView: View {
                 $0.timestamp < $1.timestamp
             }
             
+            Text("Comments")
+                .font(
+                    Font.custom("Inter", size: 16)
+                        .weight(.bold)
+                )
+                .multilineTextAlignment(.center)
+                .foregroundColor(Color.greyCool1100)
+                .frame(minHeight: 45, maxHeight: 45)
+                .padding(.top, 8)
+            
+            Divider()
+            
             if messages.isEmpty && DebugModel.shared.debugMode {
                 Text("No replies")
             }
             
 
             ScrollView {
-                ForEach(messages) { message in
-                    MessageCard(message: message, isThreaded: true)
+                VStack(alignment: .leading, spacing: 4) {
+                    ForEach(messages) { message in
+                        MessageCard(message: message, isThreaded: true)
+                    }
                 }
             }
 

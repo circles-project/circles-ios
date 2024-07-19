@@ -75,7 +75,7 @@ struct ImageContentView: View {
 }
 
 class MessageCardViewModel: ObservableObject {
-    @Published var showRepliesSheet = false // stupid hack that I used to fix a bug with the sheet that sometimes doesn't appear for posts located further down (after scrolling)
+    @Published var showCommentsSheet = false // stupid hack that I used to fix a bug with the sheet that sometimes doesn't appear for posts located further down (after scrolling)
 }
 
 struct MessageCard: MessageView {
@@ -280,7 +280,7 @@ struct MessageCard: MessageView {
     var commentsButton: some View {
         Button(action: {
             // show the thread view
-            self.viewModel.showRepliesSheet = true
+            self.viewModel.showCommentsSheet = true
         }) {
             HStack(alignment: .center, spacing: 5) {
                 Image(systemName: "bubble.left")
@@ -470,8 +470,8 @@ struct MessageCard: MessageView {
                         LikedEmojiView(message: message, emojiUsersListModel: emojiUsersListModel)
                     }
                 }
-                .sheet(isPresented: $viewModel.showRepliesSheet) {
-                    RepliesView(room: message.room, parent: message)
+                .sheet(isPresented: $viewModel.showCommentsSheet) {
+                    CommentsView(room: message.room, parent: message)
                         .presentationDetents([.medium, .large])
                 }
         }
