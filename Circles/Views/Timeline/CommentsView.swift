@@ -21,6 +21,27 @@ struct CommentsView: View {
         return eventId
     }
     
+    @ViewBuilder
+    var attachmentButton: some View {
+        HStack(alignment: .center, spacing: 0) {
+            Button(action: {
+                // Pick media to attach
+            }) {
+                Text("\(Image(systemName: SystemImages.paperclip.rawValue))")
+                    .font(
+                        Font.custom("SF Pro Display", size: 18)
+                            .weight(.bold)
+                    )
+                    .multilineTextAlignment(.center)
+            }
+            .disabled(true)
+        }
+        .padding(.leading, 8)
+        .padding(.trailing, 10)
+        .padding(.top, 9)
+        .padding(.bottom, 6)
+    }
+    
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
             let now = Date()
@@ -62,18 +83,12 @@ struct CommentsView: View {
 
             Divider()
             
-            HStack(spacing: 4) {
-                Button(action: {
-                    // Pick media to attach
-                }) {
-                    Image(systemName: SystemImages.paperclip.rawValue)
-                        .resizable()
-                        .frame(width: 32, height: 32)
-                }
-                .disabled(true)
+            HStack(spacing: 0) {
+                
+                attachmentButton
                 
                 TextField(text: $newMessageText) {
-                    Text("Message")
+                    Text("Comment")
                 }
                 .textFieldStyle(.roundedBorder)
                 .submitLabel(.send)
@@ -82,18 +97,31 @@ struct CommentsView: View {
                         try await send()
                     }
                 }
+                .padding(.horizontal, 6)
+                .padding(.vertical, 0)
+                .frame(maxWidth: .infinity, alignment: .topLeading)
                 
                 AsyncButton(action: {
                     try await send()
                 }) {
-                    Image(systemName: SystemImages.paperplaneFill.rawValue)
-                        .resizable()
-                        .frame(width: 32, height: 32)
+                    Text("\(Image(systemName: SystemImages.paperplaneFill.rawValue))")
+                    .font(
+                        Font.custom("SF Pro Display", size: 18)
+                            .weight(.bold)
+                    )
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: 40, alignment: .center)
                 }
                 .disabled(newMessageText.isEmpty)
             }
-            .padding(4)
-            
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            .frame(maxWidth: .infinity, alignment: .center)
+            .overlay(
+                Rectangle()
+                    .inset(by: 0.5)
+                    .stroke(Color.greyCool300, lineWidth: 1)
+            )
         }
     }
 }
