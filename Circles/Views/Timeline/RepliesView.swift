@@ -11,11 +11,18 @@ import Matrix
 struct RepliesView: View {
     var room: Matrix.Room
     @ObservedObject var parent: Matrix.Message
-    @State var expanded = false
-    @State var showReplyComposer = false
-
+    @State var newMessageText = ""
+    
+    func send() async throws -> EventId {
+        let eventId = try await room.sendText(text: newMessageText, inReplyTo: parent)
+        await MainActor.run {
+            self.newMessageText = ""
+        }
+        return eventId
+    }
+    
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 0) {
             let now = Date()
             let cutoff = now.addingTimeInterval(300.0)
             let allMessages = parent.replies.values
@@ -27,46 +34,52 @@ struct RepliesView: View {
                 $0.timestamp < $1.timestamp
             }
             
-            if messages.isEmpty {
-                if DebugModel.shared.debugMode {
-                    HStack {
-                        Spacer()
-                        Text("No replies")
-                    }
-                } else {
-                    EmptyView()
+            if messages.isEmpty && DebugModel.shared.debugMode {
+                Text("No replies")
+            }
+            
+
+            ScrollView {
+                ForEach(messages) { message in
+                    MessageCard(message: message, isThreaded: true)
                 }
             }
-            else {
-                if !expanded {
-                    HStack {
-                        Spacer()
-                        Button(action: {
-                            self.expanded = true
-                            room.objectWillChange.send()
-                        }) {
-                            Text("Show \(messages.count) replies")
-                                .font(.footnote)
-                        }
-                    }
-                } else {
-                    ForEach(messages) { message in
-                        MessageCard(message: message, isThreaded: true)
-                    }
-                    HStack {
-                        Spacer()
-                        Button(action: {
-                            self.expanded = false
-                            room.objectWillChange.send()
-                        }) {
-                            Text("Hide replies")
-                                .font(.footnote)
-                        }
+
+            Divider()
+            
+            HStack(spacing: 4) {
+                Button(action: {
+                    // Pick media to attach
+                }) {
+                    Image(systemName: SystemImages.paperclipCircleFill.rawValue)
+                        .resizable()
+                        .frame(width: 32, height: 32)
+                }
+                .disabled(true)
+                
+                TextField(text: $newMessageText) {
+                    Text("Message")
+                }
+                .textFieldStyle(.roundedBorder)
+                .submitLabel(.send)
+                .onSubmit {
+                    Task {
+                        try await send()
                     }
                 }
+                
+                AsyncButton(action: {
+                    try await send()
+                }) {
+                    Image(systemName: SystemImages.paperplaneCircleFill.rawValue)
+                        .resizable()
+                        .frame(width: 32, height: 32)
+                }
+                .disabled(newMessageText.isEmpty)
             }
+            .padding(4)
+            
         }
-        .padding(.leading)
     }
 }
 
