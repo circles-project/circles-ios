@@ -209,6 +209,8 @@
 		A5D3C9C12A708F1300B41CC0 /* DBZxcvbn.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D3C9B92A708F1300B41CC0 /* DBZxcvbn.m */; };
 		A5D3C9C22A708F1300B41CC0 /* DBMatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D3C9BA2A708F1300B41CC0 /* DBMatcher.m */; };
 		A5D3C9C32A708F1300B41CC0 /* DBScorer.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D3C9BD2A708F1300B41CC0 /* DBScorer.m */; };
+		A5D3DA912C4B034D001B05C0 /* Inter-VariableFont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A5D3DA902C4B034D001B05C0 /* Inter-VariableFont.ttf */; };
+		A5D3DA932C4B0445001B05C0 /* Nunito-VariableFont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A5D3DA922C4B0445001B05C0 /* Nunito-VariableFont.ttf */; };
 		A5DDA6A32B98E49500BD8A1D /* CirclesAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5DDA6A22B98E49500BD8A1D /* CirclesAppDelegate.swift */; };
 		A5DDA6A52B98F8B900BD8A1D /* Data+hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5DDA6A42B98F8B900BD8A1D /* Data+hex.swift */; };
 		A5DDA6AD2B9B60F400BD8A1D /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5DDA6AC2B9B60F400BD8A1D /* NotificationService.swift */; };
@@ -468,6 +470,8 @@
 		A5D3C9BB2A708F1300B41CC0 /* DBMatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBMatcher.h; sourceTree = "<group>"; };
 		A5D3C9BC2A708F1300B41CC0 /* Zxcvbn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Zxcvbn.h; sourceTree = "<group>"; };
 		A5D3C9BD2A708F1300B41CC0 /* DBScorer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBScorer.m; sourceTree = "<group>"; };
+		A5D3DA902C4B034D001B05C0 /* Inter-VariableFont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-VariableFont.ttf"; sourceTree = "<group>"; };
+		A5D3DA922C4B0445001B05C0 /* Nunito-VariableFont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Nunito-VariableFont.ttf"; sourceTree = "<group>"; };
 		A5D67F232B236F9600729582 /* FUTO Circles.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = "FUTO Circles.storekit"; sourceTree = "<group>"; };
 		A5DDA6A22B98E49500BD8A1D /* CirclesAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclesAppDelegate.swift; sourceTree = "<group>"; };
 		A5DDA6A42B98F8B900BD8A1D /* Data+hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+hex.swift"; sourceTree = "<group>"; };
@@ -565,6 +569,7 @@
 		404C72CF265DDF35000473DF /* Circles */ = {
 			isa = PBXGroup;
 			children = (
+				A5D3DA8B2C4B002F001B05C0 /* fonts */,
 				A540001D2BAB4D25008193E1 /* PrivacyInfo.xcprivacy */,
 				405F8E682698E8620057E970 /* Circles.entitlements */,
 				42CC08342C38839B00A2587B /* Launch Screen.storyboard */,
@@ -971,6 +976,15 @@
 			path = generated;
 			sourceTree = "<group>";
 		};
+		A5D3DA8B2C4B002F001B05C0 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				A5D3DA902C4B034D001B05C0 /* Inter-VariableFont.ttf */,
+				A5D3DA922C4B0445001B05C0 /* Nunito-VariableFont.ttf */,
+			);
+			path = fonts;
+			sourceTree = "<group>";
+		};
 		A5DDA6AB2B9B60F400BD8A1D /* NSE */ = {
 			isa = PBXGroup;
 			children = (
@@ -1118,7 +1132,9 @@
 				404C72D8265DDF35000473DF /* Preview Assets.xcassets in Resources */,
 				424CEE092C1B6099005D871C /* CHANGELOG_LastUpdates.md in Resources */,
 				A5D3C9BE2A708F1300B41CC0 /* adjacency_graphs.json in Resources */,
+				A5D3DA912C4B034D001B05C0 /* Inter-VariableFont.ttf in Resources */,
 				404C72D5265DDF35000473DF /* Assets.xcassets in Resources */,
+				A5D3DA932C4B0445001B05C0 /* Nunito-VariableFont.ttf in Resources */,
 				42CC08352C38839B00A2587B /* Launch Screen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1510,7 +1526,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.6;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.futo.circles;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1547,7 +1563,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.6;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.futo.circles;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
