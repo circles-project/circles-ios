@@ -66,7 +66,7 @@ struct CommentsView: View {
                 Button(action: {
                     // Pick media to attach
                 }) {
-                    Image(systemName: SystemImages.paperclipCircleFill.rawValue)
+                    Image(systemName: SystemImages.paperclip.rawValue)
                         .resizable()
                         .frame(width: 32, height: 32)
                 }
@@ -86,7 +86,7 @@ struct CommentsView: View {
                 AsyncButton(action: {
                     try await send()
                 }) {
-                    Image(systemName: SystemImages.paperplaneCircleFill.rawValue)
+                    Image(systemName: SystemImages.paperplaneFill.rawValue)
                         .resizable()
                         .frame(width: 32, height: 32)
                 }
