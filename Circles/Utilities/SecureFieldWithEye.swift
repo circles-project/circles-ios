@@ -71,6 +71,7 @@ private struct KeyboardControllableTextField: UIViewRepresentable {
 struct SecureFieldWithEye: View {
     let label: String
     var isNewPassword: Bool = false
+    var height: CGFloat = 40.0
     @Binding var text: String
     @State var showText: Bool = false
     @State private var isSecure: Bool = true
@@ -83,7 +84,7 @@ struct SecureFieldWithEye: View {
                                           isSecure: isSecure,
                                           placeholder: label,
                                           isNewPassword: isNewPassword)
-            .frame(height: 40)
+            .frame(height: height)
             
             Button(action: {
                 isSecure.toggle()

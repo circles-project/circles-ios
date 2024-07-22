@@ -86,7 +86,8 @@ struct ContentView: View {
             }
             
         case .needCreds:
-            WelcomeScreen(store: store)
+//            WelcomeScreen(store: store)
+            NewWelcomeScreen(store: store)
             
         case .signingUp(let signupSession):
             SignupScreen(session: signupSession, store: store)
