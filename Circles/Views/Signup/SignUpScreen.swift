@@ -51,6 +51,20 @@ struct SignupScreen: View {
         })
     }
     
+    var backButton: some View {
+        AsyncButton(role: .destructive, action: {
+            try await self.store.disconnect()
+        }) {
+            Image("IconFilledArrowBack")
+                .padding(5)
+                .frame(width: 40.0, height: 40.0)
+        }
+        .background(Color.white)
+        .clipShape(Circle())
+        .padding(.leading, 21)
+        .padding(.top, 65)
+    }
+    
     var notConnectedView: some View {
         VStack {
             Spacer()
@@ -66,17 +80,12 @@ struct SignupScreen: View {
     }
     
     var body: some View {
-        ScrollView {
+        ZStack {
+            Color.greyCool200
             VStack {
-                if !UIDevice.isPhoneSE {
-                    CirclesLogoView()
-                        .frame(minWidth: 50,
-                               idealWidth: 75,
-                               maxWidth: 100,
-                               minHeight: 50,
-                               idealHeight: 75,
-                               maxHeight: 100,
-                               alignment: .center)
+                HStack {
+                    backButton
+                    Spacer()
                 }
                 
                 switch session.state {
@@ -100,11 +109,8 @@ struct SignupScreen: View {
                 }
             }
         }
-        .safeAreaInset(edge: .bottom) {
-            cancelButton
-        }
+        .background(Color.greyCool200)
     }
-
 }
 
 /*

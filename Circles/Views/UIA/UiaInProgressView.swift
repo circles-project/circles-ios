@@ -18,7 +18,6 @@ struct UiaInProgressView: View {
     @State var emailLoginSecret = ""
     
     var body: some View {
-
         // Text("UIA in progress")
 
         if let stage = stages.first {
@@ -70,6 +69,5 @@ struct UiaInProgressView: View {
         } else {
             Text("Looks like we're all done!")
         }
-        
     }
 }

@@ -12,6 +12,7 @@ struct BigRoundedButtonStyle: ButtonStyle {
     var height: CGFloat = 40.0
     var color: Color = .accentColor
     var borderWidth: CGFloat = 0
+    var textColor: Color = .white
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -21,7 +22,7 @@ struct BigRoundedButtonStyle: ButtonStyle {
                 RoundedRectangle(cornerRadius: 10)
                     .stroke(Color.white, lineWidth: borderWidth)
             )
-            .foregroundColor(.white)
+            .foregroundColor(textColor)
             .background(configuration.isPressed ? color.opacity(0.8) : color)
             .cornerRadius(10)
             .scaleEffect(configuration.isPressed ? 0.95 : 1.0)

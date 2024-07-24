@@ -176,6 +176,7 @@ struct BsspekeEnrollOprfForm: View {
     @ViewBuilder
     var savePasswordView: some View {
         VStack(spacing: 20) {
+            Spacer()
             Text("Would you like to save your passphrase to iCloud Keychain?")
             
             AsyncButton(action: {
@@ -192,9 +193,9 @@ struct BsspekeEnrollOprfForm: View {
                 Text("Don't save my passphrase")
             }
             .buttonStyle(BigRoundedButtonStyle())
+            Spacer()
         }
         .padding(.top)
-
     }
     
     var body: some View {
