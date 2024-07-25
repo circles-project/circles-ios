@@ -31,7 +31,7 @@ struct UsernameEnrollForm: View {
         VStack(alignment: .leading) {
             Text("Choose your User ID")
                 .font(
-                    Font.custom("Nunito", size: 14)
+                    CustomFonts.nunito14
                         .weight(.bold)
                 )
                 .foregroundColor(Color.greyCool1100)

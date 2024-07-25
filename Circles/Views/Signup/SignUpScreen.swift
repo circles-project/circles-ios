@@ -55,7 +55,7 @@ struct SignupScreen: View {
         AsyncButton(role: .destructive, action: {
             try await self.store.disconnect()
         }) {
-            Image("IconFilledArrowBack")
+            Image(SystemImages.iconFilledArrowBack.rawValue)
                 .padding(5)
                 .frame(width: 40.0, height: 40.0)
         }

@@ -33,7 +33,7 @@ struct TextContentView: View {
         Markdown(markdown)
             .textSelection(.enabled)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .font(Font.custom("Inter", size: 14))
+            .font(CustomFonts.inter14)
     }
 }
 
@@ -58,7 +58,7 @@ struct ImageContentView: View {
                             let markdown = MarkdownContent(caption)
                             Markdown(markdown)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                .font(Font.custom("Inter", size: 14))
+                                .font(CustomFonts.inter14)
 
                             
                             Spacer()
@@ -94,7 +94,7 @@ struct MessageCard: MessageView {
     @State var showMessageDeleteConfirmation = false
     @AppStorage("mediaViewWidth") var mediaViewWidth: Double = 0
     
-    let footerFont: Font = Font.custom("Inter", size: 14)
+    let footerFont: Font = CustomFonts.inter14
                                .weight(.medium)
     let footerForegroundColor = Color.greyCool1000
     
@@ -304,13 +304,13 @@ struct MessageCard: MessageView {
             VStack(alignment: .leading) {
                 UserNameView(user: message.sender)
                     .font(
-                        Font.custom("Nunito", size: 14)
+                        CustomFonts.nunito14
                             .weight(.heavy)
                     )
                     .foregroundColor(.greyCool1100)
                 timestamp
                     .font(
-                        Font.custom("Nunito", size: 12)
+                        CustomFonts.nunito12
                             .weight(.semibold)
                     )
                     .foregroundColor(.greyCool800)

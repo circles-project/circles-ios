@@ -26,6 +26,8 @@ func loginFilter(flow: AuthFlow) -> Bool {
 
 struct LoginScreen: View {
     var store: CirclesStore
+    @Environment(\.presentationMode) var presentationMode
+    
     @State var username = ""
     @State var password = ""
     @State var showPassword = false
@@ -34,12 +36,34 @@ struct LoginScreen: View {
     @State var showUsernameError = false
     @Binding var showDomainPicker: Bool
     
+    var backButton: some View {
+        Button(role: .destructive, action: {
+            Task {
+                try await self.store.disconnect()
+            }
+            self.presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(SystemImages.iconFilledArrowBack.rawValue)
+                .padding(5)
+                .frame(width: 40.0, height: 40.0)
+        }
+        .background(Color.white)
+        .clipShape(Circle())
+        .padding(.leading, 21)
+        .padding(.top, 65)
+    }
+    
     var body: some View {
         ZStack {
             Color.greyCool200
                 .edgesIgnoringSafeArea(.all)
             
             NavigationStack {
+                HStack {
+                    backButton
+                    Spacer()
+                }
+
                 VStack {
                     let buttonWidth = UIScreen.main.bounds.width - 24 * 2
                     let buttonHeight: CGFloat = 48.0
@@ -58,9 +82,7 @@ struct LoginScreen: View {
                             .background(Color.white)
                             .cornerRadius(10)
                             .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(hex: "DEE1E6"))) // Color.grey400
-                    }
-                    
-                    VStack(alignment: .leading) {
+                        
                         Text("Password")
                             .bold()
                             .font(.callout)
@@ -143,17 +165,18 @@ struct LoginScreen: View {
                     
                     HStack {
                         Text("Don't have an account?")
-                            .font(Font.custom("Outfit", size: 14))
+                            .font(CustomFonts.outfit14)
                         Button("Sign Up here") {
                             self.showDomainPicker = true
                         }
-                        .font(Font.custom("Outfit", size: 14))
+                        .font(CustomFonts.outfit14)
                     }
                     .padding(.bottom, 28)
                 }
                 .padding(.horizontal)
             }
         }
+        .navigationBarBackButtonHidden()
     }
 }
 
@@ -164,7 +187,7 @@ struct WelcomeScreen: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Image("launchcirclebackground")
+                Image(SystemImages.launchCircleBackground.rawValue)
                     .resizable()
                     .scaledToFill()
                     .edgesIgnoringSafeArea(.all)

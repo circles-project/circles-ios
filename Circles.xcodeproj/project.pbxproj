@@ -72,6 +72,8 @@
 		424CEE072C1A2B08005D871C /* ChangelogSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424CEE062C1A2B08005D871C /* ChangelogSheet.swift */; };
 		424CEE092C1B6099005D871C /* CHANGELOG_LastUpdates.md in Resources */ = {isa = PBXBuildFile; fileRef = 424CEE082C1B6098005D871C /* CHANGELOG_LastUpdates.md */; };
 		424CEE0C2C1B7AF9005D871C /* UIDevice+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424CEE0B2C1B7AF9005D871C /* UIDevice+Extensions.swift */; };
+		4273C3BD2C52AD0F00F4A132 /* CustomFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4273C3BC2C52AD0F00F4A132 /* CustomFonts.swift */; };
+		4273C3BF2C52AD2C00F4A132 /* SystemImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4273C3BE2C52AD2C00F4A132 /* SystemImages.swift */; };
 		42A4CE432C17583A004792DC /* View+Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A4CE422C17583A004792DC /* View+Extentions.swift */; };
 		42CC08352C38839B00A2587B /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 42CC08342C38839B00A2587B /* Launch Screen.storyboard */; };
 		42CCE0CC2C122D7B001B19D2 /* ViewModifier+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CCE0CB2C122D7B001B19D2 /* ViewModifier+Extensions.swift */; };
@@ -331,6 +333,8 @@
 		424CEE062C1A2B08005D871C /* ChangelogSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangelogSheet.swift; sourceTree = "<group>"; };
 		424CEE082C1B6098005D871C /* CHANGELOG_LastUpdates.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG_LastUpdates.md; sourceTree = "<group>"; };
 		424CEE0B2C1B7AF9005D871C /* UIDevice+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Extensions.swift"; sourceTree = "<group>"; };
+		4273C3BC2C52AD0F00F4A132 /* CustomFonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFonts.swift; sourceTree = "<group>"; };
+		4273C3BE2C52AD2C00F4A132 /* SystemImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemImages.swift; sourceTree = "<group>"; };
 		42A4CE422C17583A004792DC /* View+Extentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Extentions.swift"; sourceTree = "<group>"; };
 		42CC08342C38839B00A2587B /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		42CCE0CB2C122D7B001B19D2 /* ViewModifier+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModifier+Extensions.swift"; sourceTree = "<group>"; };
@@ -601,6 +605,7 @@
 				40AEA6722678E24100C9CBD1 /* BlurHashDecode.swift */,
 				40AEA6732678E24200C9CBD1 /* BlurHashEncode.swift */,
 				A52DF68F29E8AB52008860C3 /* Color+extensions.swift */,
+				4273C3BC2C52AD0F00F4A132 /* CustomFonts.swift */,
 				4012C54826A752C400BB15E6 /* EmojiPicker.swift */,
 				A5A40B6229D46ABD009A17EE /* HtmlView.swift */,
 				409F4314265DE0F400690A61 /* ImageSaver.swift */,
@@ -609,6 +614,7 @@
 				A520B6782A9410BE002D88C8 /* Movie.swift */,
 				4047F3DD26B895B80010B2C3 /* SecureFieldWithEye.swift */,
 				A5D2A3F529C0EED700428C45 /* Sequence+asyncMap.swift */,
+				4273C3BE2C52AD2C00F4A132 /* SystemImages.swift */,
 				409F42E5265DE03B00690A61 /* Utils.swift */,
 				409F42E8265DE06C00690A61 /* WebView.swift */,
 				A5CC0ACA29D91F3D005935F0 /* zxcvbn */,
@@ -1167,11 +1173,13 @@
 				A51503C42B75690700E1566E /* SaveImage.swift in Sources */,
 				403CEA9326E864160054DBF4 /* TermsOfServiceForm.swift in Sources */,
 				40878FCA2694DBC400A66EF0 /* PostComposerScreen.swift in Sources */,
+				4273C3BF2C52AD2C00F4A132 /* SystemImages.swift in Sources */,
 				A55330412B6826C500695436 /* SecretStorageCreationScreen.swift in Sources */,
 				A52ACB932A7969F6005D90C5 /* GalleryInvitationsView.swift in Sources */,
 				409F4326265DE12600690A61 /* CloudImagePicker.swift in Sources */,
 				A54A27882A843BB200858846 /* GroupInvitationsIndicator.swift in Sources */,
 				A5A7E228282B06FD001A528D /* ApplicationState.swift in Sources */,
+				4273C3BD2C52AD0F00F4A132 /* CustomFonts.swift in Sources */,
 				A5634FCC2C41DF4A00D60DFB /* UnifiedTimelineComposerSheet.swift in Sources */,
 				A562C0982B16981C00522FCB /* AppStoreInterface.swift in Sources */,
 				A5BB4EF12BD02D26001FD0D8 /* VideoDetailView.swift in Sources */,

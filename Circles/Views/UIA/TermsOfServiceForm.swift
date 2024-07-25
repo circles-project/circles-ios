@@ -105,27 +105,27 @@ struct TermsOfServiceForm: View {
     
     func customViewWith(title: String, version: String, screenWidth: CGFloat, document: DocumentToShow, isAccepted: Bool) -> some View {
         HStack {
-            Image("Page")
+            Image(SystemImages.page.rawValue)
                 .frame(width: 23.2, height: 29)
                 .padding(.leading, 20)
             
             VStack(alignment: .leading) {
                 Text(title)
                     .font(
-                        Font.custom("Nunito", size: 14)
+                        CustomFonts.nunito14
                             .weight(.heavy)
                     )
                     .foregroundColor(Color.greyCool1100)
                 
                 Text(version)
-                    .font(Font.custom("Outfit", size: 11))
+                    .font(CustomFonts.outfit11)
                     .foregroundColor(Color.greyCool800)
             }
             
             Spacer()
             
             if isAccepted {
-                Image("acceptedCircle")
+                Image(SystemImages.acceptedCircle.rawValue)
                     .frame(width: 28, height: 28)
             }
             
@@ -136,7 +136,7 @@ struct TermsOfServiceForm: View {
                 }
             } label: {
                 Text("")
-                Image("forwardArrow")
+                Image(SystemImages.forwardArrow.rawValue)
             }
             .frame(width: 48, height: 48)
             .padding(.trailing, 20)
@@ -152,7 +152,7 @@ struct TermsOfServiceForm: View {
         VStack(alignment: .leading) {
             Text("Read and agree to the terms")
                 .font(
-                    Font.custom("Nunito", size: 20)
+                    CustomFonts.nunito20
                         .weight(.heavy)
                 )
                 .foregroundColor(Color.greyCool1100)
@@ -160,7 +160,7 @@ struct TermsOfServiceForm: View {
             
             Text("Please read our Privacy Policy and Terms & Conditions carefully. By agreeing to these terms, you ensure a secure and enjoyable experience on our platform.")
                 .font(
-                    Font.custom("Nunito", size: 14)
+                    CustomFonts.nunito14
                         .weight(.semibold)
                 )
                 .foregroundColor(Color.greyCool900)
@@ -181,7 +181,7 @@ struct TermsOfServiceForm: View {
             Spacer()
             Text("Please take a moment to read our Privacy Policy and Terms & Conditions. These documents explain how we handle your data and the rules for using our app, ensuring a safe and transparent experience for all users.")
                 .font(
-                    Font.custom("Nunito", size: 12)
+                    CustomFonts.nunito12
                         .weight(.medium)
                 )
                 .foregroundColor(Color.greyCool800)
@@ -208,7 +208,7 @@ struct TermsOfServiceForm: View {
             .cornerRadius(8)
             .padding(.top, 27)
             .padding(.bottom, 48)
-            .disabled(!isPrivacyPolicyAccepted && !isTermAndConditionsAccepted)
+            .disabled(!isPrivacyPolicyAccepted || !isTermAndConditionsAccepted)
             .sheet(isPresented: $isPrivacyPolicyShown) {
                 TermsOfServicePolicySheet(policy: policies[0],
                                           screenWidthWithOffsets: screenWidthWithOffsets,
