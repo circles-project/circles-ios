@@ -31,6 +31,12 @@ struct UnifiedTimeline: View {
         self.cutoff = now.addingTimeInterval(300.0)
     }
     
+    private func scrollToFirstMessage(_ proxy: ScrollViewProxy) {
+        DispatchQueue.main.async {
+            proxy.scrollTo(topOfTheScreen, anchor: .top)
+        }
+    }
+
     var debugFooter: some View {
         VStack(alignment: .leading) {
             Button(action: {self.showDebug = false}) {
@@ -113,6 +119,11 @@ struct UnifiedTimeline: View {
                         Color.clear
                             .frame(height: 1)
                             .id(topOfTheScreen)
+                        
+                        if let _ = space.localEchoMessage {
+                            let _ = self.scrollToFirstMessage(proxy) // foo
+                        }
+                        
                         ForEach(messages) { message in
                             HStack {
                                 if DebugModel.shared.debugMode && showDebug {
@@ -171,10 +182,6 @@ struct UnifiedTimeline: View {
                     _ = Task {
                         try await space.paginateEmptyTimelines(limit: 25)
                     }
-                }
-                .onChange(of: messages) { _ in
-                    // Scroll to the new message
-                    proxy.scrollTo(topOfTheScreen, anchor: .top)
                 }
                 .refreshable {
                     async let results = space.rooms.values.map { room in

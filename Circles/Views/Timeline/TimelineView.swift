@@ -16,6 +16,12 @@ struct TimelineView<V: MessageView>: View {
     @State var selectedMessage: Matrix.Message?
     var topOfTheScreen = "top"
     
+    private func scrollToFirstMessage(_ proxy: ScrollViewProxy) {
+        DispatchQueue.main.async {
+            proxy.scrollTo(topOfTheScreen, anchor: .top)
+        }
+    }
+    
     var footer: some View {
         VStack(alignment: .center) {
             HStack(alignment: .bottom) {
@@ -95,7 +101,10 @@ struct TimelineView<V: MessageView>: View {
                     Color.clear
                         .frame(height: 1)
                         .id(topOfTheScreen)
+                    
                     if let msg = room.localEchoMessage {
+                        let _ = self.scrollToFirstMessage(proxy) // foo
+                        
                         MessageCard(message: msg, isLocalEcho: true, isThreaded: false)
                         //.border(Color.red)
                             .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
@@ -121,10 +130,6 @@ struct TimelineView<V: MessageView>: View {
                 }
                 .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
                 .padding(.horizontal, 12)
-            }
-            .onChange(of: room.timeline) { _ in
-                // Scroll to the new message
-                proxy.scrollTo(topOfTheScreen, anchor: .top)
             }
         }
         .padding(0)
