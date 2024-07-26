@@ -83,6 +83,15 @@ struct CirclesTabbedInterface: View {
                 }
                 .tag(Tab.groups)
             
+            ChatOverviewScreen(session: self.session.matrix,
+                               selected: $session.viewState.selectedChatId)
+            .environmentObject(session)
+            .tabItem {
+                Image(systemName: SystemImages.bubble.rawValue)
+                Text("Chat")
+            }
+            .tag(Tab.chat)
+            
             PeopleOverviewScreen(people: self.session.people,
                                  profile: self.session.profile,
                                  timelines: self.session.timelines,

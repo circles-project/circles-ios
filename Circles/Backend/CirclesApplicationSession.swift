@@ -42,6 +42,7 @@ class CirclesApplicationSession: ObservableObject {
             case circles
             case people
             case groups
+            case chat
             case photos
             case settings
         }
@@ -51,6 +52,7 @@ class CirclesApplicationSession: ObservableObject {
         @Published var selectedGroupId: RoomId?
         @Published var selectedTimelineId: RoomId?
         @Published var selectedGalleryId: RoomId?
+        @Published var selectedChatId: RoomId?
         
         @MainActor
         func navigate(tab: Tab, selected: RoomId?) {
@@ -65,6 +67,9 @@ class CirclesApplicationSession: ObservableObject {
             case .groups:
                 self.tab = .groups
                 self.selectedGroupId = selected
+            case .chat:
+                self.tab = .chat
+                self.selectedChatId = selected
             case .photos:
                 self.tab = .photos
                 self.selectedGalleryId = selected

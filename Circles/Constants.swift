@@ -155,6 +155,7 @@ enum SystemImages: String {
     
     // MARK: - Once
     case bubbleLeftAndBubbleRightFill = "bubble.left.and.bubble.right.fill"
+    case bubble = "bubble"
     case bubbleRight = "bubble.right"
     case circle = "circle"
     case circlesHexagonpath = "circles.hexagonpath"

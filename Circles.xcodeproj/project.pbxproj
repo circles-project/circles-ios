@@ -144,6 +144,11 @@
 		A54BA3A928529BE500453D5E /* SetupScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BA3A828529BE500453D5E /* SetupScreen.swift */; };
 		A553303F2B65689700695436 /* RoomCryptoInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A553303E2B65689700695436 /* RoomCryptoInfoView.swift */; };
 		A55330412B6826C500695436 /* SecretStorageCreationScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55330402B6826C500695436 /* SecretStorageCreationScreen.swift */; };
+		A5582CDC2C54122900507D9D /* ChatOverviewScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5582CDB2C54122900507D9D /* ChatOverviewScreen.swift */; };
+		A5582CDE2C54150000507D9D /* ChatOverviewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5582CDD2C54150000507D9D /* ChatOverviewRow.swift */; };
+		A5582CE02C54159700507D9D /* ChatCreationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5582CDF2C54159700507D9D /* ChatCreationSheet.swift */; };
+		A5582CE22C54179600507D9D /* ChatTimelineScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5582CE12C54179600507D9D /* ChatTimelineScreen.swift */; };
+		A5582CE42C5418B700507D9D /* ChatSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5582CE32C5418B700507D9D /* ChatSettingsView.swift */; };
 		A55B8F1E2A8D761A00BAA1FD /* SecretStoragePasswordScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55B8F1D2A8D761A00BAA1FD /* SecretStoragePasswordScreen.swift */; };
 		A55F367329EDB66300F46971 /* GalleryInviteCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55F367229EDB66300F46971 /* GalleryInviteCard.swift */; };
 		A55F367529EEE7EA00F46971 /* PhotoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55F367429EEE7EA00F46971 /* PhotoDetailView.swift */; };
@@ -404,6 +409,11 @@
 		A54BA3A828529BE500453D5E /* SetupScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupScreen.swift; sourceTree = "<group>"; };
 		A553303E2B65689700695436 /* RoomCryptoInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomCryptoInfoView.swift; sourceTree = "<group>"; };
 		A55330402B6826C500695436 /* SecretStorageCreationScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecretStorageCreationScreen.swift; sourceTree = "<group>"; };
+		A5582CDB2C54122900507D9D /* ChatOverviewScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatOverviewScreen.swift; sourceTree = "<group>"; };
+		A5582CDD2C54150000507D9D /* ChatOverviewRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatOverviewRow.swift; sourceTree = "<group>"; };
+		A5582CDF2C54159700507D9D /* ChatCreationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatCreationSheet.swift; sourceTree = "<group>"; };
+		A5582CE12C54179600507D9D /* ChatTimelineScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTimelineScreen.swift; sourceTree = "<group>"; };
+		A5582CE32C5418B700507D9D /* ChatSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSettingsView.swift; sourceTree = "<group>"; };
 		A55B8F1D2A8D761A00BAA1FD /* SecretStoragePasswordScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecretStoragePasswordScreen.swift; sourceTree = "<group>"; };
 		A55F367229EDB66300F46971 /* GalleryInviteCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryInviteCard.swift; sourceTree = "<group>"; };
 		A55F367429EEE7EA00F46971 /* PhotoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailView.swift; sourceTree = "<group>"; };
@@ -653,6 +663,7 @@
 		409F430C265DE0CE00690A61 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				A5582CDA2C5411D000507D9D /* Chat */,
 				422C08F22C1352CA00ADE377 /* View+Extensions */,
 				A54A83092C066E8000CE4000 /* Help */,
 				A562C08D2AFE8EA800522FCB /* CirclesLogoView.swift */,
@@ -914,6 +925,18 @@
 				A54A83102C08D0F000CE4000 /* SetupAddNewCircleSheet.swift */,
 			);
 			path = Setup;
+			sourceTree = "<group>";
+		};
+		A5582CDA2C5411D000507D9D /* Chat */ = {
+			isa = PBXGroup;
+			children = (
+				A5582CDB2C54122900507D9D /* ChatOverviewScreen.swift */,
+				A5582CDD2C54150000507D9D /* ChatOverviewRow.swift */,
+				A5582CDF2C54159700507D9D /* ChatCreationSheet.swift */,
+				A5582CE12C54179600507D9D /* ChatTimelineScreen.swift */,
+				A5582CE32C5418B700507D9D /* ChatSettingsView.swift */,
+			);
+			path = Chat;
 			sourceTree = "<group>";
 		};
 		A5A40B6429D6088A009A17EE /* UIA */ = {
@@ -1192,6 +1215,7 @@
 				A55330412B6826C500695436 /* SecretStorageCreationScreen.swift in Sources */,
 				A52ACB932A7969F6005D90C5 /* GalleryInvitationsView.swift in Sources */,
 				409F4326265DE12600690A61 /* CloudImagePicker.swift in Sources */,
+				A5582CDE2C54150000507D9D /* ChatOverviewRow.swift in Sources */,
 				A54A27882A843BB200858846 /* GroupInvitationsIndicator.swift in Sources */,
 				A5A7E228282B06FD001A528D /* ApplicationState.swift in Sources */,
 				A5634FCC2C41DF4A00D60DFB /* UnifiedTimelineComposerSheet.swift in Sources */,
@@ -1218,6 +1242,7 @@
 				A52DF69029E8AB52008860C3 /* Color+extensions.swift in Sources */,
 				A5D3C9C12A708F1300B41CC0 /* DBZxcvbn.m in Sources */,
 				A5D3C9C32A708F1300B41CC0 /* DBScorer.m in Sources */,
+				A5582CE02C54159700507D9D /* ChatCreationSheet.swift in Sources */,
 				A55F367329EDB66300F46971 /* GalleryInviteCard.swift in Sources */,
 				409F4323265DE11900690A61 /* Constants.swift in Sources */,
 				A52C77542A89CCB8005D2C0B /* MessageThumbnail.swift in Sources */,
@@ -1275,6 +1300,7 @@
 				A56593612AEBE5D30003C244 /* Room+URL.swift in Sources */,
 				A54A83112C08D0F000CE4000 /* SetupAddNewCircleSheet.swift in Sources */,
 				409F4370265DE24000690A61 /* PersonHeaderRow.swift in Sources */,
+				A5582CE22C54179600507D9D /* ChatTimelineScreen.swift in Sources */,
 				409F4332265DE15F00690A61 /* CircleCreationSheet.swift in Sources */,
 				40CD7F6F2667E16100DE315F /* VideoPicker.swift in Sources */,
 				A53E91322A5F152D007B0196 /* AcknowledgementsView.swift in Sources */,
@@ -1287,6 +1313,7 @@
 				A5921EB72AFAD5E400C2331D /* CircleFollowingRow.swift in Sources */,
 				A57BD8442BD1996800EC07E9 /* FollowersView.swift in Sources */,
 				A56BE17B2AD6ED4000B15F51 /* ScanQrCodeAndKnockSheet.swift in Sources */,
+				A5582CE42C5418B700507D9D /* ChatSettingsView.swift in Sources */,
 				A5B74F422BC5F92900299D90 /* KnockOnRoomView.swift in Sources */,
 				A54A278C2A843C5F00858846 /* InvitedGroupCard.swift in Sources */,
 				A562C0962B165E5C00522FCB /* SubscriptionSettingsView.swift in Sources */,
@@ -1318,6 +1345,7 @@
 				424CEE0C2C1B7AF9005D871C /* UIDevice+Extensions.swift in Sources */,
 				A553303F2B65689700695436 /* RoomCryptoInfoView.swift in Sources */,
 				A53E91222A5623F9007B0196 /* ProfileSettingsView.swift in Sources */,
+				A5582CDC2C54122900507D9D /* ChatOverviewScreen.swift in Sources */,
 				409F4315265DE0F400690A61 /* ImagePicker.swift in Sources */,
 				A565935F2AEAC4920003C244 /* QR.swift in Sources */,
 				A52DF68129E59A81008860C3 /* RoomAvatarView.swift in Sources */,
