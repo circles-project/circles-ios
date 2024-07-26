@@ -190,6 +190,8 @@ struct WelcomeScreen: View {
                 Image(SystemImages.launchCircleBackground.rawValue)
                     .resizable()
                     .scaledToFill()
+                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+                    .clipped()
                     .edgesIgnoringSafeArea(.all)
                 
                 VStack {
@@ -204,12 +206,12 @@ struct WelcomeScreen: View {
                     
                     Spacer()
                     
-                    let buttonWidth = UIScreen.main.bounds.width - 24 * 2
+                    let buttonWidth = UIDevice.isPad ? 400 : UIScreen.main.bounds.width - 24 * 2
                     let buttonHeight: CGFloat = 48.0
                     let signUpButtonStyle = BigRoundedButtonStyle(width: buttonWidth,
                                                                   height: buttonHeight,
                                                                   color: Color.accentColor)
-                                        
+                    
                     Button(action: {
                         self.showDomainPicker = true
                     }) {
