@@ -67,6 +67,7 @@ enum SystemImages: String {
     case minusMagnifyingglass = "minus.magnifyingglass"
     case page = "Page"
     case paperclip = "paperclip"
+    case paperplaneFill = "paperplane.fill"
     case person2SquareStack = "person.2.square.stack"
     case personCropSquare = "person.crop.square"
     case photoBadgePlusFill = "photo.badge.plus.fill"
