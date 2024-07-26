@@ -14,45 +14,50 @@ struct SignupFinishedView: View {
     var store: CirclesStore
 
     var body: some View {
-        VStack {
-            CirclesLogoView()
-                .frame(minWidth: 100,
-                       idealWidth: 150,
-                       maxWidth: 200,
-                       minHeight: 100,
-                       idealHeight: 150,
-                       maxHeight: 200,
-                       alignment: .center)
-                        
-            Text("Successfully signed up!")
-                .font(.title2)
-                .fontWeight(.bold)
-                .padding(.top)
-
-            VStack {
-                Text("Your new user ID is:")
-                Text(creds.userId.stringValue)
-                    .padding(.leading)
-                    .padding(.top)
-            }
-            .padding(.vertical, 20)
+        ZStack {
+            Color.greyCool200
             
-            Text("Your user ID works like a username or an email address. Friends will need your user ID in order to invite you to follow them.")
-
-            Spacer()
-
-            AsyncButton(action: {
-                do {
-                    try await store.connect(creds: creds, s4Key: key)
-                } catch {
-                    print("Failed to connect with creds for user \(creds.userId)")
+            VStack {
+                CirclesLogoView()
+                    .frame(minWidth: 100,
+                           idealWidth: 150,
+                           maxWidth: 200,
+                           minHeight: 100,
+                           idealHeight: 150,
+                           maxHeight: 200,
+                           alignment: .center)
+                
+                Text("Successfully signed up!")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .padding(.top)
+                
+                VStack {
+                    Text("Your new user ID is:")
+                    Text(creds.userId.stringValue)
+                        .padding(.leading)
+                        .padding(.top)
                 }
-            }) {
-                Text("Next: Set up your account")
+                .padding(.vertical, 20)
+                
+                Text("Your user ID works like a username or an email address. Friends will need your user ID in order to invite you to follow them.")
+                
+                Spacer()
+                
+                AsyncButton(action: {
+                    do {
+                        try await store.connect(creds: creds, s4Key: key)
+                    } catch {
+                        print("Failed to connect with creds for user \(creds.userId)")
+                    }
+                }) {
+                    Text("Next: Set up your account")
+                }
+                .buttonStyle(BigRoundedButtonStyle())
             }
-            .buttonStyle(BigRoundedButtonStyle())
+            .padding()
         }
-        .padding()
+        .background(Color.greyCool200)
     }
 }
 

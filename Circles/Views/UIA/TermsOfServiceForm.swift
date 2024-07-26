@@ -14,7 +14,6 @@ struct TermsOfServicePolicySheet: View {
     var screenWidthWithOffsets: CGFloat = 0
     @State var content: MarkdownContent?
     @Environment(\.presentationMode) var presentation
-    @Binding var isDocumentAccepted: Bool
     
     var body: some View {
         let color = Color.white
@@ -36,7 +35,6 @@ struct TermsOfServicePolicySheet: View {
                     
                     VStack {
                         Button(action: {
-                            isDocumentAccepted = true
                             self.presentation.wrappedValue.dismiss()
                         }) {
                             Text("Accept")
@@ -44,7 +42,6 @@ struct TermsOfServicePolicySheet: View {
                         .buttonStyle(BigRoundedButtonStyle(width: screenWidthWithOffsets, height: 48))
                         
                         Button(action: {
-                            isDocumentAccepted = false
                             self.presentation.wrappedValue.dismiss()
                         }) {
                             Text("Reject")
@@ -100,10 +97,11 @@ struct TermsOfServiceForm: View {
     
     @State var isPrivacyPolicyShown = false
     @State var isTermAndConditionsShown = false
-    @State var isPrivacyPolicyAccepted = false
-    @State var isTermAndConditionsAccepted = false
     
-    func customViewWith(title: String, version: String, screenWidth: CGFloat, document: DocumentToShow, isAccepted: Bool) -> some View {
+    func customViewWith(title: String,
+                        version: String,
+                        screenWidth: CGFloat,
+                        document: DocumentToShow) -> some View {
         HStack {
             Image(SystemImages.page.rawValue)
                 .frame(width: 23.2, height: 29)
@@ -124,10 +122,8 @@ struct TermsOfServiceForm: View {
             
             Spacer()
             
-            if isAccepted {
-                Image(SystemImages.acceptedCircle.rawValue)
-                    .frame(width: 28, height: 28)
-            }
+            Image(SystemImages.acceptedCircle.rawValue)
+                .frame(width: 28, height: 28)
             
             Button {
                 switch document {
@@ -171,13 +167,11 @@ struct TermsOfServiceForm: View {
             customViewWith(title: "Privacy Policy",
                            version: "v 1.3",
                            screenWidth: screenWidthWithOffsets,
-                           document: .privacyPolicy,
-                           isAccepted: isPrivacyPolicyAccepted)
+                           document: .privacyPolicy)
             customViewWith(title: "Terms & Conditions",
                            version: "v 1.3",
                            screenWidth: screenWidthWithOffsets,
-                           document: .termAndConditions,
-                           isAccepted: isTermAndConditionsAccepted)
+                           document: .termAndConditions)
             Spacer()
             Text("Please take a moment to read our Privacy Policy and Terms & Conditions. These documents explain how we handle your data and the rules for using our app, ensuring a safe and transparent experience for all users.")
                 .font(
@@ -200,24 +194,21 @@ struct TermsOfServiceForm: View {
                     self.showAlert = true
                 }
             }) {
-                Text("Continue")
+                Text("Accept and Continue")
                     .foregroundStyle(Color.white)
             }
             .frame(width: screenWidthWithOffsets, height: 48)
-            .background(isPrivacyPolicyAccepted && isTermAndConditionsAccepted ? Color.accentColor : .greyCool300)
+            .background(Color.accentColor)
             .cornerRadius(8)
             .padding(.top, 27)
             .padding(.bottom, 48)
-            .disabled(!isPrivacyPolicyAccepted || !isTermAndConditionsAccepted)
             .sheet(isPresented: $isPrivacyPolicyShown) {
                 TermsOfServicePolicySheet(policy: policies[0],
-                                          screenWidthWithOffsets: screenWidthWithOffsets,
-                                          isDocumentAccepted: $isPrivacyPolicyAccepted)
+                                          screenWidthWithOffsets: screenWidthWithOffsets)
             }
             .sheet(isPresented: $isTermAndConditionsShown) {
                 TermsOfServicePolicySheet(policy: policies[1],
-                                          screenWidthWithOffsets: screenWidthWithOffsets,
-                                          isDocumentAccepted: $isTermAndConditionsAccepted)
+                                          screenWidthWithOffsets: screenWidthWithOffsets)
             }
             .alert(isPresented: $showAlert) {
                 Alert(title: Text(alertTitle),
