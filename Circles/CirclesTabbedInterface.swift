@@ -88,7 +88,7 @@ struct CirclesTabbedInterface: View {
             .environmentObject(session)
             .tabItem {
                 Image(systemName: SystemImages.bubble.rawValue)
-                Text("Chat")
+                Text("Messages")
             }
             .tag(Tab.chat)
             

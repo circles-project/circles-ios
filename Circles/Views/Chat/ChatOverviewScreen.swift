@@ -103,7 +103,7 @@ struct ChatOverviewScreen: View {
             overlay
         }
         .padding(.top)
-        .navigationBarTitle(Text("Chat"), displayMode: .inline)
+        .navigationBarTitle(Text("Messages"), displayMode: .inline)
         .refreshable {
             self.reload()
         }
