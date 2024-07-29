@@ -17,10 +17,13 @@ struct UnifiedTimeline: View {
     @State private var loading = false
     private var cutoff: Date
     private var topOfTheScreen = "top"
+    @ObservedObject var messageStatus = MessageStatus(isMessageSent: false)
 
-    init(space: TimelineSpace) {
+    init(space: TimelineSpace,
+         messageStatus: MessageStatus = MessageStatus(isMessageSent: false)) {
         self.space = space
         self.formatter = DateFormatter()
+        self.messageStatus = messageStatus
         formatter.dateStyle = .long
         formatter.timeStyle = .long
 
@@ -35,6 +38,13 @@ struct UnifiedTimeline: View {
         DispatchQueue.main.async {
             proxy.scrollTo(topOfTheScreen, anchor: .top)
         }
+    }
+    
+    private func makeScroll(with proxy: ScrollViewProxy) -> Int {
+        scrollToFirstMessage(proxy)
+        messageStatus.isMessageSent = false
+        
+        return 0
     }
 
     var debugFooter: some View {
@@ -120,8 +130,8 @@ struct UnifiedTimeline: View {
                             .frame(height: 1)
                             .id(topOfTheScreen)
                         
-                        if let _ = space.localEchoMessage {
-                            let _ = self.scrollToFirstMessage(proxy) // foo
+                        if messageStatus.isMessageSent {
+                            let _ = makeScroll(with: proxy) // foo
                         }
                         
                         ForEach(messages) { message in

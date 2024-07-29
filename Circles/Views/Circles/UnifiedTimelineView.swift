@@ -25,6 +25,7 @@ extension CircleSheetType: Identifiable {
 struct UnifiedTimelineView: View {
     @ObservedObject var space: TimelineSpace
     @Environment(\.presentationMode) var presentation
+    @StateObject private var messageStatus = MessageStatus()
     
     //@State var showComposer = false
     @State var sheetType: CircleSheetType? = nil
@@ -58,7 +59,7 @@ struct UnifiedTimelineView: View {
             ZStack {
                 let _ = self.stupidSwiftUiTrick // foo
                 
-                UnifiedTimeline(space: space)
+                UnifiedTimeline(space: space, messageStatus: messageStatus)
                     .navigationBarTitle("All Posts", displayMode: .inline)
                     .toolbar {
                         ToolbarItemGroup(placement: .automatic) {
@@ -72,7 +73,7 @@ struct UnifiedTimelineView: View {
                         print("DEBUGUI\tStreamTimeline disappeared for Circle \(space.roomId)")
                     }
                     .sheet(isPresented: $showNewPostInSheetStyle) {
-                        UnifiedTimelineComposerSheet(timelines: space)
+                        UnifiedTimelineComposerSheet(timelines: space, messageStatus: messageStatus)
                     }
                 
                 let circles = space.circles
