@@ -11,6 +11,7 @@ import Matrix
 
 struct TimelineView<V: MessageView>: View {
     @ObservedObject var room: Matrix.Room
+    @StateObject var messageStatus = MessageStatus()
     @State var debug = false
     @State var loading = false
     @State var selectedMessage: Matrix.Message?
@@ -102,9 +103,11 @@ struct TimelineView<V: MessageView>: View {
                         .frame(height: 1)
                         .id(topOfTheScreen)
                     
-                    if let msg = room.localEchoMessage {
+                    if messageStatus.isMessageSent {
                         let _ = self.scrollToFirstMessage(proxy) // foo
-                        
+                    }
+                    
+                    if let msg = room.localEchoMessage {
                         MessageCard(message: msg, isLocalEcho: true, isThreaded: false)
                         //.border(Color.red)
                             .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
