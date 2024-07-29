@@ -23,6 +23,7 @@ struct GroupTimelineScreen: View {
     var container: ContainerRoom<GroupRoom>
     //@ObservedObject var group: SocialGroup
     @Environment(\.presentationMode) var presentation
+    @StateObject private var messageStatus = MessageStatus()
     
     @State private var sheetType: GroupScreenSheetType? = nil
 
@@ -40,7 +41,7 @@ struct GroupTimelineScreen: View {
     @State var showNewPostInSheetStyle = false
     
     var timeline: some View {
-        TimelineView<MessageCard>(room: room)
+        TimelineView<MessageCard>(room: room, messageStatus: messageStatus)
     }
     
     var toolbarMenu: some View {
@@ -128,7 +129,7 @@ struct GroupTimelineScreen: View {
         .navigationBarTitle(title, displayMode: .inline)
         .sheet(isPresented: $showNewPostInSheetStyle) {
             if room.iCanSendEvent(type: M_ROOM_MESSAGE) {
-                PostComposer(room: room).navigationTitle("New Post")
+                PostComposer(room: room, messageStatus: messageStatus).navigationTitle("New Post")
             }
         }
         .background(Color.greyCool200)

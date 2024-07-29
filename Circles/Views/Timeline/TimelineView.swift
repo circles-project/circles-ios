@@ -84,6 +84,13 @@ struct TimelineView<V: MessageView>: View {
         }
     }
     
+    private func makeScroll(with proxy: ScrollViewProxy) -> Int {
+        scrollToFirstMessage(proxy)
+        messageStatus.isMessageSent = false
+        
+        return 0
+    }
+    
     @ViewBuilder
     var body: some View {
         // Get all the top-level messages (ie not the replies etc)
@@ -104,7 +111,7 @@ struct TimelineView<V: MessageView>: View {
                         .id(topOfTheScreen)
                     
                     if messageStatus.isMessageSent {
-                        let _ = self.scrollToFirstMessage(proxy) // foo
+                        let _ = makeScroll(with: proxy) // foo
                     }
                     
                     if let msg = room.localEchoMessage {
