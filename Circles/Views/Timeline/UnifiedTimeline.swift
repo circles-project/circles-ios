@@ -107,10 +107,22 @@ struct UnifiedTimeline: View {
     var body: some View {
         let messages: [Matrix.Message] = space.getCollatedTimeline(filter: self.filter).reversed()
         
+        
+        let rooms = space.rooms.values.sorted(by: { $0.timestamp < $1.timestamp })
+        
         VStack(alignment: .leading) {
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack(alignment: .center) {
+                        
+                        ForEach(rooms) { room in
+                            if let msg = room.localEchoMessage {
+                                MessageCard(message: msg, isLocalEcho: true, isThreaded: false)
+                                    .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
+                                    .id(msg.eventId)
+                            }
+                        }
+                        
                         ForEach(messages) { message in
                             HStack {
                                 if DebugModel.shared.debugMode && showDebug {
@@ -166,6 +178,9 @@ struct UnifiedTimeline: View {
                     }
                     .frame(minHeight: TIMELINE_BOTTOM_PADDING)
                 }
+                .onChange(of: viewModel.scrollPosition) { eventId in
+                    proxy.scrollTo(eventId)
+                }
                 .padding(0)
                 .background(Color.greyCool200)
                 .onAppear {
@@ -208,9 +223,6 @@ struct UnifiedTimeline: View {
                     await MainActor.run {
                         space.objectWillChange.send()
                     }
-                }
-                .onChange(of: viewModel.scrollPosition) { eventId in
-                    proxy.scrollTo(eventId)
                 }
             }
 
