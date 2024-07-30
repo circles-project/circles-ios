@@ -21,6 +21,7 @@ struct SingleTimelineView: View {
 
     @State private var sheetType: SingleTimelineSheetType? = nil
     @State var showNewPostInSheetStyle = false
+    @StateObject private var messageStatus = MessageStatus()
 
     @ViewBuilder
     var toolbarMenu: some View {
@@ -50,7 +51,7 @@ struct SingleTimelineView: View {
     
     @ViewBuilder
     var timeline: some View {
-        TimelineView<MessageCard>(room: room)
+        TimelineView<MessageCard>(room: room, messageStatus: messageStatus)
     }
     
     var body: some View {
@@ -104,7 +105,7 @@ struct SingleTimelineView: View {
         }
         .navigationBarTitle(title, displayMode: .inline)
         .sheet(isPresented: $showNewPostInSheetStyle) {
-            PostComposer(room: room).navigationTitle("New Post")
+            PostComposer(room: room, messageStatus: messageStatus).navigationTitle("New Post")
         }
         .background(Color.greyCool200)
 

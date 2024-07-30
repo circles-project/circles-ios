@@ -11,9 +11,17 @@ import Matrix
 
 struct TimelineView<V: MessageView>: View {
     @ObservedObject var room: Matrix.Room
+    @StateObject var messageStatus = MessageStatus()
     @State var debug = false
     @State var loading = false
     @State var selectedMessage: Matrix.Message?
+    var topOfTheScreen = "top"
+    
+    private func scrollToFirstMessage(_ proxy: ScrollViewProxy) {
+        DispatchQueue.main.async {
+            proxy.scrollTo(topOfTheScreen, anchor: .top)
+        }
+    }
     
     var footer: some View {
         VStack(alignment: .center) {
@@ -60,13 +68,13 @@ struct TimelineView<V: MessageView>: View {
                     if self.debug {
                         Text("Room has \(room.timeline.count) total messages")
                             .font(.caption)
-                        Button(action: {self.debug = false}) {
+                        Button(action: { self.debug = false }) {
                             Label("Hide debug info", systemImage: SystemImages.eyeSlash.rawValue)
                         }
                         .font(.caption)
                     }
                     else {
-                        Button(action: {self.debug = true}) {
+                        Button(action: { self.debug = true }) {
                             Label("Show debug info", systemImage: SystemImages.eye.rawValue)
                         }
                         .font(.caption)
@@ -76,48 +84,63 @@ struct TimelineView<V: MessageView>: View {
         }
     }
     
+    private func makeScroll(with proxy: ScrollViewProxy) -> Int {
+        scrollToFirstMessage(proxy)
+        messageStatus.isMessageSent = false
+        
+        return 0
+    }
+    
     @ViewBuilder
     var body: some View {
         // Get all the top-level messages (ie not the replies etc)
         let now = Date()
         let cutoff = now.addingTimeInterval(300.0)
-        let messages = room.timeline.values.filter { (message) in
+        let messages = room.timeline.values.filter { message in
             message.relatedEventId == nil &&
             message.replyToEventId == nil &&
             message.timestamp < cutoff &&
             !message.room.session.ignoredUserIds.contains(message.sender.userId)
-        }.sorted(by: {$0.timestamp > $1.timestamp})
-
-        ScrollView {
-            LazyVStack(alignment: .center, spacing: 10) {
-
-                if let msg = room.localEchoMessage {
-                    MessageCard(message: msg, isLocalEcho: true, isThreaded: false)
-                        //.border(Color.red)
-                        .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
-                }
+        }.sorted(by: { $0.timestamp > $1.timestamp })
+        
+        ScrollViewReader { proxy in
+            ScrollView {
+                LazyVStack(alignment: .center, spacing: 10) {
+                    Color.clear
+                        .frame(height: 1)
+                        .id(topOfTheScreen)
                     
-                ForEach(messages) { message in
-                    if message.type == M_ROOM_MESSAGE ||
-                        message.type == M_ROOM_ENCRYPTED ||
-                        message.type == ORG_MATRIX_MSC3381_POLL_START {
-                                                    
-                        MessageCard(message: message, isLocalEcho: false, isThreaded: false)
-                            .onAppear {
-                                message.loadReactions()
-                            }
-                    } else if DebugModel.shared.debugMode && message.stateKey != nil {
-                        StateEventView(message: message)
+                    if messageStatus.isMessageSent {
+                        let _ = makeScroll(with: proxy) // foo
                     }
+                    
+                    if let msg = room.localEchoMessage {
+                        MessageCard(message: msg, isLocalEcho: true, isThreaded: false)
+                        //.border(Color.red)
+                            .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
+                    }
+                    
+                    ForEach(messages) { message in
+                        if message.type == M_ROOM_MESSAGE ||
+                            message.type == M_ROOM_ENCRYPTED ||
+                            message.type == ORG_MATRIX_MSC3381_POLL_START {
+                            
+                            MessageCard(message: message, isLocalEcho: false, isThreaded: false)
+                                .onAppear {
+                                    message.loadReactions()
+                                }
+                        } else if DebugModel.shared.debugMode && message.stateKey != nil {
+                            StateEventView(message: message)
+                        }
+                    }
+                    
+                    Spacer()
+                    
+                    footer
                 }
-                
-                Spacer()
-                
-                footer
+                .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
+                .padding(.horizontal, 12)
             }
-            .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
-            .padding(.horizontal, 12)
-
         }
         .padding(0)
         .background(Color.greyCool200)

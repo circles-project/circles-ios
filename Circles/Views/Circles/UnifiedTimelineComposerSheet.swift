@@ -13,21 +13,20 @@ struct UnifiedTimelineComposerSheet: View {
     @State var selectedRoom: Matrix.Room?
     @Environment(\.presentationMode) var presentation
     @State var createMyFirstCircle = false
+    @StateObject var messageStatus = MessageStatus()
     
     var body: some View {
         let circles = timelines.circles
         let me = timelines.session.me
         
         if let room = selectedRoom {
-            PostComposer(room: room)
+            PostComposer(room: room, messageStatus: messageStatus)
         } else if circles.count == 1,
                   let onlyCircle = circles.first
         {
-            PostComposer(room: onlyCircle)
+            PostComposer(room: onlyCircle, messageStatus: messageStatus)
         } else if circles.count > 1 {
-            
             VStack(alignment: .center) {
-                
                 Spacer()
                 
                 Text("You have \(circles.count) circles. Which one would you like to share with?")

@@ -11,8 +11,17 @@ import PhotosUI
 import QuickLookThumbnailing
 import Matrix
 
+class MessageStatus: ObservableObject {
+    @Published var isMessageSent: Bool = false
+    
+    init(isMessageSent: Bool = false) {
+        self.isMessageSent = isMessageSent
+    }
+}
+
 struct PostComposer: View {
     var room: Matrix.Room
+    @ObservedObject var messageStatus = MessageStatus(isMessageSent: false)
     @EnvironmentObject var appSession: CirclesApplicationSession
     //@Binding var isPresented: Bool
     @Environment(\.colorScheme) var colorScheme
@@ -99,11 +108,13 @@ struct PostComposer: View {
     
     init(room: Matrix.Room,
          parent: Matrix.Message? = nil,
-         editing: Matrix.Message? = nil
+         editing: Matrix.Message? = nil,
+         messageStatus: MessageStatus = MessageStatus(isMessageSent: false)
     ) {
         self.room = room
         self.parent = parent
         self.editing = editing
+        self.messageStatus = messageStatus
 
         // OK because Apple sucks, we have to be very careful in how we initialize @State vars here
         // I guess they really just want us to use the compiler-generated init()
@@ -236,6 +247,7 @@ struct PostComposer: View {
                     let newEventId = try await room.sendText(text: self.newMessageText)
                     print("COMPOSER\tSent m.text with eventId = \(newEventId)")
                 }
+                messageStatus.isMessageSent = true
                 self.presentation.wrappedValue.dismiss()
             }
             
@@ -252,6 +264,7 @@ struct PostComposer: View {
                 let newEventId = try await self.room.sendImage(image: img, caption: caption, withBlurhash: false, withThumbhash: true)
                 print("COMPOSER\tSent m.image with eventId = \(newEventId)")
             }
+            messageStatus.isMessageSent = true
             self.presentation.wrappedValue.dismiss()
             
         case .loadingVideo:
@@ -270,6 +283,7 @@ struct PostComposer: View {
                 let newEventId = try await room.sendVideo(url: movie.url, thumbnail: thumbnail, caption: caption)
                 print("COMPOSER\tSent m.video with eventId = \(newEventId)")
             }
+            messageStatus.isMessageSent = true
             self.presentation.wrappedValue.dismiss()
             
         case .oldImage(let oldImageContent, _):
@@ -277,6 +291,7 @@ struct PostComposer: View {
             let newContent = Matrix.mImageContent(oldImageContent, caption: caption, relatesTo: self.relatesTo)
             let eventId = try await self.room.sendMessage(content: newContent)
             print("COMPOSER\tSent edited m.image with new eventId = \(eventId)")
+            messageStatus.isMessageSent = true
             self.presentation.wrappedValue.dismiss()
             
         case .oldVideo(let oldVideoContent, _):
@@ -284,6 +299,7 @@ struct PostComposer: View {
             let newContent = Matrix.mVideoContent(oldVideoContent, caption: caption, relatesTo: self.relatesTo)
             let eventId = try await self.room.sendMessage(content: newContent)
             print("COMPOSER\tSent edited m.video with new eventId = \(eventId)")
+            messageStatus.isMessageSent = true
             self.presentation.wrappedValue.dismiss()
         }
     }

@@ -16,10 +16,14 @@ struct UnifiedTimeline: View {
     @State private var showDebug = false
     @State private var loading = false
     private var cutoff: Date
+    private var topOfTheScreen = "top"
+    @ObservedObject var messageStatus = MessageStatus(isMessageSent: false)
 
-    init(space: TimelineSpace) {
+    init(space: TimelineSpace,
+         messageStatus: MessageStatus = MessageStatus(isMessageSent: false)) {
         self.space = space
         self.formatter = DateFormatter()
+        self.messageStatus = messageStatus
         formatter.dateStyle = .long
         formatter.timeStyle = .long
 
@@ -30,6 +34,19 @@ struct UnifiedTimeline: View {
         self.cutoff = now.addingTimeInterval(300.0)
     }
     
+    private func scrollToFirstMessage(_ proxy: ScrollViewProxy) {
+        DispatchQueue.main.async {
+            proxy.scrollTo(topOfTheScreen, anchor: .top)
+        }
+    }
+    
+    private func makeScroll(with proxy: ScrollViewProxy) -> Int {
+        scrollToFirstMessage(proxy)
+        messageStatus.isMessageSent = false
+        
+        return 0
+    }
+
     var debugFooter: some View {
         VStack(alignment: .leading) {
             Button(action: {self.showDebug = false}) {
@@ -106,113 +123,120 @@ struct UnifiedTimeline: View {
         let messages: [Matrix.Message] = space.getCollatedTimeline(filter: self.filter).reversed()
         
         VStack(alignment: .leading) {
-            ScrollView {
-                LazyVStack(alignment: .center) {
-                    ForEach(messages) { message in
-                        HStack {
-                            if DebugModel.shared.debugMode && showDebug {
-                                let index: Int = messages.firstIndex(of: message)!
-                                Text("\(index)")
+            ScrollViewReader { proxy in
+                ScrollView {
+                    LazyVStack(alignment: .center) {
+                        Color.clear
+                            .frame(height: 1)
+                            .id(topOfTheScreen)
+                        
+                        if messageStatus.isMessageSent {
+                            let _ = makeScroll(with: proxy) // foo
+                        }
+                        
+                        ForEach(messages) { message in
+                            HStack {
+                                if DebugModel.shared.debugMode && showDebug {
+                                    let index: Int = messages.firstIndex(of: message)!
+                                    Text("\(index)")
+                                }
+                                
+                                MessageCard(message: message)
                             }
-                            
-                            MessageCard(message: message)
                         }
                     }
-
-                }
-                .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
-                .padding(.horizontal, 12)
-
-                
-                HStack(alignment: .bottom) {
-                    Spacer()
-                    if loading {
-                        ProgressView("Loading...")
-                    }
-                    else if space.canPaginateRooms {
-                        AsyncButton(action: {
-                            self.loading = true
-                            do {
-                                try await space.paginateRooms()
-                            } catch {
-                                print("Failed to manually paginate rooms")
-                            }
-                            self.loading = false
-                        }) {
-                            Text("Load More")
+                    .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
+                    .padding(.horizontal, 12)
+                    
+                    HStack(alignment: .bottom) {
+                        Spacer()
+                        if loading {
+                            ProgressView("Loading...")
                         }
-                        .onAppear {
-                            // Basically it's like we automatically click "Load More" for the user
-                            self.loading = true
-                            let _ = Task {
+                        else if space.canPaginateRooms {
+                            AsyncButton(action: {
+                                self.loading = true
                                 do {
                                     try await space.paginateRooms()
                                 } catch {
-                                    print("Failed to automatically paginate rooms")
+                                    print("Failed to manually paginate rooms")
                                 }
                                 self.loading = false
+                            }) {
+                                Text("Load More")
                             }
+                            .onAppear {
+                                // Basically it's like we automatically click "Load More" for the user
+                                self.loading = true
+                                let _ = Task {
+                                    do {
+                                        try await space.paginateRooms()
+                                    } catch {
+                                        print("Failed to automatically paginate rooms")
+                                    }
+                                    self.loading = false
+                                }
+                            }
+                        } else if DebugModel.shared.debugMode {
+                            Text("Not currently loading; Can't paginate rooms")
+                                .foregroundColor(.red)
                         }
-                    } else if DebugModel.shared.debugMode {
-                        Text("Not currently loading; Can't paginate rooms")
-                            .foregroundColor(.red)
+                        
+                        Spacer()
                     }
+                    .frame(minHeight: TIMELINE_BOTTOM_PADDING)
+                }
+                .padding(0)
+                .background(Color.greyCool200)
+                .onAppear {
+                    _ = Task {
+                        try await space.paginateEmptyTimelines(limit: 25)
+                    }
+                }
+                .refreshable {
+                    async let results = space.rooms.values.map { room in
+                        print("REFRESH\tLoading latest messages from \(room.name ?? room.roomId.stringValue)")
+                        
+                        return try? await room.getMessages(forward: false)
+                    }
+                    let responses = await results
+                    print("REFRESH\tGot \(responses.count) responses from \(space.rooms.count) rooms")
                     
-                    Spacer()
-                }
-                .frame(minHeight: TIMELINE_BOTTOM_PADDING)
-            }
-            .padding(0)
-            .background(Color.greyCool200)
-            .onAppear {
-                _ = Task {
-                    try await space.paginateEmptyTimelines(limit: 25)
-                }
-            }
-            .refreshable {
-                
-                async let results = space.rooms.values.map { room in
-                    print("REFRESH\tLoading latest messages from \(room.name ?? room.roomId.stringValue)")
-
-                    return try? await room.getMessages(forward: false)
-                }
-                let responses = await results
-                print("REFRESH\tGot \(responses.count) responses from \(space.rooms.count) rooms")
-                
-                print("REFRESH\tWaiting for network requests to come in")
-                try? await Task.sleep(for: .seconds(1))
-                
-                print("REFRESH\tDecrypting un-decrypted messages")
-                async let decryptions = space.rooms.values.map { room in
-                    var count = 0
-                    for message in room.messages {
-                        if message.type == M_ROOM_ENCRYPTED {
-                            do {
-                                try await message.decrypt()
-                                count += 1
-                            } catch {
-                                print("Failed to decrypt message \(message.eventId) in room \(room.roomId)")
+                    print("REFRESH\tWaiting for network requests to come in")
+                    try? await Task.sleep(for: .seconds(1))
+                    
+                    print("REFRESH\tDecrypting un-decrypted messages")
+                    async let decryptions = space.rooms.values.map { room in
+                        var count = 0
+                        for message in room.messages {
+                            if message.type == M_ROOM_ENCRYPTED {
+                                do {
+                                    try await message.decrypt()
+                                    count += 1
+                                } catch {
+                                    print("Failed to decrypt message \(message.eventId) in room \(room.roomId)")
+                                }
                             }
                         }
+                        print("Decrypted \(count) messages in room \(room.roomId)")
+                        return count
                     }
-                    print("Decrypted \(count) messages in room \(room.roomId)")
-                    return count
+                    let decrypted = await decryptions
+                    
+                    print("REFRESH\tSending Combine update")
+                    await MainActor.run {
+                        space.objectWillChange.send()
+                    }
                 }
-                let decrypted = await decryptions
                 
-                print("REFRESH\tSending Combine update")
-                await MainActor.run {
-                    space.objectWillChange.send()
-                }
-            }
-
-            if DebugModel.shared.debugMode {
-                if showDebug {
-                    debugFooter
-                } else {
-                    Button(action: {self.showDebug = true}) {
-                        Label("Show debug info", systemImage: SystemImages.eye.rawValue)
-                            .font(.footnote)
+                if DebugModel.shared.debugMode {
+                    if showDebug {
+                        debugFooter
+                    } else {
+                        Button(action: {self.showDebug = true}) {
+                            Label("Show debug info", systemImage: SystemImages.eye.rawValue)
+                                .font(.footnote)
+                        }
                     }
                 }
             }
