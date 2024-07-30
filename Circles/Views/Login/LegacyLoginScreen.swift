@@ -29,8 +29,9 @@ struct LegacyLoginScreen: View {
             Text("Enter password for \(session.userId.stringValue)")
                 .font(.title2)
                 .fontWeight(.bold)
-            
-            SecureFieldWithEye(label: "Password", text: $password, showText: showPassword)
+            SecureFieldWithEye(password: $password,
+                               isNewPassword: false,
+                               placeholder: "Password")
                 .textContentType(.password)
                 .frame(width: 300, height: 40)
                 .onAppear {

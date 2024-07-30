@@ -89,8 +89,9 @@ struct BsspekeEnrollOprfForm: View {
             Spacer()
 
             VStack(alignment: .leading) {
-                SecureFieldWithEye(label: "New Passphrase", isNewPassword: true,
-                                   text: $passphrase, showText: showPassword)
+                SecureFieldWithEye(password: $passphrase,
+                                   isNewPassword: true,
+                                   placeholder: "New Passphrase")
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
                     .onChange(of: passphrase) { newPassword in
@@ -146,8 +147,9 @@ struct BsspekeEnrollOprfForm: View {
                 Label("Choose a different passphrase", systemImage: "arrowshape.turn.up.backward.fill")
             }
             Spacer()
-            SecureFieldWithEye(label: "Repeat passphrase", isNewPassword: true,
-                               text: $repeatPassphrase, showText: showPassword)
+            SecureFieldWithEye(password: $repeatPassphrase,
+                               isNewPassword: true,
+                               placeholder: "Repeat passphrase")
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .frame(width: 300.0, height: 40.0)
