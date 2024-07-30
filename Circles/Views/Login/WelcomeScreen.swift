@@ -59,35 +59,44 @@ struct LoginScreen: View {
                 .edgesIgnoringSafeArea(.all)
             
             NavigationStack {
-                HStack {
-                    backButton
-                    Spacer()
-                }
-
                 VStack {
-                    let buttonWidth = UIScreen.main.bounds.width - 24 * 2
-                    let buttonHeight: CGFloat = 48.0
+                    HStack {
+                        backButton
+                        Spacer()
+                    }
                     
-                    Image(SystemImages.launchLogoPurple.rawValue)
-                        .padding(.top, 124)
+                    let buttonWidth = UIScreen.main.bounds.width - 48
+                    let buttonHeight: CGFloat = 48.0
+                                            
+                    BasicImage(name: SystemImages.launchLogoPurple.rawValue)
+                        .frame(width: 125, height: 43)
+                        .padding(.bottom, 30)
                     
                     VStack(alignment: .leading) {
                         Text("Your User ID")
-                            .bold()
-                            .font(.callout)
+                            .font(
+                                CustomFonts.nunito14
+                                    .weight(.bold)
+                            )
+                            .foregroundColor(Color.greyCool1100)
                         
                         TextField("@username:us.domain.com", text: self.$username)
-                            .frame(width: buttonWidth - 12, height: buttonHeight)
-                            .padding([.horizontal], 6)
+                            .frame(width: buttonWidth, height: buttonHeight)
+                            .padding([.horizontal], 12)
                             .background(Color.white)
                             .cornerRadius(10)
-                            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(hex: "DEE1E6"))) // Color.grey400
+                            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.greyCool400))
+                            .autocapitalization(.none)
+                            .disableAutocorrection(true)
                         
                         Text("Password")
-                            .bold()
-                            .font(.callout)
+                            .font(
+                                CustomFonts.nunito14
+                                    .weight(.bold)
+                            )
+                            .foregroundColor(Color.greyCool1100)
                         
-                        SecureFieldWithEye(label: "Password",
+                        SecureFieldWithEye(label: "",
                                            height: buttonHeight,
                                            text: $password,
                                            showText: showPassword,
@@ -109,7 +118,10 @@ struct LoginScreen: View {
 //                        }
                         NavigationLink(destination: ForgotPasswordView(store: store)) {
                             Text("Forgot?")
-                                .font(.subheadline)
+                                .font(
+                                    CustomFonts.nunito14
+                                        .weight(.bold)
+                                )
                         }
                         .padding(5)
                     }
@@ -136,8 +148,10 @@ struct LoginScreen: View {
                         Text("Log In")
                     }
                     .buttonStyle(signUpButtonStyle)
-                    .bold()
-                    .font(.title3)
+                    .font(
+                        CustomFonts.nunito16
+                            .weight(.bold)
+                    )
                     .padding(.bottom, 27)
                     .confirmationDialog("It looks like maybe you mis-typed your user id",
                                         isPresented: $showSuggestion,
@@ -171,9 +185,8 @@ struct LoginScreen: View {
                         }
                         .font(CustomFonts.outfit14)
                     }
-                    .padding(.bottom, 28)
+                    .padding(.bottom, 38)
                 }
-                .padding(.horizontal)
             }
         }
         .navigationBarBackButtonHidden()
@@ -199,10 +212,13 @@ struct WelcomeScreen: View {
                         .padding(.top, 124)
                     
                     Text("The secure social network for families and friends")
-                        .bold()
-                        .font(.title)
+                        .font(
+                            CustomFonts.nunito24
+                                .weight(.bold)
+                        )
                         .multilineTextAlignment(.center)
                         .foregroundStyle(Color.white)
+                        .padding(.horizontal, 36)
                     
                     Spacer()
                     
@@ -216,8 +232,10 @@ struct WelcomeScreen: View {
                         self.showDomainPicker = true
                     }) {
                         Text("Sign Up for free")
-                            .bold()
-                            .font(.title3)
+                            .font(
+                                CustomFonts.nunito16
+                                    .weight(.bold)
+                            )
                     }
                     .buttonStyle(signUpButtonStyle)
                     .confirmationDialog("Select a region", isPresented: $showDomainPicker) {
@@ -243,8 +261,10 @@ struct WelcomeScreen: View {
                         Text("Sign In")
                     }
                     .buttonStyle(signInButtonStyle)
-                    .bold()
-                    .font(.title3)
+                    .font(
+                        CustomFonts.nunito16
+                            .weight(.bold)
+                    )
                     .padding(.bottom, 48)
                 }
             }

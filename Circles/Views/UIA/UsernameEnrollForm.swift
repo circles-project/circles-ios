@@ -35,14 +35,13 @@ struct UsernameEnrollForm: View {
                         .weight(.bold)
                 )
                 .foregroundColor(Color.greyCool1100)
-                .frame(height: 30)
             
             TextField("@username:us.domain.com", text: $username)
                 .frame(width: screenWidthWithOffsets, height: 48.0)
                 .padding([.horizontal], 12)
                 .background(Color.white)
                 .cornerRadius(10)
-                .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.accentColor))
+                .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.greyCool400))
                 .textContentType(.username)
                 .focused($focus, equals: .username)
                 .autocapitalization(.none)
@@ -71,6 +70,11 @@ struct UsernameEnrollForm: View {
             Text("Sign Up")
         }
         .buttonStyle(BigRoundedButtonStyle(width: screenWidthWithOffsets, height: 48))
+        .font(
+            CustomFonts.nunito16
+                .weight(.bold)
+        )
+        .padding(.bottom, 85)
         .alert(isPresented: $showAlert) {
             Alert(title: Text(alertTitle),
                   message: Text(alertMessage),

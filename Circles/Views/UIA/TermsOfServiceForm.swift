@@ -161,8 +161,6 @@ struct TermsOfServiceForm: View {
                 )
                 .foregroundColor(Color.greyCool900)
                 .frame(width: screenWidthWithOffsets, alignment: .topLeading)
-                .padding(.top, 4)
-                .padding(.bottom, 8)
             
             customViewWith(title: "Privacy Policy",
                            version: "v 1.3",
@@ -200,8 +198,12 @@ struct TermsOfServiceForm: View {
             .frame(width: screenWidthWithOffsets, height: 48)
             .background(Color.accentColor)
             .cornerRadius(8)
+            .font(
+                CustomFonts.nunito16
+                    .weight(.bold)
+            )
             .padding(.top, 27)
-            .padding(.bottom, 48)
+            .padding(.bottom, 85)
             .sheet(isPresented: $isPrivacyPolicyShown) {
                 TermsOfServicePolicySheet(policy: policies[0],
                                           screenWidthWithOffsets: screenWidthWithOffsets)
