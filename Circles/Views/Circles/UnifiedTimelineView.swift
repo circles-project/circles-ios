@@ -33,6 +33,8 @@ struct UnifiedTimelineView: View {
     @State var showNewPostInSheetStyle = false
     //@State var image: UIImage?
     
+    @State var viewModel = TimelineViewModel()
+    
     var toolbarMenu: some View {
         Menu {
             NavigationLink(destination: UnifiedTimelineSettingsView(space: space)){
@@ -93,6 +95,7 @@ struct UnifiedTimelineView: View {
                 }
             }
         }
+        .environmentObject(viewModel)
     }
 }
 

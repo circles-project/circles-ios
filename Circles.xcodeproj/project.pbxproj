@@ -185,6 +185,7 @@
 		A5A40B6A29D62FC6009A17EE /* BsspekeEnrollOprfForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A40B6929D62FC6009A17EE /* BsspekeEnrollOprfForm.swift */; };
 		A5A6A5872B2D0E7C00849B38 /* RoomInviteOneUserSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A6A5862B2D0E7C00849B38 /* RoomInviteOneUserSheet.swift */; };
 		A5A7E228282B06FD001A528D /* ApplicationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A7E227282B06FD001A528D /* ApplicationState.swift */; };
+		A5B061922C594AD0003F4EFC /* TimelineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B061912C594AD0003F4EFC /* TimelineViewModel.swift */; };
 		A5B74F3C2BC592EF00299D90 /* RoomDefaultPowerLevelPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B74F3B2BC592EF00299D90 /* RoomDefaultPowerLevelPicker.swift */; };
 		A5B74F3E2BC5B9C800299D90 /* PowerLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B74F3D2BC5B9C800299D90 /* PowerLevel.swift */; };
 		A5B74F402BC5F8E300299D90 /* ScanQrCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B74F3F2BC5F8E300299D90 /* ScanQrCodeView.swift */; };
@@ -443,6 +444,7 @@
 		A5A40B6929D62FC6009A17EE /* BsspekeEnrollOprfForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BsspekeEnrollOprfForm.swift; sourceTree = "<group>"; };
 		A5A6A5862B2D0E7C00849B38 /* RoomInviteOneUserSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomInviteOneUserSheet.swift; sourceTree = "<group>"; };
 		A5A7E227282B06FD001A528D /* ApplicationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationState.swift; sourceTree = "<group>"; };
+		A5B061912C594AD0003F4EFC /* TimelineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineViewModel.swift; sourceTree = "<group>"; };
 		A5B74F3B2BC592EF00299D90 /* RoomDefaultPowerLevelPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomDefaultPowerLevelPicker.swift; sourceTree = "<group>"; };
 		A5B74F3D2BC5B9C800299D90 /* PowerLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerLevel.swift; sourceTree = "<group>"; };
 		A5B74F3F2BC5F8E300299D90 /* ScanQrCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanQrCodeView.swift; sourceTree = "<group>"; };
@@ -791,6 +793,7 @@
 				A5BB4EF22BD02FD7001FD0D8 /* VideoContentView.swift */,
 				A58E21792C4AC3CA005FF66B /* CommentCard.swift */,
 				A58E217B2C4AD2FA005FF66B /* LikeButton.swift */,
+				A5B061912C594AD0003F4EFC /* TimelineViewModel.swift */,
 			);
 			path = Timeline;
 			sourceTree = "<group>";
@@ -1250,6 +1253,7 @@
 				409F42E3265DE00700690A61 /* Array+Sample.swift in Sources */,
 				A5D3C9C22A708F1300B41CC0 /* DBMatcher.m in Sources */,
 				A5921EB92AFAD7F000C2331D /* RoomInvitedMemberRow.swift in Sources */,
+				A5B061922C594AD0003F4EFC /* TimelineViewModel.swift in Sources */,
 				409F436D265DE24000690A61 /* PeopleOverviewScreen.swift in Sources */,
 				422C08F52C13530000ADE377 /* ButtonStyle+Extensions.swift in Sources */,
 				A5D2A3F629C0EED700428C45 /* Sequence+asyncMap.swift in Sources */,

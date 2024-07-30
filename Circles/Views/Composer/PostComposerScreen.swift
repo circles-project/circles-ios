@@ -8,6 +8,7 @@
 import SwiftUI
 import Matrix
 
+/*
 struct PostComposerScreen: View {
     var room: Matrix.Room
     var parentMessage: Matrix.Message?
@@ -50,6 +51,7 @@ struct PostComposerScreen: View {
         .navigationTitle(self.title)
     }
 }
+ */
 
 /*
 struct MessageComposerSheet_Previews: PreviewProvider {
