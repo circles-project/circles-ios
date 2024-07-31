@@ -203,7 +203,7 @@ struct TermsOfServiceForm: View {
                     .weight(.bold)
             )
             .padding(.top, 27)
-            .padding(.bottom, 85)
+            .padding(.bottom, 38)
             .sheet(isPresented: $isPrivacyPolicyShown) {
                 TermsOfServicePolicySheet(policy: policies[0],
                                           screenWidthWithOffsets: screenWidthWithOffsets)

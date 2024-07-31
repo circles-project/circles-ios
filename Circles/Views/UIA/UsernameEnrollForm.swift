@@ -23,7 +23,7 @@ struct UsernameEnrollForm: View {
     @FocusState var focus: FocusField?
     
     var body: some View {
-        let screenWidthWithOffsets = UIScreen.main.bounds.width - 48
+        let screenWidthWithOffsets = UIScreen.main.bounds.width - 72
         BasicImage(name: SystemImages.launchLogoPurple.rawValue)
             .frame(width: 125, height: 43)
             .padding(.bottom, 30)
@@ -74,7 +74,7 @@ struct UsernameEnrollForm: View {
             CustomFonts.nunito16
                 .weight(.bold)
         )
-        .padding(.bottom, 85)
+        .padding(.bottom, 38)
         .alert(isPresented: $showAlert) {
             Alert(title: Text(alertTitle),
                   message: Text(alertMessage),

@@ -129,7 +129,7 @@ struct ForgotPasswordView: View {
                     CustomFonts.nunito16
                         .weight(.bold)
                 )
-                .padding(.bottom, 85)
+                .padding(.bottom, 38)
                 .confirmationDialog("It looks like maybe you mis-typed your username",
                                     isPresented: $showSuggestion,
                                     presenting: suggestedUserId,
