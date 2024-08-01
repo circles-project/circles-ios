@@ -25,9 +25,7 @@ struct UnifiedTimelineComposerSheet: View {
         {
             PostComposer(room: onlyCircle)
         } else if circles.count > 1 {
-            
             VStack(alignment: .center) {
-                
                 Spacer()
                 
                 Text("You have \(circles.count) circles. Which one would you like to share with?")

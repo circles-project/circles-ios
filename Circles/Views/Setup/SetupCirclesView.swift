@@ -36,66 +36,84 @@ struct SetupCirclesView: View {
     }
 
     var mainForm: some View {
-        VStack(alignment: .center) {
-            //let currentStage: SignupStage = .setupCircles
-
-            Text("Create your circles")
-                .font(.title2)
-                .fontWeight(.bold)
-
-            List {
-                ForEach(circles) { info in
-                    HStack {
-                        SetupCircleCard(matrix: matrix, user: user, info: info)
-                        
-                        Spacer()
-                        
-                        Button(role: .destructive, action: {
-                            circles.removeAll { $0.name == info.name }
-                        }) {
-                            Image(systemName: SystemImages.minusCircleFill.rawValue)
+        ZStack {
+            Color.greyCool200
+            
+            VStack(alignment: .center) {
+                let elementWidth = UIScreen.main.bounds.width - 48
+                let elementHeight: CGFloat = 48.0
+                //let currentStage: SignupStage = .setupCircles
+                
+                Text("Create your circles")
+                    .font(
+                        CustomFonts.nunito20
+                            .weight(.heavy)
+                    )
+                    .foregroundColor(Color.greyCool1100)
+                
+                List {
+                    ForEach(circles) { info in
+                        ZStack {
+                            HStack {
+                                SetupCircleCard(matrix: matrix, user: user, info: info)
+                                    .background(Color.greyCool200)
+                                
+                                Spacer()
+                                
+                                Button(role: .destructive, action: {
+                                    circles.removeAll { $0.name == info.name }
+                                }) {
+                                    Image(systemName: SystemImages.minusCircleFill.rawValue)
+                                }
+                            }
                         }
                     }
+                    .background(Color.greyCool200)
                 }
+//                .listStyle(.inset)
+                .background(Color.greyCool200)
+                
+                Button(action: {
+                    showNewCircleSheet = true
+                }) {
+                    Label("Add a new circle", systemImage: "plus.circle")
+                }
+                .padding()
+                .sheet(isPresented: $showNewCircleSheet) {
+                    SetupAddNewCircleSheet(me: user, circles: $circles)
+                }
+                .font(CustomFonts.nunito16)
+                
+                Spacer()
+                
+                Label("NOTE: Circle names and cover images are not encrypted", systemImage: SystemImages.exclamationmarkShield.rawValue)
+                    .font(CustomFonts.nunito16)
+                    .foregroundColor(.orange)
+                
+                Spacer()
+                
+                AsyncButton(action: {
+                    self.pending = true
+                    self.totalSteps = Double(10 + circles.count)
+                    try await store.createSpaceHierarchy(displayName: user.displayName ?? user.userId.username,
+                                                         circles: circles,
+                                                         onProgress: handleProgressUpdate)
+                    self.pending = false
+                }) {
+                    Text("Next")
+                }
+                .buttonStyle(BigRoundedButtonStyle(width: elementWidth, height: elementHeight))
+                .font(
+                    CustomFonts.nunito16
+                        .weight(.bold)
+                )
+                .padding(.bottom, 38)
+                .disabled(circles.isEmpty)
             }
-            .listStyle(.inset)
-
-            Button(action: {
-                showNewCircleSheet = true
-            }) {
-                Label("Add a new circle", systemImage: "plus.circle")
+            .frame(maxWidth: 700)
+            .onAppear {
+                user.refreshProfile()
             }
-            .padding()
-            .sheet(isPresented: $showNewCircleSheet) {
-                SetupAddNewCircleSheet(me: user, circles: $circles)
-            }
-            
-            Spacer()
-
-            Label("NOTE: Circle names and cover images are not encrypted", systemImage: SystemImages.exclamationmarkShield.rawValue)
-                .font(.headline)
-                .foregroundColor(.orange)
-
-            Spacer()
-
-            AsyncButton(action: {
-                self.pending = true
-                self.totalSteps = Double(10 + circles.count)
-                try await store.createSpaceHierarchy(displayName: user.displayName ?? user.userId.username,
-                                                     circles: circles,
-                                                     onProgress: handleProgressUpdate)
-                self.pending = false
-            }) {
-                Text("Next")
-            }
-            .buttonStyle(BigRoundedButtonStyle())
-            .disabled(circles.isEmpty)
-
-        }
-        .padding()
-        .frame(maxWidth: 700)
-        .onAppear {
-            user.refreshProfile()
         }
     }
     

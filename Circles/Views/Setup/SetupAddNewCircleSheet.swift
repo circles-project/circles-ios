@@ -98,56 +98,67 @@ struct SetupAddNewCircleSheet: View {
     }
 
     var body: some View {
-        ScrollView {
-            buttonBar
+        ZStack {
+            Color.greyCool200
             
-            mockup
-                .padding()
-            
-            TextField("Circle name", text: $circleName)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .textInputAutocapitalization(.words)
-                .focused($inputFocused)
-                .frame(maxWidth: 350)
-                .onAppear {
-                    self.inputFocused = true
+            ScrollView {
+                let elementWidth = UIScreen.main.bounds.width - 48
+                let elementHeight = 48.0
+                
+                buttonBar
+                
+                mockup
+                    .padding()
+                
+                TextField("Circle name", text: $circleName)
+                    .frame(width: elementWidth - 24, height: elementHeight)
+                    .padding([.horizontal], 12)
+                    .background(Color.white)
+                    .cornerRadius(10)
+                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.greyCool400))
+                    .textInputAutocapitalization(.words)
+                    .focused($inputFocused)
+                    .onAppear {
+                        self.inputFocused = true
+                    }
+                    .onSubmit {
+                        self.showErrorMessage = circles.contains(where: { $0.name == circleName })
+                    }
+                
+                if showErrorMessage {
+                    Label("You already have a circle with this name", systemImage: "exclamationmark.circle.fill")
+                        .foregroundColor(.red)
                 }
-                .onSubmit {
-                    self.showErrorMessage = circles.contains(where: { $0.name == circleName })
+                
+                Spacer()
+                
+                Button(action: {
+                    let name = circleName.trimmingCharacters(in: .whitespacesAndNewlines)
+                    
+                    guard !name.isEmpty
+                    else { return }
+                    
+                    guard !circles.contains(where: { $0.name == name })
+                    else {
+                        self.showErrorMessage = true
+                        return
+                    }
+                    
+                    let info = CircleSetupInfo(name: name, avatar: avatarImage)
+                    circles.append(info)
+                    presentation.wrappedValue.dismiss()
+                }) {
+                    Text("Add circle \"\(circleName.isEmpty ? "New Circle" : circleName)\"")
                 }
-            
-            if showErrorMessage {
-                Label("You already have a circle with this name", systemImage: "exclamationmark.circle.fill")
-                    .foregroundColor(.red)
+                .buttonStyle(BigRoundedButtonStyle(width: elementWidth, height: elementHeight))
+                .font(CustomFonts.nunito16)
+                .disabled(circleName.isEmpty)
+                
+                Spacer()
             }
-
-            Spacer()
-            
-            Button(action: {
-                let name = circleName.trimmingCharacters(in: .whitespacesAndNewlines)
-                
-                guard !name.isEmpty
-                else { return }
-                
-                guard !circles.contains(where: { $0.name == name })
-                else {
-                    self.showErrorMessage = true
-                    return
-                }
-                
-                let info = CircleSetupInfo(name: name, avatar: avatarImage)
-                circles.append(info)
-                presentation.wrappedValue.dismiss()
-            }) {
-                Text("Add circle \"\(circleName.isEmpty ? "New Circle" : circleName)\"")
-            }
-            .buttonStyle(BigRoundedButtonStyle())
-            .disabled(circleName.isEmpty)
-            
-            Spacer()
+            .scrollIndicators(.hidden)
+            .padding()
         }
-        .scrollIndicators(.hidden)
-        .padding()
     }
 }
 

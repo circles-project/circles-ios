@@ -12,10 +12,10 @@ import Matrix
 struct UsernameEnrollForm: View {
     var session: SignupSession
     @State var username: String = ""
-    
     @State var showAlert = false
     @State var alertTitle = ""
     @State var alertMessage = ""
+    @State private var showHint = false
     
     enum FocusField {
         case username
@@ -49,6 +49,13 @@ struct UsernameEnrollForm: View {
                 .onAppear {
                     self.focus = .username
                 }
+            
+            Text("You can use A-Z, a-z, 0-9, and special characters such as: (. _ = / + and -)")
+                .frame(width: screenWidthWithOffsets)
+                .font(CustomFonts.nunito12)
+                .foregroundStyle(showHint ? Color.greyCool1100 : Color.greyCool200)
+
+                .multilineTextAlignment(.leading)
         }
         
         Spacer()
@@ -63,12 +70,14 @@ struct UsernameEnrollForm: View {
                     self.alertTitle = "Username Unavailable"
                     self.alertMessage = "The requested username is not available.  Please try a different one."
                     self.showAlert = true
+                    self.showHint = true
                 }
                 print("SIGNUP/Username\tExisting username = \(session.realRequestDict["username"] as? String ?? "Error")")
             }
         }) {
             Text("Sign Up")
         }
+        .frame(width: screenWidthWithOffsets + 24, height: 48)
         .buttonStyle(BigRoundedButtonStyle(width: screenWidthWithOffsets, height: 48))
         .font(
             CustomFonts.nunito16

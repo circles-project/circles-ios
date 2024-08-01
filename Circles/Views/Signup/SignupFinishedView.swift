@@ -18,29 +18,40 @@ struct SignupFinishedView: View {
             Color.greyCool200
             
             VStack {
-                CirclesLogoView()
-                    .frame(minWidth: 100,
-                           idealWidth: 150,
-                           maxWidth: 200,
-                           minHeight: 100,
-                           idealHeight: 150,
-                           maxHeight: 200,
-                           alignment: .center)
+                let buttonWidth = UIScreen.main.bounds.width - 48
+                let buttonHeight: CGFloat = 48.0
+                
+                BasicImage(name: SystemImages.launchLogoPurple.rawValue)
+                    .frame(width: 125, height: 43)
+                    .padding(.top, 115)
+                    .padding(.bottom, 30)
                 
                 Text("Successfully signed up!")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .padding(.top)
+                    .font(
+                        CustomFonts.nunito20
+                            .weight(.heavy)
+                    )
+                    .foregroundColor(Color.greyCool1100)
+                    .padding(.bottom, 8)
                 
-                VStack {
+                HStack {
                     Text("Your new user ID is:")
+                        .font(CustomFonts.nunito14)
+                        
                     Text(creds.userId.stringValue)
-                        .padding(.leading)
-                        .padding(.top)
+                        .font(CustomFonts.nunito14.bold())
+//                    Text(creds.userId.stringValue)
+//                        .padding(.leading)
+//                        .padding(.top)
                 }
-                .padding(.vertical, 20)
+                .padding(.horizontal, 12)
+                .padding(.bottom, 8)
+//                .padding(.vertical, 20)
                 
                 Text("Your user ID works like a username or an email address. Friends will need your user ID in order to invite you to follow them.")
+                    .font(CustomFonts.nunito14)
+                    .padding(.horizontal, 12)
+                    .multilineTextAlignment(.leading)
                 
                 Spacer()
                 
@@ -53,9 +64,14 @@ struct SignupFinishedView: View {
                 }) {
                     Text("Next: Set up your account")
                 }
-                .buttonStyle(BigRoundedButtonStyle())
+                .buttonStyle(BigRoundedButtonStyle(width: buttonWidth, height: buttonHeight))
+                .font(
+                    CustomFonts.nunito16
+                        .weight(.bold)
+                )
+                .padding(.bottom, 38)
             }
-            .padding()
+//            .padding()
         }
         .background(Color.greyCool200)
     }
