@@ -128,7 +128,6 @@ struct SettingsScreen: View {
                 */
                 
                 Section(header: Label("Danger Zone", systemImage: SystemImages.exclamationmarkTriangle.rawValue)) {
-                    
                     Button(action: {
                         self.showConfirmSwitch = true
                     }) {
@@ -170,8 +169,7 @@ struct SettingsScreen: View {
                                             Text("WARNING: You must be logged in on at least one device in order to receive decryption keys from your friends. If you log out from all devices, you may be unable to decrypt any posts or comments sent while you are logged out.")
                                         }
                     )
-                    
-                    NavigationLink(destination: DeactivateAccountView(store: store, session: session)) {
+                    NavigationLink(destination: DeactivateAccountView(store: store, session: session).background(Color.greyCool200)) {
                         Label("Deactivate Account", systemImage: SystemImages.personFillXmark.rawValue)
                     }
                 }
