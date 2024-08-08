@@ -80,12 +80,12 @@ struct SetupAvatarView: View {
                             .font(.system(size: 30))
                             .foregroundColor(.accentColor)
                     }
-                }
-                .photosPicker(isPresented: $showPicker, selection: $selectedItem)
-                .sheet(isPresented: $showCamera) {
-                    ImagePicker(sourceType: .camera) { maybeImage in
-                        if let image = maybeImage {
-                            self.avatarImage = image
+                    .photosPicker(isPresented: $showPicker, selection: $selectedItem)
+                    .sheet(isPresented: $showCamera) {
+                        ImagePicker { image in
+                            if let image {
+                                self.avatarImage = image
+                            }
                         }
                     }
                 }

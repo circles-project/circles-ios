@@ -486,8 +486,7 @@ struct PostComposer: View {
             }
         }
     }
-        
-        
+    
     private func handleItemChanged(_ newItem: PhotosPickerItem?) {
         print("PICKER Selected item changed")
         if let item = newItem {
@@ -599,8 +598,8 @@ struct PostComposer: View {
         .sheet(item: $showPickerOfType, content: { type in
             switch type {
             case .camera:
-                ImagePicker(sourceType: .camera) { maybeImage in
-                    if let image = maybeImage {
+                ImagePicker { image in
+                    if let image {
                         self.messageState = .newImage(image)
                     }
                 }

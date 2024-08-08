@@ -5,76 +5,46 @@
 //  Created by Charles Wright on 7/22/20.
 //
 
-import UIKit
 import SwiftUI
-
-// Apple has deprecated this approach, so we must switch to the new `PhotosPicker`
-
-// Inspired by https://www.appcoda.com/swiftui-camera-photo-library/
+import UIKit
 
 struct ImagePicker: UIViewControllerRepresentable {
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-    
-    //@Binding var selectedImage: UIImage?
-    @Environment(\.presentationMode) private var presentationMode
-    
-    var sourceType: UIImagePickerController.SourceType = .photoLibrary
-    var allowEditing = false
-    
-    var completion: (UIImage?) -> Void = { _ in }
-    
-    func makeUIViewController(context: UIViewControllerRepresentableContext<ImagePicker>) -> UIImagePickerController {
+    @Environment(\.presentationMode) var presentationMode
+    var completion: (UIImage?) -> Void
+    var sourceType: UIImagePickerController.SourceType = .camera
 
-        let imagePicker = UIImagePickerController()
-        //imagePicker.allowsEditing = false
-        imagePicker.allowsEditing = allowEditing
-        imagePicker.sourceType = sourceType
-        
-        imagePicker.delegate = context.coordinator
+    class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+        let parent: ImagePicker
 
-        return imagePicker
-    }
-    
-    func updateUIViewController(_ uiViewController: UIImagePickerController, context: UIViewControllerRepresentableContext<ImagePicker>) {
-
-    }
-    
-    final class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-     
-        var parent: ImagePicker
-     
-        init(_ parent: ImagePicker) {
+        init(parent: ImagePicker) {
             self.parent = parent
         }
-     
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-     
-            if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
-                //parent.selectedImage = image
-                parent.presentationMode.wrappedValue.dismiss()
 
-                // cvw: This is where we should call our "completion" closure to do whatever action we're supposed to do with the new image
-                parent.completion(image)
-            }
-            else {
-                // Just dismiss the view
-                parent.presentationMode.wrappedValue.dismiss()
-                // Don't need to call the completion handler
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+            if let uiImage = info[.originalImage] as? UIImage {
+                parent.completion(uiImage)
+            } else {
                 parent.completion(nil)
             }
+            parent.presentationMode.wrappedValue.dismiss()
+        }
+
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            parent.completion(nil)
+            parent.presentationMode.wrappedValue.dismiss()
         }
     }
-    
-}
 
-
-
-/*
-struct ImagePicker_Previews: PreviewProvider {
-    static var previews: some View {
-        ImagePicker()
+    func makeCoordinator() -> Coordinator {
+        Coordinator(parent: self)
     }
+
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let picker = UIImagePickerController()
+        picker.delegate = context.coordinator
+        picker.sourceType = sourceType
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
 }
- */
