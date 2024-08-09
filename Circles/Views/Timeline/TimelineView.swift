@@ -14,6 +14,7 @@ struct TimelineView<V: MessageView>: View {
     @State var debug = false
     @State var loading = false
     @State var selectedMessage: Matrix.Message?
+    @AppStorage("isNewGroupOpen") var isNewGroupOpen = false
     
     var footer: some View {
         VStack(alignment: .center) {
@@ -76,6 +77,17 @@ struct TimelineView<V: MessageView>: View {
         }
     }
     
+    private func checkScrollPosition(_ scrollProxy: ScrollViewProxy) -> Int {
+        if isNewGroupOpen {
+            Task {
+                scrollProxy.scrollTo("top", anchor: .top)
+                isNewGroupOpen = false
+            }
+        }
+        
+        return 0
+    }
+    
     @ViewBuilder
     var body: some View {
         // Get all the top-level messages (ie not the replies etc)
@@ -87,69 +99,76 @@ struct TimelineView<V: MessageView>: View {
             message.timestamp < cutoff &&
             !message.room.session.ignoredUserIds.contains(message.sender.userId)
         }.sorted(by: {$0.timestamp > $1.timestamp})
+        
+        ScrollViewReader { scrollProxy in
+            ScrollView {
+                LazyVStack(alignment: .center, spacing: 10) {
+                    Text("")
+                        .id("top")
+                        .padding()
+                        .frame(height: 1)
 
-        ScrollView {
-            LazyVStack(alignment: .center, spacing: 10) {
-
-                if let msg = room.localEchoMessage {
-                    MessageCard(message: msg, isLocalEcho: true, isThreaded: false)
-                        //.border(Color.red)
-                        .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
-                }
+                    let _ = checkScrollPosition(scrollProxy)
                     
-                ForEach(messages) { message in
-                    if message.type == M_ROOM_MESSAGE ||
-                        message.type == M_ROOM_ENCRYPTED ||
-                        message.type == ORG_MATRIX_MSC3381_POLL_START {
-                                                    
-                        MessageCard(message: message, isLocalEcho: false, isThreaded: false)
-                            .onAppear {
-                                message.loadReactions()
-                            }
-                    } else if DebugModel.shared.debugMode && message.stateKey != nil {
-                        StateEventView(message: message)
+                    if let msg = room.localEchoMessage {
+                        MessageCard(message: msg, isLocalEcho: true, isThreaded: false)
+                        //.border(Color.red)
+                            .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
                     }
+                    
+                    ForEach(messages) { message in
+                        if message.type == M_ROOM_MESSAGE ||
+                            message.type == M_ROOM_ENCRYPTED ||
+                            message.type == ORG_MATRIX_MSC3381_POLL_START {
+                            
+                            MessageCard(message: message, isLocalEcho: false, isThreaded: false)
+                                .onAppear {
+                                    message.loadReactions()
+                                }
+                        } else if DebugModel.shared.debugMode && message.stateKey != nil {
+                            StateEventView(message: message)
+                        }
+                    }
+                    
+                    Spacer()
+                    
+                    footer
+                }
+                .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
+                .padding(.horizontal, 12)
+            }
+            .padding(0)
+            .background(Color.greyCool200)
+            .refreshable {
+                print("REFRESH\tGetting latest messages for room \(room.name ?? room.roomId.stringValue)")
+                if let moreMessages: RoomMessagesResponseBody = try? await room.getMessages(forward: true) {
+                    print("REFRESH\tGot \(moreMessages.chunk.count) more messages from server")
                 }
                 
-                Spacer()
+                print("REFRESH\tUpdating room state")
+                room.updateAvatarImage()
                 
-                footer
-            }
-            .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
-            .padding(.horizontal, 12)
-
-        }
-        .padding(0)
-        .background(Color.greyCool200)
-        .refreshable {
-            print("REFRESH\tGetting latest messages for room \(room.name ?? room.roomId.stringValue)")
-            if let moreMessages: RoomMessagesResponseBody = try? await room.getMessages(forward: true) {
-                print("REFRESH\tGot \(moreMessages.chunk.count) more messages from server")
-            }
-            
-            print("REFRESH\tUpdating room state")
-            room.updateAvatarImage()
-            
-            print("REFRESH\tSleeping to let network requests come in")
-            try? await Task.sleep(for: .seconds(1))
-            
-            print("REFRESH\tUpdating un-decrypted messages")
-            var count = 0
-            for message in room.timeline.values {
-                if message.type == M_ROOM_ENCRYPTED {
-                    do {
-                        try await message.decrypt()
-                        count += 1
-                    } catch {
-                        print("Failed to decrypt message \(message.eventId) in room \(room.roomId)")
+                print("REFRESH\tSleeping to let network requests come in")
+                try? await Task.sleep(for: .seconds(1))
+                
+                print("REFRESH\tUpdating un-decrypted messages")
+                var count = 0
+                for message in room.timeline.values {
+                    if message.type == M_ROOM_ENCRYPTED {
+                        do {
+                            try await message.decrypt()
+                            count += 1
+                        } catch {
+                            print("Failed to decrypt message \(message.eventId) in room \(room.roomId)")
+                        }
                     }
                 }
-            }
-            print("REFRESH\tDecrypted \(count) messages in room \(room.roomId)")
-            
-            print("REFRESH\tSending Combine update")
-            await MainActor.run {
-                room.objectWillChange.send()
+                print("REFRESH\tDecrypted \(count) messages in room \(room.roomId)")
+                
+                print("REFRESH\tSending Combine update")
+                await MainActor.run {
+                    room.objectWillChange.send()
+                }
             }
         }
     }

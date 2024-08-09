@@ -39,6 +39,7 @@ struct CirclesTabbedInterface: View {
     @AppStorage(DEFAULTS_KEY_ENABLE_GALLERIES, store: .standard) var enableGalleries: Bool = false
     @AppStorage("changelogLastUpdate") var changelogLastUpdate: TimeInterval = 0
     @AppStorage("mediaViewHeight") var mediaViewHeight: Double = 0
+    @AppStorage("isNewGroupOpen") var isNewGroupOpen = false
     @State var showChangelog = false
     var changelogFile = ChangelogFile()
     
@@ -55,10 +56,15 @@ struct CirclesTabbedInterface: View {
     }
     #endif
     
+    private var setNewGroupOpen: Int {
+        isNewGroupOpen = true
+        
+        return 0
+    }
+    
     @ViewBuilder
     var tabview: some View {
         TabView(selection: $session.viewState.tab) {
-            
             CirclesOverviewScreen(container: self.session.timelines,
                                   selected: $session.viewState.selectedTimelineId)
                 .environmentObject(session)
@@ -73,7 +79,9 @@ struct CirclesTabbedInterface: View {
                     Text("Circles")
                 }
                 .tag(Tab.circles)
-   
+            
+            let _ = setNewGroupOpen
+            
             GroupsOverviewScreen(container: self.session.groups,
                                  selected: $session.viewState.selectedGroupId)
                 .environmentObject(session)

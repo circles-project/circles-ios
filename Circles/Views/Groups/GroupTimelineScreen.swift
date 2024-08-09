@@ -94,7 +94,6 @@ struct GroupTimelineScreen: View {
                             switch(st) {
                             case .invite:
                                 RoomInviteSheet(room: room, title: "Invite new members to \(room.name ?? "(unnamed group)")")
-                                
                             case .share:
                                 let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/group/\(room.roomId.stringValue)")
                                 RoomShareSheet(room: room, url: url)
