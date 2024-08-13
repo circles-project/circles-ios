@@ -87,6 +87,7 @@
 		A5119A432C20BE5E00E79E20 /* EmailSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5119A422C20BE5E00E79E20 /* EmailSettingsView.swift */; };
 		A51503C42B75690700E1566E /* SaveImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51503C32B75690700E1566E /* SaveImage.swift */; };
 		A51503C62B756B7F00E1566E /* DeleteAndPurge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51503C52B756B7F00E1566E /* DeleteAndPurge.swift */; };
+		A5175B552C6BAEBF00B5BA4C /* SmallComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5175B542C6BAEBF00B5BA4C /* SmallComposer.swift */; };
 		A51928B32BCDAE38005DCFF4 /* BannedRoomMemberRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51928B22BCDAE38005DCFF4 /* BannedRoomMemberRow.swift */; };
 		A51928B52BCDB56D005DCFF4 /* RoomRenameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51928B42BCDB56D005DCFF4 /* RoomRenameView.swift */; };
 		A51928B72BCDBD8E005DCFF4 /* CircleRenameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51928B62BCDBD8E005DCFF4 /* CircleRenameView.swift */; };
@@ -353,6 +354,7 @@
 		A5119A422C20BE5E00E79E20 /* EmailSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailSettingsView.swift; sourceTree = "<group>"; };
 		A51503C32B75690700E1566E /* SaveImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveImage.swift; sourceTree = "<group>"; };
 		A51503C52B756B7F00E1566E /* DeleteAndPurge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAndPurge.swift; sourceTree = "<group>"; };
+		A5175B542C6BAEBF00B5BA4C /* SmallComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallComposer.swift; sourceTree = "<group>"; };
 		A51928B22BCDAE38005DCFF4 /* BannedRoomMemberRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannedRoomMemberRow.swift; sourceTree = "<group>"; };
 		A51928B42BCDB56D005DCFF4 /* RoomRenameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomRenameView.swift; sourceTree = "<group>"; };
 		A51928B62BCDBD8E005DCFF4 /* CircleRenameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleRenameView.swift; sourceTree = "<group>"; };
@@ -1041,6 +1043,7 @@
 				40CD7F6E2667E16100DE315F /* VideoPicker.swift */,
 				409F4384265DE2A400690A61 /* PostComposer.swift */,
 				40878FC92694DBC400A66EF0 /* PostComposerScreen.swift */,
+				A5175B542C6BAEBF00B5BA4C /* SmallComposer.swift */,
 			);
 			path = Composer;
 			sourceTree = "<group>";
@@ -1255,6 +1258,7 @@
 				409F4335265DE15F00690A61 /* CirclePicker.swift in Sources */,
 				A521C3F72A68D9390051ED88 /* CircleInvitationsIndicator.swift in Sources */,
 				409F42E9265DE06C00690A61 /* WebView.swift in Sources */,
+				A5175B552C6BAEBF00B5BA4C /* SmallComposer.swift in Sources */,
 				42CCE0CC2C122D7B001B19D2 /* ViewModifier+Extensions.swift in Sources */,
 				A58E217A2C4AC3CA005FF66B /* CommentCard.swift in Sources */,
 				A51ABE6A2B2B7E2000039276 /* FollowingTimelineDetailsView.swift in Sources */,
