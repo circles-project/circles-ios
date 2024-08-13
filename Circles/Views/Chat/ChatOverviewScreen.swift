@@ -35,7 +35,7 @@ struct ChatOverviewScreen: View {
         
         if !rooms.isEmpty || !invitations.isEmpty  {
             VStack(alignment: .leading, spacing: 0) {
-                //ChatInvitationsIndicator(session: session)
+                ChatInvitationsIndicator(session: session)
                 
                 List(selection: $selected) {
                     ForEach(rooms) { room in

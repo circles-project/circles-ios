@@ -92,6 +92,9 @@
 		A5175B5D2C6BBFDA00B5BA4C /* Matrix in Frameworks */ = {isa = PBXBuildFile; productRef = A5175B5C2C6BBFDA00B5BA4C /* Matrix */; };
 		A5175B5F2C6BC37100B5BA4C /* ChatTimeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5175B5E2C6BC37100B5BA4C /* ChatTimeline.swift */; };
 		A5175B612C6BCF0900B5BA4C /* MessageBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5175B602C6BCF0900B5BA4C /* MessageBubble.swift */; };
+		A5175B632C6BE17400B5BA4C /* ChatInvitationsIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5175B622C6BE17400B5BA4C /* ChatInvitationsIndicator.swift */; };
+		A5175B652C6BE1BA00B5BA4C /* ChatInvitationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5175B642C6BE1BA00B5BA4C /* ChatInvitationsView.swift */; };
+		A5175B672C6BE20C00B5BA4C /* InvitedChatCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5175B662C6BE20C00B5BA4C /* InvitedChatCard.swift */; };
 		A51928B32BCDAE38005DCFF4 /* BannedRoomMemberRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51928B22BCDAE38005DCFF4 /* BannedRoomMemberRow.swift */; };
 		A51928B52BCDB56D005DCFF4 /* RoomRenameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51928B42BCDB56D005DCFF4 /* RoomRenameView.swift */; };
 		A51928B72BCDBD8E005DCFF4 /* CircleRenameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51928B62BCDBD8E005DCFF4 /* CircleRenameView.swift */; };
@@ -359,6 +362,9 @@
 		A5175B542C6BAEBF00B5BA4C /* SmallComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallComposer.swift; sourceTree = "<group>"; };
 		A5175B5E2C6BC37100B5BA4C /* ChatTimeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTimeline.swift; sourceTree = "<group>"; };
 		A5175B602C6BCF0900B5BA4C /* MessageBubble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBubble.swift; sourceTree = "<group>"; };
+		A5175B622C6BE17400B5BA4C /* ChatInvitationsIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatInvitationsIndicator.swift; sourceTree = "<group>"; };
+		A5175B642C6BE1BA00B5BA4C /* ChatInvitationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatInvitationsView.swift; sourceTree = "<group>"; };
+		A5175B662C6BE20C00B5BA4C /* InvitedChatCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitedChatCard.swift; sourceTree = "<group>"; };
 		A51928B22BCDAE38005DCFF4 /* BannedRoomMemberRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannedRoomMemberRow.swift; sourceTree = "<group>"; };
 		A51928B42BCDB56D005DCFF4 /* RoomRenameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomRenameView.swift; sourceTree = "<group>"; };
 		A51928B62BCDBD8E005DCFF4 /* CircleRenameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleRenameView.swift; sourceTree = "<group>"; };
@@ -943,6 +949,9 @@
 				A5582CE32C5418B700507D9D /* ChatSettingsView.swift */,
 				A5175B5E2C6BC37100B5BA4C /* ChatTimeline.swift */,
 				A5175B602C6BCF0900B5BA4C /* MessageBubble.swift */,
+				A5175B622C6BE17400B5BA4C /* ChatInvitationsIndicator.swift */,
+				A5175B642C6BE1BA00B5BA4C /* ChatInvitationsView.swift */,
+				A5175B662C6BE20C00B5BA4C /* InvitedChatCard.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -1192,6 +1201,7 @@
 				A52DF68529E72CC1008860C3 /* Keychain.swift in Sources */,
 				A57BD8462BD19C1000EC07E9 /* FriendsOfFriendsView.swift in Sources */,
 				409F4345265DE17500690A61 /* GroupsOverviewScreen.swift in Sources */,
+				A5175B672C6BE20C00B5BA4C /* InvitedChatCard.swift in Sources */,
 				424CEE072C1A2B08005D871C /* ChangelogSheet.swift in Sources */,
 				A52ACB8D2A7824D3005D90C5 /* ProfileSpace.swift in Sources */,
 				4047F3DE26B895B80010B2C3 /* SecureFieldWithEye.swift in Sources */,
@@ -1228,12 +1238,14 @@
 				A5582CDE2C54150000507D9D /* ChatOverviewRow.swift in Sources */,
 				A54A27882A843BB200858846 /* GroupInvitationsIndicator.swift in Sources */,
 				A5A7E228282B06FD001A528D /* ApplicationState.swift in Sources */,
+				A5175B652C6BE1BA00B5BA4C /* ChatInvitationsView.swift in Sources */,
 				A5634FCC2C41DF4A00D60DFB /* UnifiedTimelineComposerSheet.swift in Sources */,
 				A562C0982B16981C00522FCB /* AppStoreInterface.swift in Sources */,
 				A5BB4EF12BD02D26001FD0D8 /* VideoDetailView.swift in Sources */,
 				409F4340265DE17500690A61 /* GroupCreationSheet.swift in Sources */,
 				409F4364265DE21A00690A61 /* MessageReportingSheet.swift in Sources */,
 				4C40ED262AA7CCFB00F58493 /* GalleryInvitationsIndicator.swift in Sources */,
+				A5175B632C6BE17400B5BA4C /* ChatInvitationsIndicator.swift in Sources */,
 				A56593632AF17EF90003C244 /* LegacyLoginScreen.swift in Sources */,
 				40F906BB269DF96100287B27 /* MessageSheetType.swift in Sources */,
 				A51928B52BCDB56D005DCFF4 /* RoomRenameView.swift in Sources */,
