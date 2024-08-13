@@ -193,6 +193,92 @@ struct LoginScreen: View {
     }
 }
 
+struct DomainScreen: View {
+    #if DEBUG 
+    @State var domain: String = usDomain
+    #else
+    @State var domain: String = ""
+    #endif
+    var store: CirclesStore
+    
+    @FocusState var inputFocused
+    
+    var backButton: some View {
+        AsyncButton(role: .destructive, action: {
+            try await self.store.disconnect()
+        }) {
+            Image(SystemImages.iconFilledArrowBack.rawValue)
+                .padding(5)
+                .frame(width: 40.0, height: 40.0)
+        }
+        .background(Color.white)
+        .clipShape(Circle())
+        .padding(.leading, 21)
+        .padding(.top, 65)
+    }
+    
+    var body: some View {
+        let screenWidthWithOffsets = UIScreen.main.bounds.width - 48
+        
+        ZStack {
+            Color.greyCool200
+                .edgesIgnoringSafeArea(.all)
+            
+            VStack {
+                HStack {
+                    backButton
+                    Spacer()
+                }
+                
+                BasicImage(name: SystemImages.launchLogoPurple.rawValue)
+                    .frame(width: 125, height: 43)
+                    .padding(.bottom, 30)
+                
+                VStack(alignment: .leading) {
+                    Text("Enter your domain address")
+                        .font(
+                            CustomFonts.nunito14
+                                .weight(.bold)
+                        )
+                        .foregroundColor(Color.greyCool1100)
+                    
+                    TextField("Domain", text: $domain)
+                        .frame(width: screenWidthWithOffsets, height: 48.0)
+                        .padding([.horizontal], 12)
+                        .background(Color.white)
+                        .cornerRadius(10)
+                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.greyCool400))
+                        .focused($inputFocused)
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
+                        .onAppear {
+                            self.inputFocused = true
+                        }
+                }
+                
+                Spacer()
+                
+                AsyncButton(action: {
+                    try await store.signup(domain: usDomain)
+                }) {
+                    Text("Create circle")
+                        .foregroundStyle(Color.white)
+                }
+                .frame(width: screenWidthWithOffsets, height: 48)
+                .background(Color.accentColor)
+                .cornerRadius(8)
+                .font(
+                    CustomFonts.nunito16
+                        .weight(.bold)
+                )
+                .padding(.bottom, 38)
+                .disabled(domain.isEmpty)
+            }
+        }
+        .navigationBarBackButtonHidden()
+    }
+}
+
 struct WelcomeScreen: View {
     var store: CirclesStore
     @State var showDomainPicker = false
@@ -228,9 +314,7 @@ struct WelcomeScreen: View {
                                                                   height: buttonHeight,
                                                                   color: Color.accentColor)
                     
-                    Button(action: {
-                        self.showDomainPicker = true
-                    }) {
+                    NavigationLink(destination: DomainScreen(store: store)) {
                         Text("Sign Up for free")
                             .font(
                                 CustomFonts.nunito16
@@ -238,21 +322,11 @@ struct WelcomeScreen: View {
                             )
                     }
                     .buttonStyle(signUpButtonStyle)
-                    .confirmationDialog("Select a region", isPresented: $showDomainPicker) {
-                        AsyncButton(action: {
-                            print("LOGIN\tSigning up on user-selected US domain")
-                            try await store.signup(domain: usDomain)
-                        }) {
-                            Text("🇺🇸 Sign up on US server")
-                        }
-                        AsyncButton(action: {
-                            print("LOGIN\tSigning up on user-selected EU domain")
-                            try await store.signup(domain: euDomain)
-                        }) {
-                            Text("🇪🇺 Sign up on EU server")
-                        }
-                    }
-                    
+                    .font(
+                        CustomFonts.nunito16
+                            .weight(.bold)
+                    )
+                                        
                     let signInButtonStyle = BigRoundedButtonStyle(width: buttonWidth,
                                                                   height: buttonHeight,
                                                                   color: .clear,
