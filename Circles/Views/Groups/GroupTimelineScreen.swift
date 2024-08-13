@@ -40,7 +40,7 @@ struct GroupTimelineScreen: View {
     @State var showNewPostInSheetStyle = false
     
     var timeline: some View {
-        TimelineView<MessageCard>(room: room)
+        TimelineView(room: room)
     }
     
     var toolbarMenu: some View {

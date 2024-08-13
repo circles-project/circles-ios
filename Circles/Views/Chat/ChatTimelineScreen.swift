@@ -36,7 +36,7 @@ struct ChatTimelineScreen: View {
     @State var nilParentMessage: Matrix.Message? = nil
     
     var timeline: some View {
-        TimelineView<MessageCard>(room: room)
+        TimelineView(room: room)
     }
     
     var toolbarMenu: some View {

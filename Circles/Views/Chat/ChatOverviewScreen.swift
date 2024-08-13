@@ -59,6 +59,11 @@ struct ChatOverviewScreen: View {
                     self.reload()
                 }
         }
+        
+        if DebugModel.shared.debugMode {
+            Text("\(session.rooms.values.count) total rooms")
+            Text("\(rooms.count) rooms with type == nil")
+        }
     }
     
     @MainActor

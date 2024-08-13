@@ -9,7 +9,7 @@
 import SwiftUI
 import Matrix
 
-struct TimelineView<V: MessageView>: View {
+struct TimelineView: View {
     @ObservedObject var room: Matrix.Room
     @State var debug = false
     @State var loading = false
