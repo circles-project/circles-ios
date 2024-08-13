@@ -81,13 +81,15 @@
 		4C40ED262AA7CCFB00F58493 /* GalleryInvitationsIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C40ED252AA7CCFB00F58493 /* GalleryInvitationsIndicator.swift */; };
 		4C40ED282AA7D06800F58493 /* PeopleInvitationsIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C40ED272AA7D06800F58493 /* PeopleInvitationsIndicator.swift */; };
 		A504DA7328120AF100EFF42E /* AsyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A504DA7228120AF100EFF42E /* AsyncButton.swift */; };
-		A509B89A28189E950053E5BC /* BlindSaltSpeke in Frameworks */ = {isa = PBXBuildFile; productRef = A509B89928189E950053E5BC /* BlindSaltSpeke */; };
 		A509B89C2818A1F80053E5BC /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A509B89B2818A1F80053E5BC /* Array+Extension.swift */; };
 		A509B89E2819B6C90053E5BC /* CirclesError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A509B89D2819B6C90053E5BC /* CirclesError.swift */; };
 		A5119A432C20BE5E00E79E20 /* EmailSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5119A422C20BE5E00E79E20 /* EmailSettingsView.swift */; };
 		A51503C42B75690700E1566E /* SaveImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51503C32B75690700E1566E /* SaveImage.swift */; };
 		A51503C62B756B7F00E1566E /* DeleteAndPurge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51503C52B756B7F00E1566E /* DeleteAndPurge.swift */; };
 		A5175B552C6BAEBF00B5BA4C /* SmallComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5175B542C6BAEBF00B5BA4C /* SmallComposer.swift */; };
+		A5175B582C6BBD4500B5BA4C /* Matrix in Frameworks */ = {isa = PBXBuildFile; productRef = A5175B572C6BBD4500B5BA4C /* Matrix */; };
+		A5175B5B2C6BBEB400B5BA4C /* BlindSaltSpeke in Frameworks */ = {isa = PBXBuildFile; productRef = A5175B5A2C6BBEB400B5BA4C /* BlindSaltSpeke */; };
+		A5175B5D2C6BBFDA00B5BA4C /* Matrix in Frameworks */ = {isa = PBXBuildFile; productRef = A5175B5C2C6BBFDA00B5BA4C /* Matrix */; };
 		A51928B32BCDAE38005DCFF4 /* BannedRoomMemberRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51928B22BCDAE38005DCFF4 /* BannedRoomMemberRow.swift */; };
 		A51928B52BCDB56D005DCFF4 /* RoomRenameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51928B42BCDB56D005DCFF4 /* RoomRenameView.swift */; };
 		A51928B72BCDBD8E005DCFF4 /* CircleRenameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51928B62BCDBD8E005DCFF4 /* CircleRenameView.swift */; };
@@ -204,7 +206,6 @@
 		A5BECC38280F7A2400B1FCC6 /* KeyboardKit in Frameworks */ = {isa = PBXBuildFile; productRef = A5BECC37280F7A2400B1FCC6 /* KeyboardKit */; };
 		A5CC0ACC29D91F7C005935F0 /* Zxcvbn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CC0ACB29D91F7C005935F0 /* Zxcvbn.swift */; };
 		A5CF39D52A73299500134969 /* ThreadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CF39D42A73299500134969 /* ThreadView.swift */; };
-		A5D2A3EC29BA643C00428C45 /* Matrix in Frameworks */ = {isa = PBXBuildFile; productRef = A5D2A3EB29BA643C00428C45 /* Matrix */; };
 		A5D2A3F629C0EED700428C45 /* Sequence+asyncMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D2A3F529C0EED700428C45 /* Sequence+asyncMap.swift */; };
 		A5D353B12BB1C5EE003AA02A /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D353B02BB1C5EE003AA02A /* ForgotPasswordView.swift */; };
 		A5D353B32BB1F1C0003AA02A /* EmailLoginRequestTokenForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D353B22BB1F1C0003AA02A /* EmailLoginRequestTokenForm.swift */; };
@@ -221,7 +222,6 @@
 		A5DDA6A52B98F8B900BD8A1D /* Data+hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5DDA6A42B98F8B900BD8A1D /* Data+hex.swift */; };
 		A5DDA6AD2B9B60F400BD8A1D /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5DDA6AC2B9B60F400BD8A1D /* NotificationService.swift */; };
 		A5DDA6B12B9B60F400BD8A1D /* NSE.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A5DDA6AA2B9B60F400BD8A1D /* NSE.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		A5DDA6B72B9B618A00BD8A1D /* Matrix in Frameworks */ = {isa = PBXBuildFile; productRef = A5DDA6B62B9B618A00BD8A1D /* Matrix */; };
 		A5DDA6BA2B9BB2BA00BD8A1D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5DDA6B92B9BB2BA00BD8A1D /* Constants.swift */; };
 		A5E101F82814FAFD000B2C42 /* bcrypt.c in Sources */ = {isa = PBXBuildFile; fileRef = A5E101F72814FAFD000B2C42 /* bcrypt.c */; };
 		A5E101FA2814FB60000B2C42 /* blf.c in Sources */ = {isa = PBXBuildFile; fileRef = A5E101F92814FB60000B2C42 /* blf.c */; };
@@ -527,12 +527,12 @@
 			files = (
 				A5BECC38280F7A2400B1FCC6 /* KeyboardKit in Frameworks */,
 				A5A40B6129D468C3009A17EE /* MarkdownUI in Frameworks */,
-				A5D2A3EC29BA643C00428C45 /* Matrix in Frameworks */,
 				4069F79826729DD200FB6090 /* StoreKit.framework in Frameworks */,
+				A5175B582C6BBD4500B5BA4C /* Matrix in Frameworks */,
 				A54346C12A1D485D0025D147 /* KeychainAccess in Frameworks */,
+				A5175B5B2C6BBEB400B5BA4C /* BlindSaltSpeke in Frameworks */,
 				A5481C2528108DC7006F782F /* AnyCodable in Frameworks */,
 				42DC60502C094A8C000F1BE8 /* JDStatusBarNotification in Frameworks */,
-				A509B89A28189E950053E5BC /* BlindSaltSpeke in Frameworks */,
 				A56BE1792AD6DE0800B15F51 /* CodeScanner in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -541,7 +541,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A5DDA6B72B9B618A00BD8A1D /* Matrix in Frameworks */,
+				A5175B5D2C6BBFDA00B5BA4C /* Matrix in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1069,12 +1069,12 @@
 			packageProductDependencies = (
 				A5BECC37280F7A2400B1FCC6 /* KeyboardKit */,
 				A5481C2428108DC7006F782F /* AnyCodable */,
-				A509B89928189E950053E5BC /* BlindSaltSpeke */,
-				A5D2A3EB29BA643C00428C45 /* Matrix */,
 				A5A40B6029D468C3009A17EE /* MarkdownUI */,
 				A54346C02A1D485D0025D147 /* KeychainAccess */,
 				A56BE1782AD6DE0800B15F51 /* CodeScanner */,
 				42DC604F2C094A8C000F1BE8 /* JDStatusBarNotification */,
+				A5175B572C6BBD4500B5BA4C /* Matrix */,
+				A5175B5A2C6BBEB400B5BA4C /* BlindSaltSpeke */,
 			);
 			productName = Circles;
 			productReference = 404C72CD265DDF35000473DF /* Circles.app */;
@@ -1094,7 +1094,7 @@
 			);
 			name = NSE;
 			packageProductDependencies = (
-				A5DDA6B62B9B618A00BD8A1D /* Matrix */,
+				A5175B5C2C6BBFDA00B5BA4C /* Matrix */,
 			);
 			productName = NSE;
 			productReference = A5DDA6AA2B9B60F400BD8A1D /* NSE.appex */;
@@ -1131,12 +1131,12 @@
 			packageReferences = (
 				A5BECC36280F7A2400B1FCC6 /* XCRemoteSwiftPackageReference "KeyboardKit" */,
 				A5481C2328108DC7006F782F /* XCRemoteSwiftPackageReference "AnyCodable" */,
-				A509B89828189E950053E5BC /* XCRemoteSwiftPackageReference "BlindSaltSpeke" */,
-				A5D2A3EA29BA643C00428C45 /* XCRemoteSwiftPackageReference "matrix.swift" */,
 				A5A40B5F29D468C3009A17EE /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 				A54346BF2A1D485D0025D147 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 				A56BE1772AD6DE0800B15F51 /* XCRemoteSwiftPackageReference "CodeScanner" */,
 				42DC604E2C094878000F1BE8 /* XCRemoteSwiftPackageReference "JDStatusBarNotification" */,
+				A5175B562C6BBD4500B5BA4C /* XCRemoteSwiftPackageReference "Matrix" */,
+				A5175B592C6BBEB400B5BA4C /* XCRemoteSwiftPackageReference "BlindSaltSpeke" */,
 			);
 			productRefGroup = 404C72CE265DDF35000473DF /* Products */;
 			projectDirPath = "";
@@ -1723,9 +1723,17 @@
 				minimumVersion = 2.2.2;
 			};
 		};
-		A509B89828189E950053E5BC /* XCRemoteSwiftPackageReference "BlindSaltSpeke" */ = {
+		A5175B562C6BBD4500B5BA4C /* XCRemoteSwiftPackageReference "Matrix" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://gitlab.futo.org/cvwright/BlindSaltSpeke.git";
+			repositoryURL = "https://github.com/circles-project/Matrix.swift";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		A5175B592C6BBEB400B5BA4C /* XCRemoteSwiftPackageReference "BlindSaltSpeke" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://gitlab.futo.org/cvwright/BlindSaltSpeke";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 0.4.1;
@@ -1771,14 +1779,6 @@
 				minimumVersion = 7.7.0;
 			};
 		};
-		A5D2A3EA29BA643C00428C45 /* XCRemoteSwiftPackageReference "matrix.swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://gitlab.futo.org/circles/matrix.swift.git";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1787,10 +1787,20 @@
 			package = 42DC604E2C094878000F1BE8 /* XCRemoteSwiftPackageReference "JDStatusBarNotification" */;
 			productName = JDStatusBarNotification;
 		};
-		A509B89928189E950053E5BC /* BlindSaltSpeke */ = {
+		A5175B572C6BBD4500B5BA4C /* Matrix */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = A509B89828189E950053E5BC /* XCRemoteSwiftPackageReference "BlindSaltSpeke" */;
+			package = A5175B562C6BBD4500B5BA4C /* XCRemoteSwiftPackageReference "Matrix" */;
+			productName = Matrix;
+		};
+		A5175B5A2C6BBEB400B5BA4C /* BlindSaltSpeke */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A5175B592C6BBEB400B5BA4C /* XCRemoteSwiftPackageReference "BlindSaltSpeke" */;
 			productName = BlindSaltSpeke;
+		};
+		A5175B5C2C6BBFDA00B5BA4C /* Matrix */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A5175B562C6BBD4500B5BA4C /* XCRemoteSwiftPackageReference "Matrix" */;
+			productName = Matrix;
 		};
 		A54346C02A1D485D0025D147 /* KeychainAccess */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1816,16 +1826,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A5BECC36280F7A2400B1FCC6 /* XCRemoteSwiftPackageReference "KeyboardKit" */;
 			productName = KeyboardKit;
-		};
-		A5D2A3EB29BA643C00428C45 /* Matrix */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A5D2A3EA29BA643C00428C45 /* XCRemoteSwiftPackageReference "matrix.swift" */;
-			productName = Matrix;
-		};
-		A5DDA6B62B9B618A00BD8A1D /* Matrix */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A5D2A3EA29BA643C00428C45 /* XCRemoteSwiftPackageReference "matrix.swift" */;
-			productName = Matrix;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
