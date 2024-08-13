@@ -88,42 +88,6 @@ struct LoginScreen: View {
                             .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.greyCool400))
                             .autocapitalization(.none)
                             .disableAutocorrection(true)
-                        
-                        Text("Password")
-                            .font(
-                                CustomFonts.nunito14
-                                    .weight(.bold)
-                            )
-                            .foregroundColor(Color.greyCool1100)
-                        
-                        SecureFieldWithEye(label: "",
-                                           height: buttonHeight,
-                                           text: $password,
-                                           showText: showPassword,
-                                           isFirstResponder: false)
-                        .textContentType(.password)
-                        .frame(width: buttonWidth, height: buttonHeight)
-//                        .padding([.horizontal], 6)
-//                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(hex: "DEE1E6"))) // Color.grey400
-//                        .onAppear {
-//                            Attempt to load the saved password that Matrix.swift should have saved in our Keychain
-//                            let keychain = Keychain(server: "https://\(session.username.domain)", protocolType: .https)
-//                            keychain.getSharedPassword(session.username.stringValue) { (passwd, error) in
-//                                if self.password.isEmpty,
-//                                   let savedPassword = passwd
-//                                {
-//                                    self.password = savedPassword
-//                                }
-//                            }
-//                        }
-                        NavigationLink(destination: ForgotPasswordView(store: store)) {
-                            Text("Forgot?")
-                                .font(
-                                    CustomFonts.nunito14
-                                        .weight(.bold)
-                                )
-                        }
-                        .padding(5)
                     }
                     
                     Spacer()
@@ -131,6 +95,7 @@ struct LoginScreen: View {
                     let signUpButtonStyle = BigRoundedButtonStyle(width: buttonWidth,
                                                                   height: buttonHeight,
                                                                   color: Color.accentColor)
+                    
                     AsyncButton(action: {
                         if !username.isEmpty {
                             if let userId = UserId(username) {
@@ -145,7 +110,7 @@ struct LoginScreen: View {
                             }
                         }
                     }) {
-                        Text("Log In")
+                        Text("Next step")
                     }
                     .buttonStyle(signUpButtonStyle)
                     .font(
@@ -176,6 +141,7 @@ struct LoginScreen: View {
                         Alert(title: Text("Invalid User ID"),
                               message: Text("Circles user ID's should start with an @ and have a domain at the end, like @username:example.com"))
                     }
+                    .disabled(username.isEmpty)
                     
                     HStack {
                         Text("Don't have an account?")
@@ -242,7 +208,7 @@ struct DomainScreen: View {
                         )
                         .foregroundColor(Color.greyCool1100)
                     
-                    TextField("Domain", text: $domain)
+                    TextField("us.domain.com", text: $domain)
                         .frame(width: screenWidthWithOffsets, height: 48.0)
                         .padding([.horizontal], 12)
                         .background(Color.white)
