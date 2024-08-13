@@ -23,6 +23,7 @@ struct ChatOverviewScreen: View {
     @ObservedObject var session: Matrix.Session
     @State var sheetType: ChatOverviewSheetType?
         
+    @State var rooms: [Matrix.Room] = []
     @State var invitations: [Matrix.InvitedRoom] = []
     
     //@State var selectedRoom: Matrix.Room?
@@ -31,10 +32,6 @@ struct ChatOverviewScreen: View {
     @ViewBuilder
     var baseLayer: some View {
        // let groupInvitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_GROUP }
-        
-        let rooms = session.rooms.values
-            .filter({ $0.type == nil })
-            .sorted(by: {$0.timestamp > $1.timestamp} )
         
         if !rooms.isEmpty || !invitations.isEmpty  {
             VStack(alignment: .leading, spacing: 0) {
@@ -72,6 +69,12 @@ struct ChatOverviewScreen: View {
         self.invitations = session.invitations.values.filter { $0.type == nil }
         print("RELOAD\tFound \(self.invitations.count) invitations for this screen")
         session.objectWillChange.send()
+        
+        if self.rooms.isEmpty {
+            self.rooms = session.rooms.values
+                                      .filter({ $0.type == nil })
+                                      .sorted(by: {$0.timestamp > $1.timestamp} )
+        }
     }
     
     @ViewBuilder
@@ -109,9 +112,6 @@ struct ChatOverviewScreen: View {
         }
         .padding(.top)
         .navigationBarTitle(Text("Messages"), displayMode: .inline)
-        .refreshable {
-            self.reload()
-        }
         .toolbar {
             ToolbarItemGroup(placement: .automatic) {
                 Menu {
@@ -141,6 +141,16 @@ struct ChatOverviewScreen: View {
         NavigationSplitView {
             master
                 .background(Color.greyCool200)
+                .refreshable {
+                    self.reload()
+                }
+                .onAppear {
+                    if self.rooms.isEmpty {
+                        self.rooms = session.rooms.values
+                                                  .filter({ $0.type == nil })
+                                                  .sorted(by: {$0.timestamp > $1.timestamp} )
+                    }
+                }
         } detail: {
             if let roomId = selected,
                let room = session.rooms[roomId]

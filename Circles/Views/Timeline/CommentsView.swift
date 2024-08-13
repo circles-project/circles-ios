@@ -53,7 +53,7 @@ struct CommentsView: View {
 
             Divider()
             
-            SmallComposer(room: room, parent: parent)
+            SmallComposer(room: room, parent: parent, prompt: "Comment")
         }
     }
 }

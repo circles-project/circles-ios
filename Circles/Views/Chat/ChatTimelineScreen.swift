@@ -36,7 +36,7 @@ struct ChatTimelineScreen: View {
     @State var nilParentMessage: Matrix.Message? = nil
     
     var timeline: some View {
-        TimelineView(room: room)
+        ChatTimeline(room: room)
     }
     
     var toolbarMenu: some View {
@@ -98,7 +98,7 @@ struct ChatTimelineScreen: View {
                     .padding([.top], -4)
             }
                 
-            SmallComposer(room: room)
+            SmallComposer(room: room, prompt: "Message")
         }
         .toolbar {
             ToolbarItemGroup(placement: .automatic) {

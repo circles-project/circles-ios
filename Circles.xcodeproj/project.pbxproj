@@ -90,6 +90,8 @@
 		A5175B582C6BBD4500B5BA4C /* Matrix in Frameworks */ = {isa = PBXBuildFile; productRef = A5175B572C6BBD4500B5BA4C /* Matrix */; };
 		A5175B5B2C6BBEB400B5BA4C /* BlindSaltSpeke in Frameworks */ = {isa = PBXBuildFile; productRef = A5175B5A2C6BBEB400B5BA4C /* BlindSaltSpeke */; };
 		A5175B5D2C6BBFDA00B5BA4C /* Matrix in Frameworks */ = {isa = PBXBuildFile; productRef = A5175B5C2C6BBFDA00B5BA4C /* Matrix */; };
+		A5175B5F2C6BC37100B5BA4C /* ChatTimeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5175B5E2C6BC37100B5BA4C /* ChatTimeline.swift */; };
+		A5175B612C6BCF0900B5BA4C /* MessageBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5175B602C6BCF0900B5BA4C /* MessageBubble.swift */; };
 		A51928B32BCDAE38005DCFF4 /* BannedRoomMemberRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51928B22BCDAE38005DCFF4 /* BannedRoomMemberRow.swift */; };
 		A51928B52BCDB56D005DCFF4 /* RoomRenameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51928B42BCDB56D005DCFF4 /* RoomRenameView.swift */; };
 		A51928B72BCDBD8E005DCFF4 /* CircleRenameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51928B62BCDBD8E005DCFF4 /* CircleRenameView.swift */; };
@@ -355,6 +357,8 @@
 		A51503C32B75690700E1566E /* SaveImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveImage.swift; sourceTree = "<group>"; };
 		A51503C52B756B7F00E1566E /* DeleteAndPurge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAndPurge.swift; sourceTree = "<group>"; };
 		A5175B542C6BAEBF00B5BA4C /* SmallComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallComposer.swift; sourceTree = "<group>"; };
+		A5175B5E2C6BC37100B5BA4C /* ChatTimeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTimeline.swift; sourceTree = "<group>"; };
+		A5175B602C6BCF0900B5BA4C /* MessageBubble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBubble.swift; sourceTree = "<group>"; };
 		A51928B22BCDAE38005DCFF4 /* BannedRoomMemberRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannedRoomMemberRow.swift; sourceTree = "<group>"; };
 		A51928B42BCDB56D005DCFF4 /* RoomRenameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomRenameView.swift; sourceTree = "<group>"; };
 		A51928B62BCDBD8E005DCFF4 /* CircleRenameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleRenameView.swift; sourceTree = "<group>"; };
@@ -937,6 +941,8 @@
 				A5582CDF2C54159700507D9D /* ChatCreationSheet.swift */,
 				A5582CE12C54179600507D9D /* ChatTimelineScreen.swift */,
 				A5582CE32C5418B700507D9D /* ChatSettingsView.swift */,
+				A5175B5E2C6BC37100B5BA4C /* ChatTimeline.swift */,
+				A5175B602C6BCF0900B5BA4C /* MessageBubble.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -1182,6 +1188,7 @@
 				409F4378265DE25000690A61 /* PhotosOverviewScreen.swift in Sources */,
 				A5EE59C42A5F21C2007C24C7 /* DevicesScreen.swift in Sources */,
 				A5A40B6829D60EF3009A17EE /* CirclesConfigV1.swift in Sources */,
+				A5175B612C6BCF0900B5BA4C /* MessageBubble.swift in Sources */,
 				A52DF68529E72CC1008860C3 /* Keychain.swift in Sources */,
 				A57BD8462BD19C1000EC07E9 /* FriendsOfFriendsView.swift in Sources */,
 				409F4345265DE17500690A61 /* GroupsOverviewScreen.swift in Sources */,
@@ -1324,6 +1331,7 @@
 				40E4D88A268A76CF0055968A /* SignupScreen.swift in Sources */,
 				A562F9AB2B6AEDF90008D96A /* LegacyPasswordUiaForm.swift in Sources */,
 				4073E7C4267915AF001A80CF /* CommentsView.swift in Sources */,
+				A5175B5F2C6BC37100B5BA4C /* ChatTimeline.swift in Sources */,
 				A5487EC72ADC81E500FA16B5 /* UserNameView.swift in Sources */,
 				A562C0902AFE9A7200522FCB /* Array+RawRepresentable.swift in Sources */,
 				A5DDA6A32B98E49500BD8A1D /* CirclesAppDelegate.swift in Sources */,

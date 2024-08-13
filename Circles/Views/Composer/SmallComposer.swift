@@ -11,6 +11,7 @@ import Matrix
 struct SmallComposer: View {
     var room: Matrix.Room
     var parent: Matrix.Message?
+    var prompt: String
     
     @State var newMessageText: String = ""
     
@@ -55,7 +56,7 @@ struct SmallComposer: View {
             attachmentButton
             
             TextField(text: $newMessageText) {
-                Text("Comment")
+                Text(prompt)
             }
             .textFieldStyle(.roundedBorder)
             .submitLabel(.send)
