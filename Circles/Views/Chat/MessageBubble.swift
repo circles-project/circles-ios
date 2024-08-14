@@ -37,20 +37,23 @@ struct MessageBubble: View {
                             Font.custom("Inter", size: 12)
                                 .weight(.medium)
                         )
-                        .foregroundColor(Color.greyCool1100)
+                        .foregroundColor(Color.greyCool800)
                 }
                 
                 if let content = message.content as? Matrix.MessageContent {
+                    let backgroundColor = fromMe ? Color.accentColor.opacity(0.8) : Color.greyCool400
+                    let foregroundColor = fromMe ? Color.greyCool100 : Color.greyCool1100
+                    
                     Text(content.body)
                         .padding(.vertical, 5)
                         .padding(.horizontal, 10)
-                        .background(fromMe ? Color.accentColor.opacity(0.5) : Color.greyCool400)
+                        .background(backgroundColor)
                         .cornerRadius(10)
                         .font(
                             Font.custom("Inter", size: 14)
                                 .weight(.medium)
                         )
-                        .foregroundColor(Color.greyCool100)
+                        .foregroundColor(foregroundColor)
                 } else {
                     Text("Error: Failed to decode message")
                         .foregroundColor(.red)
