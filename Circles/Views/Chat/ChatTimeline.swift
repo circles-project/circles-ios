@@ -9,7 +9,7 @@ import SwiftUI
 import Matrix
 
 struct ChatTimeline: View {
-    @ObservedObject var room: Matrix.Room
+    @ObservedObject var room: Matrix.ChatRoom
     @State var debug = false
     @State var loading = false
     @State var selectedMessage: Matrix.Message?
@@ -80,12 +80,7 @@ struct ChatTimeline: View {
         // Get all the top-level messages (ie not the replies etc)
         let now = Date()
         let cutoff = now.addingTimeInterval(300.0)
-        let messages = room.timeline.values.filter { (message) in
-            message.relatedEventId == nil &&
-            message.replyToEventId == nil &&
-            message.timestamp < cutoff &&
-            !message.room.session.ignoredUserIds.contains(message.sender.userId)
-        }.sorted(by: {$0.timestamp < $1.timestamp})
+        let bursts = room.bursts
 
         ScrollView {
             
@@ -96,20 +91,8 @@ struct ChatTimeline: View {
                 
                 //loader
                     
-                ForEach(messages) { message in
-                    if message.type == M_ROOM_MESSAGE ||
-                        message.type == M_ROOM_ENCRYPTED ||
-                        message.type == ORG_MATRIX_MSC3381_POLL_START {
-                                                    
-                        MessageBubble(message: message)
-                            .onAppear {
-                                message.loadReactions()
-                            }
-                            .id(message.eventId)
-                        
-                    } else if DebugModel.shared.debugMode && message.stateKey != nil {
-                        StateEventView(message: message)
-                    }
+                ForEach(bursts) { burst in
+                    ChatMessageBurstView(burst: burst)
                 }
                 
                 if let msg = room.localEchoMessage {

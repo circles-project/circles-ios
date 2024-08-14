@@ -18,27 +18,11 @@ struct MessageBubble: View {
     }
     
     var body: some View {
-        HStack(alignment: .bottom) {
-            
-            let fromMe = message.sender == message.room.session.me
-            
-            if fromMe {
-                Spacer()
-            } else {
-                avatar
-            }
-            
-            let alignment: HorizontalAlignment = fromMe ? .trailing : .leading
-            
-            VStack(alignment: alignment) {
-                if !fromMe {
-                    UserNameView(user: message.sender)
-                        .font(
-                            Font.custom("Inter", size: 12)
-                                .weight(.medium)
-                        )
-                        .foregroundColor(Color.greyCool800)
-                }
+        VStack {
+            if message.type == M_ROOM_MESSAGE ||
+                message.type == M_ROOM_ENCRYPTED ||
+                message.type == ORG_MATRIX_MSC3381_POLL_START {
+                let fromMe = message.sender == message.room.session.me
                 
                 if let content = message.content as? Matrix.MessageContent {
                     let backgroundColor = fromMe ? Color.accentColor.opacity(0.8) : Color.greyCool400
@@ -58,10 +42,8 @@ struct MessageBubble: View {
                     Text("Error: Failed to decode message")
                         .foregroundColor(.red)
                 }
-            }
-            
-            if !fromMe {
-                Spacer()
+            } else if DebugModel.shared.debugMode && message.stateKey != nil {
+                StateEventView(message: message)
             }
         }
     }

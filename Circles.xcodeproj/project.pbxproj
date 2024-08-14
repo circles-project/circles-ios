@@ -95,6 +95,7 @@
 		A5175B632C6BE17400B5BA4C /* ChatInvitationsIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5175B622C6BE17400B5BA4C /* ChatInvitationsIndicator.swift */; };
 		A5175B652C6BE1BA00B5BA4C /* ChatInvitationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5175B642C6BE1BA00B5BA4C /* ChatInvitationsView.swift */; };
 		A5175B672C6BE20C00B5BA4C /* InvitedChatCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5175B662C6BE20C00B5BA4C /* InvitedChatCard.swift */; };
+		A5175B6B2C6D3E3D00B5BA4C /* ChatMessageBurstView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5175B6A2C6D3E3D00B5BA4C /* ChatMessageBurstView.swift */; };
 		A51928B32BCDAE38005DCFF4 /* BannedRoomMemberRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51928B22BCDAE38005DCFF4 /* BannedRoomMemberRow.swift */; };
 		A51928B52BCDB56D005DCFF4 /* RoomRenameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51928B42BCDB56D005DCFF4 /* RoomRenameView.swift */; };
 		A51928B72BCDBD8E005DCFF4 /* CircleRenameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51928B62BCDBD8E005DCFF4 /* CircleRenameView.swift */; };
@@ -365,6 +366,7 @@
 		A5175B622C6BE17400B5BA4C /* ChatInvitationsIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatInvitationsIndicator.swift; sourceTree = "<group>"; };
 		A5175B642C6BE1BA00B5BA4C /* ChatInvitationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatInvitationsView.swift; sourceTree = "<group>"; };
 		A5175B662C6BE20C00B5BA4C /* InvitedChatCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitedChatCard.swift; sourceTree = "<group>"; };
+		A5175B6A2C6D3E3D00B5BA4C /* ChatMessageBurstView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageBurstView.swift; sourceTree = "<group>"; };
 		A51928B22BCDAE38005DCFF4 /* BannedRoomMemberRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannedRoomMemberRow.swift; sourceTree = "<group>"; };
 		A51928B42BCDB56D005DCFF4 /* RoomRenameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomRenameView.swift; sourceTree = "<group>"; };
 		A51928B62BCDBD8E005DCFF4 /* CircleRenameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleRenameView.swift; sourceTree = "<group>"; };
@@ -952,6 +954,7 @@
 				A5175B622C6BE17400B5BA4C /* ChatInvitationsIndicator.swift */,
 				A5175B642C6BE1BA00B5BA4C /* ChatInvitationsView.swift */,
 				A5175B662C6BE20C00B5BA4C /* InvitedChatCard.swift */,
+				A5175B6A2C6D3E3D00B5BA4C /* ChatMessageBurstView.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -1359,6 +1362,7 @@
 				A5921EBB2AFAED8900C2331D /* GroupSettingsView.swift in Sources */,
 				409F4341265DE17500690A61 /* GroupTimelineScreen.swift in Sources */,
 				A55F367529EEE7EA00F46971 /* PhotoDetailView.swift in Sources */,
+				A5175B6B2C6D3E3D00B5BA4C /* ChatMessageBurstView.swift in Sources */,
 				A5FCF64329CC9B4F008278B0 /* GalleryRoom.swift in Sources */,
 				A5FB4B162BC9C71C00253A22 /* SingleTimelineView.swift in Sources */,
 				A5BB4EF92BD04D63001FD0D8 /* MutualFriendsSection.swift in Sources */,
@@ -1747,7 +1751,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/circles-project/Matrix.swift";
 			requirement = {
-				branch = main;
+				branch = cvwright/chatroom;
 				kind = branch;
 			};
 		};

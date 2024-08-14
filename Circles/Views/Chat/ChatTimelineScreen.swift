@@ -17,7 +17,7 @@ extension ChatScreenSheetType: Identifiable {
 }
 
 struct ChatTimelineScreen: View {
-    @ObservedObject var room: Matrix.Room
+    @ObservedObject var room: Matrix.ChatRoom
 
     @Environment(\.presentationMode) var presentation
     

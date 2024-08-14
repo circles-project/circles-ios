@@ -71,6 +71,7 @@ struct ChatOverviewScreen: View {
         session.objectWillChange.send()
         
         if self.rooms.isEmpty {
+            
             self.rooms = session.rooms.values
                                       .filter({ $0.type == nil })
                                       .sorted(by: {$0.timestamp > $1.timestamp} )
@@ -153,7 +154,7 @@ struct ChatOverviewScreen: View {
                 }
         } detail: {
             if let roomId = selected,
-               let room = session.rooms[roomId]
+               let room = session.rooms[roomId] as? Matrix.ChatRoom
             {
                 ChatTimelineScreen(room: room)
             } else {
