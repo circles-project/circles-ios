@@ -25,8 +25,8 @@ struct MessageBubble: View {
                 let fromMe = message.sender == message.room.session.me
                 
                 if let content = message.content as? Matrix.MessageContent {
-                    let backgroundColor = fromMe ? Color.accentColor.opacity(0.8) : Color.greyCool400
-                    let foregroundColor = fromMe ? Color.greyCool100 : Color.greyCool1100
+                    let backgroundColor = fromMe ? Color.lightPurple900 : Color.greyCool500
+                    let foregroundColor = fromMe ? Color.lightGreyCool100 : Color.greyCool1100
                     
                     Text(content.body)
                         .padding(.vertical, 5)
