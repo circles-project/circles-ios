@@ -40,7 +40,7 @@ struct ForgotPasswordView: View {
     
     @State var showUsernameError = false
     
-    var backButton: some View {
+    private var backButton: some View {
         Button(role: .destructive, action: {
             Task {
                 try await self.store.disconnect()

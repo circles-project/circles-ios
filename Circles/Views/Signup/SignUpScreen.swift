@@ -24,36 +24,14 @@ struct SignupScreen: View {
     @State var accountInfo = SignupAccountInfo()
     @State var showConfirmCancel = false
     
-    var cancelButton: some View {
-        Button(action: {
-            self.showConfirmCancel = true
-        }) {
-            Text("Cancel")
-                .padding(5)
-                .frame(width: 300.0, height: 40.0)
-                .foregroundColor(.red)
-                .cornerRadius(10)
-        }
-        .confirmationDialog(Text("Abort Signup?"),
-                            isPresented: $showConfirmCancel,
-                            actions: {
-            AsyncButton(role: .destructive, action: {
-                try await self.store.disconnect()
-            }) {
-                Text("Abort Signup")
-            }
-            
-            Button(role: .cancel, action: {
-                self.showConfirmCancel = false
-            }) {
-                Text("Continue Signup")
-            }
-        })
-    }
+    @Environment(\.presentationMode) var presentationMode
     
-    var backButton: some View {
-        AsyncButton(role: .destructive, action: {
-            try await self.store.disconnect()
+    private var backButton: some View {
+        Button(role: .destructive, action: {
+            Task {
+                try await self.store.disconnect()
+            }
+            self.presentationMode.wrappedValue.dismiss()
         }) {
             Image(SystemImages.iconFilledArrowBack.rawValue)
                 .padding(5)

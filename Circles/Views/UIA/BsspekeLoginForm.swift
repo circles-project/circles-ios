@@ -12,16 +12,16 @@ import KeychainAccess
 struct BsspekeLoginForm: View {
     var session: UIAuthSession
     var stage: String
+//    var store: CirclesStore
 
-    @State var passphrase: String = ""
-    @State var failed = false
+    @State private var passphrase: String = ""
+    @State private var failed = false
     var showPassword = false
     
-//    var store: CirclesStore
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.presentationMode) private var presentationMode
 
     @ViewBuilder
-    var oprfForm: some View {
+    private var oprfForm: some View {
         VStack {
             Spacer()
             
@@ -74,7 +74,7 @@ struct BsspekeLoginForm: View {
     }
     
     @ViewBuilder
-    var verifyForm: some View {
+    private var verifyForm: some View {
         VStack {
             Spacer()
             let text = "Verifying your passphrase"
@@ -96,7 +96,7 @@ struct BsspekeLoginForm: View {
 
     }
     
-    var backButton: some View {
+    private var backButton: some View {
         Button(role: .destructive, action: {
 //            Task {
 //                try await self.store.disconnect()
@@ -117,17 +117,12 @@ struct BsspekeLoginForm: View {
         if stage == AUTH_TYPE_LOGIN_BSSPEKE_VERIFY {
             verifyForm
         } else {
-            ZStack {
-                Color.red//greyCool200
-                    .edgesIgnoringSafeArea(.all)
-                
-                NavigationStack {
+            NavigationStack {
+                ZStack {
+                    Color.greyCool200
+                        .edgesIgnoringSafeArea(.all)
+                    
                     VStack {
-//                        HStack {
-//                            backButton
-//                            Spacer()
-//                        }
-                        
                         let buttonWidth = UIScreen.main.bounds.width - 48
                         let buttonHeight: CGFloat = 48.0
                         

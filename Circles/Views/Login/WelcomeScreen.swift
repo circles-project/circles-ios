@@ -36,7 +36,7 @@ struct LoginScreen: View {
     @State var showUsernameError = false
     @Binding var showDomainPicker: Bool
     
-    var backButton: some View {
+    private var backButton: some View {
         Button(role: .destructive, action: {
             Task {
                 try await self.store.disconnect()
@@ -168,10 +168,14 @@ struct DomainScreen: View {
     var store: CirclesStore
     
     @FocusState var inputFocused
+    @Environment(\.presentationMode) var presentation
     
-    var backButton: some View {
-        AsyncButton(role: .destructive, action: {
-            try await self.store.disconnect()
+    private var backButton: some View {
+        Button(role: .destructive, action: {
+            Task {
+                try await self.store.disconnect()
+            }
+            self.presentation.wrappedValue.dismiss()
         }) {
             Image(SystemImages.iconFilledArrowBack.rawValue)
                 .padding(5)
@@ -227,7 +231,7 @@ struct DomainScreen: View {
                 AsyncButton(action: {
                     try await store.signup(domain: usDomain)
                 }) {
-                    Text("Create circle")
+                    Text("Use this domain")
                         .foregroundStyle(Color.white)
                 }
                 .frame(width: screenWidthWithOffsets, height: 48)

@@ -19,7 +19,7 @@ struct UiaLoginScreen: View {
     @State var flowErrorMessage: String?
     @Environment(\.presentationMode) var presentationMode
     
-    var backButton: some View {
+    private var backButton: some View {
         Button(role: .destructive, action: {
             Task {
                 try await self.store.disconnect()
