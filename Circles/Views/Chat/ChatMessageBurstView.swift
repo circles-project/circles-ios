@@ -10,6 +10,7 @@ import Matrix
 
 struct ChatMessageBurstView: View {
     @ObservedObject var burst: Matrix.MessageBurst
+    var threaded = false
     
     @ViewBuilder
     var avatar: some View {
@@ -60,7 +61,7 @@ struct ChatMessageBurstView: View {
                                 .padding(.leading, 12)
                         }
                         
-                        if !message.replies.isEmpty {
+                        if !threaded && !message.replies.isEmpty {
                             NavigationLink(destination: ChatThreadView(room: burst.room, parent: message)) {
                                 Label("Thread: \(message.replies.count) replies", systemImage: "bubble.left.and.bubble.right")
                                     .font(
