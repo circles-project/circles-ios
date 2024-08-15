@@ -12,10 +12,20 @@ import Matrix
 
 struct MessageContextMenu: View {
     var message: Matrix.Message
+    var showReactions = false
     @Binding var sheetType: MessageSheetType?
     @Binding var showMessageDeleteConfirmation: Bool
 
     var body: some View {
+        
+        if showReactions {
+            Button(action: {
+                sheetType = .emoji
+            }) {
+                Label("React", systemImage: "heart")
+            }
+        }
+        
         let current = message.replacement ?? message
         if let content = current.content as? Matrix.MessageContent,
            content.msgtype == M_IMAGE,

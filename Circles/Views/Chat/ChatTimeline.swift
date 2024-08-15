@@ -110,7 +110,7 @@ struct ChatTimeline: View {
         .background(Color.greyCool200)
         .refreshable {
             print("REFRESH\tGetting latest messages for room \(room.name ?? room.roomId.stringValue)")
-            if let moreMessages: RoomMessagesResponseBody = try? await room.getMessages(forward: true) {
+            if let moreMessages: RoomMessagesResponseBody = try? await room.getMessages(forward: false) {
                 print("REFRESH\tGot \(moreMessages.chunk.count) more messages from server")
             }
             

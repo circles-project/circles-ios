@@ -10,6 +10,8 @@ import Matrix
 
 struct MessageBubble: View {
     @ObservedObject var message: Matrix.Message
+    @State var sheetType: MessageSheetType? = nil
+    @State var showConfirmDelete = false
     
     @ViewBuilder
     var avatar: some View {
@@ -29,7 +31,7 @@ struct MessageBubble: View {
                     let foregroundColor = fromMe ? Color.lightGreyCool100 : Color.greyCool1100
                     
                     Text(content.body)
-                        .padding(.vertical, 5)
+                        .padding(.vertical, 6)
                         .padding(.horizontal, 10)
                         .background(backgroundColor)
                         .cornerRadius(10)
@@ -38,6 +40,25 @@ struct MessageBubble: View {
                                 .weight(.medium)
                         )
                         .foregroundColor(foregroundColor)
+                        .contextMenu {
+                            MessageContextMenu(message: message, showReactions: true, sheetType: $sheetType, showMessageDeleteConfirmation: $showConfirmDelete)
+                        }
+                        .sheet(item: $sheetType) { st in
+                            switch(st) {
+                            case .emoji:
+                                EmojiPicker(message: message)
+                                
+                            case .edit:
+                                PostComposer(room: message.room, editing: message)
+                                
+                            case .reporting:
+                                MessageReportingSheet(message: message)
+                                
+                            case .liked:
+                                //LikedEmojiView(message: message, emojiUsersListModel: emojiUsersListModel)
+                                Text("Coming soon") // FIXME
+                            }
+                        }
                 } else {
                     Text("Error: Failed to decode message")
                         .foregroundColor(.red)

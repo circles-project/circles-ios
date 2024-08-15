@@ -36,14 +36,15 @@ struct ReactionsButtonStyle: ButtonStyle {
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .padding([.top, .bottom], 7)
-            .padding([.leading, .trailing], 12)
+            .padding([.top, .bottom], 6)
+            .padding([.leading, .trailing], 6)
             .overlay(
-                RoundedRectangle(cornerRadius: 20)
+                RoundedRectangle(cornerRadius: 12)
                     .stroke(buttonColor, lineWidth: 2)
             )
+            .background(Color.greyCool400)
             .foregroundColor(.gray)
-            .clipShape(RoundedRectangle(cornerRadius: 20))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
             .scaleEffect(configuration.isPressed ? 0.65 : 1.0)
     }
 }

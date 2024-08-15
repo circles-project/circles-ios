@@ -34,7 +34,7 @@ struct ChatMessageBurstView: View {
                 if !fromMe {
                     UserNameView(user: burst.sender)
                         .font(
-                            Font.custom("Inter", size: 12)
+                            Font.custom("Inter", size: 10)
                                 .weight(.medium)
                         )
                         .foregroundColor(Color.greyCool800)
@@ -42,7 +42,16 @@ struct ChatMessageBurstView: View {
                 }
                 
                 ForEach(burst.messages) { message in
-                    MessageBubble(message: message)
+                    VStack(alignment: alignment, spacing: 0) {
+                        MessageBubble(message: message)
+                        
+                        if !message.reactions.isEmpty {
+                            ChatMessageReactionsView(message: message, alignment: alignment)
+                                .padding(.top, -2)
+                                .padding(.bottom, 2)
+                                .padding(.leading, 12)
+                        }
+                    }
                 }
             }
             
