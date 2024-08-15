@@ -68,6 +68,7 @@
 		40F906BB269DF96100287B27 /* MessageSheetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F906BA269DF96100287B27 /* MessageSheetType.swift */; };
 		42237CEF2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42237CEE2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift */; };
 		422C08F52C13530000ADE377 /* ButtonStyle+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422C08F42C13530000ADE377 /* ButtonStyle+Extensions.swift */; };
+		424C58292C6EAAF30016022C /* AppHelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424C58282C6EAAF30016022C /* AppHelpView.swift */; };
 		424CEE052C1A2A89005D871C /* CHANGELOG_Full.md in Resources */ = {isa = PBXBuildFile; fileRef = 424CEE042C1A2A89005D871C /* CHANGELOG_Full.md */; };
 		424CEE072C1A2B08005D871C /* ChangelogSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424CEE062C1A2B08005D871C /* ChangelogSheet.swift */; };
 		424CEE092C1B6099005D871C /* CHANGELOG_LastUpdates.md in Resources */ = {isa = PBXBuildFile; fileRef = 424CEE082C1B6098005D871C /* CHANGELOG_LastUpdates.md */; };
@@ -333,6 +334,7 @@
 		40F906BA269DF96100287B27 /* MessageSheetType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSheetType.swift; sourceTree = "<group>"; };
 		42237CEE2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeactivateAccountCustomAlertView.swift; sourceTree = "<group>"; };
 		422C08F42C13530000ADE377 /* ButtonStyle+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ButtonStyle+Extensions.swift"; sourceTree = "<group>"; };
+		424C58282C6EAAF30016022C /* AppHelpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHelpView.swift; sourceTree = "<group>"; };
 		424CEE042C1A2A89005D871C /* CHANGELOG_Full.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG_Full.md; sourceTree = "<group>"; };
 		424CEE062C1A2B08005D871C /* ChangelogSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangelogSheet.swift; sourceTree = "<group>"; };
 		424CEE082C1B6098005D871C /* CHANGELOG_LastUpdates.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG_LastUpdates.md; sourceTree = "<group>"; };
@@ -755,6 +757,7 @@
 		409F4357265DE1D800690A61 /* Login */ = {
 			isa = PBXGroup;
 			children = (
+				424C58282C6EAAF30016022C /* AppHelpView.swift */,
 				409F435A265DE1EE00690A61 /* UiaLoginScreen.swift */,
 				A54BA3A52851222200453D5E /* WelcomeScreen.swift */,
 				A55B8F1D2A8D761A00BAA1FD /* SecretStoragePasswordScreen.swift */,
@@ -1232,6 +1235,7 @@
 				A5EE59C52A5F21C2007C24C7 /* DeviceInfoView.swift in Sources */,
 				A562C08E2AFE8EA800522FCB /* CirclesLogoView.swift in Sources */,
 				40AEA6752678E24200C9CBD1 /* BlurHashEncode.swift in Sources */,
+				424C58292C6EAAF30016022C /* AppHelpView.swift in Sources */,
 				A5B7917D2BE3E39000F199DA /* InviteToFollowMeView.swift in Sources */,
 				A5EB046F2AFB30D400CC7A6C /* GallerySettingsView.swift in Sources */,
 				409F435C265DE1EE00690A61 /* UiaLoginScreen.swift in Sources */,
