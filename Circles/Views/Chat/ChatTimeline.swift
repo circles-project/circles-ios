@@ -80,7 +80,9 @@ struct ChatTimeline: View {
         // Get all the top-level messages (ie not the replies etc)
         let now = Date()
         let cutoff = now.addingTimeInterval(300.0)
-        let bursts = room.bursts[threadId ?? ""] ?? []
+        let allBursts = room.bursts[threadId ?? ""] ?? []
+        let session = room.session
+        let bursts = allBursts.filter { !session.ignoredUserIds.contains($0.sender.userId) }
 
         ScrollView {
 
@@ -94,6 +96,16 @@ struct ChatTimeline: View {
                     .frame(minWidth: 0, maxWidth: .infinity, minHeight:0, maxHeight: .infinity, alignment: .bottom)
                 
                 //loader
+                
+                // If this is a chat timeline for a thread,
+                // we show the parent message by itself at the top
+                if let parentEventId = threadId,
+                   let parentMessage = room.timeline[parentEventId],
+                   let parentBurst = Matrix.MessageBurst(messages: [parentMessage])
+                {
+                    ChatMessageBurstView(burst: parentBurst, threaded: true)
+                    Divider()
+                }
                 
                 ForEach(bursts) { burst in
                     ChatMessageBurstView(burst: burst)
