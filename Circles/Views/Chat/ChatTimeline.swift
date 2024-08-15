@@ -10,6 +10,7 @@ import Matrix
 
 struct ChatTimeline: View {
     @ObservedObject var room: Matrix.ChatRoom
+    var threadId: EventId? = nil
     @State var debug = false
     @State var loading = false
     @State var selectedMessage: Matrix.Message?
@@ -95,10 +96,10 @@ struct ChatTimeline: View {
                     ChatMessageBurstView(burst: burst)
                 }
                 
-                if let msg = room.localEchoMessage {
-                    MessageCard(message: msg, isLocalEcho: true, isThreaded: false)
-                        //.border(Color.red)
-                        .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
+                if let msg = room.localEchoMessage,
+                   let burst = Matrix.MessageBurst(messages: [msg])
+                {
+                    ChatMessageBurstView(burst: burst)
                 }
             }
             .frame(minWidth: 0, maxWidth: TIMELINE_FRAME_MAXWIDTH, minHeight:0, alignment: Alignment.bottom)
