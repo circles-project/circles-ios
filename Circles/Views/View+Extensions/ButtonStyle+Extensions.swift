@@ -39,12 +39,12 @@ struct ReactionsButtonStyle: ButtonStyle {
             .padding([.top, .bottom], 6)
             .padding([.leading, .trailing], 6)
             .overlay(
-                RoundedRectangle(cornerRadius: 12)
+                RoundedRectangle(cornerRadius: 10)
                     .stroke(buttonColor, lineWidth: 2)
             )
             .background(Color.greyCool400)
-            .foregroundColor(.gray)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .foregroundColor(.greyCool1000)
+            .clipShape(RoundedRectangle(cornerRadius: 10))
             .scaleEffect(configuration.isPressed ? 0.65 : 1.0)
     }
 }

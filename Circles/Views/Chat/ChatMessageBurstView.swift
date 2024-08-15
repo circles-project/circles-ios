@@ -20,7 +20,7 @@ struct ChatMessageBurstView: View {
     var body: some View {
         HStack(alignment: .bottom) {
             
-            let fromMe = burst.sender == burst.room.session.me
+            let fromMe = burst.sender.userId == burst.room.session.me.userId
             
             if fromMe {
                 Spacer()
@@ -47,7 +47,7 @@ struct ChatMessageBurstView: View {
                         
                         if !message.reactions.isEmpty {
                             ChatMessageReactionsView(message: message, alignment: alignment)
-                                .padding(.top, -2)
+                                .padding(.top, -4)
                                 .padding(.bottom, 2)
                                 .padding(.leading, 12)
                         }

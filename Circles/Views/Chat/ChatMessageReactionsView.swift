@@ -45,7 +45,7 @@ struct ChatMessageReactionsView: View {
                     }) {
                         Text(text)
                     }
-                    .buttonStyle(ReactionsButtonStyle(buttonColor: .purple700))
+                    .buttonStyle(ReactionsButtonStyle(buttonColor: .purple800))
                 } else {
                     AsyncButton(action: {
                         // We have not sent this reaction yet..  Send it
@@ -54,7 +54,7 @@ struct ChatMessageReactionsView: View {
                         Text(text)
                     }
                     .disabled(!iCanReact)
-                    .buttonStyle(ReactionsButtonStyle(buttonColor: .greyCool900))
+                    .buttonStyle(ReactionsButtonStyle(buttonColor: .greyCool600))
                 }
             }
             
