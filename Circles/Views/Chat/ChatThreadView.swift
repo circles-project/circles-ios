@@ -17,7 +17,7 @@ struct ChatThreadView: View {
             ChatTimeline(room: room, threadId: parent.eventId)
             SmallComposer(room: room, parent: parent, prompt: "Reply")
         }
-        .navigationTitle(Text("Replies"))
+        .navigationTitle(Text("Thread"))
     }
 }
 
