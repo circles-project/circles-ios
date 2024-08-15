@@ -23,6 +23,14 @@ struct ChatMessageBurstView: View {
             let fromMe = burst.sender.userId == burst.room.session.me.userId
             
             if fromMe {
+                // For whatever reason, using a single Spacer doesn't give the effect that I want.
+                // I want to guarantee a minimum amount of empty space, but let the Text next door expand as much as it wants up to that point.
+                // The only way to do it seems to be to use one Spacer with a fixed width to occupy the minimum blank space,
+                // and then use another Spacer without a frame to provide the flexibility.
+                // Doesn't make a ton of sense to me but :shrug: it is what it is.
+                
+                Spacer()
+                    .frame(width: 60)
                 Spacer()
             } else {
                 avatar
@@ -72,7 +80,10 @@ struct ChatMessageBurstView: View {
             
             if !fromMe {
                 Spacer()
+                    .frame(width: 60)
+                Spacer()
             }
         }
+        .padding(.bottom, 8)
     }
 }
