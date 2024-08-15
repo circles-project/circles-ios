@@ -54,12 +54,23 @@ struct MessageContextMenu: View {
                 Label("Show likes", systemImage: "hand.thumbsup")
             }
         }
+        
+        if message.threadId == nil,
+           message.room.iCanSendEvent(type: M_ROOM_MESSAGE),
+           let chatRoom = message.room as? Matrix.ChatRoom
+        {
+            NavigationLink(destination: ChatThreadView(room: chatRoom, parent: message)) {
+                Label("Reply", systemImage: "bubble")
+            }
+        }
 
+        /*
         Button(action: {
             message.objectWillChange.send()
         }) {
             Label("Refresh", systemImage: "arrow.clockwise")
         }
+        */
 
         // Don't try to block yourself
         if message.sender.userId != message.room.session.creds.userId {
@@ -75,7 +86,7 @@ struct MessageContextMenu: View {
                     try await message.room.kick(userId: message.sender.userId,
                                                 reason: "Removed by \(message.room.session.whoAmI()) for message \(message.eventId)")
                 }) {
-                    Label("Remove sender", systemImage: "trash.circle")
+                    Label("Remove sender", systemImage: "trash")
                 }
                 .disabled( !message.room.iCanKick )
                 
@@ -84,20 +95,23 @@ struct MessageContextMenu: View {
                 }) {
                     Label("Ignore sender", systemImage: "person.crop.circle.badge.minus")
                 }
+                
+                Button(action: {
+                    //self.selectedMessage = self.message
+                    //self.showReportingView = true
+                    self.sheetType = .reporting
+                }) {
+                    HStack {
+                        Image(systemName: SystemImages.exclamationmarkShield.rawValue)
+                        Text("Report abuse")
+                    }
+                }
+                
             } label: {
-                Label("Block", systemImage: SystemImages.xmarkShield.rawValue)
+                Label("Moderation", systemImage: SystemImages.xmarkShield.rawValue)
             }
             
-            Button(action: {
-                //self.selectedMessage = self.message
-                //self.showReportingView = true
-                self.sheetType = .reporting
-            }) {
-                HStack {
-                    Image(systemName: SystemImages.exclamationmarkShield.rawValue)
-                    Text("Report")
-                }
-            }
+
         }
         
         Button(action: {

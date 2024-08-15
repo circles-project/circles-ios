@@ -51,6 +51,21 @@ struct ChatMessageBurstView: View {
                                 .padding(.bottom, 2)
                                 .padding(.leading, 12)
                         }
+                        
+                        if !message.replies.isEmpty {
+                            NavigationLink(destination: ChatThreadView(room: burst.room, parent: message)) {
+                                Label("Thread: \(message.replies.count) replies", systemImage: "bubble.left.and.bubble.right")
+                                    .font(
+                                        Font.custom("Inter", size: 14)
+                                            .weight(.medium)
+                                    )
+                                    .foregroundColor(.greyCool1100)
+                            }
+                            .padding(.top, 2)
+                            .padding(.leading, 6)
+                            .padding(.bottom, 4)
+
+                        }
                     }
                 }
             }

@@ -11,13 +11,13 @@ import Matrix
 struct ChatTimeline: View {
     @ObservedObject var room: Matrix.ChatRoom
     var threadId: EventId? = nil
-    @State var debug = false
+    @State var debug = true
     @State var loading = false
     @State var selectedMessage: Matrix.Message?
     
     var loader: some View {
         VStack(alignment: .center) {
-            HStack(alignment: .bottom) {
+            HStack(alignment: .top) {
                 Spacer()
                 if loading {
                     ProgressView("Loading...")
@@ -53,7 +53,6 @@ struct ChatTimeline: View {
                 }
                 Spacer()
             }
-            .frame(minHeight: TIMELINE_BOTTOM_PADDING)
             
             if DebugModel.shared.debugMode {
                 VStack(alignment: .leading) {
@@ -81,17 +80,21 @@ struct ChatTimeline: View {
         // Get all the top-level messages (ie not the replies etc)
         let now = Date()
         let cutoff = now.addingTimeInterval(300.0)
-        let bursts = room.bursts
+        let bursts = room.bursts[threadId ?? ""] ?? []
 
         ScrollView {
+
+            if DebugModel.shared.debugMode {
+                Text("threadId = \(threadId ?? "nil")")
+            }
             
             LazyVStack(alignment: .center, spacing: 16) {
-
+                
                 Spacer()
                     .frame(minWidth: 0, maxWidth: .infinity, minHeight:0, maxHeight: .infinity, alignment: .bottom)
                 
                 //loader
-                    
+                
                 ForEach(bursts) { burst in
                     ChatMessageBurstView(burst: burst)
                 }
@@ -103,15 +106,13 @@ struct ChatTimeline: View {
                 }
             }
             .frame(minWidth: 0, maxWidth: TIMELINE_FRAME_MAXWIDTH, minHeight:0, alignment: Alignment.bottom)
-
             .padding(.horizontal, 12)
-
         }
         .padding(0)
         .background(Color.greyCool200)
         .refreshable {
             print("REFRESH\tGetting latest messages for room \(room.name ?? room.roomId.stringValue)")
-            if let moreMessages: RoomMessagesResponseBody = try? await room.getMessages(forward: false) {
+            if let moreMessages: RoomMessagesResponseBody = try? await room.getMessages(forward: true) {
                 print("REFRESH\tGot \(moreMessages.chunk.count) more messages from server")
             }
             

@@ -97,6 +97,7 @@
 		A5175B672C6BE20C00B5BA4C /* InvitedChatCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5175B662C6BE20C00B5BA4C /* InvitedChatCard.swift */; };
 		A5175B6B2C6D3E3D00B5BA4C /* ChatMessageBurstView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5175B6A2C6D3E3D00B5BA4C /* ChatMessageBurstView.swift */; };
 		A5175B6D2C6E695800B5BA4C /* ChatMessageReactionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5175B6C2C6E695800B5BA4C /* ChatMessageReactionsView.swift */; };
+		A5175B712C6E8D8B00B5BA4C /* ChatThreadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5175B702C6E8D8B00B5BA4C /* ChatThreadView.swift */; };
 		A51928B32BCDAE38005DCFF4 /* BannedRoomMemberRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51928B22BCDAE38005DCFF4 /* BannedRoomMemberRow.swift */; };
 		A51928B52BCDB56D005DCFF4 /* RoomRenameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51928B42BCDB56D005DCFF4 /* RoomRenameView.swift */; };
 		A51928B72BCDBD8E005DCFF4 /* CircleRenameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51928B62BCDBD8E005DCFF4 /* CircleRenameView.swift */; };
@@ -369,6 +370,7 @@
 		A5175B662C6BE20C00B5BA4C /* InvitedChatCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitedChatCard.swift; sourceTree = "<group>"; };
 		A5175B6A2C6D3E3D00B5BA4C /* ChatMessageBurstView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageBurstView.swift; sourceTree = "<group>"; };
 		A5175B6C2C6E695800B5BA4C /* ChatMessageReactionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageReactionsView.swift; sourceTree = "<group>"; };
+		A5175B702C6E8D8B00B5BA4C /* ChatThreadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadView.swift; sourceTree = "<group>"; };
 		A51928B22BCDAE38005DCFF4 /* BannedRoomMemberRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannedRoomMemberRow.swift; sourceTree = "<group>"; };
 		A51928B42BCDB56D005DCFF4 /* RoomRenameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomRenameView.swift; sourceTree = "<group>"; };
 		A51928B62BCDBD8E005DCFF4 /* CircleRenameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleRenameView.swift; sourceTree = "<group>"; };
@@ -958,6 +960,7 @@
 				A5175B662C6BE20C00B5BA4C /* InvitedChatCard.swift */,
 				A5175B6A2C6D3E3D00B5BA4C /* ChatMessageBurstView.swift */,
 				A5175B6C2C6E695800B5BA4C /* ChatMessageReactionsView.swift */,
+				A5175B702C6E8D8B00B5BA4C /* ChatThreadView.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -1400,6 +1403,7 @@
 				A51503C62B756B7F00E1566E /* DeleteAndPurge.swift in Sources */,
 				409F4316265DE0F400690A61 /* ImageSaver.swift in Sources */,
 				A54A278A2A843C0300858846 /* GroupInvitationsView.swift in Sources */,
+				A5175B712C6E8D8B00B5BA4C /* ChatThreadView.swift in Sources */,
 				A53E912A2A573838007B0196 /* NotificationsSettingsView.swift in Sources */,
 				A53E2E722A74616400B75CDD /* RoomMemberRow.swift in Sources */,
 				A5FB06E32A681079002C5B88 /* CircleInvitationsView.swift in Sources */,
