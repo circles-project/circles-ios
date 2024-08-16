@@ -72,6 +72,12 @@ struct GroupTimelineScreen: View {
         Text(room.name ?? "(Unnamed Group)")
     }
     
+    private var setNewScrollPosition: Int {
+        ScrollPositionSettings.shared.needToRestoreScrollPosition = true
+        
+        return 0
+    }
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -88,6 +94,8 @@ struct GroupTimelineScreen: View {
                     if !room.knockingMembers.isEmpty {
                         RoomKnockIndicator(room: room)
                     }
+                    
+                    let _ = setNewScrollPosition
                     
                     timeline
                         .sheet(item: $sheetType) { st in

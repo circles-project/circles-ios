@@ -39,7 +39,6 @@ struct CirclesTabbedInterface: View {
     @AppStorage(DEFAULTS_KEY_ENABLE_GALLERIES, store: .standard) var enableGalleries: Bool = false
     @AppStorage("changelogLastUpdate") var changelogLastUpdate: TimeInterval = 0
     @AppStorage("mediaViewHeight") var mediaViewHeight: Double = 0
-    @AppStorage("isNewGroupOpen") var isNewGroupOpen = false
     @State var showChangelog = false
     var changelogFile = ChangelogFile()
     
@@ -56,8 +55,8 @@ struct CirclesTabbedInterface: View {
     }
     #endif
     
-    private var setNewGroupOpen: Int {
-        isNewGroupOpen = true
+    private var setNewScrollPosition: Int {
+        ScrollPositionSettings.shared.needToRestoreScrollPosition = true
         
         return 0
     }
@@ -80,7 +79,7 @@ struct CirclesTabbedInterface: View {
                 }
                 .tag(Tab.circles)
             
-            let _ = setNewGroupOpen
+            let _ = setNewScrollPosition
             
             GroupsOverviewScreen(container: self.session.groups,
                                  selected: $session.viewState.selectedGroupId)

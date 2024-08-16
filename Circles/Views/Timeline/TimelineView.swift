@@ -14,7 +14,6 @@ struct TimelineView<V: MessageView>: View {
     @State var debug = false
     @State var loading = false
     @State var selectedMessage: Matrix.Message?
-    @AppStorage("isNewGroupOpen") var isNewGroupOpen = false
     
     var footer: some View {
         VStack(alignment: .center) {
@@ -78,10 +77,10 @@ struct TimelineView<V: MessageView>: View {
     }
     
     private func checkScrollPosition(_ scrollProxy: ScrollViewProxy) -> Int {
-        if isNewGroupOpen {
+        if ScrollPositionSettings.shared.needToRestoreScrollPosition {
             Task {
                 scrollProxy.scrollTo("top", anchor: .top)
-                isNewGroupOpen = false
+                ScrollPositionSettings.shared.needToRestoreScrollPosition = false
             }
         }
         

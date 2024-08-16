@@ -68,6 +68,7 @@
 		40F906BB269DF96100287B27 /* MessageSheetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F906BA269DF96100287B27 /* MessageSheetType.swift */; };
 		42237CEF2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42237CEE2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift */; };
 		422C08F52C13530000ADE377 /* ButtonStyle+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422C08F42C13530000ADE377 /* ButtonStyle+Extensions.swift */; };
+		424C582C2C6FC2A50016022C /* ScrollPositionSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424C582B2C6FC2A50016022C /* ScrollPositionSettings.swift */; };
 		424CEE052C1A2A89005D871C /* CHANGELOG_Full.md in Resources */ = {isa = PBXBuildFile; fileRef = 424CEE042C1A2A89005D871C /* CHANGELOG_Full.md */; };
 		424CEE072C1A2B08005D871C /* ChangelogSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424CEE062C1A2B08005D871C /* ChangelogSheet.swift */; };
 		424CEE092C1B6099005D871C /* CHANGELOG_LastUpdates.md in Resources */ = {isa = PBXBuildFile; fileRef = 424CEE082C1B6098005D871C /* CHANGELOG_LastUpdates.md */; };
@@ -331,6 +332,7 @@
 		40F906BA269DF96100287B27 /* MessageSheetType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSheetType.swift; sourceTree = "<group>"; };
 		42237CEE2BFE6BEA00CEBFAF /* DeactivateAccountCustomAlertView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeactivateAccountCustomAlertView.swift; sourceTree = "<group>"; };
 		422C08F42C13530000ADE377 /* ButtonStyle+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ButtonStyle+Extensions.swift"; sourceTree = "<group>"; };
+		424C582B2C6FC2A50016022C /* ScrollPositionSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollPositionSettings.swift; sourceTree = "<group>"; };
 		424CEE042C1A2A89005D871C /* CHANGELOG_Full.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG_Full.md; sourceTree = "<group>"; };
 		424CEE062C1A2B08005D871C /* ChangelogSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangelogSheet.swift; sourceTree = "<group>"; };
 		424CEE082C1B6098005D871C /* CHANGELOG_LastUpdates.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG_LastUpdates.md; sourceTree = "<group>"; };
@@ -574,13 +576,8 @@
 				405F8E682698E8620057E970 /* Circles.entitlements */,
 				42CC08342C38839B00A2587B /* Launch Screen.storyboard */,
 				404C72D9265DDF35000473DF /* Info.plist */,
-				404C72D0265DDF35000473DF /* CirclesApp.swift */,
-				A509B89D2819B6C90053E5BC /* CirclesError.swift */,
-				A53EADA52A6F0EA600EF18B7 /* CirclesTabbedInterface.swift */,
-				409F4322265DE11900690A61 /* Constants.swift */,
-				404C72D2265DDF35000473DF /* ContentView.swift */,
+				424C582A2C6FC28F0016022C /* Global */,
 				A5E101F62814FAFD000B2C42 /* Circles-Bridging-Header.h */,
-				42DC60512C0CE636000F1BE8 /* DebugMode.swift */,
 				404C72D4265DDF35000473DF /* Assets.xcassets */,
 				424CEE0A2C1B624F005D871C /* Changelogs */,
 				A5B32ACA2810E9EF001BB952 /* Backend */,
@@ -853,6 +850,20 @@
 				424CEE0B2C1B7AF9005D871C /* UIDevice+Extensions.swift */,
 			);
 			path = "View+Extensions";
+			sourceTree = "<group>";
+		};
+		424C582A2C6FC28F0016022C /* Global */ = {
+			isa = PBXGroup;
+			children = (
+				404C72D0265DDF35000473DF /* CirclesApp.swift */,
+				A509B89D2819B6C90053E5BC /* CirclesError.swift */,
+				A53EADA52A6F0EA600EF18B7 /* CirclesTabbedInterface.swift */,
+				409F4322265DE11900690A61 /* Constants.swift */,
+				404C72D2265DDF35000473DF /* ContentView.swift */,
+				42DC60512C0CE636000F1BE8 /* DebugMode.swift */,
+				424C582B2C6FC2A50016022C /* ScrollPositionSettings.swift */,
+			);
+			path = Global;
 			sourceTree = "<group>";
 		};
 		424CEE0A2C1B624F005D871C /* Changelogs */ = {
@@ -1231,6 +1242,7 @@
 				A521C3F72A68D9390051ED88 /* CircleInvitationsIndicator.swift in Sources */,
 				409F42E9265DE06C00690A61 /* WebView.swift in Sources */,
 				42CCE0CC2C122D7B001B19D2 /* ViewModifier+Extensions.swift in Sources */,
+				424C582C2C6FC2A50016022C /* ScrollPositionSettings.swift in Sources */,
 				A58E217A2C4AC3CA005FF66B /* CommentCard.swift in Sources */,
 				A51ABE6A2B2B7E2000039276 /* FollowingTimelineDetailsView.swift in Sources */,
 				A54A830F2C08B99100CE4000 /* SetupIntroToCircles.swift in Sources */,
