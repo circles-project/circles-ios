@@ -18,6 +18,8 @@ extension SingleTimelineSheetType: Identifiable {
 
 struct SingleTimelineView: View {
     @ObservedObject var room: Matrix.Room
+    
+    @State var viewModel = TimelineViewModel()
 
     @State private var sheetType: SingleTimelineSheetType? = nil
     @State var showNewPostInSheetStyle = false
@@ -107,7 +109,7 @@ struct SingleTimelineView: View {
             PostComposer(room: room).navigationTitle("New Post")
         }
         .background(Color.greyCool200)
-
+        .environmentObject(viewModel)
     }
 }
 

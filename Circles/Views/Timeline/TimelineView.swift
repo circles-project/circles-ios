@@ -11,6 +11,8 @@ import Matrix
 
 struct TimelineView<V: MessageView>: View {
     @ObservedObject var room: Matrix.Room
+    @EnvironmentObject var viewModel: TimelineViewModel
+
     @State var debug = false
     @State var loading = false
     @State var selectedMessage: Matrix.Message?
@@ -99,20 +101,21 @@ struct TimelineView<V: MessageView>: View {
             !message.room.session.ignoredUserIds.contains(message.sender.userId)
         }.sorted(by: {$0.timestamp > $1.timestamp})
         
-        ScrollViewReader { scrollProxy in
+        ScrollViewReader { proxy in
             ScrollView {
                 LazyVStack(alignment: .center, spacing: 10) {
                     Text("")
                         .id("top")
                         .padding()
                         .frame(height: 1)
-
-                    let _ = checkScrollPosition(scrollProxy)
+                    
+                    let _ = checkScrollPosition(proxy)
                     
                     if let msg = room.localEchoMessage {
                         MessageCard(message: msg, isLocalEcho: true, isThreaded: false)
                         //.border(Color.red)
                             .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
+                            .id(msg.eventId)
                     }
                     
                     ForEach(messages) { message in
@@ -121,11 +124,13 @@ struct TimelineView<V: MessageView>: View {
                             message.type == ORG_MATRIX_MSC3381_POLL_START {
                             
                             MessageCard(message: message, isLocalEcho: false, isThreaded: false)
+                                .id(message.eventId)
                                 .onAppear {
                                     message.loadReactions()
                                 }
                         } else if DebugModel.shared.debugMode && message.stateKey != nil {
                             StateEventView(message: message)
+                                .id(message.eventId)
                         }
                     }
                     
@@ -135,6 +140,10 @@ struct TimelineView<V: MessageView>: View {
                 }
                 .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
                 .padding(.horizontal, 12)
+                
+            }
+            .onChange(of: viewModel.scrollPosition) { eventId in
+                proxy.scrollTo(eventId)
             }
             .padding(0)
             .background(Color.greyCool200)

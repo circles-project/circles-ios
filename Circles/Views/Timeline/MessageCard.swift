@@ -81,6 +81,7 @@ struct MessageCard: MessageView {
     @ObservedObject var message: Matrix.Message
     var isLocalEcho = false
     var isThreaded = false
+    @EnvironmentObject var timelineViewModel: TimelineViewModel
     @State var emojiUsersListModel: [EmojiUsersListModel] = []
     @Environment(\.colorScheme) var colorScheme
     //@State var showReplyComposer = false

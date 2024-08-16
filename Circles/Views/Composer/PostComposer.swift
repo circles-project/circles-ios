@@ -13,6 +13,7 @@ import Matrix
 
 struct PostComposer: View {
     var room: Matrix.Room
+    @EnvironmentObject var timelineViewModel: TimelineViewModel
     @EnvironmentObject var appSession: CirclesApplicationSession
     //@Binding var isPresented: Bool
     @Environment(\.colorScheme) var colorScheme
@@ -219,24 +220,27 @@ struct PostComposer: View {
         }
     }
     
-    private func send() async throws {
+    private func send() async throws -> EventId? {
         // Post the message
         switch(self.messageState) {
         case .text:
             if self.newMessageText.isEmpty {
-                await ToastPresenter.shared.showToast(message: "You can not send an empty post")
+                await ToastPresenter.shared.showToast(message: "Cannot send an empty post")
+                return nil
             } else {
                 if let parentMessage = self.parent {
                     let replyEventId = try await room.sendText(text: self.newMessageText, inReplyTo: parentMessage)
                     print("REPLY\tSent m.text reply with eventId = \(replyEventId)")
+                    return replyEventId
                 } else if let oldMessage = self.editing {
                     let replacementEventId = try await room.sendText(text: self.newMessageText, replacing: oldMessage)
                     print("EDIT\tSent edited m.text with eventId = \(replacementEventId)")
+                    return replacementEventId
                 } else {
                     let newEventId = try await room.sendText(text: self.newMessageText)
                     print("COMPOSER\tSent m.text with eventId = \(newEventId)")
+                    return newEventId
                 }
-                self.presentation.wrappedValue.dismiss()
             }
             
         case .newImage(let img):
@@ -245,17 +249,21 @@ struct PostComposer: View {
             if let parentMessage = self.parent {
                 let replyEventId = try await self.room.sendImage(image: img, caption: caption, withBlurhash: false, withThumbhash: true, inReplyTo: parentMessage)
                 print("COMPOSER\tSent m.image reply with eventId = \(replyEventId)")
+                return replyEventId
             } else if let oldMessage = self.editing {
                 let replacementEventId = try await self.room.sendImage(image: img, caption: caption, withBlurhash: false, withThumbhash: true, replacing: oldMessage)
                 print("EDIT\tSent edited m.image with eventId = \(replacementEventId)")
+                return replacementEventId
             } else {
                 let newEventId = try await self.room.sendImage(image: img, caption: caption, withBlurhash: false, withThumbhash: true)
                 print("COMPOSER\tSent m.image with eventId = \(newEventId)")
+                return newEventId
             }
-            self.presentation.wrappedValue.dismiss()
             
         case .loadingVideo:
             print("COMPOSER\tError: Can't send until the video is done loading")
+            await ToastPresenter.shared.showToast(message: "Cannot send yet - Video is still loading")
+            return nil
             
         case .newVideo(let movie, let thumbnail):
             let caption: String? = !self.newMessageText.isEmpty ? self.newMessageText : nil
@@ -263,29 +271,32 @@ struct PostComposer: View {
             if let parentMessage = self.parent {
                 let replyEventId = try await room.sendVideo(url: movie.url, thumbnail: thumbnail, caption: caption, inReplyTo: parentMessage)
                 print("COMPOSER\tSent m.video reply with eventId = \(replyEventId)")
+                return replyEventId
             } else if let oldMessage = self.editing {
                 let eventId = try await room.sendVideo(url: movie.url, thumbnail: thumbnail, caption: caption, replacing: oldMessage)
                 print("COMPOSER\tSent edited m.video with eventId = \(eventId)")
+                return eventId
             } else {
                 let newEventId = try await room.sendVideo(url: movie.url, thumbnail: thumbnail, caption: caption)
                 print("COMPOSER\tSent m.video with eventId = \(newEventId)")
+                return newEventId
             }
-            self.presentation.wrappedValue.dismiss()
             
         case .oldImage(let oldImageContent, _):
             let caption: String? = !self.newMessageText.isEmpty ? self.newMessageText : nil
             let newContent = Matrix.mImageContent(oldImageContent, caption: caption, relatesTo: self.relatesTo)
             let eventId = try await self.room.sendMessage(content: newContent)
             print("COMPOSER\tSent edited m.image with new eventId = \(eventId)")
-            self.presentation.wrappedValue.dismiss()
+            return eventId
             
         case .oldVideo(let oldVideoContent, _):
             let caption: String? = !self.newMessageText.isEmpty ? self.newMessageText : nil
             let newContent = Matrix.mVideoContent(oldVideoContent, caption: caption, relatesTo: self.relatesTo)
             let eventId = try await self.room.sendMessage(content: newContent)
             print("COMPOSER\tSent edited m.video with new eventId = \(eventId)")
-            self.presentation.wrappedValue.dismiss()
+            return eventId
         }
+        
     }
     
     var oldMessageType: String? {
@@ -356,7 +367,18 @@ struct PostComposer: View {
             .padding(3)
 
             AsyncButton(action: {
-                try await send()
+                if let newEventId = try await send() {
+                    let newScrollPosition: EventId
+                    if let originalEventId = self.editing?.eventId {
+                        newScrollPosition = originalEventId
+                    } else {
+                        newScrollPosition = newEventId
+                    }
+                    await MainActor.run {
+                        timelineViewModel.scrollPosition = newScrollPosition
+                    }
+                    self.presentation.wrappedValue.dismiss()
+                }
             }) {
                 Label("Send", systemImage: "paperplane.fill")
                     .disabled(inProgress)

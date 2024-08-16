@@ -39,6 +39,8 @@ struct GroupTimelineScreen: View {
     @State var nilParentMessage: Matrix.Message? = nil
     @State var showNewPostInSheetStyle = false
     
+    @State var viewModel = TimelineViewModel()
+    
     var timeline: some View {
         TimelineView<MessageCard>(room: room)
     }
@@ -139,6 +141,8 @@ struct GroupTimelineScreen: View {
             }
         }
         .background(Color.greyCool200)
+        .environmentObject(viewModel)
+
     }
 }
 
