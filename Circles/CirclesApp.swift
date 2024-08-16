@@ -26,6 +26,11 @@ struct CirclesApp: App {
         Matrix.registerAccountDataType(EVENT_TYPE_CIRCLES_CONFIG_V1, CirclesConfigContentV1.self)
         Matrix.registerAccountDataType(EVENT_TYPE_CIRCLES_CONFIG_V2, CirclesConfigContentV2.self)
         
+        // Also register our custom room types, so the Matrix library can automatically create Room's of the proper type when it sees the state for a new room
+        Matrix.registerRoomType(ROOM_TYPE_GROUP, GroupRoom.self)
+        Matrix.registerRoomType(ROOM_TYPE_CIRCLE, Matrix.Room.self)
+        Matrix.registerRoomType(ROOM_TYPE_PHOTOS, GalleryRoom.self)
+        
         print("CirclesApp: Done with init()")
     }
 
