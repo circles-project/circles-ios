@@ -14,46 +14,10 @@ struct ChatTimeline: View {
     @State var debug = true
     @State var loading = false
     @State var selectedMessage: Matrix.Message?
-    
-    var loader: some View {
-        VStack(alignment: .center) {
-            HStack(alignment: .top) {
-                Spacer()
-                if loading {
-                    ProgressView("Loading...")
-                }
-                else if room.canPaginate {
-                    AsyncButton(action: {
-                        self.loading = true
-                        do {
-                            try await room.paginate()
-                        } catch {
-                            print("Paginate failed")
-                        }
-                        self.loading = false
-                    }) {
-                        Text("Load More")
-                    }
-                    .onAppear {
-                        // It's a magic self-clicking button.
-                        // If it ever appears, we basically automatically click it for the user
-                        self.loading = true
-                        let _ = Task {
-                            do {
-                                try await room.paginate()
-                            } catch {
-                                print("Paginate failed")
-                            }
-                            self.loading = false
-                        }
-                    }
-                } else if DebugModel.shared.debugMode {
-                    Text("Not currently loading; Can't paginate")
-                        .foregroundColor(.red)
-                }
-                Spacer()
-            }
             
+    @ViewBuilder
+    var debugInfo: some View {
+        VStack {
             if DebugModel.shared.debugMode {
                 VStack(alignment: .leading) {
                     if self.debug {
@@ -92,10 +56,7 @@ struct ChatTimeline: View {
             
             LazyVStack(alignment: .center, spacing: 16) {
                 
-                Spacer()
-                    .frame(minWidth: 0, maxWidth: .infinity, minHeight:0, maxHeight: .infinity, alignment: .bottom)
-                
-                //loader
+                RoomAutoPaginator(room: room)
                 
                 // If this is a chat timeline for a thread,
                 // we show the parent message by itself at the top
