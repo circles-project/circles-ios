@@ -14,6 +14,19 @@ struct ChatTimeline: View {
     @State var debug = true
     @State var loading = false
     @State var selectedMessage: Matrix.Message?
+    @State var scrollPosition: EventId?
+    
+    private var parentMessage: Matrix.Message?
+    
+    init(room: Matrix.ChatRoom, threadId: EventId? = nil) {
+        self.room = room
+        self.threadId = threadId
+        
+        if let eventId = threadId {
+            self.parentMessage = room.timeline[eventId]
+        }
+    }
+
             
     @ViewBuilder
     var debugInfo: some View {
@@ -40,23 +53,28 @@ struct ChatTimeline: View {
     }
     
     @ViewBuilder
-    var body: some View {
+    var scrollView: some View {
         // Get all the top-level messages (ie not the replies etc)
         let now = Date()
         let cutoff = now.addingTimeInterval(300.0)
         let allBursts = room.bursts[threadId ?? ""] ?? []
         let session = room.session
-        let bursts = allBursts.filter { !session.ignoredUserIds.contains($0.sender.userId) }
+        let bursts = allBursts
+            .filter {
+                !session.ignoredUserIds.contains($0.sender.userId) && !$0.messages.isEmpty
+            }
+            .sorted {
+                guard let t0 = $0.startTime,
+                      let t1 = $1.startTime
+                else {
+                    return false
+                }
+                return t0 < t1
+            }
 
         ScrollView {
             LazyVStack(alignment: .center, spacing: 16) {
                 
-                /*
-                if DebugModel.shared.debugMode {
-                    Text("threadId = \(threadId ?? "nil")")
-                }
-                */
-
                 // If this is a chat timeline for a thread,
                 // we show the parent message by itself at the top
                 if let parentEventId = threadId,
@@ -83,13 +101,18 @@ struct ChatTimeline: View {
                 
                 //Spacer()
                 
+                /*
                 HStack {
                     Text("Footer")
                 }
+                */
             }
+            .scrollTargetLayout()
             .frame(minWidth: 0, maxWidth: TIMELINE_FRAME_MAXWIDTH, minHeight:0, alignment: Alignment.bottom)
             .padding(.horizontal, 12)
         }
+        .defaultScrollAnchor(.bottom)
+        .scrollPosition(id: $scrollPosition)
         .padding(0)
         .background(Color.greyCool200)
         .refreshable {
@@ -122,6 +145,22 @@ struct ChatTimeline: View {
             await MainActor.run {
                 room.objectWillChange.send()
             }
+        }
+    }
+    
+    @ViewBuilder
+    var composer: some View {
+        SmallComposer(room: room,
+                      scroll: $scrollPosition,
+                      parent: parentMessage,
+                      prompt: threadId == nil ? "Message" : "Reply"
+        )
+    }
+    
+    var body: some View {
+        VStack {
+            scrollView
+            composer
         }
     }
 }

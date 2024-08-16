@@ -11,6 +11,7 @@ import Matrix
 struct CommentsView: View {
     var room: Matrix.Room
     @ObservedObject var parent: Matrix.Message
+    @State var scrollPosition: EventId?
     
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
@@ -46,6 +47,7 @@ struct CommentsView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     ForEach(messages) { message in
                         CommentCard(message: message)
+                            .id(message.eventId)
                     }
                 }
             }
@@ -53,7 +55,7 @@ struct CommentsView: View {
 
             Divider()
             
-            SmallComposer(room: room, parent: parent, prompt: "Comment")
+            SmallComposer(room: room, scroll: $scrollPosition, parent: parent, prompt: "Comment")
         }
     }
 }

@@ -98,7 +98,6 @@ struct ChatTimelineScreen: View {
                     .padding([.top], -4)
             }
                 
-            SmallComposer(room: room, prompt: "Message")
         }
         .toolbar {
             ToolbarItemGroup(placement: .automatic) {

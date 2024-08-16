@@ -13,11 +13,8 @@ struct ChatThreadView: View {
     @ObservedObject var parent: Matrix.Message
     
     var body: some View {
-        VStack(alignment: .center) {
-            ChatTimeline(room: room, threadId: parent.eventId)
-            SmallComposer(room: room, parent: parent, prompt: "Reply")
-        }
-        .navigationTitle(Text("Thread"))
+        ChatTimeline(room: room, threadId: parent.eventId)
+            .navigationTitle(Text("Thread"))
     }
 }
 

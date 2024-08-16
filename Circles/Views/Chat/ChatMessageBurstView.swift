@@ -53,6 +53,7 @@ struct ChatMessageBurstView: View {
                 ForEach(burst.messages) { message in
                     VStack(alignment: alignment, spacing: 0) {
                         MessageBubble(message: message)
+                            .id(message.eventId)
                         
                         if !message.reactions.isEmpty {
                             ChatMessageReactionsView(message: message, alignment: alignment)

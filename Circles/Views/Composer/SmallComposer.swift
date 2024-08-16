@@ -10,6 +10,7 @@ import Matrix
 
 struct SmallComposer: View {
     var room: Matrix.Room
+    @Binding var scroll: EventId?
     var parent: Matrix.Message?
     var prompt: String
     
@@ -24,6 +25,7 @@ struct SmallComposer: View {
             eventId = try await room.sendText(text: self.newMessageText)
         }
         await MainActor.run {
+            self.scroll = eventId
             self.newMessageText = ""
         }
         return eventId
