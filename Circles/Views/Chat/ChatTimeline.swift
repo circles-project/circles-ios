@@ -49,15 +49,14 @@ struct ChatTimeline: View {
         let bursts = allBursts.filter { !session.ignoredUserIds.contains($0.sender.userId) }
 
         ScrollView {
-
-            if DebugModel.shared.debugMode {
-                Text("threadId = \(threadId ?? "nil")")
-            }
-            
             LazyVStack(alignment: .center, spacing: 16) {
                 
-                RoomAutoPaginator(room: room)
-                
+                /*
+                if DebugModel.shared.debugMode {
+                    Text("threadId = \(threadId ?? "nil")")
+                }
+                */
+
                 // If this is a chat timeline for a thread,
                 // we show the parent message by itself at the top
                 if let parentEventId = threadId,
@@ -68,14 +67,24 @@ struct ChatTimeline: View {
                     Divider()
                 }
                 
-                ForEach(bursts) { burst in
-                    ChatMessageBurstView(burst: burst)
+                RoomAutoPaginator(room: room)
+                
+                VStack(alignment: .center, spacing: 0) {
+                    ForEach(bursts) { burst in
+                        ChatMessageBurstView(burst: burst)
+                    }
                 }
                 
                 if let msg = room.localEchoMessage,
                    let burst = Matrix.MessageBurst(messages: [msg])
                 {
                     ChatMessageBurstView(burst: burst)
+                }
+                
+                //Spacer()
+                
+                HStack {
+                    Text("Footer")
                 }
             }
             .frame(minWidth: 0, maxWidth: TIMELINE_FRAME_MAXWIDTH, minHeight:0, alignment: Alignment.bottom)
@@ -85,7 +94,7 @@ struct ChatTimeline: View {
         .background(Color.greyCool200)
         .refreshable {
             print("REFRESH\tGetting latest messages for room \(room.name ?? room.roomId.stringValue)")
-            if let moreMessages: RoomMessagesResponseBody = try? await room.getMessages(forward: true) {
+            if let moreMessages: RoomMessagesResponseBody = try? await room.getMessages(forward: false) {
                 print("REFRESH\tGot \(moreMessages.chunk.count) more messages from server")
             }
             
