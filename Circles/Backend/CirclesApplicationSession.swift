@@ -504,6 +504,9 @@ class CirclesApplicationSession: ObservableObject {
             logger.debug("Done verifying space relations")
         }
         
+        logger.debug("Loading joined rooms")
+        try await matrix.loadJoinedRooms()
+        
         logger.debug("Starting Matrix background sync")
         try await matrix.startBackgroundSync()
         
