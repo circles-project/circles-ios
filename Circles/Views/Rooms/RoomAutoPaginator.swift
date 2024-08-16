@@ -9,18 +9,8 @@ import SwiftUI
 import Matrix
 
 struct RoomAutoPaginator: View {
-    @ObservedObject var room: Matrix.Room
+    var room: Matrix.Room
     @State var loading = false
-    
-    private func paginate() async {
-        self.loading = true
-        do {
-            try await room.paginate()
-        } catch {
-            print("Paginate failed")
-        }
-        self.loading = false
-    }
     
     var body: some View {
         HStack(alignment: .top) {
@@ -31,14 +21,28 @@ struct RoomAutoPaginator: View {
             }
             else if room.canPaginate {
                 AsyncButton(action: {
-                    await paginate()
+                    self.loading = true
+                    do {
+                        try await room.paginate()
+                    } catch {
+                        print("Paginate failed")
+                    }
+                    self.loading = false
                 }) {
                     Text("Load more")
                 }
-                .task {
-                    await paginate()
+                .onAppear {
+                    self.loading = true
+                    let _ = Task {
+                        do {
+                            try await room.paginate()
+                        } catch {
+                            print("Paginate failed")
+                        }
+                        self.loading = false
+                    }
                 }
-            } else if DebugModel.shared.debugMode {
+            } else { //if DebugModel.shared.debugMode {
                 Text("Not currently loading; Can't paginate")
                     .foregroundColor(.red)
             }
