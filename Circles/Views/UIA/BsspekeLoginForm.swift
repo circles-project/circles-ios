@@ -29,7 +29,8 @@ struct BsspekeLoginForm: View {
             Spacer()
             
             VStack {
-                SecureFieldWithEye(label: "Passphrase", text: $passphrase, showText: showPassword)
+                SecureFieldWithEye(password: $passphrase,
+                                   placeholder: "Passphrase")
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
                     .frame(width: 300.0, height: 40.0)

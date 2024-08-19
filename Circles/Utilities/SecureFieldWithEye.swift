@@ -7,90 +7,65 @@
 
 import SwiftUI
 
-private struct KeyboardControllableTextField: UIViewRepresentable {
-    @Binding var text: String
-    @Binding var isFirstResponder: Bool
-    var isSecure: Bool
-    var placeholder: String
-    var isNewPassword: Bool = false
-    
-    class Coordinator: NSObject, UITextFieldDelegate {
-        var parent: KeyboardControllableTextField
-        
-        init(_ parent: KeyboardControllableTextField) {
-            self.parent = parent
-        }
-        
-        func textFieldDidChangeSelection(_ textField: UITextField) {
-            parent.text = textField.text ?? ""
-        }
-        
-        func textFieldDidBeginEditing(_ textField: UITextField) {
-            DispatchQueue.main.async {
-                self.parent.isFirstResponder = true
-            }
-        }
-        
-        func textFieldDidEndEditing(_ textField: UITextField) {
-            DispatchQueue.main.async {
-                self.parent.isFirstResponder = false
-            }
-        }
-    }
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-    
-    func makeUIView(context: Context) -> UITextField {
-        let textField = UITextField(frame: .zero)
-        textField.delegate = context.coordinator
-        textField.text = text
-        textField.isSecureTextEntry = isSecure
-        textField.borderStyle = .roundedRect
-        textField.returnKeyType = .done
-        textField.placeholder = placeholder
-        textField.textContentType = isNewPassword ? .newPassword : .password
-        textField.addTarget(context.coordinator, action: #selector(Coordinator.textFieldDidChangeSelection(_:)), for: .editingChanged)
-        return textField
-    }
-    
-    func updateUIView(_ uiView: UITextField, context: Context) {
-        DispatchQueue.main.async {
-            uiView.text = text
-            uiView.isSecureTextEntry = isSecure
-            if isFirstResponder {
-                uiView.becomeFirstResponder()
-            } else {
-                uiView.resignFirstResponder()
-            }
-        }
-    }
-}
-
 struct SecureFieldWithEye: View {
-    let label: String
+    @Binding
+    var password: String
     var isNewPassword: Bool = false
-    @Binding var text: String
-    @State var showText: Bool = false
-    @State private var isSecure: Bool = true
-    @State var isFirstResponder: Bool = true
+    var placeholder: String = "Password"
+
+    @State
+    private var showText: Bool = false
+
+    private enum Focus {
+        case secure, text
+    }
+
+    @FocusState
+    private var focus: Focus?
+
+    @Environment(\.scenePhase)
+    private var scenePhase
 
     var body: some View {
         HStack {
-            KeyboardControllableTextField(text: $text,
-                                          isFirstResponder: $isFirstResponder,
-                                          isSecure: isSecure,
-                                          placeholder: label,
-                                          isNewPassword: isNewPassword)
-            .frame(height: 40)
-            
+            ZStack {
+                SecureField(placeholder, text: $password)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .frame(height: 40)
+                    .focused($focus, equals: .secure)
+                    .opacity(showText ? 0 : 1)
+                    .textContentType(isNewPassword ? .newPassword : .password)
+                
+                TextField(placeholder, text: $password)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .frame(height: 40)
+                    .focused($focus, equals: .text)
+                    .opacity(showText ? 1 : 0)
+                    .textContentType(isNewPassword ? .newPassword : .password)
+            }
+
             Button(action: {
-                isSecure.toggle()
-                isFirstResponder = true
+                showText.toggle()
             }) {
-                Image(systemName: self.isSecure ? SystemImages.eyeSlashFill.rawValue : SystemImages.eyeFill.rawValue)
-                    .foregroundColor(self.isSecure ? .gray : .blue)
+                Image(systemName: showText ? "eye.slash.fill" : "eye.fill")
+                    .foregroundColor(showText ? .gray : .blue)
+            }
+        }
+        .onChange(of: focus) { newValue in
+            if newValue != nil {
+                focus = showText ? .text : .secure
+            }
+        }
+        .onChange(of: scenePhase) { newValue in
+            if newValue != .active {
+                showText = false
+            }
+        }
+        .onChange(of: showText) { newValue in
+            if focus != nil {
+                DispatchQueue.main.async {
+                    focus = newValue ? .text : .secure
+                }
             }
         }
     }
