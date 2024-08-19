@@ -36,16 +36,7 @@ struct UnifiedTimelineView: View {
     @State var viewModel = TimelineViewModel()
     
     var toolbarMenu: some View {
-        Menu {
-            NavigationLink(destination: UnifiedTimelineSettingsView(space: space)){
-                Label("Settings", systemImage: SystemImages.gearshapeFill.rawValue)
-            }
-            
-            Button(action: {self.sheetType = .invite}) {
-                Label("Invite Followers", systemImage: SystemImages.personCropCircleBadgePlus.rawValue)
-            }
-        }
-        label: {
+        NavigationLink(destination: UnifiedTimelineSettingsView(space: space)){
             Label("Settings", systemImage: SystemImages.gearshapeFill.rawValue)
         }
     }
