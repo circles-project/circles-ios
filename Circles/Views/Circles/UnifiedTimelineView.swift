@@ -10,24 +10,11 @@ import SwiftUI
 import PhotosUI
 import Matrix
 
-enum CircleSheetType: String {
-    //case settings
-    //case followers
-    //case following
-    case invite
-    //case photo
-    case share
-}
-extension CircleSheetType: Identifiable {
-    var id: String { rawValue }
-}
-
 struct UnifiedTimelineView: View {
     @ObservedObject var space: TimelineSpace
     @Environment(\.presentationMode) var presentation
     
     //@State var showComposer = false
-    @State var sheetType: CircleSheetType? = nil
     @State var showPhotosPicker: Bool = false
     @State var selectedItem: PhotosPickerItem?
     @State var showNewPostInSheetStyle = false
