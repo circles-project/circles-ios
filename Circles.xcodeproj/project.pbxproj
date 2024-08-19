@@ -1763,7 +1763,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/circles-project/Matrix.swift";
 			requirement = {
-				branch = "cvwright/debug-chatroom";
+				branch = main;
 				kind = branch;
 			};
 		};
