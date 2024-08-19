@@ -30,10 +30,15 @@ struct SecureFieldWithEye: View {
         HStack {
             ZStack {
                 SecureField(placeholder, text: $password)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .frame(height: 40)
                     .focused($focus, equals: .secure)
                     .opacity(showText ? 0 : 1)
                     .textContentType(isNewPassword ? .newPassword : .password)
+                
                 TextField(placeholder, text: $password)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .frame(height: 40)
                     .focused($focus, equals: .text)
                     .opacity(showText ? 1 : 0)
                     .textContentType(isNewPassword ? .newPassword : .password)
@@ -43,10 +48,10 @@ struct SecureFieldWithEye: View {
                 showText.toggle()
             }) {
                 Image(systemName: showText ? "eye.slash.fill" : "eye.fill")
+                    .foregroundColor(showText ? .gray : .blue)
             }
         }
         .onChange(of: focus) { newValue in
-            // if the PasswordField is focused externally, then make sure the correct field is actually focused
             if newValue != nil {
                 focus = showText ? .text : .secure
             }
@@ -57,8 +62,8 @@ struct SecureFieldWithEye: View {
             }
         }
         .onChange(of: showText) { newValue in
-            if focus != nil { // Prevents stealing focus to this field if another field is focused, or nothing is focused
-                DispatchQueue.main.async { // Needed for general iOS 16 bug with focus
+            if focus != nil {
+                DispatchQueue.main.async {
                     focus = newValue ? .text : .secure
                 }
             }
