@@ -8,40 +8,59 @@
 import SwiftUI
 
 struct SecureFieldWithEye: View {
-    @Binding var password: String
-    @State private var isSecure: Bool = true
-    @FocusState private var isFocused: Bool
+    @Binding
+    var password: String
     var isNewPassword: Bool = false
     var placeholder: String = "Password"
 
+    @State
+    private var showText: Bool = false
+
+    private enum Focus {
+        case secure, text
+    }
+
+    @FocusState
+    private var focus: Focus?
+
+    @Environment(\.scenePhase)
+    private var scenePhase
+
     var body: some View {
         HStack {
-            if isSecure {
+            ZStack {
                 SecureField(placeholder, text: $password)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(height: 40)
-                    .focused($isFocused)
+                    .focused($focus, equals: .secure)
+                    .opacity(showText ? 0 : 1)
                     .textContentType(isNewPassword ? .newPassword : .password)
-            } else {
                 TextField(placeholder, text: $password)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(height: 40)
-                    .focused($isFocused)
+                    .focused($focus, equals: .text)
+                    .opacity(showText ? 1 : 0)
                     .textContentType(isNewPassword ? .newPassword : .password)
             }
-            
+
             Button(action: {
-                isSecure.toggle()
-                isFocused = true
+                showText.toggle()
             }) {
-                Image(systemName: isSecure ? "eye.slash.fill" : "eye.fill")
-                    .foregroundColor(isSecure ? .gray : .blue)
+                Image(systemName: showText ? "eye.slash.fill" : "eye.fill")
             }
         }
-        .padding()
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                isFocused = true
+        .onChange(of: focus) { newValue in
+            // if the PasswordField is focused externally, then make sure the correct field is actually focused
+            if newValue != nil {
+                focus = showText ? .text : .secure
+            }
+        }
+        .onChange(of: scenePhase) { newValue in
+            if newValue != .active {
+                showText = false
+            }
+        }
+        .onChange(of: showText) { newValue in
+            if focus != nil { // Prevents stealing focus to this field if another field is focused, or nothing is focused
+                DispatchQueue.main.async { // Needed for general iOS 16 bug with focus
+                    focus = newValue ? .text : .secure
+                }
             }
         }
     }
