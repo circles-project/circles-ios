@@ -22,6 +22,9 @@ struct SettingsScreen: View {
     @AppStorage("showCirclesHelpText") var showCirclesHelpText = true
     @AppStorage("showGroupsHelpText") var showGroupsHelpText = true
     
+    @State private var columnVisibility =
+        NavigationSplitViewVisibility.all
+    
     @State var showConfirmLogout = false
     @State var showConfirmSwitch = false
     @State var showChangelog = false
@@ -34,7 +37,7 @@ struct SettingsScreen: View {
     
     
     var body: some View {
-        NavigationSplitView {
+        NavigationSplitView(columnVisibility: $columnVisibility) {
             Form {
                 Section("General") {
                     NavigationLink(destination: ProfileSettingsView(session: session.matrix)) {
@@ -178,6 +181,7 @@ struct SettingsScreen: View {
         } detail: {
             ProfileSettingsView(session: session.matrix)
         }
+        .navigationSplitViewStyle(.balanced)
         .sheet(isPresented: $showChangelog) {
             ChangelogSheet(content: ChangelogFile().loadMarkdown(named: .fullList), title: .fullList, showChangelog: $showChangelog)
         }

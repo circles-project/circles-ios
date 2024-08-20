@@ -1,9 +1,9 @@
-# FUTO Circles
-[Circles](https://circu.li/circles.html) is an end-to-end encrypted social network app 
-that enables friends and families to securely share stories and photos while safeguarding
-security and privacy.
+# Circles
+Circles is an end-to-end encrypted social network app that enables
+friends and families to securely share stories and photos while
+safeguarding security and privacy.
 
-Mobile apps for [Android](https://gitlab.futo.org/circles/circles-android) and [iOS](https://gitlab.futo.org/circles/circles-ios) are under active development.
+Mobile apps for [Android](https://gitlab.futo.org/circles/circles-android) and [iOS](https://github.com/cvwright/circles-ios) are under active development.
 
 Circles is built on [Matrix](https://matrix.org/), and as such, it inherits many nice
 properties from Matrix, including:

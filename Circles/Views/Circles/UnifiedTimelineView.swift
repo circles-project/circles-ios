@@ -10,40 +10,20 @@ import SwiftUI
 import PhotosUI
 import Matrix
 
-enum CircleSheetType: String {
-    //case settings
-    //case followers
-    //case following
-    case invite
-    //case photo
-    case share
-}
-extension CircleSheetType: Identifiable {
-    var id: String { rawValue }
-}
-
 struct UnifiedTimelineView: View {
     @ObservedObject var space: TimelineSpace
     @Environment(\.presentationMode) var presentation
     
     //@State var showComposer = false
-    @State var sheetType: CircleSheetType? = nil
     @State var showPhotosPicker: Bool = false
     @State var selectedItem: PhotosPickerItem?
     @State var showNewPostInSheetStyle = false
     //@State var image: UIImage?
     
+    @State var viewModel = TimelineViewModel()
+    
     var toolbarMenu: some View {
-        Menu {
-            NavigationLink(destination: UnifiedTimelineSettingsView(space: space)){
-                Label("Settings", systemImage: SystemImages.gearshapeFill.rawValue)
-            }
-            
-            Button(action: {self.sheetType = .invite}) {
-                Label("Invite Followers", systemImage: SystemImages.personCropCircleBadgePlus.rawValue)
-            }
-        }
-        label: {
+        NavigationLink(destination: UnifiedTimelineSettingsView(space: space)){
             Label("Settings", systemImage: SystemImages.gearshapeFill.rawValue)
         }
     }
@@ -93,6 +73,7 @@ struct UnifiedTimelineView: View {
                 }
             }
         }
+        .environmentObject(viewModel)
     }
 }
 
