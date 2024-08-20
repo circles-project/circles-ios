@@ -16,7 +16,6 @@ struct BsspekeLoginForm: View {
 
     @State private var passphrase: String = ""
     @State private var failed = false
-    var showPassword = false
     
     @Environment(\.presentationMode) private var presentationMode
 
@@ -139,8 +138,9 @@ struct BsspekeLoginForm: View {
                                 )
                                 .foregroundColor(Color.greyCool1100)
                             
-                            SecureFieldWithEye(label: "Passphrase", height: buttonHeight,
-                                               text: $passphrase, showText: showPassword)
+                            SecureFieldWithEye(password: $passphrase,
+                                               placeholder: "Passphrase",
+                                               height: buttonHeight)
                             .textContentType(.password)
                             .frame(width: buttonWidth, height: buttonHeight)
                             .onAppear {

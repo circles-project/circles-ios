@@ -34,7 +34,6 @@ struct BsspekeEnrollOprfForm: View {
     }
     @State var screen: Screen = .enterPassword
     //@State var showRepeat = false
-    var showPassword = false
     
     private func getUserId() -> UserId? {
         if let userId = session.creds?.userId {
@@ -95,8 +94,9 @@ struct BsspekeEnrollOprfForm: View {
                     .foregroundColor(Color.greyCool1100)
                     .padding(.top, 16)
                 
-                SecureFieldWithEye(label: "New Passphrase", isNewPassword: true,
-                                   text: $passphrase, showText: showPassword)
+                SecureFieldWithEye(password: $passphrase,
+                                   isNewPassword: true,
+                                   placeholder: "New Passphrase")
                     .frame(height: buttonHeight)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)

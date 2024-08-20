@@ -12,6 +12,7 @@ struct SecureFieldWithEye: View {
     var password: String
     var isNewPassword: Bool = false
     var placeholder: String = "Password"
+    var height: CGFloat = 40
 
     @State
     private var showText: Bool = false
@@ -31,14 +32,14 @@ struct SecureFieldWithEye: View {
             ZStack {
                 SecureField(placeholder, text: $password)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(height: 40)
+                    .frame(height: height)
                     .focused($focus, equals: .secure)
                     .opacity(showText ? 0 : 1)
                     .textContentType(isNewPassword ? .newPassword : .password)
                 
                 TextField(placeholder, text: $password)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(height: 40)
+                    .frame(height: height)
                     .focused($focus, equals: .text)
                     .opacity(showText ? 1 : 0)
                     .textContentType(isNewPassword ? .newPassword : .password)
