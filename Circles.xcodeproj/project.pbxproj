@@ -235,6 +235,9 @@
 		A5E101F82814FAFD000B2C42 /* bcrypt.c in Sources */ = {isa = PBXBuildFile; fileRef = A5E101F72814FAFD000B2C42 /* bcrypt.c */; };
 		A5E101FA2814FB60000B2C42 /* blf.c in Sources */ = {isa = PBXBuildFile; fileRef = A5E101F92814FB60000B2C42 /* blf.c */; };
 		A5E101FE2814FC9F000B2C42 /* PerfectBCrypt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E101FD2814FC9F000B2C42 /* PerfectBCrypt.swift */; };
+		A5E5EB182C7542B50042DB73 /* MessageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E5EB172C7542B50042DB73 /* MessageContentView.swift */; };
+		A5E5EB1B2C7543D80042DB73 /* ImageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E5EB1A2C7543D80042DB73 /* ImageContentView.swift */; };
+		A5E5EB1D2C7544130042DB73 /* TextContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E5EB1C2C7544130042DB73 /* TextContentView.swift */; };
 		A5EB046D2AFB306B00CC7A6C /* RoomMembersSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5EB046C2AFB306B00CC7A6C /* RoomMembersSection.swift */; };
 		A5EB046F2AFB30D400CC7A6C /* GallerySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5EB046E2AFB30D400CC7A6C /* GallerySettingsView.swift */; };
 		A5EE59C42A5F21C2007C24C7 /* DevicesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5EE59C22A5F21C2007C24C7 /* DevicesScreen.swift */; };
@@ -517,6 +520,9 @@
 		A5E101FC2814FBE3000B2C42 /* pycabcrypt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pycabcrypt.h; sourceTree = "<group>"; };
 		A5E101FD2814FC9F000B2C42 /* PerfectBCrypt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerfectBCrypt.swift; sourceTree = "<group>"; };
 		A5E101FF2814FD6D000B2C42 /* portable_endian.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = portable_endian.h; sourceTree = "<group>"; };
+		A5E5EB172C7542B50042DB73 /* MessageContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageContentView.swift; sourceTree = "<group>"; };
+		A5E5EB1A2C7543D80042DB73 /* ImageContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageContentView.swift; sourceTree = "<group>"; };
+		A5E5EB1C2C7544130042DB73 /* TextContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextContentView.swift; sourceTree = "<group>"; };
 		A5EB046C2AFB306B00CC7A6C /* RoomMembersSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomMembersSection.swift; sourceTree = "<group>"; };
 		A5EB046E2AFB30D400CC7A6C /* GallerySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GallerySettingsView.swift; sourceTree = "<group>"; };
 		A5EE59C22A5F21C2007C24C7 /* DevicesScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DevicesScreen.swift; sourceTree = "<group>"; };
@@ -805,9 +811,9 @@
 		409F435E265DE20B00690A61 /* Timeline */ = {
 			isa = PBXGroup;
 			children = (
+				A5E5EB192C7543B40042DB73 /* Message */,
 				409F438A265DE2C200690A61 /* UnifiedTimeline.swift */,
 				409F4360265DE21A00690A61 /* MessageAuthorHeader.swift */,
-				409F435F265DE21900690A61 /* MessageCard.swift */,
 				40878FC62694C00000A66EF0 /* MessageContextMenu.swift */,
 				409F4361265DE21A00690A61 /* MessageReportingSheet.swift */,
 				40F906BA269DF96100287B27 /* MessageSheetType.swift */,
@@ -819,9 +825,8 @@
 				409F4392265DE2DE00690A61 /* TimelineView.swift */,
 				409F439B265DE38200690A61 /* UserAvatarView.swift */,
 				A5487EC62ADC81E500FA16B5 /* UserNameView.swift */,
-				A5BB4EF22BD02FD7001FD0D8 /* VideoContentView.swift */,
-				A58E21792C4AC3CA005FF66B /* CommentCard.swift */,
 				A58E217B2C4AD2FA005FF66B /* LikeButton.swift */,
+				A5E5EB172C7542B50042DB73 /* MessageContentView.swift */,
 			);
 			path = Timeline;
 			sourceTree = "<group>";
@@ -1061,6 +1066,18 @@
 			path = BCrypt;
 			sourceTree = "<group>";
 		};
+		A5E5EB192C7543B40042DB73 /* Message */ = {
+			isa = PBXGroup;
+			children = (
+				A58E21792C4AC3CA005FF66B /* CommentCard.swift */,
+				409F435F265DE21900690A61 /* MessageCard.swift */,
+				A5BB4EF22BD02FD7001FD0D8 /* VideoContentView.swift */,
+				A5E5EB1A2C7543D80042DB73 /* ImageContentView.swift */,
+				A5E5EB1C2C7544130042DB73 /* TextContentView.swift */,
+			);
+			path = Message;
+			sourceTree = "<group>";
+		};
 		A5EAAC1B2B30CEAF00476B94 /* Composer */ = {
 			isa = PBXGroup;
 			children = (
@@ -1220,6 +1237,7 @@
 				A5AA37EA2C6FBF1900706A1B /* RoomAutoPaginator.swift in Sources */,
 				A53EADA62A6F0EA600EF18B7 /* CirclesTabbedInterface.swift in Sources */,
 				A5DDA6A52B98F8B900BD8A1D /* Data+hex.swift in Sources */,
+				A5E5EB1B2C7543D80042DB73 /* ImageContentView.swift in Sources */,
 				A52ACB8B2A78240C005D90C5 /* SelfDetailView.swift in Sources */,
 				A51928B72BCDBD8E005DCFF4 /* CircleRenameView.swift in Sources */,
 				409F4379265DE25000690A61 /* PhotoGalleryCreationSheet.swift in Sources */,
@@ -1284,6 +1302,7 @@
 				A52C77542A89CCB8005D2C0B /* MessageThumbnail.swift in Sources */,
 				A5EE59C52A5F21C2007C24C7 /* DeviceInfoView.swift in Sources */,
 				A562C08E2AFE8EA800522FCB /* CirclesLogoView.swift in Sources */,
+				A5E5EB182C7542B50042DB73 /* MessageContentView.swift in Sources */,
 				40AEA6752678E24200C9CBD1 /* BlurHashEncode.swift in Sources */,
 				A5B7917D2BE3E39000F199DA /* InviteToFollowMeView.swift in Sources */,
 				A5EB046F2AFB30D400CC7A6C /* GallerySettingsView.swift in Sources */,
@@ -1307,6 +1326,7 @@
 				A54A278E2A843CC600858846 /* InvitedGroupDetailView.swift in Sources */,
 				409F4342265DE17500690A61 /* GroupHeader.swift in Sources */,
 				409F4362265DE21A00690A61 /* MessageCard.swift in Sources */,
+				A5E5EB1D2C7544130042DB73 /* TextContentView.swift in Sources */,
 				A5F0148429D7436E000D57B3 /* EmailEnrollSubmitTokenForm.swift in Sources */,
 				A54346C92A3BB5BB0025D147 /* PhotoThumbnailCard.swift in Sources */,
 				409F42E3265DE00700690A61 /* Array+Sample.swift in Sources */,
