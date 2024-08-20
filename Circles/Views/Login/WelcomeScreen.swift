@@ -205,7 +205,7 @@ struct DomainScreen: View {
                     .padding(.bottom, 30)
                 
                 VStack(alignment: .leading) {
-                    Text("Enter your domain address")
+                    Text("Circles can register new accounts on any compatible Matrix server. To create an account, first enter the domain of the server that you would like to use.")
                         .font(
                             CustomFonts.nunito14
                                 .weight(.bold)
@@ -225,6 +225,7 @@ struct DomainScreen: View {
                             self.inputFocused = true
                         }
                 }
+                .padding(.horizontal, 16)
                 
                 Spacer()
                 

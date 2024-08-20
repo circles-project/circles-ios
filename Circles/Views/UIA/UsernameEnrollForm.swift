@@ -36,7 +36,7 @@ struct UsernameEnrollForm: View {
                 )
                 .foregroundColor(Color.greyCool1100)
             
-            TextField("@username:us.domain.com", text: $username)
+            TextField("@username", text: $username)
                 .frame(width: screenWidthWithOffsets, height: 48.0)
                 .padding([.horizontal], 12)
                 .background(Color.white)
