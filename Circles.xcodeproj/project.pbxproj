@@ -814,19 +814,12 @@
 				A5E5EB192C7543B40042DB73 /* Message */,
 				409F438A265DE2C200690A61 /* UnifiedTimeline.swift */,
 				409F4360265DE21A00690A61 /* MessageAuthorHeader.swift */,
-				40878FC62694C00000A66EF0 /* MessageContextMenu.swift */,
-				409F4361265DE21A00690A61 /* MessageReportingSheet.swift */,
-				40F906BA269DF96100287B27 /* MessageSheetType.swift */,
-				A52C77532A89CCB8005D2C0B /* MessageThumbnail.swift */,
-				A52DF68929E8868C008860C3 /* MessageView.swift */,
 				4073E7C3267915AF001A80CF /* CommentsView.swift */,
 				A52DF68229E59C32008860C3 /* StateEventView.swift */,
 				A5CF39D42A73299500134969 /* ThreadView.swift */,
 				409F4392265DE2DE00690A61 /* TimelineView.swift */,
 				409F439B265DE38200690A61 /* UserAvatarView.swift */,
 				A5487EC62ADC81E500FA16B5 /* UserNameView.swift */,
-				A58E217B2C4AD2FA005FF66B /* LikeButton.swift */,
-				A5E5EB172C7542B50042DB73 /* MessageContentView.swift */,
 			);
 			path = Timeline;
 			sourceTree = "<group>";
@@ -1070,10 +1063,17 @@
 			isa = PBXGroup;
 			children = (
 				A58E21792C4AC3CA005FF66B /* CommentCard.swift */,
-				409F435F265DE21900690A61 /* MessageCard.swift */,
-				A5BB4EF22BD02FD7001FD0D8 /* VideoContentView.swift */,
 				A5E5EB1A2C7543D80042DB73 /* ImageContentView.swift */,
+				A58E217B2C4AD2FA005FF66B /* LikeButton.swift */,
+				409F435F265DE21900690A61 /* MessageCard.swift */,
+				A5E5EB172C7542B50042DB73 /* MessageContentView.swift */,
+				40878FC62694C00000A66EF0 /* MessageContextMenu.swift */,
+				409F4361265DE21A00690A61 /* MessageReportingSheet.swift */,
+				40F906BA269DF96100287B27 /* MessageSheetType.swift */,
+				A52C77532A89CCB8005D2C0B /* MessageThumbnail.swift */,
+				A52DF68929E8868C008860C3 /* MessageView.swift */,
 				A5E5EB1C2C7544130042DB73 /* TextContentView.swift */,
+				A5BB4EF22BD02FD7001FD0D8 /* VideoContentView.swift */,
 			);
 			path = Message;
 			sourceTree = "<group>";
