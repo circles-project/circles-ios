@@ -39,7 +39,7 @@ struct UsernameEnrollForm: View {
             TextField("@username", text: $username)
                 .frame(width: screenWidthWithOffsets, height: 48.0)
                 .padding([.horizontal], 12)
-                .background(Color.white)
+                .background(Color.background)
                 .cornerRadius(10)
                 .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.greyCool400))
                 .textContentType(.username)

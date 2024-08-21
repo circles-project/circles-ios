@@ -120,7 +120,7 @@ struct SetupAvatarView: View {
                     TextField("First Last", text: $newName, prompt: Text("Your name"))
                         .frame(width: 300, height: elementHeight)
                         .padding([.horizontal], 12)
-                        .background(Color.white)
+                        .background(Color.background)
                         .cornerRadius(10)
                         .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.greyCool400))
                         .textContentType(.name)

@@ -31,11 +31,15 @@ struct BsspekeLoginForm: View {
             Spacer()
             
             VStack {
+                let buttonWidth = UIScreen.main.bounds.width - 48
+                let buttonHeight: CGFloat = 48.0
+                
                 SecureFieldWithEye(password: $passphrase,
-                                   placeholder: "Passphrase")
+                                   placeholder: "Passphrase",
+                                   height: buttonHeight)
+                    .frame(width: buttonWidth, height: buttonHeight)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
-                    .frame(width: 300.0, height: 40.0)
                     .onAppear {
                         if let userId = session.userId {
                             // Attempt to load the saved password that Matrix.swift should have saved in our Keychain
@@ -107,7 +111,7 @@ struct BsspekeLoginForm: View {
                 .padding(5)
                 .frame(width: 40.0, height: 40.0)
         }
-        .background(Color.white)
+        .background(Color.background)
         .clipShape(Circle())
         .padding(.leading, 21)
         .padding(.top, 65)

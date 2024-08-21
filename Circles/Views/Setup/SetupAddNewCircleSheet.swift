@@ -113,7 +113,7 @@ struct SetupAddNewCircleSheet: View {
                 TextField("Circle name", text: $circleName)
                     .frame(width: elementWidth - 24, height: elementHeight)
                     .padding([.horizontal], 12)
-                    .background(Color.white)
+                    .background(Color.background)
                     .cornerRadius(10)
                     .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.greyCool400))
                     .textInputAutocapitalization(.words)

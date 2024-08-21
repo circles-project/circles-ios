@@ -138,7 +138,7 @@ struct TermsOfServiceForm: View {
             .padding(.trailing, 20)
         }
         .frame(width: screenWidth, height: 61.0)
-        .background(Color.white)
+        .background(Color.background)
     }
     
     var body: some View {

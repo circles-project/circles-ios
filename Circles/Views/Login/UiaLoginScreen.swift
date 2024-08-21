@@ -30,7 +30,7 @@ struct UiaLoginScreen: View {
                 .padding(5)
                 .frame(width: 40.0, height: 40.0)
         }
-        .background(Color.white)
+        .background(Color.background)
         .clipShape(Circle())
         .padding(.leading, 21)
         .padding(.top, 65)
