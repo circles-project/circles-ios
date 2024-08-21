@@ -53,25 +53,22 @@ struct SetupCirclesView: View {
                 
                 List {
                     ForEach(circles) { info in
-                        ZStack {
-                            HStack {
-                                SetupCircleCard(matrix: matrix, user: user, info: info)
-                                    .background(Color.greyCool200)
-                                
-                                Spacer()
-                                
-                                Button(role: .destructive, action: {
-                                    circles.removeAll { $0.name == info.name }
-                                }) {
-                                    Image(systemName: SystemImages.minusCircleFill.rawValue)
-                                }
+                        HStack {
+                            SetupCircleCard(matrix: matrix, user: user, info: info)
+                                .background(Color.greyCool200)
+                            
+                            Spacer()
+                            
+                            Button(role: .destructive, action: {
+                                circles.removeAll { $0.name == info.name }
+                            }) {
+                                Image(systemName: SystemImages.minusCircleFill.rawValue)
                             }
                         }
                     }
-                    .background(Color.greyCool200)
+                    .listRowBackground(Color.greyCool200)
                 }
-//                .listStyle(.inset)
-                .background(Color.greyCool200)
+                .listStyle(.plain)
                 
                 Button(action: {
                     showNewCircleSheet = true
