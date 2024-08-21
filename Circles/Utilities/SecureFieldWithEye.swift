@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import Foundation
 
 struct SecureFieldWithEye: View {
     @Binding
     var password: String
     var isNewPassword: Bool = false
     var placeholder: String = "Password"
+    var height: CGFloat = 40
 
     @State
     private var showText: Bool = false
@@ -30,15 +32,21 @@ struct SecureFieldWithEye: View {
         HStack {
             ZStack {
                 SecureField(placeholder, text: $password)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(height: 40)
+                    .frame(height: height)
+                    .padding([.horizontal], 12)
+                    .background(Color.background)
+                    .cornerRadius(10)
+                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.greyCool400))
                     .focused($focus, equals: .secure)
                     .opacity(showText ? 0 : 1)
                     .textContentType(isNewPassword ? .newPassword : .password)
                 
                 TextField(placeholder, text: $password)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(height: 40)
+                    .frame(height: height)
+                    .padding([.horizontal], 12)
+                    .background(Color.background)
+                    .cornerRadius(10)
+                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.greyCool400))
                     .focused($focus, equals: .text)
                     .opacity(showText ? 1 : 0)
                     .textContentType(isNewPassword ? .newPassword : .password)

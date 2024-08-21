@@ -18,6 +18,9 @@ struct BsspekeEnrollOprfForm: View {
     @State var color: Color = .red
     //@State var passwordStrengthColors: [Color] = []
     let checker = DBZxcvbn()
+    
+    let buttonWidth = UIScreen.main.bounds.width - 48
+    let buttonHeight: CGFloat = 48.0
 
     #if DEBUG
     let MINIMUM_PASSWORD_ZXCVBN_SCORE = 2.0
@@ -27,12 +30,10 @@ struct BsspekeEnrollOprfForm: View {
     
     enum Screen: String {
         case enterPassword
-        case repeatPassword
         case savePassword
     }
     @State var screen: Screen = .enterPassword
     //@State var showRepeat = false
-    var showPassword = false
     
     private func getUserId() -> UserId? {
         if let userId = session.creds?.userId {
@@ -75,23 +76,28 @@ struct BsspekeEnrollOprfForm: View {
     @ViewBuilder
     var enterPasswordView: some View {
         VStack {
-            Spacer()
-
-            Text("Set Passphrase")
-                .font(.title2)
-                .fontWeight(.bold)
+            BasicImage(name: SystemImages.launchLogoPurple.rawValue)
+                .frame(width: 125, height: 43)
+                .padding(.bottom, 30)
             
             Label("NOTICE: If you forget your passphrase, you won't be able to access your posts or photos on a new device.", systemImage: SystemImages.exclamationmarkTriangle.rawValue)
                 .foregroundColor(.red)
-                .padding(.top)
-                .padding(.horizontal,5)
-            
-            Spacer()
+                .font(CustomFonts.nunito14)
+                .padding(.horizontal, 12)
 
             VStack(alignment: .leading) {
+                Text("Set Passphrase")
+                    .font(
+                        CustomFonts.nunito20
+                            .weight(.heavy)
+                    )
+                    .foregroundColor(Color.greyCool1100)
+                    .padding(.top, 16)
+                
                 SecureFieldWithEye(password: $passphrase,
                                    isNewPassword: true,
                                    placeholder: "New Passphrase")
+                    .frame(height: buttonHeight)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
                     .onChange(of: passphrase) { newPassword in
@@ -115,44 +121,8 @@ struct BsspekeEnrollOprfForm: View {
                     .tint(self.color)
                     .foregroundColor(.gray)
             }
-            .frame(maxWidth: 550)
-            .padding()
+            .frame(width: buttonWidth)
 
-            Spacer()
-
-            Button(action: {
-                self.screen = .repeatPassword
-            }) {
-                Text("Next")
-            }
-            .buttonStyle(BigRoundedButtonStyle())
-            .disabled(passphrase.isEmpty || score < MINIMUM_PASSWORD_ZXCVBN_SCORE)
-        }
-    }
-    
-    @ViewBuilder
-    var repeatPasswordView: some View {
-        VStack {
-            Spacer()
-            Text("Confirm Passphrase")
-                .font(.title2)
-                .fontWeight(.bold)
-            Text("or")
-            Button(action: {
-                self.passphrase = ""
-                self.score = 0.0
-                self.color = .red
-                self.screen = .enterPassword
-            }) {
-                Label("Choose a different passphrase", systemImage: "arrowshape.turn.up.backward.fill")
-            }
-            Spacer()
-            SecureFieldWithEye(password: $repeatPassphrase,
-                               isNewPassword: true,
-                               placeholder: "Repeat passphrase")
-                .autocapitalization(.none)
-                .disableAutocorrection(true)
-                .frame(width: 300.0, height: 40.0)
             Spacer()
             
             Button(action: {
@@ -160,10 +130,14 @@ struct BsspekeEnrollOprfForm: View {
             }) {
                 Text("Submit")
             }
-            .buttonStyle(BigRoundedButtonStyle())
-            .disabled(passphrase.isEmpty || passphrase != repeatPassphrase || score < MINIMUM_PASSWORD_ZXCVBN_SCORE)
+            .buttonStyle(BigRoundedButtonStyle(width: buttonWidth, height: buttonHeight))
+            .font(
+                CustomFonts.nunito16
+                    .weight(.bold)
+            )
+            .padding(.bottom, 38)
+            .disabled(passphrase.isEmpty || score < MINIMUM_PASSWORD_ZXCVBN_SCORE)
         }
-        .padding()
     }
     
     func submit() async throws {
@@ -178,7 +152,22 @@ struct BsspekeEnrollOprfForm: View {
     @ViewBuilder
     var savePasswordView: some View {
         VStack(spacing: 20) {
+            let elementWidth = UIScreen.main.bounds.width - 48
+            let buttonHeight: CGFloat = 48.0
+            let signUpButtonStyle = BigRoundedButtonStyle(width: buttonWidth,
+                                                          height: buttonHeight,
+                                                          color: Color.accentColor)
+            
             Text("Would you like to save your passphrase to iCloud Keychain?")
+                .font(
+                    CustomFonts.nunito14
+                        .weight(.semibold)
+                )
+                .frame(width: elementWidth)
+                .multilineTextAlignment(.leading)
+                .padding(.top, 16)
+            
+            Spacer()
             
             AsyncButton(action: {
                 session.savePasswordToKeychain()
@@ -186,17 +175,23 @@ struct BsspekeEnrollOprfForm: View {
             }) {
                 Text("Save passphrase")
             }
-            .buttonStyle(BigRoundedButtonStyle())
+            .buttonStyle(signUpButtonStyle)
+            .font(
+                CustomFonts.nunito16
+                    .weight(.bold)
+            )
             
             AsyncButton(action: {
                 try await submit()
             }) {
                 Text("Don't save my passphrase")
             }
-            .buttonStyle(BigRoundedButtonStyle())
+            .buttonStyle(signUpButtonStyle)
+            .font(
+                CustomFonts.nunito16
+                    .weight(.bold)
+            )
         }
-        .padding(.top)
-
     }
     
     var body: some View {
@@ -204,8 +199,6 @@ struct BsspekeEnrollOprfForm: View {
             switch screen {
             case .enterPassword:
                 enterPasswordView
-            case .repeatPassword:
-                repeatPasswordView
             case .savePassword:
                 savePasswordView
             }

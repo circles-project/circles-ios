@@ -16,8 +16,10 @@ struct UiaView: View {
     var body: some View {
         VStack {
             Text("Authentication Required")
-                .font(.title2)
-                .fontWeight(.bold)
+                .font(
+                    CustomFonts.nunito24
+                        .bold()
+                )
                 .padding()
             
             Spacer()

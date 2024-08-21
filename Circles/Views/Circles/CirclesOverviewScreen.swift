@@ -96,7 +96,6 @@ struct CirclesOverviewScreen: View {
                 })
                                 
                 List(selection: $selected) {
-                    
                     NavigationLink(value: container.roomId) {
                         HStack {
                             CirclesLogoView()
