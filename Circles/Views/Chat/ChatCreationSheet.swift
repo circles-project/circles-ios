@@ -10,7 +10,7 @@ import PhotosUI
 import Matrix
 
 struct ChatCreationSheet: View {
-    @ObservedObject var session: Matrix.Session
+    @ObservedObject var chats: ContainerRoom<Matrix.ChatRoom>
     @Environment(\.presentationMode) var presentation
     
     @State var roomName: String = ""
@@ -32,13 +32,14 @@ struct ChatCreationSheet: View {
     @FocusState var inputFocused
     
     func create() async throws {
+        let session = chats.session
         let powerLevels = RoomPowerLevelsContent(invite: 50, usersDefault: defaultPowerLevel.power)
-        guard let roomId = try? await session.createRoom(name: self.roomName,
-                                                         type: nil,
-                                                         encrypted: true,
-                                                         invite: self.users.map { $0.userId },
-                                                         powerLevelContentOverride: powerLevels),
-              let room = try await session.getRoom(roomId: roomId)
+        guard let roomId = try? await chats.createChild(name: self.roomName,
+                                                        type: nil,
+                                                        encrypted: true,
+                                                        avatar: self.headerImage,
+                                                        userDefaultPower: defaultPowerLevel.power),
+              let room = try await chats.session.getRoom(roomId: roomId)
         else {
             // Set error message
             return

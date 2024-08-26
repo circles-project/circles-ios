@@ -1607,7 +1607,7 @@
 				DEVELOPMENT_TEAM = 2W7AC6T8T5;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Circles/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "FUTO Circles";
+				INFOPLIST_KEY_CFBundleDisplayName = Circles;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1644,7 +1644,7 @@
 				DEVELOPMENT_TEAM = 2W7AC6T8T5;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Circles/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "FUTO Circles";
+				INFOPLIST_KEY_CFBundleDisplayName = Circles;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (

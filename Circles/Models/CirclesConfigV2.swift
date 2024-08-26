@@ -12,6 +12,7 @@ let EVENT_TYPE_CIRCLES_CONFIG_V2 = "org.futo.circles.config.v2"
 
 struct CirclesConfigContentV2: Codable {
     var root: RoomId
+    var chats: RoomId // aka Direct Messages or just Messages
     var groups: RoomId
     var galleries: RoomId
     var people: RoomId

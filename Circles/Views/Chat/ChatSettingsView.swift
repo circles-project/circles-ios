@@ -11,6 +11,7 @@ import Matrix
 
 struct ChatSettingsView: View {
     @ObservedObject var room: Matrix.Room
+    @ObservedObject var container: ContainerRoom<Matrix.ChatRoom>
     
     @Environment(\.presentationMode) var presentation
 
@@ -25,8 +26,9 @@ struct ChatSettingsView: View {
     let mods: [UserId]
     let members: [UserId]
     
-    init(room: Matrix.Room) {
+    init(room: Matrix.Room, container: ContainerRoom<Matrix.ChatRoom>) {
         self.room = room
+        self.container = container
         
         self.users = room.joinedMembers
         self.admins = users.filter { userId in
@@ -230,7 +232,7 @@ struct ChatSettingsView: View {
                                 
                                 // FIXME: Sanity check - Are we leaving the room unmoderated?  Don't do that.
                                 
-                                try await room.leave()
+                                try await container.leaveChild(room.roomId)
                                 self.presentation.wrappedValue.dismiss()
                             }) {
                                 Text("Leave \"\(room.name ?? "this group")\"")

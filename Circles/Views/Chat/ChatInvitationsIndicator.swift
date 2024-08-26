@@ -10,6 +10,7 @@ import Matrix
 
 struct ChatInvitationsIndicator: View {
     @ObservedObject var session: Matrix.Session
+    @ObservedObject var container: ContainerRoom<Matrix.ChatRoom>
         
     var body: some View {
         VStack {
@@ -17,7 +18,7 @@ struct ChatInvitationsIndicator: View {
             if invitations.count > 0 {
                 HStack {
                     Spacer()
-                    NavigationLink(destination: ChatInvitationsView(session: session)) {
+                    NavigationLink(destination: ChatInvitationsView(session: session, container: container)) {
                         Label("You have \(invitations.count) pending invitation(s)", systemImage: "star")
                             .fontWeight(.bold)
                             .padding()

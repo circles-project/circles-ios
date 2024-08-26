@@ -34,6 +34,7 @@ class CirclesApplicationSession: ObservableObject {
     var galleries: ContainerRoom<GalleryRoom>   // Galleries space contains the individual rooms for each of our galleries
     var people: ContainerRoom<PersonRoom>       // People space contains the space rooms for each of our contacts
     var profile: ContainerRoom<Matrix.Room>     // Our profile space contains the "wall" rooms for each circle that we "publish" to our connections
+    var chats: ContainerRoom<Matrix.ChatRoom>   // Our "regular" Matrix chat rooms
     
     
     @Published var viewState = ViewState()      // The ViewState encapsulates all the top-level UI state for the app when we're logged in with this active application session
@@ -443,12 +444,19 @@ class CirclesApplicationSession: ObservableObject {
         let profileEnd = Date()
         let profileTime = profileEnd.timeIntervalSince(profileStart)
         logger.debug("\(profileTime, privacy: .public) sec to load Profile space")
+        
+        guard let chats = try await matrix.getRoom(roomId: config.chats, as: ContainerRoom<Matrix.ChatRoom>.self)
+        else {
+            logger.error("Failed to load Chats space")
+            throw CirclesError("Failed to load Chats space")
+        }
                 
         self.groups = groups
         self.galleries = galleries
         self.timelines = timelines
         self.people = people
         self.profile = profile
+        self.chats = chats
         
         // Register ourself as the current singleton object
         Self.current = self

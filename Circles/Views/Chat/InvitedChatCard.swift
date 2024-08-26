@@ -11,6 +11,7 @@ import Matrix
 struct InvitedChatCard: View {
     @ObservedObject var room: Matrix.InvitedRoom
     @ObservedObject var user: Matrix.User
+    @ObservedObject var container: ContainerRoom<Matrix.ChatRoom>
 
     @AppStorage("blurUnknownUserPicture") var blurUnknownUserPicture = true
     @State var blur = 10.0
@@ -69,6 +70,7 @@ struct InvitedChatCard: View {
                     
                     AsyncButton(action: {
                         try await room.accept()
+                        try await container.addChild(room.roomId)
                     }) {
                         Text("Accept")
                             .padding(10)

@@ -20,22 +20,24 @@ extension ChatOverviewSheetType: Identifiable {
 }
 
 struct ChatOverviewScreen: View {
-    @ObservedObject var session: Matrix.Session
+    @ObservedObject var container: ContainerRoom<Matrix.ChatRoom>
     @State var sheetType: ChatOverviewSheetType?
-        
-    @State var rooms: [Matrix.Room] = []
-    @State var invitations: [Matrix.InvitedRoom] = []
     
+    @State var invitations: [Matrix.InvitedRoom] = []
+            
     //@State var selectedRoom: Matrix.Room?
     @Binding var selected: RoomId?
     
     @ViewBuilder
     var baseLayer: some View {
-       // let groupInvitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_GROUP }
+       let chatInvitations = container.session.invitations.values.filter { $0.type == nil }
         
-        if !rooms.isEmpty || !invitations.isEmpty  {
+        if !container.rooms.isEmpty || !invitations.isEmpty  {
             VStack(alignment: .leading, spacing: 0) {
-                ChatInvitationsIndicator(session: session)
+                ChatInvitationsIndicator(session: container.session, container: container)
+                
+                // Sort into _reverse_ chronological order
+                let rooms = container.rooms.values.sorted(by: { $0.timestamp > $1.timestamp })
                 
                 List(selection: $selected) {
                     ForEach(rooms) { room in
@@ -58,24 +60,18 @@ struct ChatOverviewScreen: View {
         }
         
         if DebugModel.shared.debugMode {
-            Text("\(session.rooms.values.count) total rooms")
-            Text("\(rooms.count) rooms with type == nil")
+            Text("\(container.rooms.values.count) known chat rooms")
+            let nilRooms = container.session.rooms.values.filter { $0.type == nil }
+            Text("\(nilRooms.count) rooms with type == nil")
         }
     }
     
     @MainActor
     func reload() {
-        print("RELOAD\tSession has \(session.invitations.count) invitations total")
-        self.invitations = session.invitations.values.filter { $0.type == nil }
+        print("RELOAD\tSession has \(container.session.invitations.count) invitations total")
+        self.invitations = container.session.invitations.values.filter { $0.type == ROOM_TYPE_GROUP }
         print("RELOAD\tFound \(self.invitations.count) invitations for this screen")
-        session.objectWillChange.send()
-        
-        if self.rooms.isEmpty {
-            
-            self.rooms = session.rooms.values
-                                      .filter({ $0.type == nil })
-                                      .sorted(by: {$0.timestamp > $1.timestamp} )
-        }
+        container.objectWillChange.send()
     }
     
     @ViewBuilder
@@ -131,9 +127,9 @@ struct ChatOverviewScreen: View {
             // Figure out what kind of sheet we need
             switch(st) {
             case .create:
-                ChatCreationSheet(session: session)
+                ChatCreationSheet(chats: container)
             case .scanQR:
-                ScanQrCodeAndKnockSheet(session: session)
+                ScanQrCodeAndKnockSheet(session: container.session)
             }
         }
     }
@@ -145,18 +141,21 @@ struct ChatOverviewScreen: View {
                 .refreshable {
                     self.reload()
                 }
-                .onAppear {
-                    if self.rooms.isEmpty {
-                        self.rooms = session.rooms.values
-                                                  .filter({ $0.type == nil })
-                                                  .sorted(by: {$0.timestamp > $1.timestamp} )
+                .task {
+                    // It's possible that we don't have all of the user's (untyped) chat rooms in our space
+                    // Look for them and add any that appear to be missing
+                    let nilRooms = container.session.rooms.values.filter {
+                        $0.type == nil && !container.children.contains($0.roomId)
+                    }
+                    for room in nilRooms {
+                        try? await container.addChild(room.roomId)
                     }
                 }
         } detail: {
             if let roomId = selected,
-               let room = session.rooms[roomId] as? Matrix.ChatRoom
+               let room = container.session.rooms[roomId] as? Matrix.ChatRoom
             {
-                ChatTimelineScreen(room: room)
+                ChatTimelineScreen(room: room, container: container)
             } else {
                 Text("Select a chat to see the most recent posts, or create a new chat")
             }

@@ -18,6 +18,7 @@ extension ChatScreenSheetType: Identifiable {
 
 struct ChatTimelineScreen: View {
     @ObservedObject var room: Matrix.ChatRoom
+    var container: ContainerRoom<Matrix.ChatRoom>
 
     @Environment(\.presentationMode) var presentation
     
@@ -41,7 +42,7 @@ struct ChatTimelineScreen: View {
     
     var toolbarMenu: some View {
         Menu {
-            NavigationLink(destination: ChatSettingsView(room: room)) {
+            NavigationLink(destination: ChatSettingsView(room: room, container: container)) {
                 Label("Settings", systemImage: SystemImages.gearshapeFill.rawValue)
             }
             

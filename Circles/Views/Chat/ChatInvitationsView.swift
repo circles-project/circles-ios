@@ -10,6 +10,7 @@ import Matrix
 
 struct ChatInvitationsView: View {
     @ObservedObject var session: Matrix.Session
+    @ObservedObject var container: ContainerRoom<Matrix.ChatRoom>
     
     var body: some View {
         ScrollView {
@@ -20,7 +21,7 @@ struct ChatInvitationsView: View {
                 } else {
                     ForEach(invitations) { room in
                         let user = room.session.getUser(userId: room.sender)
-                        InvitedChatCard(room: room, user: user)
+                        InvitedChatCard(room: room, user: user, container: container)
                             .frame(maxWidth: 350)
 
                         Divider()
