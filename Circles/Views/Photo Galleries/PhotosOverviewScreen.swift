@@ -55,7 +55,6 @@ struct PhotosOverviewScreen: View {
                 GalleryInvitationsIndicator(session: container.session, container: container)
                 
                 List(selection: $selected) {
-                    
                     let myGalleries = container.rooms.values
                         .filter { $0.creator == container.session.creds.userId }
                         .sorted(by: {$0.timestamp > $1.timestamp }) // Reverse chronological ordering
@@ -175,8 +174,10 @@ struct PhotosOverviewScreen: View {
             switch(st) {
             case .create:
                 PhotoGalleryCreationSheet(container: container)
+                    .background(Color.greyCool200)
             case .scanQr:
                 ScanQrCodeAndKnockSheet(session: container.session)
+                    .background(Color.greyCool200)
             }
         }
         .confirmationDialog(Text("Confirm Leaving Gallery"),
@@ -195,11 +196,13 @@ struct PhotosOverviewScreen: View {
     var body: some View {
         NavigationSplitView {
             master
+                .background(Color.greyCool200)
         } detail: {
             if let roomId = selected,
                let room = container.rooms[roomId]
             {
                 PhotoGalleryView(room: room, container: container)
+                    .background(Color.greyCool200)
             } else {
                 Text("Create or select a photo gallery to view an album")
             }

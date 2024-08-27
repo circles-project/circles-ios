@@ -24,31 +24,23 @@ struct SignupScreen: View {
     @State var accountInfo = SignupAccountInfo()
     @State var showConfirmCancel = false
     
-    var cancelButton: some View {
-        Button(action: {
-            self.showConfirmCancel = true
-        }) {
-            Text("Cancel")
-                .padding(5)
-                .frame(width: 300.0, height: 40.0)
-                .foregroundColor(.red)
-                .cornerRadius(10)
-        }
-        .confirmationDialog(Text("Abort Signup?"),
-                            isPresented: $showConfirmCancel,
-                            actions: {
-            AsyncButton(role: .destructive, action: {
+    @Environment(\.presentationMode) var presentationMode
+    
+    private var backButton: some View {
+        Button(role: .destructive, action: {
+            Task {
                 try await self.store.disconnect()
-            }) {
-                Text("Abort Signup")
             }
-            
-            Button(role: .cancel, action: {
-                self.showConfirmCancel = false
-            }) {
-                Text("Continue Signup")
-            }
-        })
+            self.presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(SystemImages.iconFilledArrowBack.rawValue)
+                .padding(5)
+                .frame(width: 40.0, height: 40.0)
+        }
+        .background(Color.background)
+        .clipShape(Circle())
+        .padding(.leading, 21)
+        .padding(.top, 65)
     }
     
     var notConnectedView: some View {
@@ -66,17 +58,12 @@ struct SignupScreen: View {
     }
     
     var body: some View {
-        ScrollView {
+        ZStack {
+            Color.greyCool200
             VStack {
-                if !UIDevice.isPhoneSE {
-                    CirclesLogoView()
-                        .frame(minWidth: 50,
-                               idealWidth: 75,
-                               maxWidth: 100,
-                               minHeight: 50,
-                               idealHeight: 75,
-                               maxHeight: 100,
-                               alignment: .center)
+                HStack {
+                    backButton
+                    Spacer()
                 }
                 
                 switch session.state {
@@ -100,11 +87,8 @@ struct SignupScreen: View {
                 }
             }
         }
-        .safeAreaInset(edge: .bottom) {
-            cancelButton
-        }
+        .background(Color.greyCool200)
     }
-
 }
 
 /*

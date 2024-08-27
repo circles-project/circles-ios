@@ -17,6 +17,10 @@ public extension UIDevice {
         return modelName.contains("iPhone")
     }()
     
+    static let isPad: Bool = {
+        return modelName.contains("iPad")
+    }()
+    
     static let modelName: String = {
         var systemInfo = utsname()
         uname(&systemInfo)

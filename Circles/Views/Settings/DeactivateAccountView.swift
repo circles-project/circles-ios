@@ -15,12 +15,19 @@ struct DeactivateAccountView: View {
         
     var body: some View {
         ZStack {
+            Color.greyCool200
+            
             VStack {
                 VStack {
                     Label("Warning", systemImage: SystemImages.exclamationmarkTriangle.rawValue)
-                        .font(.title)
-                        .fontWeight(.bold)
+                        .font(
+                            CustomFonts.nunito24
+                                .bold()
+                        )
+                    
                     Text("Deactivating an account is permanent, and cannot be undone.")
+                        .padding(.horizontal, 24)
+                        .font(CustomFonts.nunito16)
                 }
                 .foregroundColor(.red)
                 
@@ -28,10 +35,14 @@ struct DeactivateAccountView: View {
                 
                 VStack {
                     Text("To permanently deactivate your account press button bellow and follow the instructions.")
+                        .padding(.horizontal, 24)
+                        .font(CustomFonts.nunito16)
+                    
                     Button(role: .destructive, action: {
                         showAlert = true
                     }) {
                         Label("Deactivate my account", systemImage: SystemImages.xmarkBin.rawValue)
+                            .font(CustomFonts.nunito16)
                     }
                     .buttonStyle(.bordered)
                 }

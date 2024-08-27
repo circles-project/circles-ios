@@ -120,7 +120,6 @@ struct GroupCreationSheet: View {
             .clipShape(RoundedRectangle(cornerRadius: 10))
             .frame(maxWidth: frameWidth, maxHeight: frameHeight)
             .overlay(alignment: .bottomTrailing) {
-                
                 PhotosPicker(selection: $selectedItem, matching: .images) {
                     Image(systemName: SystemImages.pencilCircleFill.rawValue)
                         .symbolRenderingMode(.multicolor)
@@ -128,7 +127,6 @@ struct GroupCreationSheet: View {
                         .foregroundColor(.accentColor)
                 }
                 .buttonStyle(.borderless)
-
             }
             .onChange(of: selectedItem) { newItem in
                 Task {
@@ -179,7 +177,6 @@ struct GroupCreationSheet: View {
         }
         .padding()
     }
-    
 }
 
 /*
