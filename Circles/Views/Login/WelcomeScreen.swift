@@ -253,6 +253,7 @@ struct DomainScreen: View {
 struct WelcomeScreen: View {
     var store: CirclesStore
     @State var showDomainPicker = false
+    @AppStorage("showDescriptionText") var showDescriptionText = false
     
     var body: some View {
         NavigationStack {
@@ -279,6 +280,19 @@ struct WelcomeScreen: View {
                     
                     Spacer()
                     
+                    HStack {
+                        Spacer()
+                        Button("About this app") {
+                            showDescriptionText = true
+                        }
+                        .font(
+                            CustomFonts.nunito16
+                                .weight(.bold)
+                        )
+                        .foregroundStyle(Color.white)
+                    }
+                    .padding(.horizontal, 24)
+                    
                     let buttonWidth = UIDevice.isPad ? 400 : UIScreen.main.bounds.width - 24 * 2
                     let buttonHeight: CGFloat = 48.0
                     let signUpButtonStyle = BigRoundedButtonStyle(width: buttonWidth,
@@ -286,7 +300,7 @@ struct WelcomeScreen: View {
                                                                   color: Color.accentColor)
                     
                     NavigationLink(destination: DomainScreen(store: store)) {
-                        Text("Sign Up for free")
+                        Text("Create an account")
                             .font(
                                 CustomFonts.nunito16
                                     .weight(.bold)
@@ -297,13 +311,13 @@ struct WelcomeScreen: View {
                         CustomFonts.nunito16
                             .weight(.bold)
                     )
-                                        
+                    
                     let signInButtonStyle = BigRoundedButtonStyle(width: buttonWidth,
                                                                   height: buttonHeight,
                                                                   color: .clear,
                                                                   borderWidth: 1)
                     NavigationLink(destination: LoginScreen(store: store, showDomainPicker: $showDomainPicker)) {
-                        Text("Sign In")
+                        Text("Log In")
                     }
                     .buttonStyle(signInButtonStyle)
                     .font(
@@ -314,6 +328,18 @@ struct WelcomeScreen: View {
                 }
             }
             .background(Color.clear)
+            .sheet(isPresented: $showDescriptionText) {
+                VStack {
+                    AppHelpView()
+
+                    Button(action: {self.showDescriptionText = false}) {
+                        Label("Got it", systemImage: "hand.thumbsup.fill")
+                            .padding()
+                    }
+                    .buttonStyle(BigRoundedButtonStyle())
+                    Spacer()
+                }
+            }
         }
     }
 }
