@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Matrix
+import MarkdownUI
 
 struct MessageBubble: View {
     @ObservedObject var message: Matrix.Message
@@ -30,7 +31,16 @@ struct MessageBubble: View {
                     let backgroundColor = fromMe ? Color.lightPurple900 : Color.greyCool500
                     let foregroundColor = fromMe ? Color.lightGreyCool100 : Color.greyCool1100
                     
-                    Text(content.body)
+                    //Markdown(MarkdownContent(content.body))
+                    //Text(content.body)
+                    MessageContentView(message: message)
+                        .markdownTextStyle(\.text) {
+                            FontFamily(.custom("Inter"))
+                            FontSize(14)
+                            FontWeight(.medium)
+                            ForegroundColor(foregroundColor)
+                            BackgroundColor(backgroundColor)
+                        }
                         .padding(.vertical, 6)
                         .padding(.horizontal, 10)
                         .background(backgroundColor)

@@ -21,6 +21,6 @@ struct TextContentView: View {
     var body: some View {
         Markdown(markdown)
             .textSelection(.enabled)
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(alignment: .leading)
     }
 }

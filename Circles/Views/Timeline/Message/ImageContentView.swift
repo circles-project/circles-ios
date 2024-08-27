@@ -32,10 +32,9 @@ struct ImageContentView: View {
                                 .font(Font.custom("Inter", size: 14))
 
                             
-                            Spacer()
+                            //Spacer()
                         }
                     }
-                    .background(Color.background)
                 }
                 //Spacer()
             } else {
