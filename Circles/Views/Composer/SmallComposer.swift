@@ -58,18 +58,37 @@ struct SmallViewModelComposer: View {
     }
     
     var body: some View {
-        HStack(spacing: 0) {
+        HStack(alignment: .bottom, spacing: 0) {
             
             attachmentButton
             
-            TextField(text: $viewModel.text) {
-                Text(prompt)
-            }
-            .textFieldStyle(.roundedBorder)
-            .submitLabel(.send)
-            .onSubmit {
-                Task {
-                    try await send()
+            VStack {
+                if let thumbnail = viewModel.messageState.thumbnail {
+                    BasicImage(uiImage: thumbnail)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .overlay(alignment: .topTrailing) {
+                            Button(action: {
+                                viewModel.selectedItem = nil
+                                viewModel.messageState = .text
+                            }) {
+                                Image(systemName: SystemImages.xCircleFill.rawValue)
+                                    .symbolRenderingMode(.multicolor)
+                                    .font(.system(size: 30))
+                                    .foregroundColor(.accentColor)
+                            }
+                        }
+                        .frame(maxHeight: 160)
+                }
+                
+                TextField(text: $viewModel.text) {
+                    Text(prompt)
+                }
+                .textFieldStyle(.roundedBorder)
+                .submitLabel(.send)
+                .onSubmit {
+                    Task {
+                        try await send()
+                    }
                 }
             }
             .padding(.horizontal, 6)
