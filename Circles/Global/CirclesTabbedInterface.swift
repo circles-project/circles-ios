@@ -55,10 +55,15 @@ struct CirclesTabbedInterface: View {
     }
     #endif
     
+    private var setNewScrollPosition: Int {
+        ScrollPositionSettings.shared.needToRestoreScrollPosition = true
+        
+        return 0
+    }
+    
     @ViewBuilder
     var tabview: some View {
         TabView(selection: $session.viewState.tab) {
-            
             CirclesOverviewScreen(container: self.session.timelines,
                                   selected: $session.viewState.selectedTimelineId)
                 .environmentObject(session)
@@ -73,7 +78,9 @@ struct CirclesTabbedInterface: View {
                     Text("Circles")
                 }
                 .tag(Tab.circles)
-   
+            
+            let _ = setNewScrollPosition
+            
             GroupsOverviewScreen(container: self.session.groups,
                                  selected: $session.viewState.selectedGroupId)
                 .environmentObject(session)

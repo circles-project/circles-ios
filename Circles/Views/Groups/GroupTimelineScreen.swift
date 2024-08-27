@@ -74,6 +74,12 @@ struct GroupTimelineScreen: View {
         Text(room.name ?? "(Unnamed Group)")
     }
     
+    private var setNewScrollPosition: Int {
+        ScrollPositionSettings.shared.needToRestoreScrollPosition = true
+        
+        return 0
+    }
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -91,12 +97,13 @@ struct GroupTimelineScreen: View {
                         RoomKnockIndicator(room: room)
                     }
                     
+                    let _ = setNewScrollPosition
+                    
                     timeline
                         .sheet(item: $sheetType) { st in
                             switch(st) {
                             case .invite:
                                 RoomInviteSheet(room: room, title: "Invite new members to \(room.name ?? "(unnamed group)")")
-                                
                             case .share:
                                 let url = URL(string: "https://\(CIRCLES_PRIMARY_DOMAIN)/group/\(room.roomId.stringValue)")
                                 RoomShareSheet(room: room, url: url)

@@ -78,6 +78,17 @@ struct TimelineView<V: MessageView>: View {
         }
     }
     
+    private func checkScrollPosition(_ scrollProxy: ScrollViewProxy) -> Int {
+        if ScrollPositionSettings.shared.needToRestoreScrollPosition {
+            Task {
+                scrollProxy.scrollTo("top", anchor: .top)
+                ScrollPositionSettings.shared.needToRestoreScrollPosition = false
+            }
+        }
+        
+        return 0
+    }
+    
     @ViewBuilder
     var body: some View {
         // Get all the top-level messages (ie not the replies etc)
@@ -89,10 +100,16 @@ struct TimelineView<V: MessageView>: View {
             message.timestamp < cutoff &&
             !message.room.session.ignoredUserIds.contains(message.sender.userId)
         }.sorted(by: {$0.timestamp > $1.timestamp})
-
+        
         ScrollViewReader { proxy in
             ScrollView {
                 LazyVStack(alignment: .center, spacing: 10) {
+                    Text("")
+                        .id("top")
+                        .padding()
+                        .frame(height: 1)
+                    
+                    let _ = checkScrollPosition(proxy)
                     
                     if let msg = room.localEchoMessage {
                         MessageCard(message: msg, isLocalEcho: true, isThreaded: false)
