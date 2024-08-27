@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PhotosUI
 import Matrix
 
 struct SmallComposer: View {
@@ -14,20 +15,24 @@ struct SmallComposer: View {
     var parent: Matrix.Message?
     var prompt: String
     
-    @State var newMessageText: String = ""
+    var body: some View {
+        let viewModel = ComposerViewModel(room: room, parent: parent)
+        SmallViewModelComposer(viewModel: viewModel, scroll: $scroll, prompt: prompt)
+    }
+}
+
+struct SmallViewModelComposer: View {
+    @ObservedObject var viewModel: ComposerViewModel
+    @Binding var scroll: EventId?
+    var prompt: String
+    @State private var showPicker = false
     
     func send() async throws -> EventId {
-        let eventId: EventId
-        if let parent = self.parent {
-            eventId = try await room.sendText(text: self.newMessageText,
-                                                  inReplyTo: parent)
-        } else {
-            eventId = try await room.sendText(text: self.newMessageText)
-        }
+        let eventId = try await self.viewModel.send()
         await MainActor.run {
             self.scroll = eventId
-            self.newMessageText = ""
         }
+        //await self.viewModel.reset()
         return eventId
     }
     
@@ -35,7 +40,7 @@ struct SmallComposer: View {
     var attachmentButton: some View {
         HStack(alignment: .center, spacing: 0) {
             Button(action: {
-                // Pick media to attach
+                self.showPicker = true
             }) {
                 Text("\(Image(systemName: SystemImages.paperclip.rawValue))")
                     .font(
@@ -44,7 +49,7 @@ struct SmallComposer: View {
                     )
                     .multilineTextAlignment(.center)
             }
-            .disabled(true)
+            .photosPicker(isPresented: $showPicker, selection: $viewModel.selectedItem)
         }
         .padding(.leading, 8)
         .padding(.trailing, 10)
@@ -57,7 +62,7 @@ struct SmallComposer: View {
             
             attachmentButton
             
-            TextField(text: $newMessageText) {
+            TextField(text: $viewModel.text) {
                 Text(prompt)
             }
             .textFieldStyle(.roundedBorder)
@@ -82,7 +87,7 @@ struct SmallComposer: View {
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: 40, alignment: .center)
             }
-            .disabled(newMessageText.isEmpty)
+            .disabled(viewModel.text.isEmpty)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
@@ -91,5 +96,6 @@ struct SmallComposer: View {
             Rectangle()
                 .inset(by: 0.5)
                 .stroke(Color.greyCool300, lineWidth: 1)
-        )    }
+        )
+    }
 }

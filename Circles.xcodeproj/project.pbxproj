@@ -114,6 +114,7 @@
 		A52ACB912A793B5A005D90C5 /* PeopleInvitationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52ACB902A793B5A005D90C5 /* PeopleInvitationsView.swift */; };
 		A52ACB932A7969F6005D90C5 /* GalleryInvitationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52ACB922A7969F6005D90C5 /* GalleryInvitationsView.swift */; };
 		A52ACB952A797FD3005D90C5 /* SignupFinishedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52ACB942A797FD3005D90C5 /* SignupFinishedView.swift */; };
+		A52ADBFF2C7E3C7400B058A5 /* ComposerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52ADBFE2C7E3C7400B058A5 /* ComposerViewModel.swift */; };
 		A52C77542A89CCB8005D2C0B /* MessageThumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52C77532A89CCB8005D2C0B /* MessageThumbnail.swift */; };
 		A52DF68129E59A81008860C3 /* RoomAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68029E59A81008860C3 /* RoomAvatarView.swift */; };
 		A52DF68329E59C32008860C3 /* StateEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52DF68229E59C32008860C3 /* StateEventView.swift */; };
@@ -391,6 +392,7 @@
 		A52ACB902A793B5A005D90C5 /* PeopleInvitationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleInvitationsView.swift; sourceTree = "<group>"; };
 		A52ACB922A7969F6005D90C5 /* GalleryInvitationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryInvitationsView.swift; sourceTree = "<group>"; };
 		A52ACB942A797FD3005D90C5 /* SignupFinishedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupFinishedView.swift; sourceTree = "<group>"; };
+		A52ADBFE2C7E3C7400B058A5 /* ComposerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposerViewModel.swift; sourceTree = "<group>"; };
 		A52C77532A89CCB8005D2C0B /* MessageThumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageThumbnail.swift; sourceTree = "<group>"; };
 		A52DF68029E59A81008860C3 /* RoomAvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomAvatarView.swift; sourceTree = "<group>"; };
 		A52DF68229E59C32008860C3 /* StateEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateEventView.swift; sourceTree = "<group>"; };
@@ -1088,6 +1090,7 @@
 				409F4384265DE2A400690A61 /* PostComposer.swift */,
 				40878FC92694DBC400A66EF0 /* PostComposerScreen.swift */,
 				A5175B542C6BAEBF00B5BA4C /* SmallComposer.swift */,
+				A52ADBFE2C7E3C7400B058A5 /* ComposerViewModel.swift */,
 			);
 			path = Composer;
 			sourceTree = "<group>";
@@ -1373,6 +1376,7 @@
 				A5582CE42C5418B700507D9D /* ChatSettingsView.swift in Sources */,
 				A5B74F422BC5F92900299D90 /* KnockOnRoomView.swift in Sources */,
 				A54A278C2A843C5F00858846 /* InvitedGroupCard.swift in Sources */,
+				A52ADBFF2C7E3C7400B058A5 /* ComposerViewModel.swift in Sources */,
 				A562C0962B165E5C00522FCB /* SubscriptionSettingsView.swift in Sources */,
 				40E4D88A268A76CF0055968A /* SignupScreen.swift in Sources */,
 				A562F9AB2B6AEDF90008D96A /* LegacyPasswordUiaForm.swift in Sources */,
