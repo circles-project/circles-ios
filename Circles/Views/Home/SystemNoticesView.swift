@@ -9,8 +9,10 @@
 import SwiftUI
 import Matrix
 
+/*
 struct SystemNoticesView: View {
     var session: CirclesApplicationSession
+    @State var scrollEventId: EventId?
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -40,6 +42,7 @@ struct SystemNoticesScreen: View {
         }
     }
 }
+ */
 
 /*
 struct SystemNoticesView_Previews: PreviewProvider {

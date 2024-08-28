@@ -16,17 +16,29 @@ struct UiaLoginScreen: View {
     var filter: Matrix.AuthFlowFilter
     
     @AppStorage("previousUserIds") var previousUserIds: [UserId] = []
-    
-    @State var password = ""
-    
     @State var flowErrorMessage: String?
+    @Environment(\.presentationMode) var presentationMode
     
+    private var backButton: some View {
+        Button(role: .destructive, action: {
+            Task {
+                try await self.store.disconnect()
+            }
+            self.presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(SystemImages.iconFilledArrowBack.rawValue)
+                .padding(5)
+                .frame(width: 40.0, height: 40.0)
+        }
+        .background(Color.background)
+        .clipShape(Circle())
+        .padding(.leading, 21)
+        .padding(.top, 65)
+    }
     
     @ViewBuilder
     var currentStatusView: some View {
-
         switch session.state {
-            
         case .notConnected:
             VStack(spacing: 50) {
                 ProgressView()
@@ -62,7 +74,6 @@ struct UiaLoginScreen: View {
                 }
             }
             .task {
-                
                 if let flow = uiaaState.flows.first(where: self.filter) {
                     await session.selectFlow(flow: flow)
                 } else {
@@ -100,24 +111,23 @@ struct UiaLoginScreen: View {
                 Spacer()
             }
         }
-  
     }
 
     var body: some View {
-        VStack {
-            Spacer()
-
-            currentStatusView
+        ZStack {
+            Color.greyCool200
+                .edgesIgnoringSafeArea(.all)
             
-            Spacer()
-            
-            AsyncButton(role: .destructive, action: {
-                //try await session.cancel()
-                try await store.disconnect()
-            }) {
-                Text("Cancel Login")
+            VStack {
+                HStack {
+                    backButton
+                    Spacer()
+                }
+                
+                Spacer()
+                
+                currentStatusView
             }
-            .buttonStyle(.bordered)
         }
     }
 }
