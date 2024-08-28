@@ -38,7 +38,6 @@ struct MessageCard: MessageView {
     @StateObject private var viewModel = MessageCardViewModel()
     var iCanReact: Bool
     @State var showMessageDeleteConfirmation = false
-    @AppStorage("mediaViewWidth") var mediaViewWidth: Double = 0
     
     let footerFont: Font = Font.custom("Inter", size: 14)
                                .weight(.medium)
@@ -244,43 +243,31 @@ struct MessageCard: MessageView {
     
     var body: some View {
         //linkWrapper
-        ZStack {
-            GeometryReader { geometry in
-                Color.clear
-                    .onAppear {
-                        if mediaViewWidth == 0 {
-                            mediaViewWidth = geometry.size.width
-                        }
-                        if UIDevice.isPhone {
-                            mediaViewWidth = UIScreen.main.bounds.width
-                        }
-                    }
+
+        mainCard
+            .contextMenu {
+                MessageContextMenu(message: message,
+                                   sheetType: $sheetType,
+                                   showMessageDeleteConfirmation: $showMessageDeleteConfirmation)
             }
-            mainCard
-                .contextMenu {
-                    MessageContextMenu(message: message,
-                                       sheetType: $sheetType,
-                                       showMessageDeleteConfirmation: $showMessageDeleteConfirmation)
+            .sheet(item: $sheetType) { st in
+                switch(st) {
+                case .emoji:
+                    EmojiPicker(message: message)
+                    
+                case .edit:
+                    PostComposer(room: message.room, editing: message)
+                    
+                case .reporting:
+                    MessageReportingSheet(message: message)
+                    
+                case .liked:
+                    LikedEmojiView(message: message, emojiUsersListModel: emojiUsersListModel)
                 }
-                .sheet(item: $sheetType) { st in
-                    switch(st) {
-                    case .emoji:
-                        EmojiPicker(message: message)
-                        
-                    case .edit:
-                        PostComposer(room: message.room, editing: message)
-                        
-                    case .reporting:
-                        MessageReportingSheet(message: message)
-                        
-                    case .liked:
-                        LikedEmojiView(message: message, emojiUsersListModel: emojiUsersListModel)
-                    }
-                }
-                .sheet(isPresented: $viewModel.showCommentsSheet) {
-                    CommentsView(room: message.room, parent: message)
-                        .presentationDetents([.medium, .large])
-                }
-        }
+            }
+            .sheet(isPresented: $viewModel.showCommentsSheet) {
+                CommentsView(room: message.room, parent: message)
+                    .presentationDetents([.medium, .large])
+            }
     }
 }

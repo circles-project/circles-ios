@@ -10,7 +10,6 @@ import Matrix
 
 struct MessageContentView: View {
     @ObservedObject var message: Matrix.Message
-    @AppStorage("mediaViewWidth") var mediaViewWidth: Double = 0
     
     var body: some View {
         VStack {
@@ -32,7 +31,6 @@ struct MessageContentView: View {
                     }
                     
                 case M_IMAGE:
-                    //let newWidth = isThreaded ? mediaViewWidth - 20 : mediaViewWidth
                     ImageContentView(message: current)
                     
                 case M_VIDEO:
