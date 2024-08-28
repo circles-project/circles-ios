@@ -11,6 +11,7 @@ import MarkdownUI
 
 struct MessageBubble: View {
     @ObservedObject var message: Matrix.Message
+    var alignment: HorizontalAlignment
     @State var sheetType: MessageSheetType? = nil
     @State var showConfirmDelete = false
     
@@ -31,44 +32,55 @@ struct MessageBubble: View {
                     let backgroundColor = fromMe ? Color.lightPurple900 : Color.greyCool500
                     let foregroundColor = fromMe ? Color.lightGreyCool100 : Color.greyCool1100
                     
-                    //Markdown(MarkdownContent(content.body))
-                    //Text(content.body)
-                    MessageContentView(message: message)
-                        .markdownTextStyle(\.text) {
-                            FontFamily(.custom("Inter"))
-                            FontSize(14)
-                            FontWeight(.medium)
-                            ForegroundColor(foregroundColor)
-                            BackgroundColor(backgroundColor)
+                    HStack {
+                        
+                        if self.alignment != .leading {
+                            Spacer()
                         }
-                        .padding(.vertical, 6)
-                        .padding(.horizontal, 10)
-                        .background(backgroundColor)
-                        .cornerRadius(10)
-                        .font(
-                            Font.custom("Inter", size: 14)
-                                .weight(.medium)
-                        )
-                        .foregroundColor(foregroundColor)
-                        .contextMenu {
-                            MessageContextMenu(message: message, showReactions: true, sheetType: $sheetType, showMessageDeleteConfirmation: $showConfirmDelete)
-                        }
-                        .sheet(item: $sheetType) { st in
-                            switch(st) {
-                            case .emoji:
-                                EmojiPicker(message: message)
-                                
-                            case .edit:
-                                PostComposer(room: message.room, editing: message)
-                                
-                            case .reporting:
-                                MessageReportingSheet(message: message)
-                                
-                            case .liked:
-                                //LikedEmojiView(message: message, emojiUsersListModel: emojiUsersListModel)
-                                Text("Coming soon") // FIXME
+                        
+                        //Markdown(MarkdownContent(content.body))
+                        //Text(content.body)
+                        MessageContentView(message: message, alignment: alignment)
+                            .markdownTextStyle(\.text) {
+                                FontFamily(.custom("Inter"))
+                                FontSize(14)
+                                FontWeight(.medium)
+                                ForegroundColor(foregroundColor)
+                                BackgroundColor(backgroundColor)
                             }
+                            .padding(.vertical, 6)
+                            .padding(.horizontal, 10)
+                            .background(backgroundColor)
+                            .cornerRadius(10)
+                            .font(
+                                Font.custom("Inter", size: 14)
+                                    .weight(.medium)
+                            )
+                            .foregroundColor(foregroundColor)
+                            .contextMenu {
+                                MessageContextMenu(message: message, showReactions: true, sheetType: $sheetType, showMessageDeleteConfirmation: $showConfirmDelete)
+                            }
+                            .sheet(item: $sheetType) { st in
+                                switch(st) {
+                                case .emoji:
+                                    EmojiPicker(message: message)
+                                    
+                                case .edit:
+                                    PostComposer(room: message.room, editing: message)
+                                    
+                                case .reporting:
+                                    MessageReportingSheet(message: message)
+                                    
+                                case .liked:
+                                    //LikedEmojiView(message: message, emojiUsersListModel: emojiUsersListModel)
+                                    Text("Coming soon") // FIXME
+                                }
+                            }
+                        
+                        if self.alignment != .trailing {
+                            Spacer()
                         }
+                    }
                 } else {
                     Text("Error: Failed to decode message")
                         .foregroundColor(.red)

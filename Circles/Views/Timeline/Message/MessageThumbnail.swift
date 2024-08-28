@@ -27,16 +27,9 @@ struct MessageThumbnail: View {
     }
 }
 
-struct MediaSize {
-    let height: Double
-    let width: Double
-    let maxMediaHeight: Double
-}
-
 struct MessageMediaThumbnail: View {
     @ObservedObject var message: Matrix.Message
-    @State var size = CGSize(width: 0.90 * UIScreen.main.bounds.width,
-                             height: 0.55 * UIScreen.main.bounds.height)
+    let maxHeight = 0.55 * UIScreen.main.bounds.height
 
     var thumbnail: Image {
         Image(uiImage: message.thumbnail ?? UIImage())
@@ -45,6 +38,7 @@ struct MessageMediaThumbnail: View {
     
     var body: some View {
         ZStack {
+            /*
             GeometryReader { geometry in
                 Color.clear
                     .onAppear {
@@ -52,13 +46,15 @@ struct MessageMediaThumbnail: View {
                         size.height = max(size.height, geometry.size.height)
                     }
             }
+            */
 
             thumbnail
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .foregroundColor(.gray)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
-                .frame(maxWidth: size.width, maxHeight: size.height)
+                .frame(maxHeight: maxHeight)
+                .border(Color.red)
 
         }
     }

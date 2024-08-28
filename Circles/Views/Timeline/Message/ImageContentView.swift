@@ -11,35 +11,42 @@ import MarkdownUI
 
 struct ImageContentView: View {
     @ObservedObject var message: Matrix.Message
+    var alignment: HorizontalAlignment
     //var width: CGFloat
     
     var body: some View {
-        HStack {
-            if let imageContent = message.content as? Matrix.mImageContent {
-                //Spacer()
-                VStack(alignment: .center) {
-                    HStack {
-                        Spacer()
-                        MessageMediaThumbnail(message: message)
+        if let imageContent = message.content as? Matrix.mImageContent {
+            //Spacer()
+            
+            VStack(alignment: alignment) {
+
+                HStack {
+                    if alignment == .center {
                         Spacer()
                     }
                     
+                    MessageMediaThumbnail(message: message)
+                    
+                    if alignment == .center {
+                        Spacer()
+                    }
+                }
+                
+                if let caption = imageContent.caption {
                     HStack {
-                        if let caption = imageContent.caption {
-                            let markdown = MarkdownContent(caption)
-                            Markdown(markdown)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .font(Font.custom("Inter", size: 14))
-
-                            
-                            //Spacer()
+                        let markdown = MarkdownContent(caption)
+                        Markdown(markdown)
+                        
+                        if alignment == .center {
+                            Spacer()
                         }
                     }
                 }
-                //Spacer()
-            } else {
-                EmptyView()
+
             }
+            //Spacer()
+        } else {
+            EmptyView()
         }
     }
 }

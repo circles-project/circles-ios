@@ -11,16 +11,10 @@ import MarkdownUI
 
 struct TextContentView: View {
     var text: String
-    var markdown: MarkdownContent
-    
-    init(_ text: String) {
-        self.text = text
-        self.markdown = MarkdownContent(text)
-    }
-    
+
     var body: some View {
+        let markdown = MarkdownContent(text)
         Markdown(markdown)
             .textSelection(.enabled)
-            .frame(alignment: .leading)
     }
 }

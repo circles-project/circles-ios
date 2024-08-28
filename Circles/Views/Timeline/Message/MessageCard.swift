@@ -205,8 +205,14 @@ struct MessageCard: MessageView {
                     .font(.caption)
             }
 
-            MessageContentView(message: message)
-                .padding(.bottom, 10)
+            HStack(alignment: .center, spacing: 0) {
+                Spacer()
+                
+                MessageContentView(message: message, alignment: .center)
+                    .padding(.bottom, 10)
+                
+                Spacer()
+            }
             
             if DebugModel.shared.debugMode {
                 details

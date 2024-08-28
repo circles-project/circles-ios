@@ -106,7 +106,7 @@ struct SmallViewModelComposer: View {
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: 40, alignment: .center)
             }
-            .disabled(viewModel.text.isEmpty)
+            .disabled(viewModel.messageState.isText && viewModel.text.isEmpty)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)

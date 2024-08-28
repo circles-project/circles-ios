@@ -10,9 +10,10 @@ import Matrix
 
 struct MessageContentView: View {
     @ObservedObject var message: Matrix.Message
+    var alignment: HorizontalAlignment = .center
     
     var body: some View {
-        VStack {
+        VStack(alignment: alignment) {
             // If the message has been edited/replaced, then we should show the new content
             // Otherwise we should show the original content
             let current = message.replacement ?? message
@@ -21,17 +22,24 @@ struct MessageContentView: View {
                 switch(content.msgtype) {
                 case M_TEXT:
                     if let textContent = content as? Matrix.mTextContent {
-                        TextContentView(textContent.body)
-                            .font(Font.custom("Inter", size: 14))
-                            .padding(.horizontal, 3)
-                            .padding(.vertical, 5)
+                        HStack {
+                            TextContentView(text: textContent.body)
+                                .font(Font.custom("Inter", size: 14))
+                                .padding(.horizontal, 3)
+                                .padding(.vertical, 5)
+                            
+                            // Even if we're centered overall, we still want our text to be left-justified
+                            if alignment == .center {
+                                Spacer()
+                            }
+                        }
                     }
                     else {
                         EmptyView()
                     }
                     
                 case M_IMAGE:
-                    ImageContentView(message: current)
+                    ImageContentView(message: current, alignment: alignment)
                     
                 case M_VIDEO:
                     VideoContentView(message: current)
@@ -42,7 +50,7 @@ struct MessageContentView: View {
                         let pollText = "Poll: \(pollContent.message)\n\n"
                         let answersText = pollContent.start.answers.enumerated().map { "\t\($0): \($1.answer.body)\n" }.joined()
                                                 
-                        TextContentView(pollText + answersText)
+                        TextContentView(text: pollText + answersText)
                             .padding(.horizontal, 3)
                             .padding(.vertical, 5)
                     }
@@ -57,12 +65,12 @@ struct MessageContentView: View {
                        let vote = poll.start.answers.filter({ $0.id == pollContent.selections.first }).first {
 
                         if poll.start.kind == PollStartContent.PollStart.Kind.open {
-                            TextContentView("Voted for \(vote.answer.body)")
+                            TextContentView(text: "Voted for \(vote.answer.body)")
                                 .padding(.horizontal, 3)
                                 .padding(.vertical, 5)
                         }
                         else {
-                            TextContentView("Voted")
+                            TextContentView(text: "Voted")
                                 .padding(.horizontal, 3)
                                 .padding(.vertical, 5)
                         }
@@ -73,7 +81,7 @@ struct MessageContentView: View {
                 
                 case ORG_MATRIX_MSC3381_POLL_END:
                     if let pollContent = current.event.content as? PollEndContent {
-                        TextContentView(pollContent.text)
+                        TextContentView(text: pollContent.text)
                             .padding(.horizontal, 3)
                             .padding(.vertical, 5)
                     }
@@ -121,6 +129,7 @@ struct MessageContentView: View {
                     .foregroundColor(.red)
             }
         }
+        .border(Color.blue)
     }
 }
 
