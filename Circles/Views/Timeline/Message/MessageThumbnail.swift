@@ -35,7 +35,7 @@ struct MediaSize {
 
 struct MessageMediaThumbnail: View {
     @ObservedObject var message: Matrix.Message
-    @State var size = CGSize(width: 0.60 * UIScreen.main.bounds.width,
+    @State var size = CGSize(width: 0.90 * UIScreen.main.bounds.width,
                              height: 0.55 * UIScreen.main.bounds.height)
 
     var thumbnail: Image {
@@ -56,10 +56,10 @@ struct MessageMediaThumbnail: View {
             thumbnail
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(maxWidth: size.width, maxHeight: size.height)
                 .foregroundColor(.gray)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
-            
+                .frame(maxWidth: size.width, maxHeight: size.height)
+
         }
     }
 }
