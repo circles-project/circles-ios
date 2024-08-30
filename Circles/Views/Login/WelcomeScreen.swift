@@ -66,7 +66,7 @@ struct WelcomeScreen: View {
                        maxHeight: 300,
                        alignment: .center)
             
-            Text("FUTO Circles")
+            Text("Circles")
                 .font(.largeTitle)
                 .fontWeight(.bold)
             /*
