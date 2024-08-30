@@ -25,6 +25,7 @@ struct SettingsScreen: View {
     @State var showConfirmLogout = false
     @State var showConfirmSwitch = false
     @State var showChangelog = false
+    @State var showServerShutdownNotice = false
     
     init(store: CirclesStore, session: CirclesApplicationSession) {
         self.store = store
@@ -67,6 +68,27 @@ struct SettingsScreen: View {
                 }
                 
                 Section("About") {
+                    
+                    let userId = user.userId
+                    if userId.domain.hasSuffix("circles.futo.org") || userId.domain.hasSuffix("circu.li") || userId.domain.hasSuffix("circles-dev.net") {
+                        Button(action: {
+                            self.showServerShutdownNotice = true
+                        }) {
+                            Label("Server shutdown notice", systemImage: "exclamationmark.triangle")
+                                .foregroundColor(.red)
+                        }
+                        .alert(
+                            Text("Notice: Server Shutdown"),
+                            isPresented: $showServerShutdownNotice,
+                            actions: {
+                                Button("OK") { }
+                            },
+                            message: {
+                                Text("The FUTO servers for Circles will be ceasing operation on Dec 31, 2024. To continue using the app, you will need to create a new account on a different server such as matrix.org. We apologize for the inconvenience.")
+                            }
+                        )
+                    }
+                    
                     let version = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as? String ?? "???"
                     Label("Version", systemImage: "123.rectangle.fill")
                         .badge(version)

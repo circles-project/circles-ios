@@ -109,6 +109,7 @@ let CIRCLES_COLORS = [
 ]
 
 let DEFAULTS_KEY_ENABLE_GALLERIES = "enable_photo_galleries"
+let DEFAULTS_KEY_FUTO_SERVERS_REMINDER_TIMESTAMP = "futoServersReminderTimestamp"
 
 enum SystemImages: String {
     // MARK: - Multiply times
