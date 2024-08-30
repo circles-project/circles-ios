@@ -37,26 +37,13 @@ struct MessageMediaThumbnail: View {
     
     
     var body: some View {
-        ZStack {
-            /*
-            GeometryReader { geometry in
-                Color.clear
-                    .onAppear {
-                        size.width = max(size.width, geometry.size.width)
-                        size.height = max(size.height, geometry.size.height)
-                    }
-            }
-            */
-
-            thumbnail
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .foregroundColor(.gray)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .frame(maxHeight: maxHeight)
-                .border(Color.red)
-
-        }
+        thumbnail
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .foregroundColor(.gray)
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+            .frame(maxHeight: maxHeight)
+            //.border(Color.red)
     }
 }
 

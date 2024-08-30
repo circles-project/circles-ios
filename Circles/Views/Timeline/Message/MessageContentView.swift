@@ -129,7 +129,7 @@ struct MessageContentView: View {
                     .foregroundColor(.red)
             }
         }
-        .border(Color.blue)
+        //.border(Color.blue)
     }
 }
 
