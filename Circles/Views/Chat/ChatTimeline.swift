@@ -99,7 +99,7 @@ struct ChatTimeline: View {
                     ChatMessageBurstView(burst: burst)
                 }
                 
-                //Spacer()
+                Spacer()
                 
                 /*
                 HStack {
