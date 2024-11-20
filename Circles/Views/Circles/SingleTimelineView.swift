@@ -52,7 +52,7 @@ struct SingleTimelineView: View {
     
     @ViewBuilder
     var timeline: some View {
-        TimelineView<MessageCard>(room: room)
+        TimelineView(room: room)
     }
     
     var body: some View {

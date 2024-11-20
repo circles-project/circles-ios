@@ -150,6 +150,60 @@ extension Color {
         light: Color(red: 0.10, green: 0.11, blue: 0.12),
         dark: Color(red: 0.91, green: 0.91, blue: 0.92)
     )
+    
+    static let purple100 = Color(
+        light: Color(red: 0.98, green: 0.97, blue: 1.00),
+        dark: Color(red: 0.04, green: 0.02, blue: 0.01)
+    )
+    static let purple200 = Color(
+        light: Color(red: 0.95, green: 0.93, blue: 1.00),
+        dark: Color(red: 0.09, green: 0.04, blue: 0.22)
+    )
+    static let purple300 = Color(
+        light: Color(red: 0.93, green: 0.91, blue: 1.00),
+        dark: Color(red: 0.11, green: 0.05, blue: 0.28)
+    )
+    static let purple400 = Color(
+        light: Color(red: 0.91, green: 0.87, blue: 1.00),
+        dark: Color(red: 0.15, green: 0.06, blue: 0.36)
+    )
+    static let purple500 = Color(
+        light: Color(red: 0.81, green: 0.74, blue: 1.00),
+        dark: Color(red: 0.23, green: 0.09, blue: 0.57)
+    )
+    static let purple600 = Color(
+        light: Color(red: 0.72, green: 0.60, blue: 1.00),
+        dark: Color(red: 0.31, green: 0.12, blue: 0.76)
+    )
+    static let purple700 = Color(
+        light: Color(red: 0.63, green: 0.47, blue: 1.00),
+        dark: Color(red: 0.39, green: 0.16, blue: 0.96)
+    )
+    static let purple800 = Color(
+        light: Color(red: 0.52, green: 0.33, blue: 1.00),
+        dark: Color(red: 0.51, green: 0.31, blue: 1.00)
+    )
+    static let purple900 = Color(
+        light: Color(red: 0.40, green: 0.16, blue: 0.98),
+        dark: Color(red: 0.62, green: 0.46, blue: 1.00)
+    )
+    static let purple1000 = Color(
+        light: Color(red: 0.30, green: 0.12, blue: 0.75),
+        dark: Color(red: 0.73, green: 0.61, blue: 1.00)
+    )
+    static let purple1100 = Color(
+        light: Color(red: 0.21, green: 0.08, blue: 0.51),
+        dark: Color(red: 0.84, green: 0.77, blue: 1.00)
+    )
+    static let purple1200 = Color(
+        light: Color(red: 0.12, green: 0.05, blue: 0.30),
+        dark: Color(red: 0.93, green: 0.90, blue: 1.00)
+    )
+    
+    static let lightPurple900 = Color(red: 0.40, green: 0.16, blue: 0.98)
+    static let lightPurple1000 = Color(red: 0.30, green: 0.12, blue: 0.75)
+    static let lightPurple1100 = Color(red: 0.21, green: 0.08, blue: 0.51)
+    static let lightGreyCool100 = Color(red: 0.97, green: 0.97, blue: 0.98)
 
     init(hex: String) {
         let scanner = Scanner(string: hex)

@@ -108,3 +108,4 @@ let CIRCLES_COLORS = [
 ]
 
 let DEFAULTS_KEY_ENABLE_GALLERIES = "enable_photo_galleries"
+

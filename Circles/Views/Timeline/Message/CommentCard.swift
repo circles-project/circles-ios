@@ -31,7 +31,7 @@ struct CommentCard: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
             case M_IMAGE:
-                ImageContentView(message: latest, mediaViewWidth: width)
+                ImageContentView(message: latest, alignment: .leading)
             case M_VIDEO:
                 VideoContentView(message: latest)
             case M_ROOM_ENCRYPTED:

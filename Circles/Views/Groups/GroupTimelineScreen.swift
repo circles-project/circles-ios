@@ -42,7 +42,7 @@ struct GroupTimelineScreen: View {
     @State var viewModel = TimelineViewModel()
     
     var timeline: some View {
-        TimelineView<MessageCard>(room: room)
+        TimelineView(room: room)
     }
     
     var toolbarMenu: some View {

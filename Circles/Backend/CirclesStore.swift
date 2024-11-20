@@ -202,8 +202,12 @@ public class CirclesStore: ObservableObject {
         logger.debug("Adding root space as the parent of Timelines space")
         try await matrix.addSpaceParent(old.root, to: newTimelineSpaceId, canonical: true)
         
+        logger.debug("Creating new space for Chat/Messages")
+        let chats = try await matrix.createSpace(name: "Messages")
+        
         logger.debug("Upgrade success!")
         return CirclesConfigContentV2(root: old.root,
+                                      chats: chats,
                                       groups: old.groups,
                                       galleries: old.galleries,
                                       people: old.people,
@@ -540,10 +544,15 @@ public class CirclesStore: ObservableObject {
         // Don't add the parent event to the profile space, because we will share that one with others and we don't need them to know our private room id for the top-level space
         // It's not a big deal but this is probably safer...  otherwise the user might somehow be tricked into accepting a knock for the top-level space
         
+        try await Task.sleep(for: .milliseconds(sleepMS))
+        let myChats = try await matrix.createSpace(name: "Messages")
+        logger.debug("Created Messages space \(myChats)")
+        onProgress?(7, total, "Creating Matrix spaces")
+        
         logger.debug("- Uploading Circles config to account data")
         onProgress?(8, total, "Saving configuration")
         try await Task.sleep(for: .milliseconds(sleepMS))
-        let config = CirclesConfigContentV2(root: topLevelSpace, groups: myGroups, galleries: myGalleries, people: myPeople, profile: myProfile, timelines: timelines)
+        let config = CirclesConfigContentV2(root: topLevelSpace, chats: myChats, groups: myGroups, galleries: myGalleries, people: myPeople, profile: myProfile, timelines: timelines)
         try await matrix.putAccountData(config, for: EVENT_TYPE_CIRCLES_CONFIG_V2)
         
         var count = 9

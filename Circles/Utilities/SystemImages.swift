@@ -52,6 +52,7 @@ enum SystemImages: String {
     
     // MARK: - Once
     case acceptedCircle = "acceptedCircle"
+    case bubble = "bubble"
     case bubbleLeftAndBubbleRightFill = "bubble.left.and.bubble.right.fill"
     case bubbleRight = "bubble.right"
     case circle = "circle"
