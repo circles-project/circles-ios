@@ -195,6 +195,7 @@ struct AcknowledgementsView: View {
             VStack(spacing: 10) {
 
                 VStack(alignment: .leading) {
+                    Text("Copyright 2024-2025 The Circles Project developers")
                     Text("Copyright 2022-2024 FUTO Holdings Inc")
                 }
                 
@@ -228,7 +229,7 @@ struct AcknowledgementsView: View {
             }
             .padding()
         }
-        .navigationTitle(Text("FUTO Circles"))
+        .navigationTitle(Text("Circles"))
     }
 }
 
