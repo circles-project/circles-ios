@@ -1753,7 +1753,7 @@
 		};
 		A5D2A3EA29BA643C00428C45 /* XCRemoteSwiftPackageReference "matrix.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://gitlab.futo.org/circles/matrix.swift.git";
+			repositoryURL = "https://github.com/circles-project/matrix.swift.git";
 			requirement = {
 				branch = main;
 				kind = branch;
