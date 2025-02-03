@@ -1,3 +1,9 @@
+# v1.0.7
+* New app icon
+* Remove FUTO branding
+* Add notice that FUTO servers will be closing down
+* Fix crash when downgrading from Circles 1.1.x
+
 # v1.0.6
 * Improved email address management
 * Show the composer in a modal "sheet" instead of in the main navigation stack
