@@ -284,24 +284,28 @@ struct WelcomeScreen: View {
                     let signUpButtonStyle = BigRoundedButtonStyle(width: buttonWidth,
                                                                   height: buttonHeight,
                                                                   color: Color.accentColor)
-                    
-                    NavigationLink(destination: DomainScreen(store: store)) {
-                        Text("Sign Up for free")
-                            .font(
-                                CustomFonts.nunito16
-                                    .weight(.bold)
-                            )
+                    let ENABLE_SIGNUP = false
+                    if ENABLE_SIGNUP {
+                        NavigationLink(destination: DomainScreen(store: store)) {
+                            Text("Sign Up for free")
+                                .font(
+                                    CustomFonts.nunito16
+                                        .weight(.bold)
+                                )
+                        }
+                        .buttonStyle(signUpButtonStyle)
+                        .font(
+                            CustomFonts.nunito16
+                                .weight(.bold)
+                        )
                     }
-                    .buttonStyle(signUpButtonStyle)
-                    .font(
-                        CustomFonts.nunito16
-                            .weight(.bold)
-                    )
                                         
-                    let signInButtonStyle = BigRoundedButtonStyle(width: buttonWidth,
+                    let signInButtonStyle = ENABLE_SIGNUP ? BigRoundedButtonStyle(width: buttonWidth,
                                                                   height: buttonHeight,
                                                                   color: .clear,
                                                                   borderWidth: 1)
+                                                            : signUpButtonStyle
+                    
                     NavigationLink(destination: LoginScreen(store: store, showDomainPicker: $showDomainPicker)) {
                         Text("Sign In")
                     }
