@@ -141,28 +141,6 @@ struct CirclesTabbedInterface: View {
                     }
             }
         )
-        .onAppear {
-            let reminderTimestamp = UserDefaults.standard.double(forKey: DEFAULTS_KEY_FUTO_SERVERS_REMINDER_TIMESTAMP) ?? 0.0
-            let lastReminderDate = Date(timeIntervalSince1970: reminderTimestamp)
-            let userId = session.matrix.creds.userId
-            if userId.domain.hasSuffix("circles.futo.org") || userId.domain.hasSuffix("circu.li") || userId.domain.hasSuffix("circles-dev.net"),
-                lastReminderDate.timeIntervalSinceNow.magnitude > 7 * 24 * 60 * 60
-            {
-                showFutoServersReminder = true
-            }
-        }
-        .alert(
-            Text("Notice: Server Shutdown"),
-            isPresented: $showFutoServersReminder,
-            actions: {
-                Button("Remind me in 1 week") {
-                    UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: DEFAULTS_KEY_FUTO_SERVERS_REMINDER_TIMESTAMP)
-                }
-            },
-            message: {
-                Text("The FUTO servers for Circles will be ceasing operation on Dec 31, 2024. To continue using the app, you will need to create a new account on a different server such as matrix.org. We apologize for the inconvenience.")
-            }
-        )
     }
 
     var body: some View {
