@@ -11,6 +11,8 @@ import Matrix
 
 struct TimelineView<V: MessageView>: View {
     @ObservedObject var room: Matrix.Room
+    @EnvironmentObject var viewModel: TimelineViewModel
+
     @State var debug = false
     @State var loading = false
     @State var selectedMessage: Matrix.Message?
@@ -87,15 +89,16 @@ struct TimelineView<V: MessageView>: View {
             message.timestamp < cutoff &&
             !message.room.session.ignoredUserIds.contains(message.sender.userId)
         }.sorted(by: {$0.timestamp > $1.timestamp})
+
+        ScrollViewReader { proxy in
             ScrollView {
-                LazyVStack(alignment: .center, spacing: 5) {
-                    //let messages = room.messages.sorted(by: {$0.timestamp > $1.timestamp})
+                LazyVStack(alignment: .center, spacing: 10) {
                     
                     if let msg = room.localEchoMessage {
-                        V(message: msg, isLocalEcho: true, isThreaded: false)
-                            .border(Color.red)
-                            .padding([.top, .leading, .trailing], 3)
+                        MessageCard(message: msg, isLocalEcho: true, isThreaded: false)
+                        //.border(Color.red)
                             .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
+                            .id(msg.eventId)
                     }
                     
                     ForEach(messages) { message in
@@ -103,56 +106,60 @@ struct TimelineView<V: MessageView>: View {
                             message.type == M_ROOM_ENCRYPTED ||
                             message.type == ORG_MATRIX_MSC3381_POLL_START {
                             
-                            VStack(alignment: .leading) {
-                                V(message: message, isLocalEcho: false, isThreaded: false)
-                                    .padding(.top, 5)
-
-                                RepliesView(room: room, parent: message)
-                            }
-                            .onAppear {
-                                message.loadReactions()
-                            }
+                            MessageCard(message: message, isLocalEcho: false, isThreaded: false)
+                                .id(message.eventId)
+                                .onAppear {
+                                    message.loadReactions()
+                                }
                         } else if DebugModel.shared.debugMode && message.stateKey != nil {
                             StateEventView(message: message)
+                                .id(message.eventId)
                         }
                     }
-                    .padding([.leading, .trailing], 3)
-                    .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
-
+                    
                     Spacer()
+                    
+                    footer
+                }
+                .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
+                .padding(.horizontal, 12)
                 
-                footer
             }
-        }
-        .refreshable {
-            print("REFRESH\tGetting latest messages for room \(room.name ?? room.roomId.stringValue)")
-            if let moreMessages: RoomMessagesResponseBody = try? await room.getMessages(forward: true) {
-                print("REFRESH\tGot \(moreMessages.chunk.count) more messages from server")
+            .onChange(of: viewModel.scrollPosition) { eventId in
+                proxy.scrollTo(eventId)
             }
-            
-            print("REFRESH\tUpdating room state")
-            room.updateAvatarImage()
-            
-            print("REFRESH\tSleeping to let network requests come in")
-            try? await Task.sleep(for: .seconds(1))
-            
-            print("REFRESH\tUpdating un-decrypted messages")
-            var count = 0
-            for message in room.timeline.values {
-                if message.type == M_ROOM_ENCRYPTED {
-                    do {
-                        try await message.decrypt()
-                        count += 1
-                    } catch {
-                        print("Failed to decrypt message \(message.eventId) in room \(room.roomId)")
+            .padding(0)
+            .background(Color.greyCool200)
+            .refreshable {
+                print("REFRESH\tGetting latest messages for room \(room.name ?? room.roomId.stringValue)")
+                if let moreMessages: RoomMessagesResponseBody = try? await room.getMessages(forward: true) {
+                    print("REFRESH\tGot \(moreMessages.chunk.count) more messages from server")
+                }
+                
+                print("REFRESH\tUpdating room state")
+                room.updateAvatarImage()
+                
+                print("REFRESH\tSleeping to let network requests come in")
+                try? await Task.sleep(for: .seconds(1))
+                
+                print("REFRESH\tUpdating un-decrypted messages")
+                var count = 0
+                for message in room.timeline.values {
+                    if message.type == M_ROOM_ENCRYPTED {
+                        do {
+                            try await message.decrypt()
+                            count += 1
+                        } catch {
+                            print("Failed to decrypt message \(message.eventId) in room \(room.roomId)")
+                        }
                     }
                 }
-            }
-            print("REFRESH\tDecrypted \(count) messages in room \(room.roomId)")
-            
-            print("REFRESH\tSending Combine update")
-            await MainActor.run {
-                room.objectWillChange.send()
+                print("REFRESH\tDecrypted \(count) messages in room \(room.roomId)")
+                
+                print("REFRESH\tSending Combine update")
+                await MainActor.run {
+                    room.objectWillChange.send()
+                }
             }
         }
     }

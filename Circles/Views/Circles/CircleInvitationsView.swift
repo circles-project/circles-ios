@@ -11,7 +11,7 @@ import Matrix
 struct CircleInvitationsView: View {
     //@Binding var invitations: [Matrix.InvitedRoom]
     @ObservedObject var session: Matrix.Session
-    var container: ContainerRoom<CircleSpace>
+    var container: ContainerRoom<Matrix.Room>
     
     var body: some View {
         ScrollView {

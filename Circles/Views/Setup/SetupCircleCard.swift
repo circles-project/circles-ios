@@ -45,9 +45,12 @@ struct SetupCircleCard: View {
 
                 VStack(alignment: .leading) {
                     Text(info.name)
-                        .font(.title)
-                        .fontWeight(.bold)
+                        .font(
+                            CustomFonts.nunito24
+                                .weight(.heavy)
+                        )
                     Text(self.user.displayName ?? "")
+                        .font(CustomFonts.nunito16)
                 }
                 .padding(.leading)
             }

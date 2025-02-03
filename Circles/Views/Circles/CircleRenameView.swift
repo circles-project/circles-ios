@@ -9,7 +9,7 @@ import SwiftUI
 import Matrix
 
 struct CircleRenameView: View {
-    @ObservedObject var space: CircleSpace
+    @ObservedObject var room: Matrix.Room
     @Environment(\.presentationMode) var presentation
 
     @State var newName: String
@@ -19,9 +19,9 @@ struct CircleRenameView: View {
     }
     @FocusState var focus: FocusField?
     
-    init(space: CircleSpace) {
-        self.space = space
-        self._newName = State(wrappedValue: space.name ?? "")
+    init(room: Matrix.Room) {
+        self.room = room
+        self._newName = State(wrappedValue: room.name ?? "")
     }
     
     var body: some View {
@@ -29,7 +29,7 @@ struct CircleRenameView: View {
             Spacer()
 
             HStack {
-                TextField(space.name ?? "", text: $newName, prompt: Text("New name"))
+                TextField(room.name ?? "", text: $newName, prompt: Text("New name"))
                     .textFieldStyle(.roundedBorder)
                     .textInputAutocapitalization(.words)
                     .focused($focus, equals: .circleName)
@@ -46,8 +46,7 @@ struct CircleRenameView: View {
             }
             
             AsyncButton(action: {
-                try await space.setName(newName: newName)
-                try await space.wall?.setName(newName: newName)
+                try await room.setName(newName: newName)
                 self.presentation.wrappedValue.dismiss()
             }) {
                 Text("Update")
@@ -55,6 +54,6 @@ struct CircleRenameView: View {
             
             Spacer()
         }
-        .navigationTitle("Rename \(space.name ?? space.wall?.name ?? "")")
+        .navigationTitle("Rename \(room.name ?? "circle")")
     }
 }

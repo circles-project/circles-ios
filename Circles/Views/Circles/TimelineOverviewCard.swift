@@ -7,15 +7,17 @@
 //
 
 import SwiftUI
+import Matrix
 
-
-struct CircleOverviewCard: View {
-    @ObservedObject var space: CircleSpace
+struct TimelineOverviewCard: View {
+    @ObservedObject var room: Matrix.Room
+    @ObservedObject var user: Matrix.User
 
     var formatter: RelativeDateTimeFormatter
     
-    init(space: CircleSpace) {
-        self.space = space
+    init(room: Matrix.Room, user: Matrix.User) {
+        self.room = room
+        self.user = user
         self.formatter = RelativeDateTimeFormatter()
         self.formatter.dateTimeStyle = .named
     }
@@ -24,12 +26,13 @@ struct CircleOverviewCard: View {
         VStack(alignment: .leading) {
             HStack(alignment: .center) {
                 //CircleAvatar(space: space)
-                RoomAvatarView(room: space.wall ?? space, avatarText: .oneLetter)
-                    .frame(width: 80, height: 80)
+                RoomAvatarView(room: room, avatarText: .oneLetter)
+                    .clipShape(Circle())
+                    .frame(width: 60, height: 60)
                 
                 VStack(alignment: .leading) {
                     HStack {
-                        Text(space.name ?? "(unnamed circle)")
+                        Text("\(user.displayName ?? user.userId.username) - \(room.name ?? "(unnamed circle)")")
                             .lineLimit(2)
                             .multilineTextAlignment(.leading)
                             .font(.title3)
@@ -38,32 +41,29 @@ struct CircleOverviewCard: View {
                             .minimumScaleFactor(0.8)
                         Spacer()
                     }
+
                     
                     VStack(alignment: .leading) {
-                        
-                        Text("Following \(space.following.count)")
-                        
-                        Text("Followed by \(space.followers.count)")
+                                                
+                        Text("\(room.joinedMembers.count-1) followers")
 
-                        if space.unread > 0 {
-                            Text("\(space.unread) unread posts")
+                        if room.unread > 0 {
+                            Text("\(room.unread) unread posts")
                                 .fontWeight(.bold)
                         } else {
-                            let age = Date().timeIntervalSince(space.timestamp)
+                            let age = Date().timeIntervalSince(room.timestamp)
                             if age < 2 * 60.0 {
                                 Text("Updated just now")
                             } else {
-                                Text("Last updated \(space.timestamp, formatter: formatter)")
+                                Text("Last updated \(room.timestamp, formatter: formatter)")
                             }
                         }
                         
-                        if let wall = space.wall {
-                            let knockCount = wall.knockingMembers.count
-                            if knockCount > 0 {
-                                let color = Color(light: .accentColor, dark: .white)
-                                Label("\(knockCount) requests for invitations", systemImage: "star.fill")
-                                    .foregroundColor(color)
-                            }
+                        let knockCount = room.knockingMembers.count
+                        if knockCount > 0 {
+                            let color = Color(light: .accentColor, dark: .white)
+                            Label("\(knockCount) requests for invitations", systemImage: "star.fill")
+                                .foregroundColor(color)
                         }
                     }
                     .font(.footnote)

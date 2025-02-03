@@ -32,6 +32,8 @@ struct TextContentView: View {
     var body: some View {
         Markdown(markdown)
             .textSelection(.enabled)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .font(CustomFonts.inter14)
     }
 }
 
@@ -50,10 +52,14 @@ struct ImageContentView: View {
                                               mediaViewWidth: mediaViewWidth)
                         Spacer()
                     }
+                    
                     HStack {
                         if let caption = imageContent.caption {
                             let markdown = MarkdownContent(caption)
                             Markdown(markdown)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .font(CustomFonts.inter14)
+
                             
                             Spacer()
                         }
@@ -69,13 +75,14 @@ struct ImageContentView: View {
 }
 
 class MessageCardViewModel: ObservableObject {
-    @Published var showReactionSheet = false // stupid hack that I used to fix a bug with the sheet that sometimes doesn't appear for posts located further down (after scrolling)
+    @Published var showCommentsSheet = false // stupid hack that I used to fix a bug with the sheet that sometimes doesn't appear for posts located further down (after scrolling)
 }
 
 struct MessageCard: MessageView {
     @ObservedObject var message: Matrix.Message
     var isLocalEcho = false
     var isThreaded = false
+    @EnvironmentObject var timelineViewModel: TimelineViewModel
     @State var emojiUsersListModel: [EmojiUsersListModel] = []
     @Environment(\.colorScheme) var colorScheme
     //@State var showReplyComposer = false
@@ -87,6 +94,10 @@ struct MessageCard: MessageView {
     var iCanReact: Bool
     @State var showMessageDeleteConfirmation = false
     @AppStorage("mediaViewWidth") var mediaViewWidth: Double = 0
+    
+    let footerFont: Font = CustomFonts.inter14
+                               .weight(.medium)
+    let footerForegroundColor = Color.greyCool1000
     
     init(message: Matrix.Message, isLocalEcho: Bool = false, isThreaded: Bool = false) {
         self.message = message
@@ -108,22 +119,18 @@ struct MessageCard: MessageView {
     }
     
     var timestamp: some View {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        
         // If the message has been edited/replaced, then we should show the new timestamp
         // Otherwise we should show the original timestamp
         let current = message.replacement ?? message
         
-        let edited: String = current.relationType == M_REPLACE ? "Edited " : ""
-        let formattedTimestampString: String = formatter.string(from: current.timestamp)
+        let formattedTimestampString = RelativeTimestampFormatter.format(date: current.timestamp)
         
-        let text = edited + formattedTimestampString
+        let icon = message.replacement == nil ? SystemImages.clock : SystemImages.pencil
         
-        return Text(text)
-            .font(.footnote)
-            .foregroundColor(.gray)
+        return HStack(alignment: .center, spacing: 2) {
+            Text("\(Image(systemName: icon.rawValue))")
+            Text(formattedTimestampString)
+        }
     }
     
     var content: some View {
@@ -137,6 +144,7 @@ struct MessageCard: MessageView {
                 case M_TEXT:
                     if let textContent = content as? Matrix.mTextContent {
                         TextContentView(textContent.body)
+                            .font(Font.custom("Inter", size: 14))
                             .padding(.horizontal, 3)
                             .padding(.vertical, 5)
                     }
@@ -204,7 +212,6 @@ struct MessageCard: MessageView {
                 
             } else if current.type == M_ROOM_ENCRYPTED {
                 VStack {
-                    let bgColor = colorScheme == .dark ? Color.black : Color.white
                     BasicImage(systemName: SystemImages.lockRectangle.rawValue)
                         .foregroundColor(Color.gray)
                         .frame(width: 240, height: 240)
@@ -221,7 +228,7 @@ struct MessageCard: MessageView {
                     .multilineTextAlignment(.center)
                     .foregroundColor(.gray)
                     .background(
-                        bgColor
+                        Color.greyCool400
                             .opacity(0.5)
                     )
                     .padding(.bottom, 2)
@@ -239,45 +246,59 @@ struct MessageCard: MessageView {
         }
     }
     
-    var avatarImage: Image {
-        message.sender.avatar != nil
-            ? Image(uiImage: message.sender.avatar!)
-            : Image(systemName: SystemImages.personFill.rawValue)
-        // FIXME We can do better here.
-        //       Use the SF Symbols for the user's initial(s)
-        //       e.g. Image(sysetmName: "a.circle.fill")
+    @ViewBuilder
+    var commentsButton: some View {
+        Button(action: {
+            // show the thread view
+            self.viewModel.showCommentsSheet = true
+        }) {
+            HStack(alignment: .center, spacing: 5) {
+                Image(systemName: "bubble.left")
+                    .frame(width: 20, height: 20)
+                let count = message.replies.count
+                let units = count == 1 ? "comment" : "comments"
+                Text("\(count) \(units)")
+            }
+            .font(footerFont)
+            .foregroundColor(footerForegroundColor)
+        }
+    }
+
+    
+    @ViewBuilder
+    var header: some View {
+        HStack(alignment: .center, spacing: 8) {
+            UserAvatarView(user: message.sender)
+                .frame(width: 32, height: 32)
+                .clipShape(Circle())
+            VStack(alignment: .leading) {
+                UserNameView(user: message.sender)
+                    .font(
+                        CustomFonts.nunito14
+                            .weight(.heavy)
+                    )
+                    .foregroundColor(.greyCool1100)
+                timestamp
+                    .font(
+                        CustomFonts.nunito12
+                            .weight(.semibold)
+                    )
+                    .foregroundColor(.greyCool800)
+            }
+            .padding(.leading, 0)
+            .padding(.trailing, 8)
+
+            .padding(.vertical, 0)
+            
+            Spacer()
+            menuButton
+        }
+        .padding(.horizontal, 0)
+        .padding(.top, 0)
+        .padding(.bottom, 8)
     }
     
     @ViewBuilder
-    var shield: some View {
-        if isLocalEcho {
-            ProgressView()
-        } else if message.isEncrypted {
-            Image(systemName: SystemImages.lockFill.rawValue)
-                .foregroundColor(Color.accentColor)
-        } else {
-            Image(systemName: SystemImages.lockSlashFill.rawValue)
-                .foregroundColor(Color.red)
-        }
-    }
-
-    var likeButton: some View {
-        Button(action: {
-            viewModel.showReactionSheet = true
-        }) {
-            //Label("Like", systemImage: "heart")
-            Image(systemName: SystemImages.heart.rawValue)
-        }
-        .disabled(!iCanReact)
-    }
-
-    var replyButton: some View {
-        NavigationLink(destination: PostComposerScreen(room: message.room, parentMessage: message)) {
-            //Label("Reply", systemImage: SystemImages.bubbleRight.rawValue)
-            Image(systemName: SystemImages.bubbleRight.rawValue)
-        }
-    }
-
     var menuButton: some View {
         Menu {
             MessageContextMenu(message: message,
@@ -286,7 +307,9 @@ struct MessageCard: MessageView {
         }
         label: {
             //Label("More", systemImage: SystemImages.ellipsisCircle.rawValue)
-            Image(systemName: SystemImages.ellipsisCircle.rawValue)
+            Image(systemName: "ellipsis")
+                .frame(width: 18, height: 18)
+                .foregroundColor(.greyCool1000)
         }
         .confirmationDialog("Delete Message", isPresented: $showMessageDeleteConfirmation, actions: {
             AsyncButton(role: .destructive, action: {
@@ -297,103 +320,26 @@ struct MessageCard: MessageView {
             }
         })
     }
-
-    var reactions: some View {
-        VStack {
-            //Spacer()
-            let allReactionCounts = self.message.reactions
-                .mapValues { userIds in
-                    userIds.filter {
-                        !self.message.room.session.ignoredUserIds.contains($0)
-                    }
-                    .count
-                }
-                .filter { (key,value) in
-                    value > 0
-                }
-                .sorted(by: >)
-            
-            let limit = 3
-            let reactionCounts = showAllReactions ? allReactionCounts : Array(allReactionCounts.prefix(limit))
-            
-            ScrollView(.horizontal) {
-                HStack(spacing: 10) {
-                    ForEach(reactionCounts, id: \.key) { emoji, count in
-                        let userId = message.room.session.creds.userId
-                        let users = message.reactions[emoji] ?? []
-                        
-                        if users.contains(userId) {
-                            AsyncButton(action: {
-                                // We already sent this reaction...  So redact it
-                                try await message.sendRemoveReaction(emoji)
-                            }) {
-                                Text("\(emoji) \(count)")
-                            }
-                            .buttonStyle(ReactionsButtonStyle(buttonColor: .accentColor))
-                        } else {
-                            AsyncButton(action: {
-                                // We have not sent this reaction yet..  Send it
-                                try await message.sendReaction(emoji)
-                            }) {
-                                Text("\(emoji) \(count)")
-                            }
-                            .disabled(!iCanReact)
-                            .buttonStyle(ReactionsButtonStyle(buttonColor: Color(UIColor.systemGray5)))
-                        }
-                    }
-                    
-                    if allReactionCounts.count > limit {
-                        if !showAllReactions {
-                            Button(action: {self.showAllReactions = true}) {
-                                Text("(more)")
-                                    .font(.subheadline)
-                            }
-                        } else {
-                            Button(action: {self.showAllReactions = false}) {
-                                Text("(less)")
-                                    .font(.subheadline)
-                            }
-                        }
-                    }
-                }
-            }
-            .scrollIndicators(.hidden)
-        }
-        .foregroundColor(.secondary)
-        //.padding(2)
-    }
     
     var footer: some View {
-        VStack(alignment: .leading) {
-            //Divider()
-            HStack {
-                shield
-                //Spacer()
-                timestamp
-                Spacer()
-                likeButton
-                if !isThreaded {
-                    replyButton
-                }
-                menuButton
-            }
-            .padding(.top, 3)
-            .padding(.horizontal, 3)
-            .font(.headline)
-            
-            let reactionsFooterAction = message.reactions.values.map {
-                !$0.isEmpty ? "show" : "hide"
-            }
-            if reactionsFooterAction.rawValue.contains("show")
-            {
-                Divider()
 
-                reactions
-            } else {
-                reactions.hidden()
+        HStack(alignment: .top) {
+            HStack(alignment: .top, spacing: 24) {
+                LikeButton(message: message)
+                
+                if !isThreaded {
+                    commentsButton
+                }
             }
+            .padding(0)
+            .frame(width: 176, alignment: .topLeading)
+            
+            Spacer()
         }
-        .padding(.bottom, 3)
+        .padding(.horizontal, 0)
+        .padding(.vertical, 4)
+        .frame(maxWidth: .infinity, alignment: .top)
+
     }
 
     var details: some View {
@@ -413,13 +359,13 @@ struct MessageCard: MessageView {
             }
         }
     }
-    
+
+    @ViewBuilder
     var mainCard: some View {
-        let shadowColor: Color = message.mentionsMe ? .accentColor : .gray
-        let shadowRaduis: CGFloat = message.mentionsMe ? 3 : 2
         
-        return VStack(alignment: .leading, spacing: 2) {
-            MessageAuthorHeader(user: message.sender)
+        VStack(alignment: .leading, spacing: 2) {
+
+            header
 
             if DebugModel.shared.debugMode && self.debug {
                 Text(message.eventId)
@@ -427,6 +373,7 @@ struct MessageCard: MessageView {
             }
 
             content
+                .padding(.bottom, 10)
             
             if DebugModel.shared.debugMode {
                 details
@@ -435,13 +382,9 @@ struct MessageCard: MessageView {
 
             footer
         }
-        .padding(.all, 3.0)
-        .background(
-            RoundedRectangle(cornerRadius: 4)
-                //.foregroundColor(.init(light: .white, dark: .black))
-                .foregroundColor(.background)
-                .shadow(color: shadowColor, radius: shadowRaduis, x: 0, y: 0)
-        )
+        .padding(16)
+        .background(colorScheme == .dark ? Color.black : Color.white)
+        .cornerRadius(12)
         .onAppear {
             if message.sender.userId != message.room.session.creds.userId {
                 print("Updating m.read for room \(message.roomId) to be \(message.eventId)")
@@ -497,8 +440,9 @@ struct MessageCard: MessageView {
                         LikedEmojiView(message: message, emojiUsersListModel: emojiUsersListModel)
                     }
                 }
-                .sheet(isPresented: $viewModel.showReactionSheet) {
-                    EmojiPicker(message: message)
+                .sheet(isPresented: $viewModel.showCommentsSheet) {
+                    CommentsView(room: message.room, parent: message)
+                        .presentationDetents([.medium, .large])
                 }
         }
     }

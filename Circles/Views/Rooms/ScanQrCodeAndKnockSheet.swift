@@ -30,7 +30,7 @@ struct ScanQrCodeAndKnockSheet: View {
                     let user = session.getUser(userId: room.sender)
                     switch room.type {
                     case ROOM_TYPE_CIRCLE:
-                        InvitedCircleCard(room: room, user: user, container: app.circles)
+                        InvitedCircleCard(room: room, user: user, container: app.timelines)
                             .frame(maxWidth: 400)
                     case ROOM_TYPE_GROUP:
                         InvitedGroupCard(room: room, user: user, container: app.groups)

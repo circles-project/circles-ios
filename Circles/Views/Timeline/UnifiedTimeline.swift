@@ -10,14 +10,16 @@
 import SwiftUI
 import Matrix
 
-struct CircleTimeline: View {
-    @ObservedObject var space: CircleSpace
+struct UnifiedTimeline: View {
+    @ObservedObject var space: TimelineSpace
     private var formatter: DateFormatter
     @State private var showDebug = false
     @State private var loading = false
     private var cutoff: Date
+    
+    @EnvironmentObject var viewModel: TimelineViewModel
 
-    init(space: CircleSpace) {
+    init(space: TimelineSpace) {
         self.space = space
         self.formatter = DateFormatter()
         formatter.dateStyle = .long
@@ -105,17 +107,23 @@ struct CircleTimeline: View {
     var body: some View {
         let messages: [Matrix.Message] = space.getCollatedTimeline(filter: self.filter).reversed()
         
+        
+        let rooms = space.rooms.values.sorted(by: { $0.timestamp < $1.timestamp })
+        
         VStack(alignment: .leading) {
-            if let wall = space.wall,
-               wall.knockingMembers.count > 0
-            {
-                RoomKnockIndicator(room: wall)
-            }
-            
-            ScrollView {
-                LazyVStack(alignment: .center) {
-                    ForEach(messages) { message in
-                        VStack(alignment: .leading) {
+            ScrollViewReader { proxy in
+                ScrollView {
+                    LazyVStack(alignment: .center) {
+                        
+                        ForEach(rooms) { room in
+                            if let msg = room.localEchoMessage {
+                                MessageCard(message: msg, isLocalEcho: true, isThreaded: false)
+                                    .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
+                                    .id(msg.eventId)
+                            }
+                        }
+                        
+                        ForEach(messages) { message in
                             HStack {
                                 if DebugModel.shared.debugMode && showDebug {
                                     let index: Int = messages.firstIndex(of: message)!
@@ -123,96 +131,98 @@ struct CircleTimeline: View {
                                 }
                                 
                                 MessageCard(message: message)
+                                    .id(message.eventId)
                             }
-                            RepliesView(room: message.room, parent: message)
                         }
+                        
                     }
-                    .padding(.horizontal, 3)
-                    .padding(.vertical, 1)
-                }
-                .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
-            
-                HStack(alignment: .bottom) {
-                    Spacer()
-                    if loading {
-                        ProgressView("Loading...")
-                    }
-                    else if space.canPaginateRooms {
-                        AsyncButton(action: {
-                            self.loading = true
-                            do {
-                                try await space.paginateRooms()
-                            } catch {
-                                print("Failed to manually paginate rooms")
-                            }
-                            self.loading = false
-                        }) {
-                            Text("Load More")
+                    .frame(maxWidth: TIMELINE_FRAME_MAXWIDTH)
+                    .padding(.horizontal, 12)
+                    
+                    
+                    HStack(alignment: .bottom) {
+                        Spacer()
+                        if loading {
+                            ProgressView("Loading...")
                         }
-                        .onAppear {
-                            // Basically it's like we automatically click "Load More" for the user
-                            self.loading = true
-                            let _ = Task {
+                        else if space.canPaginateRooms {
+                            AsyncButton(action: {
+                                self.loading = true
                                 do {
                                     try await space.paginateRooms()
                                 } catch {
-                                    print("Failed to automatically paginate rooms")
+                                    print("Failed to manually paginate rooms")
                                 }
                                 self.loading = false
+                            }) {
+                                Text("Load More")
                             }
+                            .onAppear {
+                                // Basically it's like we automatically click "Load More" for the user
+                                self.loading = true
+                                let _ = Task {
+                                    do {
+                                        try await space.paginateRooms()
+                                    } catch {
+                                        print("Failed to automatically paginate rooms")
+                                    }
+                                    self.loading = false
+                                }
+                            }
+                        } else if DebugModel.shared.debugMode {
+                            Text("Not currently loading; Can't paginate rooms")
+                                .foregroundColor(.red)
                         }
-                    } else if DebugModel.shared.debugMode {
-                        Text("Not currently loading; Can't paginate rooms")
-                            .foregroundColor(.red)
+                        
+                        Spacer()
                     }
+                    .frame(minHeight: TIMELINE_BOTTOM_PADDING)
+                }
+                .onChange(of: viewModel.scrollPosition) { eventId in
+                    proxy.scrollTo(eventId)
+                }
+                .padding(0)
+                .background(Color.greyCool200)
+                .onAppear {
+                    _ = Task {
+                        try await space.paginateEmptyTimelines(limit: 25)
+                    }
+                }
+                .refreshable {
                     
-                    Spacer()
-                }
-                .frame(minHeight: TIMELINE_BOTTOM_PADDING)
-            }
-            .onAppear {
-                _ = Task {
-                    try await space.paginateEmptyTimelines(limit: 25)
-                }
-            }
-            .refreshable {
-                if let wall = space.wall {
-                    print("REFRESH\tUpdating Circle avatar image")
-                    wall.updateAvatarImage()
-                }
-                
-                async let results = space.rooms.values.map { room in
-                    print("REFRESH\tLoading latest messages from \(room.name ?? room.roomId.stringValue)")
-
-                    return try? await room.getMessages(forward: false)
-                }
-                let responses = await results
-                print("REFRESH\tGot \(responses.count) responses from \(space.rooms.count) rooms")
-                
-                print("REFRESH\tWaiting for network requests to come in")
-                try? await Task.sleep(for: .seconds(1))
-                
-                print("REFRESH\tDecrypting un-decrypted messages")
-                async let decryptions = space.rooms.values.map { room in
-                    var count = 0
-                    for message in room.messages {
-                        if message.type == M_ROOM_ENCRYPTED {
-                            do {
-                                try await message.decrypt()
-                                count += 1
-                            } catch {
-                                print("Failed to decrypt message \(message.eventId) in room \(room.roomId)")
+                    async let results = space.rooms.values.map { room in
+                        print("REFRESH\tLoading latest messages from \(room.name ?? room.roomId.stringValue)")
+                        
+                        return try? await room.getMessages(forward: false)
+                    }
+                    let responses = await results
+                    print("REFRESH\tGot \(responses.count) responses from \(space.rooms.count) rooms")
+                    
+                    print("REFRESH\tWaiting for network requests to come in")
+                    try? await Task.sleep(for: .seconds(1))
+                    
+                    print("REFRESH\tDecrypting un-decrypted messages")
+                    async let decryptions = space.rooms.values.map { room in
+                        var count = 0
+                        for message in room.messages {
+                            if message.type == M_ROOM_ENCRYPTED {
+                                do {
+                                    try await message.decrypt()
+                                    count += 1
+                                } catch {
+                                    print("Failed to decrypt message \(message.eventId) in room \(room.roomId)")
+                                }
                             }
                         }
+                        print("Decrypted \(count) messages in room \(room.roomId)")
+                        return count
                     }
-                    print("Decrypted \(count) messages in room \(room.roomId)")
-                    return count
-                }
-                let decrypted = await decryptions
-                
-                print("REFRESH\tSending Combine update")
-                await MainActor.run {
-                    space.objectWillChange.send()
+                    let decrypted = await decryptions
+                    
+                    print("REFRESH\tSending Combine update")
+                    await MainActor.run {
+                        space.objectWillChange.send()
+                    }
                 }
             }
 

@@ -11,7 +11,7 @@ import Matrix
 struct CircleInvitationsIndicator: View {
     //@Binding var invitations: [Matrix.InvitedRoom]
     @ObservedObject var session: Matrix.Session
-    @ObservedObject var container: ContainerRoom<CircleSpace>
+    @ObservedObject var container: ContainerRoom<Matrix.Room>
     
     var body: some View {
         VStack {

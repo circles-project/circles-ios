@@ -38,9 +38,9 @@ struct UserAvatarView: View {
                 
                 Text(String(user.displayName?.first?.uppercased() ?? userIdCharacter ?? ""))
                     .fontWeight(.bold)
-                    .font(.title)
+                    .font(.title3)
                     .foregroundColor(.white)
-                    .shadow(color: .gray, radius: 2)
+                    .shadow(color: .gray, radius: 1)
             }
         }
     }

@@ -22,6 +22,9 @@ struct SettingsScreen: View {
     @AppStorage("showCirclesHelpText") var showCirclesHelpText = true
     @AppStorage("showGroupsHelpText") var showGroupsHelpText = true
     
+    @State private var columnVisibility =
+        NavigationSplitViewVisibility.all
+    
     @State var showConfirmLogout = false
     @State var showConfirmSwitch = false
     @State var showChangelog = false
@@ -35,7 +38,7 @@ struct SettingsScreen: View {
     
     
     var body: some View {
-        NavigationSplitView {
+        NavigationSplitView(columnVisibility: $columnVisibility) {
             Form {
                 Section("General") {
                     NavigationLink(destination: ProfileSettingsView(session: session.matrix)) {
@@ -150,7 +153,6 @@ struct SettingsScreen: View {
                 */
                 
                 Section(header: Label("Danger Zone", systemImage: SystemImages.exclamationmarkTriangle.rawValue)) {
-                    
                     Button(action: {
                         self.showConfirmSwitch = true
                     }) {
@@ -192,8 +194,7 @@ struct SettingsScreen: View {
                                             Text("WARNING: You must be logged in on at least one device in order to receive decryption keys from your friends. If you log out from all devices, you may be unable to decrypt any posts or comments sent while you are logged out.")
                                         }
                     )
-                    
-                    NavigationLink(destination: DeactivateAccountView(store: store, session: session)) {
+                    NavigationLink(destination: DeactivateAccountView(store: store, session: session).background(Color.greyCool200)) {
                         Label("Deactivate Account", systemImage: SystemImages.personFillXmark.rawValue)
                     }
                 }
@@ -202,6 +203,7 @@ struct SettingsScreen: View {
         } detail: {
             ProfileSettingsView(session: session.matrix)
         }
+        .navigationSplitViewStyle(.balanced)
         .sheet(isPresented: $showChangelog) {
             ChangelogSheet(content: ChangelogFile().loadMarkdown(named: .fullList), title: .fullList, showChangelog: $showChangelog)
         }

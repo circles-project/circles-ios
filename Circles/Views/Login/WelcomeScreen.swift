@@ -9,6 +9,7 @@ import SwiftUI
 import Combine
 import StoreKit
 import Matrix
+//import KeychainAccess
 
 func loginFilter(flow: AuthFlow) -> Bool {
     // If it's a UIA flow, we want BS-SPEKE login
@@ -23,213 +24,300 @@ func loginFilter(flow: AuthFlow) -> Bool {
     return false
 }
 
-struct WelcomeScreen: View {
+struct LoginScreen: View {
     var store: CirclesStore
+    @Environment(\.presentationMode) var presentationMode
     
-    @AppStorage("previousUserIds") var previousUserIds: [UserId] = []
-    
-    @FocusState var inputFocused
-    @State var showingKeyboard = false
-        
-    @State var username: String = ""
-    @State var showDomainPicker = false
-    
+    @State var username = ""
+    @State var password = ""
+    @State var showPassword = false
     @State var showSuggestion = false
     @State var suggestedUserId: UserId? = nil
-    
     @State var showUsernameError = false
-            
-    // Inspired by https://www.vadimbulavin.com/how-to-move-swiftui-view-when-keyboard-covers-text-field/
-    private var keyboardPublisher: AnyPublisher<CGFloat,Never> {
-        Publishers.Merge(
-            NotificationCenter.default
-                              .publisher(for: UIResponder.keyboardWillShowNotification)
-                              .compactMap { $0.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect }
-                              .map { $0.height },
-            NotificationCenter.default
-                              .publisher(for: UIApplication.keyboardWillHideNotification)
-                              .map { _ in CGFloat(0) }
-        )
-        .eraseToAnyPublisher()
+    @Binding var showDomainPicker: Bool
+    
+    private var backButton: some View {
+        Button(role: .destructive, action: {
+            Task {
+                try await self.store.disconnect()
+            }
+            self.presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(SystemImages.iconFilledArrowBack.rawValue)
+                .padding(5)
+                .frame(width: 40.0, height: 40.0)
+        }
+        .background(Color.white)
+        .clipShape(Circle())
+        .padding(.leading, 21)
+        .padding(.top, 65)
     }
     
-    @ViewBuilder
-    var welcomeView: some View {
-        VStack(alignment: .center) {
+    var body: some View {
+        ZStack {
+            Color.greyCool200
+                .edgesIgnoringSafeArea(.all)
+            
+            NavigationStack {
+                VStack {
+                    HStack {
+                        backButton
+                        Spacer()
+                    }
                     
-            CirclesLogoView()
-                .frame(minWidth: 100,
-                       idealWidth: 200,
-                       maxWidth: 300,
-                       minHeight: 100,
-                       idealHeight: 200,
-                       maxHeight: 300,
-                       alignment: .center)
-            
-            Text("Circles")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-            /*
-            Text("by FUTO Labs")
-                .font(.headline)
-                .fontWeight(.bold)
-            */
-            
-            TextField("@user:example.com", text: $username)
-                .autocapitalization(.none)
-                .disableAutocorrection(true)
-                .focused($inputFocused)
-                .frame(width: 300.0, height: 40.0)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-
-            AsyncButton(action: {
-                if !username.isEmpty {
-                    if let userId = UserId(username) {
-                        try await store.login(userId: userId, filter: loginFilter)
-                    } else {
-                        if let suggestion = UserId.autoCorrect(username, domain: store.defaultDomain) {
-                            self.suggestedUserId = suggestion
-                            self.showSuggestion = true
-                        } else {
-                            self.showUsernameError = true
-                        }
+                    let buttonWidth = UIScreen.main.bounds.width - 48
+                    let buttonHeight: CGFloat = 48.0
+                                            
+                    BasicImage(name: SystemImages.launchLogoPurple.rawValue)
+                        .frame(width: 125, height: 43)
+                        .padding(.bottom, 30)
+                    
+                    VStack(alignment: .leading) {
+                        Text("Your User ID")
+                            .font(
+                                CustomFonts.nunito14
+                                    .weight(.bold)
+                            )
+                            .foregroundColor(Color.greyCool1100)
+                        
+                        TextField("@username:us.domain.com", text: self.$username)
+                            .frame(width: buttonWidth, height: buttonHeight)
+                            .padding([.horizontal], 12)
+                            .background(Color.white)
+                            .cornerRadius(10)
+                            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.greyCool400))
+                            .autocapitalization(.none)
+                            .disableAutocorrection(true)
                     }
-                }
-            }) {
-                Text("Log In")
-            }
-            .buttonStyle(BigRoundedButtonStyle())
-            .confirmationDialog("It looks like maybe you mis-typed your user id",
-                                isPresented: $showSuggestion,
-                                presenting: suggestedUserId,
-                                actions: { userId in
-                AsyncButton(action: {
-                    try await store.login(userId: userId, filter: loginFilter)
-                    await MainActor.run {
-                        self.suggestedUserId = nil
-                    }
-                }) {
-                    Text("Log in as \(userId.stringValue)")
-                }
-                Button(role: .cancel, action: {}) {
-                    Text("No, let me try again")
-                }
-            },
-                                message: { userId in
-                Text("Did you mean \(userId.stringValue)?")
-            })
-            .alert(isPresented: $showUsernameError) {
-                Alert(title: Text("Invalid User ID"),
-                      message: Text("Circles user ID's should start with an @ and have a domain at the end, like @username:example.com"))
-            }
-
-            if showingKeyboard {
-                Spacer()
-                Button(role: .destructive, action: {
-                    self.inputFocused = false
-                }) {
-                    Text("Cancel")
-                        .padding()
-                }
-            } else {
-                
-                NavigationLink(destination: ForgotPasswordView(store: store)) {
-                    Text("Forgot password?")
-                        .font(.subheadline)
-                }
-                .padding(5)
-                
-                if !previousUserIds.isEmpty {
-
-                    VStack {
-                        HStack {
-                            Text("Log in again")
-                                .font(.body.smallCaps())
-                                .foregroundColor(.gray)
-                                .padding(.leading)
-                            Spacer()
-                        }
-                        ForEach(previousUserIds) { userId in
-                            
-                            HStack {
-                                AsyncButton(action: {
-                                    try await store.login(userId: userId, filter: loginFilter)
-                                    await MainActor.run {
-                                        self.suggestedUserId = nil
-                                    }
-                                }) {
-                                    Text(userId.stringValue)
-                                        .lineLimit(1)
-                                }
-                                //.buttonStyle(.bordered)
-                                
-                                Spacer()
-                                
-                                Button(action: {
-                                    let otherUserIds = previousUserIds.filter { $0 != userId }
-                                    self.previousUserIds = otherUserIds
-                                }) {
-                                    Image(systemName: SystemImages.xmark.rawValue)
+                    
+                    Spacer()
+                    
+                    let signUpButtonStyle = BigRoundedButtonStyle(width: buttonWidth,
+                                                                  height: buttonHeight,
+                                                                  color: Color.accentColor)
+                    
+                    AsyncButton(action: {
+                        if !username.isEmpty {
+                            if let userId = UserId(username) {
+                                try await store.login(userId: userId, filter: loginFilter)
+                            } else {
+                                if let suggestion = UserId.autoCorrect(username, domain: store.defaultDomain) {
+                                    self.suggestedUserId = suggestion
+                                    self.showSuggestion = true
+                                } else {
+                                    self.showUsernameError = true
                                 }
                             }
-                            .padding()
-                            .background {
-                                Capsule()
-                                    .fill(Color.accentColor.opacity(0.30))
-                                    //.padding(1)
-                            }
-                            .font(.caption)
                         }
-                    }
-                    .frame(maxWidth: 300)
-                }
-                
-                Spacer()
-                
-                Text("Need an account?")
-                Button(action: {
-                    self.showDomainPicker = true
-                }) {
-                    Text("Sign Up")
-                }
-                .buttonStyle(BigRoundedButtonStyle())
-                .padding(.bottom, 20)
-                .confirmationDialog("Select a region", isPresented: $showDomainPicker) {
-                    AsyncButton(action: {
-                        print("LOGIN\tSigning up on user-selected US domain")
-                        try await store.signup(domain: usDomain)
                     }) {
-                        Text("🇺🇸 Sign up on US server")
+                        Text("Next step")
                     }
-                    AsyncButton(action: {
-                        print("LOGIN\tSigning up on user-selected EU domain")
-                        try await store.signup(domain: euDomain)
-                    }) {
-                        Text("🇪🇺 Sign up on EU server")
+                    .buttonStyle(signUpButtonStyle)
+                    .font(
+                        CustomFonts.nunito16
+                            .weight(.bold)
+                    )
+                    .padding(.bottom, 27)
+                    .confirmationDialog("It looks like maybe you mis-typed your user id",
+                                        isPresented: $showSuggestion,
+                                        presenting: suggestedUserId,
+                                        actions: { userId in
+                        AsyncButton(action: {
+                            try await store.login(userId: userId, filter: loginFilter)
+                            await MainActor.run {
+                                self.suggestedUserId = nil
+                            }
+                        }) {
+                            Text("Log in as \(userId.stringValue)")
+                        }
+                        Button(role: .cancel, action: {}) {
+                            Text("No, let me try again")
+                        }
+                    },
+                                        message: { userId in
+                        Text("Did you mean \(userId.stringValue)?")
+                    })
+                    .alert(isPresented: $showUsernameError) {
+                        Alert(title: Text("Invalid User ID"),
+                              message: Text("Circles user ID's should start with an @ and have a domain at the end, like @username:example.com"))
                     }
+                    .disabled(username.isEmpty)
+                    
+                    HStack {
+                        Text("Don't have an account?")
+                            .font(CustomFonts.outfit14)
+                        Button("Sign Up here") {
+                            self.showDomainPicker = true
+                        }
+                        .font(CustomFonts.outfit14)
+                    }
+                    .padding(.bottom, 38)
                 }
             }
         }
-        //.padding(.horizontal)
-        /*
-        .alert(isPresented: $showAlert) {
-            Alert(title: Text(alertTitle),
-                  message: Text(alertMessage),
-                  dismissButton: .default(Text("OK")))
-        }
-        */
-        .onReceive(keyboardPublisher) {
-            if $0 == 0 {
-                self.showingKeyboard = false
-            } else {
-                self.showingKeyboard = true
-            }
-        }
+        .navigationBarBackButtonHidden()
     }
+}
 
+struct DomainScreen: View {
+    #if DEBUG 
+    @State var domain: String = usDomain
+    #else
+    @State var domain: String = ""
+    #endif
+    var store: CirclesStore
+    
+    @FocusState var inputFocused
+    @Environment(\.presentationMode) var presentation
+    
+    private var backButton: some View {
+        Button(role: .destructive, action: {
+            Task {
+                try await self.store.disconnect()
+            }
+            self.presentation.wrappedValue.dismiss()
+        }) {
+            Image(SystemImages.iconFilledArrowBack.rawValue)
+                .padding(5)
+                .frame(width: 40.0, height: 40.0)
+        }
+        .background(Color.white)
+        .clipShape(Circle())
+        .padding(.leading, 21)
+        .padding(.top, 65)
+    }
+    
+    var body: some View {
+        let screenWidthWithOffsets = UIScreen.main.bounds.width - 48
+        
+        ZStack {
+            Color.greyCool200
+                .edgesIgnoringSafeArea(.all)
+            
+            VStack {
+                HStack {
+                    backButton
+                    Spacer()
+                }
+                
+                BasicImage(name: SystemImages.launchLogoPurple.rawValue)
+                    .frame(width: 125, height: 43)
+                    .padding(.bottom, 30)
+                
+                VStack(alignment: .leading) {
+                    Text("Circles can register new accounts on any compatible Matrix server. To create an account, first enter the domain of the server that you would like to use.")
+                        .font(
+                            CustomFonts.nunito14
+                                .weight(.bold)
+                        )
+                        .foregroundColor(Color.greyCool1100)
+                    
+                    TextField("us.domain.com", text: $domain)
+                        .frame(width: screenWidthWithOffsets, height: 48.0)
+                        .padding([.horizontal], 12)
+                        .background(Color.white)
+                        .cornerRadius(10)
+                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.greyCool400))
+                        .focused($inputFocused)
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
+                        .onAppear {
+                            self.inputFocused = true
+                        }
+                }
+                .padding(.horizontal, 16)
+                
+                Spacer()
+                
+                AsyncButton(action: {
+                    try await store.signup(domain: usDomain)
+                }) {
+                    Text("Use this domain")
+                        .foregroundStyle(Color.white)
+                }
+                .frame(width: screenWidthWithOffsets, height: 48)
+                .background(Color.accentColor)
+                .cornerRadius(8)
+                .font(
+                    CustomFonts.nunito16
+                        .weight(.bold)
+                )
+                .padding(.bottom, 38)
+                .disabled(domain.isEmpty)
+            }
+        }
+        .navigationBarBackButtonHidden()
+    }
+}
+
+struct WelcomeScreen: View {
+    var store: CirclesStore
+    @State var showDomainPicker = false
+    
     var body: some View {
         NavigationStack {
-            welcomeView
+            ZStack {
+                Image(SystemImages.launchCircleBackground.rawValue)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+                    .clipped()
+                    .edgesIgnoringSafeArea(.all)
+                
+                VStack {
+                    Image(SystemImages.launchLogoPurple.rawValue)
+                        .padding(.top, 124)
+                    
+                    Text("The secure social network for families and friends")
+                        .font(
+                            CustomFonts.nunito24
+                                .weight(.bold)
+                        )
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(Color.white)
+                        .padding(.horizontal, 36)
+                    
+                    Spacer()
+                    
+                    let buttonWidth = UIDevice.isPad ? 400 : UIScreen.main.bounds.width - 24 * 2
+                    let buttonHeight: CGFloat = 48.0
+                    let signUpButtonStyle = BigRoundedButtonStyle(width: buttonWidth,
+                                                                  height: buttonHeight,
+                                                                  color: Color.accentColor)
+                    let ENABLE_SIGNUP = false
+                    if ENABLE_SIGNUP {
+                        NavigationLink(destination: DomainScreen(store: store)) {
+                            Text("Sign Up for free")
+                                .font(
+                                    CustomFonts.nunito16
+                                        .weight(.bold)
+                                )
+                        }
+                        .buttonStyle(signUpButtonStyle)
+                        .font(
+                            CustomFonts.nunito16
+                                .weight(.bold)
+                        )
+                    }
+                                        
+                    let signInButtonStyle = ENABLE_SIGNUP ? BigRoundedButtonStyle(width: buttonWidth,
+                                                                  height: buttonHeight,
+                                                                  color: .clear,
+                                                                  borderWidth: 1)
+                                                            : signUpButtonStyle
+                    
+                    NavigationLink(destination: LoginScreen(store: store, showDomainPicker: $showDomainPicker)) {
+                        Text("Sign In")
+                    }
+                    .buttonStyle(signInButtonStyle)
+                    .font(
+                        CustomFonts.nunito16
+                            .weight(.bold)
+                    )
+                    .padding(.bottom, 48)
+                }
+            }
+            .background(Color.clear)
         }
     }
 }

@@ -8,9 +8,9 @@
 import Foundation
 import Matrix
 
-let EVENT_TYPE_CIRCLES_CONFIG = "org.futo.circles.config"
+let EVENT_TYPE_CIRCLES_CONFIG_V1 = "org.futo.circles.config"
 
-struct CirclesConfigContent: Codable {
+struct CirclesConfigContentV1: Codable {
     var root: RoomId
     var circles: RoomId
     var groups: RoomId

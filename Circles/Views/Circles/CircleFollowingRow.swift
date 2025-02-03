@@ -12,12 +12,12 @@ import Matrix
 // This needs to be its own type so that it can keep local state `showConfirmUnfollow`
 // We wouldn't need this if the SwiftUI `.confirmationDialog` actually used its `presenting:` argument properly -- then we could just put the confirmation dialog in the parent view -- but oh well
 struct CircleFollowingRow: View {
-    var space: CircleSpace
+    var container: ContainerRoom<Matrix.Room>
     @ObservedObject var room: Matrix.Room
     @ObservedObject var user: Matrix.User
     
     var body: some View {
-        NavigationLink(destination: FollowingTimelineDetailsView(room: room, user: user, circle: space)) {
+        NavigationLink(destination: FollowingTimelineDetailsView(room: room, user: user, container: container)) {
             RoomAvatarView(room: room, avatarText: .none)
                 .frame(width: 40, height: 40)
             

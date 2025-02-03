@@ -59,10 +59,10 @@ struct GroupsOverviewScreen: View {
                                 .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
+                        .listRowBackground(selected == room.roomId ? Color.accentColor.opacity(0.20) : Color.greyCool200)
                     }
                 }
                 .listStyle(.plain)
-                .accentColor(.secondaryBackground)
             }
         }
         else {
@@ -115,6 +115,8 @@ struct GroupsOverviewScreen: View {
     var master: some View {
         ZStack {
             baseLayer
+                .scrollContentBackground(.hidden)
+
             
             overlay
         }
@@ -147,7 +149,6 @@ struct GroupsOverviewScreen: View {
                 }
             }
         }
-
         .sheet(item: $sheetType) { st in
             // Figure out what kind of sheet we need
             switch(st) {
@@ -178,6 +179,7 @@ struct GroupsOverviewScreen: View {
     var body: some View {
         NavigationSplitView {
             master
+                .background(Color.greyCool200)
         } detail: {
             if let roomId = selected,
                let room = container.rooms[roomId]
@@ -187,6 +189,7 @@ struct GroupsOverviewScreen: View {
                 Text("Select a group to see the most recent posts, or create a new group")
             }
         }
+        //.background(Color.greyCool200)
 
     }
 }

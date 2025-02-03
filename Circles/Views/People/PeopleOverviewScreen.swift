@@ -12,7 +12,7 @@ import Matrix
 struct PeopleOverviewScreen: View {
     @ObservedObject var people: ContainerRoom<Matrix.SpaceRoom>
     @ObservedObject var profile: ProfileSpace
-    @ObservedObject var circles: ContainerRoom<CircleSpace>
+    @ObservedObject var timelines: TimelineSpace
     @ObservedObject var groups: ContainerRoom<GroupRoom>
     
     @State var selectedUserId: UserId?
@@ -28,15 +28,10 @@ struct PeopleOverviewScreen: View {
         CirclesApp.logger.debug("Loading friends of friends")
         let myUserId = profile.session.creds.userId
         // First find all of the timeline rooms that I'm following
-        let timelines: Set<Matrix.Room> = circles.rooms.values.reduce([]) { (curr,circle) in
-            CirclesApp.logger.debug("Looking for followed timelines in circle \(circle.name ?? circle.roomId.stringValue)")
-            // Don't include my own timelines in the list
-            let followedRooms = circle.rooms.values.filter { $0.creator != myUserId }
-            return curr.union(followedRooms)
-        }
-        CirclesApp.logger.debug("Found \(timelines.count) timelines we are following")
+        let friendsTimelines = timelines.rooms.values.filter { $0.creator != myUserId }
+        CirclesApp.logger.debug("Found \(friendsTimelines.count) timelines we are following")
         
-        let userIds: Set<UserId> = timelines.reduce([]) { (curr,room) in
+        let userIds: Set<UserId> = friendsTimelines.reduce([]) { (curr,room) in
             let creator = room.creator
             let followers = room.joinedMembers.filter { $0 != creator && $0 != room.session.creds.userId }
             CirclesApp.logger.debug("Found \(followers.count) friends of a friend in room \(room.name ?? room.roomId.stringValue)")
@@ -65,101 +60,112 @@ struct PeopleOverviewScreen: View {
 
     @State var selected: PeopleTabSection?
     
-    var body: some View {
-        NavigationSplitView {
-            VStack {
-                List(selection: $selected) {
-                    Section("Me") {
-                        NavigationLink(value: PeopleTabSection.me) {
-                            let me = profile.session.me
-                            PersonHeaderRow(user: me, profile: profile)
-                        }
-                        .buttonStyle(.plain)
+    @ViewBuilder
+    var master: some View {
+        VStack {
+            List(selection: $selected) {
+                Section("Me") {
+                    NavigationLink(value: PeopleTabSection.me) {
+                        let me = profile.session.me
+                        PersonHeaderRow(user: me, profile: profile)
                     }
-                    
-                    Section("People I'm Following") {
-                        let count = following.count
-                        if count > 0 {
-                            let units = count > 1 ? "People" : "Person"
-                            NavigationLink(value: PeopleTabSection.following) {
-                                Text("See \(count) \(units) I'm Following")
-                            }
+                    .buttonStyle(.plain)
+                    .listRowBackground(selected == .me ? Color.accentColor.opacity(0.20) : Color.greyCool200)
+                }
+                
+                Section("People I'm Following") {
+                    let count = following.count
+                    if count > 0 {
+                        let units = count > 1 ? "People" : "Person"
+                        NavigationLink(value: PeopleTabSection.following) {
+                            Text("See \(count) \(units) I'm Following")
+                        }
+                        .listRowBackground(selected == .following ? Color.accentColor.opacity(0.20) : Color.greyCool200)
+                    } else {
+                        Text("Not following anyone")
+                            .listRowBackground(Color.greyCool200)
+                    }
+                }
+                .onAppear {
+                    let followingUserIds: [UserId] = timelines.rooms.values.reduce([], {(curr,room) in
+                        if room.creator == timelines.session.creds.userId {
+                            return curr
                         } else {
-                            Text("Not following anyone")
+                            return curr + [room.creator]
                         }
+                    })
+                    let sortedUserIds: [UserId] = Set(followingUserIds).sorted {
+                        $0.stringValue < $1.stringValue
                     }
-                    .onAppear {
-                        let followingUserIds: [UserId] = circles.rooms.values.reduce([], {(curr,room) in
-                            curr + room.following
-                        })
-                        let sortedUserIds: [UserId] = Set(followingUserIds).sorted {
-                            $0.stringValue < $1.stringValue
-                        }
-                        following = sortedUserIds.compactMap { userId -> Matrix.User in
-                            circles.session.getUser(userId: userId)
-                        }
+                    following = sortedUserIds.compactMap { userId -> Matrix.User in
+                        timelines.session.getUser(userId: userId)
                     }
-                    
-                    Section("My Followers") {
-                        let count = followers.count
+                }
+                
+                Section("My Followers") {
+                    let count = followers.count
+                    if count > 0 {
+                        let units = count > 1 ? "Followers" : "Follower"
+                        NavigationLink(value: PeopleTabSection.followers) {
+                            Text("See \(count) \(units)")
+                        }
+                        .listRowBackground(selected == .followers ? Color.accentColor.opacity(0.20) : Color.greyCool200)
+                    } else {
+                        Text("No followers")
+                            .listRowBackground(Color.greyCool200)
+                    }
+                }
+                .onAppear {
+                    let myUserId = people.session.creds.userId
+                    let followersUserIds: Set<UserId> = timelines.circles.reduce([], {(curr,room) in
+                        curr.union(room.joinedMembers)
+                            .subtracting([myUserId])
+                    })
+                    let sortedUserIds: [UserId] = Set(followersUserIds).sorted {
+                        $0.stringValue < $1.stringValue
+                    }
+                    followers = sortedUserIds.compactMap { userId -> Matrix.User in
+                        timelines.session.getUser(userId: userId)
+                    }
+                }
+                
+                Section("Friends of Friends") {
+                    if let count = friendsOfFriends?.count {
                         if count > 0 {
-                            let units = count > 1 ? "Followers" : "Follower"
-                            NavigationLink(value: PeopleTabSection.followers) {
+                            let units = count > 1 ? "Friends of friends" : "Friend of a Friend"
+                            NavigationLink(value: PeopleTabSection.friendsOfFriends) {
                                 Text("See \(count) \(units)")
                             }
-                        } else {
-                            Text("No followers")
+                            .listRowBackground(selected == .friendsOfFriends ? Color.accentColor.opacity(0.20) : Color.greyCool200)
                         }
-                    }
-                    .onAppear {
-                        let followersUserIds = circles.rooms.values.reduce([], {(curr,room) in
-                            curr + room.followers
-                        })
-                        let sortedUserIds: [UserId] = Set(followersUserIds).sorted {
-                            $0.stringValue < $1.stringValue
+                        else {
+                            Text("No friends of friends")
+                                .listRowBackground(Color.greyCool200)
                         }
-                        followers = sortedUserIds.compactMap { userId -> Matrix.User in
-                            circles.session.getUser(userId: userId)
-                        }
-                    }
-                    
-                    Section("Friends of Friends") {
-                        if let count = friendsOfFriends?.count {
-                            if count > 0 {
-                                let units = count > 1 ? "Friends of friends" : "Friend of a Friend"
-                                NavigationLink(value: PeopleTabSection.friendsOfFriends) {
-                                    Text("See \(count) \(units)")
-                                }
-                            }
-                            else {
-                                Text("No friends of friends")
-                            }
-                        } else {
-                            ProgressView("Loading friends of friends")
-                        }
-                    }
-                    .task {
-                        await loadFriendsOfFriends()
+                    } else {
+                        ProgressView("Loading friends of friends")
+                            .listRowBackground(Color.greyCool200)
                     }
                 }
-                .listStyle(.plain)
-                .accentColor(.secondaryBackground)
-                
-                /*
-                List(selection: $selection) {
-                    ForEach(subsections) { subsection in
-                        Text(subsection.rawValue)
-                    }
+                .task {
+                    await loadFriendsOfFriends()
                 }
-                */
             }
-            .navigationTitle("People")
-            .navigationBarTitleDisplayMode(.inline)
+            .listStyle(.plain)
+        }
+        .navigationTitle("People")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+    
+    var body: some View {
+        NavigationSplitView {
+            master
+                .background(Color.greyCool200)
         } detail: {
             NavigationStack {
                 switch selected {
                 case .me:
-                    SelfDetailView(profile: profile, circles: circles)
+                    SelfDetailView(profile: profile)
                 case .following:
                     FollowingView(profile: profile, following: $following)
                 case .followers:
@@ -167,7 +173,7 @@ struct PeopleOverviewScreen: View {
                 case .friendsOfFriends:
                     FriendsOfFriendsView(profile: profile, people: people, friendsOfFriends: $friendsOfFriends)
                 default:
-                    SelfDetailView(profile: profile, circles: circles)
+                    SelfDetailView(profile: profile)
                 }
             }
         }

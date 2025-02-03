@@ -19,14 +19,17 @@ extension CirclesOverviewSheetType: Identifiable {
 }
 
 struct CirclesOverviewScreen: View {
-    @ObservedObject var container: ContainerRoom<CircleSpace>
+    @ObservedObject var container: TimelineSpace
     //@State var selectedSpace: CircleSpace?
     @Binding var selected: RoomId?
+    
+    //@State private var columnVisibility = NavigationSplitViewVisibility.detailOnly // Apparently iPhone ignores this and just shows the master view by default. iPad respects it and thus looks ugly, because we set the timeline column width to fit next to the sidebar.  Ugh what a waste.
+    // @State private var preferredColumn = NavigationSplitViewColumn.detail       // We can upgrade to this once we drop support for iOS 16
         
     @State private var sheetType: CirclesOverviewSheetType? = nil
     
     @State var confirmDeleteCircle = false
-    @State var circleToDelete: CircleSpace? = nil
+    @State var timelineToDelete: Matrix.Room? = nil
     
     @AppStorage("showCirclesHelpText") var showHelpText = false
     
@@ -47,15 +50,29 @@ struct CirclesOverviewScreen: View {
         }
     }
     
-    private func deleteCircle(circle: CircleSpace) async throws {
-        print("Removing circle \(circle.name ?? "??") (\(circle.roomId))")
-        print("Leaving \(circle.rooms.count) rooms that were in the circle")
-        for room in circle.rooms.values {
-            print("Leaving timeline room \(room.name ?? "??") (\(room.roomId))")
-            try await room.leave()
+    private func removeTimeline(room: Matrix.Room) async throws {
+        print("Removing timeline \(room.name ?? "??") (\(room.roomId))")
+
+        if room.creator == room.session.creds.userId {
+            print("Deleting timeline \(room.roomId)")
+            let roomId = room.roomId
+            try await room.close(reason: "Deleting this circle", kickEveryone: false)
+            try await container.removeChild(roomId)
+        } else {
+            print("Leaving timeline \(room.roomId)")
+            try await container.leaveChild(room.roomId)
         }
-        print("Leaving circle space \(circle.roomId)")
-        try await container.leaveChild(circle.roomId, reason: "Deleting circle")
+    }
+    
+    private func roomSortComparator(_ room0: Matrix.Room, _ room1: Matrix.Room) -> Bool {
+        let session = container.session
+        let user0 = session.getUser(userId: room0.creator)
+        let user1 = session.getUser(userId: room1.creator)
+        
+        let title0 = "\(user0.displayName ?? user0.userId.username) \(room0.name ?? "")"
+        let title1 = "\(user1.displayName ?? user1.userId.username) \(room1.name ?? "")"
+        
+        return title0 < title1
     }
     
     @ViewBuilder
@@ -69,31 +86,81 @@ struct CirclesOverviewScreen: View {
                     CircleInvitationsIndicator(session: container.session, container: container)
                 }
                 
+                let session = container.session
                 // Sort intro _reverse_ chronological order
-                let circles = container.rooms.values.sorted(by: { $0.timestamp > $1.timestamp })
+                let circles = container.circles.sorted(by: {
+                    roomSortComparator($0, $1)
+                })
+                let following = container.following.sorted(by: {
+                    roomSortComparator($0, $1)
+                })
                                 
                 List(selection: $selected) {
-                    ForEach(circles) { circle in
-                        NavigationLink(value: circle.roomId) {
-                            CircleOverviewCard(space: circle)
-                                .contentShape(Rectangle())
-                                //.padding(.top)
+                    NavigationLink(value: container.roomId) {
+                        HStack {
+                            CirclesLogoView()
+                                .clipShape(Circle())
+                                .frame(width: 60, height: 60)
+
+                            Text("All Posts")
+                                .lineLimit(2)
+                                .multilineTextAlignment(.leading)
+                                .font(.title3)
+                                .fontWeight(.bold)
+                                .foregroundColor(.primary)
+                                .minimumScaleFactor(0.8)
                         }
-                        .buttonStyle(.plain)
-                        .contextMenu {
-                            Button(role: .destructive, action: {
-                                //try await deleteCircle(circle: circle)
-                                self.circleToDelete = circle
-                                self.confirmDeleteCircle = true
-                            }) {
-                                Label("Delete", systemImage: SystemImages.xmarkCircle.rawValue)
+                    }
+                    .buttonStyle(.plain)
+                    .listRowBackground(selected == container.roomId ? Color.accentColor.opacity(0.20) : Color.greyCool200)
+
+                    Section("My Circles") {
+                        ForEach(circles) { circle in
+                            NavigationLink(value: circle.roomId) {
+                               
+                                TimelineOverviewCard(room: circle, user: session.me)
+                                    .contentShape(Rectangle())
+                                    //.padding(.top)
+                            }
+                            .buttonStyle(.plain)
+                            .contextMenu {
+                                Button(role: .destructive, action: {
+                                    //try await deleteCircle(circle: circle)
+                                    self.timelineToDelete = circle
+                                    self.confirmDeleteCircle = true
+                                }) {
+                                    Label("Delete", systemImage: SystemImages.xmarkCircle.rawValue)
+                                }
+                            }
+                            .listRowBackground(selected == circle.roomId ? Color.accentColor.opacity(0.20) : Color.greyCool200)
+                        }
+                    }
+                    
+                    if following.count > 0 {
+                        Section("Others I'm Following") {
+                            ForEach(following) { room in
+                                NavigationLink(value: room.roomId) {
+                                    let user = session.getUser(userId: room.creator)
+                                    TimelineOverviewCard(room: room, user: user)
+                                        .contentShape(Rectangle())
+                                    //.padding(.top)
+                                }
+                                .buttonStyle(.plain)
+                                .contextMenu {
+                                    Button(role: .destructive, action: {
+                                        //try await deleteCircle(circle: circle)
+                                        self.timelineToDelete = room
+                                        self.confirmDeleteCircle = true
+                                    }) {
+                                        Label("Delete", systemImage: SystemImages.xmarkCircle.rawValue)
+                                    }
+                                }
+                                .listRowBackground(selected == room.roomId ? Color.accentColor.opacity(0.20) : Color.greyCool200)
                             }
                         }
-                         
                     }
                 }
                 .listStyle(.plain)
-                .accentColor(.secondaryBackground)
             }
         }
         else {
@@ -142,6 +209,11 @@ struct CirclesOverviewScreen: View {
         }
         .padding(.top)
         .navigationBarTitle("Circles", displayMode: .inline)
+        .refreshable {
+            await MainActor.run {
+                container.objectWillChange.send()
+            }
+        }
         .toolbar {
             ToolbarItemGroup(placement: .automatic) {
                 toolbarMenu
@@ -155,9 +227,9 @@ struct CirclesOverviewScreen: View {
                 ScanQrCodeAndKnockSheet(session: container.session)
             }
         }
-        .confirmationDialog("Confirm deleting circle", isPresented: $confirmDeleteCircle, presenting: circleToDelete) { circle in
+        .confirmationDialog("Confirm deleting circle", isPresented: $confirmDeleteCircle, presenting: timelineToDelete) { circle in
             AsyncButton(role: .destructive, action: {
-                try await deleteCircle(circle: circle)
+                try await removeTimeline(room: circle)
             }) {
                 Label("Delete circle \"\(circle.name ?? "??")\"", systemImage: SystemImages.xmarkBin.rawValue)
             }
@@ -179,18 +251,14 @@ struct CirclesOverviewScreen: View {
     var body: some View {
         NavigationSplitView {
             master
-                .refreshable {
-                    await MainActor.run {
-                        container.objectWillChange.send()
-                    }
-                }
+                .background(Color.greyCool200)
         } detail: {
             if let roomId = selected,
-               let space = container.rooms[roomId]
+               let timeline = container.rooms[roomId]
             {
-                CircleTimelineView(space: space)
+               SingleTimelineView(room: timeline)
             } else {
-                Text("Select a circle to see the most recent posts")
+                UnifiedTimelineView(space: container)
             }
         }
     }

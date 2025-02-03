@@ -18,23 +18,22 @@ struct SetupScreen: View {
         case circlesSetup
     }
     @State var stage: Stage = .profileSetup
-    
     @State var displayName: String?
     
     var body: some View {
-        
         switch stage {
         case .profileSetup:
             SetupAvatarView(matrix: matrix, displayName: $displayName, stage: $stage)
+                .background(Color.greyCool200)
 
         case .circlesIntro:
             SetupIntroToCircles(stage: $stage)
+                .background(Color.greyCool200)
             
         case .circlesSetup:
             SetupCirclesView(store: store, matrix: matrix, user: matrix.me)
-
+                .background(Color.greyCool200)
         }
-        
     }
 }
 
